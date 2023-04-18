@@ -4,6 +4,7 @@
 .vscode/launch.json
 .vscode/ipch
 ui
+!lib/ui
 cmake-build-overeclocks
 .idea
 OEClocks.code-workspace

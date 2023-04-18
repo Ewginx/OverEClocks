@@ -3,6 +3,8 @@
 #include <lvgl.h>
 #include <WiFi.h>
 #include <ArduinoHttpClient.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 #include "ui.h"
 
 unsigned long time_now = 0;
@@ -223,6 +225,7 @@ void setup()
     Serial.println("");
     Serial.print("Connected to WiFi network with IP Address: ");
     Serial.println(WiFi.localIP());
+    AsyncWebServer server(80);
 
 }
 void loop()
