@@ -1,10 +1,9 @@
 
 #include <LovyanGFX.hpp>
 #include <lvgl.h>
-#include <WiFi.h>
 #include <ArduinoHttpClient.h>
-#include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <Preferences.h>
 #include "ui.h"
 
 unsigned long time_now = 0;
