@@ -14,7 +14,7 @@ String weather_url = "jsonplaceholder.typicode.com";
 WiFiClient wifi;
 HttpClient client = HttpClient(wifi, weather_url, port);
 
-
+Preferences preferences;
 
 /*Change to your screen resolution*/
 static const uint16_t screenWidth  = 480;
@@ -231,7 +231,7 @@ void loop()
 {
     lv_timer_handler(); /* let the GUI do its work */
     delay(5);
-    if((unsigned long)millis()- time_now > 50000){
+    if((unsigned long)millis()- time_now > 1800000){
       time_now = millis();
       client.get("/comments?id=10");
       int statusCode = client.responseStatusCode();
