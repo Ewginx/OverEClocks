@@ -411,7 +411,7 @@ void ui_create_alarm_modal_panel(lv_obj_t *target_label)
         lv_obj_set_align(ui_AlarmDummyPanel, LV_ALIGN_CENTER);
         lv_obj_set_style_bg_opa(ui_AlarmDummyPanel, 200, LV_PART_MAIN | LV_STATE_DEFAULT);
         ui_AlarmModalPanel = lv_obj_create(ui_AlarmDummyPanel);
-        lv_obj_set_size(ui_AlarmModalPanel, 200, 170);
+        lv_obj_set_size(ui_AlarmModalPanel, 250, 230);
         lv_obj_set_align(ui_AlarmModalPanel, LV_ALIGN_CENTER);
         lv_obj_clear_flag(ui_AlarmModalPanel, LV_OBJ_FLAG_SCROLLABLE); /// Flags
         for (short int i = 0; i < HOUR_COUNT; i++)
@@ -441,35 +441,39 @@ void ui_create_alarm_modal_panel(lv_obj_t *target_label)
         ui_AlarmHourRoller = lv_roller_create(ui_AlarmModalPanel);
         lv_roller_set_options(ui_AlarmHourRoller,
                               hour_count, LV_ROLLER_MODE_INFINITE);
-        lv_obj_set_size(ui_AlarmHourRoller, 70, 90);
-        lv_obj_set_pos(ui_AlarmHourRoller, -38, -20);
+        lv_obj_set_size(ui_AlarmHourRoller, 90, 110);
+        lv_obj_set_pos(ui_AlarmHourRoller, -50, -35);
         lv_obj_set_align(ui_AlarmHourRoller, LV_ALIGN_CENTER);
+        lv_obj_set_style_text_font(ui_AlarmHourRoller, &lv_font_montserrat_18, LV_PART_MAIN);
 
         ui_AlarmMinuteRoller = lv_roller_create(ui_AlarmModalPanel);
         lv_roller_set_options(ui_AlarmMinuteRoller,
                               minute_count,
                               LV_ROLLER_MODE_INFINITE);
-        lv_obj_set_size(ui_AlarmMinuteRoller, 70, 90);
-        lv_obj_align_to(ui_AlarmMinuteRoller, ui_AlarmHourRoller, LV_ALIGN_BOTTOM_LEFT, 60, 18);
+        lv_obj_set_size(ui_AlarmMinuteRoller, 90, 110);
+        lv_obj_align_to(ui_AlarmMinuteRoller, ui_AlarmHourRoller, LV_ALIGN_BOTTOM_LEFT, 83, 18);
+        lv_obj_set_style_text_font(ui_AlarmMinuteRoller, &lv_font_montserrat_18, LV_PART_MAIN);
 
         ui_AlarmModalCancelButton = lv_btn_create(ui_AlarmModalPanel);
-        lv_obj_set_size(ui_AlarmModalCancelButton, 70, 35);
-        lv_obj_set_pos(ui_AlarmModalCancelButton, 10, 5);
+        lv_obj_set_size(ui_AlarmModalCancelButton, 90, 45);
+        lv_obj_set_pos(ui_AlarmModalCancelButton, 13, 0);
         lv_obj_set_align(ui_AlarmModalCancelButton, LV_ALIGN_BOTTOM_LEFT);
 
         ui_AlarmModalCancelButtonLabel = lv_label_create(ui_AlarmModalCancelButton);
         lv_obj_set_size(ui_AlarmModalCancelButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
         lv_obj_set_align(ui_AlarmModalCancelButtonLabel, LV_ALIGN_CENTER);
         lv_label_set_text(ui_AlarmModalCancelButtonLabel, "Cancel");
+        lv_obj_set_style_text_font(ui_AlarmModalCancelButtonLabel, &lv_font_montserrat_18, LV_PART_MAIN);
 
         ui_AlarmModalOkButton = lv_btn_create(ui_AlarmModalPanel);
-        lv_obj_set_size(ui_AlarmModalOkButton, 70, 35);
-        lv_obj_align_to(ui_AlarmModalOkButton, ui_AlarmModalCancelButton, LV_ALIGN_BOTTOM_LEFT, 60, 10);
+        lv_obj_set_size(ui_AlarmModalOkButton, 90, 45);
+        lv_obj_align_to(ui_AlarmModalOkButton, ui_AlarmModalCancelButton, LV_ALIGN_BOTTOM_LEFT, 85, 10);
 
         ui_AlarmModalOkButtonLabel = lv_label_create(ui_AlarmModalOkButton);
         lv_obj_set_size(ui_AlarmModalOkButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
         lv_obj_set_align(ui_AlarmModalOkButtonLabel, LV_ALIGN_CENTER);
         lv_label_set_text(ui_AlarmModalOkButtonLabel, "OK");
+        lv_obj_set_style_text_font(ui_AlarmModalOkButtonLabel, &lv_font_montserrat_18, LV_PART_MAIN);
 
         lv_obj_add_event_cb(ui_AlarmModalCancelButton, ui_event_AlarmModalCancelButton, LV_EVENT_ALL, NULL);
         lv_obj_add_event_cb(ui_AlarmModalOkButton, ui_event_AlarmModalOkButton, LV_EVENT_ALL, target_label);
