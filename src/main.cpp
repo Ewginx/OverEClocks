@@ -1,5 +1,6 @@
 #include <ArduinoHttpClient.h>
 #include <ESPAsyncWebServer.h>
+#include <ElegantOTA.h>
 #include <Preferences.h>
 // #include <NTPClient.h>
 // #include <WiFiUdp.h>
@@ -31,8 +32,9 @@ int hour;
 int minute;
 int second;
 // WiFiUDP ntpUDP;
-// NTPClient timeClient(ntpUDP);
-// Preferences preferences;
+Preferences preferences;
+AsyncWebServer server(80);
+Display *display;
 
 // 
 // LGFX tft;
@@ -45,42 +47,9 @@ int second;
 // }
 // #endif
 
-Display *display;
-// void printLocalTime(){
-
-//   if(!getLocalTime(&timeinfo)){
-//     Serial.println("Failed to obtain time");
-//     return;
-//   }
-//   Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-//   Serial.print("Day of week: ");
-//   Serial.println(&timeinfo, "%A");
-//   Serial.print("Month: ");
-//   Serial.println(&timeinfo, "%B");
-//   Serial.print("Day of Month: ");
-//   Serial.println(&timeinfo, "%d");
-//   Serial.print("Year: ");
-//   Serial.println(&timeinfo, "%Y");
-//   Serial.print("Hour: ");
-//   Serial.println(&timeinfo, "%H");
-//   Serial.print("Hour (12 hour format): ");
-//   Serial.println(&timeinfo, "%I");
-//   Serial.print("Minute: ");
-//   Serial.println(&timeinfo, "%M");
-//   Serial.print("Second: ");
-//   Serial.println(&timeinfo, "%S");
-
-//   Serial.println("Time variables");
-//   char timeHour[3];
-//   strftime(timeHour,3, "%H", &timeinfo);
-//   Serial.println(timeHour);
-//   char timeWeekDay[10];
-//   strftime(timeWeekDay,10, "%A", &timeinfo);
-//   Serial.println(timeWeekDay);
-//   Serial.println();
-// }
 void setup() {
   Serial.begin(115200);
+  WiFi.mode(WIFI_STA);
   display = new Display();
   Serial.print("Will try to connect to WiFI");
   WiFi.begin(ssid, password);
@@ -92,17 +61,19 @@ void setup() {
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
-  AsyncWebServer server(80);
+
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   getLocalTime(&timeinfo);
-  // timeClient.begin();
-  // timeClient.setTimeOffset(36000);
+  ElegantOTA.begin(&server);
+  server.begin();
   // #if LV_USE_LOG != 0
   //     lv_log_register_print_cb( my_print ); /* register print function for debugging */
   // #endif
   // printLocalTime();
-  // timeClient.update();
-  WiFi.disconnect();
+
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(200, "text/plain", "Hi! This is ElegantOTA AsyncDemo."); });
+  // WiFi.disconnect();
   ui_init();
 
 
@@ -110,17 +81,7 @@ void setup() {
 }
 void loop()
 {
-  // if (!getLocalTime(&timeinfo))
-  // {
-  //   Serial.println("Failed to obtain time");
-  //   return;
-  // }
   getLocalTime(&timeinfo);
-  // Serial.println(&timeinfo, "%H");
-  // Serial.print("Hour (12 hour format): ");
-  // Serial.println(&timeinfo, "%I");
-  // Serial.print("Minute: ");
-  // Serial.println(&timeinfo, "%M");
   hour = timeinfo.tm_hour;
   minute = timeinfo.tm_min;
   second = timeinfo.tm_sec;
@@ -140,22 +101,23 @@ void loop()
   lv_label_set_text(ui_DigitalClockSecondLabel, timeSecond);
   strftime(fullDate,20, "%d.%m.%Y", &timeinfo);
   lv_label_set_text(ui_DigitalClockDateLabel, fullDate);
-  // printLocalTime();
-  // Serial.println(WiFi.status());
   lv_timer_handler(); /* let the GUI do its work */
   delay(5);
-
-  // if((unsigned long)millis()- time_now > 1800000){
-  //   time_now = millis();
-  //   client.get("/comments?id=10");
-  //   int statusCode = client.responseStatusCode();
-  //   String response = client.responseBody();
-  //   Serial.print("Status code: ");
-  //   Serial.println(statusCode);
-  //   Serial.print("Response: ");
-  //   Serial.println(response);
-  //   Serial.println("Wait fifty seconds");
-  // }
+  ElegantOTA.loop();
+  if((unsigned long)millis()- time_now > 20000){
+    time_now = millis();
+    client.get("/comments?id=10");
+    int statusCode = client.responseStatusCode();
+    if (statusCode == 200)
+    {
+    String response = client.responseBody();
+    Serial.print("Status code: ");
+    Serial.println(statusCode);
+    Serial.print("Response: ");
+    Serial.println(response);
+    Serial.println("Wait fifty seconds");
+    }
+  }
 
 }
 
