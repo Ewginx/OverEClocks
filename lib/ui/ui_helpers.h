@@ -40,7 +40,7 @@ void _ui_roller_set_property(lv_obj_t * target, int id, int val);
 #define _UI_SLIDER_PROPERTY_VALUE_WITH_ANIM 1
 void _ui_slider_set_property(lv_obj_t * target, int id, int val);
 
-void _ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, int delay);
+void ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, int delay);
 
 void _ui_arc_increment(lv_obj_t * target, int val);
 
@@ -53,7 +53,7 @@ void _ui_keyboard_set_target(lv_obj_t * keyboard, lv_obj_t * textarea);
 #define _UI_MODIFY_FLAG_ADD 0
 #define _UI_MODIFY_FLAG_REMOVE 1
 #define _UI_MODIFY_FLAG_TOGGLE 2
-void _ui_flag_modify(lv_obj_t * target, int32_t flag, int value);
+void ui_flag_modify(lv_obj_t * target, int32_t flag, int value);
 
 #define _UI_MODIFY_STATE_ADD 0
 #define _UI_MODIFY_STATE_REMOVE 1

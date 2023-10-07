@@ -49,7 +49,7 @@ void _ui_slider_set_property(lv_obj_t * target, int id, int val)
 }
 
 
-void _ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, int delay)
+void ui_screen_change(lv_obj_t * target, lv_scr_load_anim_t fademode, int spd, int delay)
 {
     lv_scr_load_anim(target, fademode, spd, delay, false);
 }
@@ -79,7 +79,7 @@ void _ui_keyboard_set_target(lv_obj_t * keyboard, lv_obj_t * textarea)
     lv_keyboard_set_textarea(keyboard, textarea);
 }
 
-void _ui_flag_modify(lv_obj_t * target, int32_t flag, int value)
+void ui_flag_modify(lv_obj_t * target, int32_t flag, int value)
 {
     if(value == _UI_MODIFY_FLAG_TOGGLE) {
         if(lv_obj_has_flag(target, flag)) lv_obj_clear_flag(target, flag);
