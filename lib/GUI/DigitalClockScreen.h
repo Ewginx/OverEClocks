@@ -8,6 +8,10 @@ public:
     lv_obj_t *ui_DigitalClockLabel;
     lv_obj_t *ui_DigitalClockSecondLabel;
     lv_obj_t *ui_DigitalClockDateLabel;
+    
+
+    void set_time(char *fullTime, char *seconds);
+    void set_date(char *date);
 
     DigitalClockScreen();
     ~DigitalClockScreen();

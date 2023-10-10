@@ -2,8 +2,6 @@
 #include <ESPAsyncWebServer.h>
 #include <ElegantOTA.h>
 #include <Preferences.h>
-// #include <NTPClient.h>
-// #include <WiFiUdp.h>
 #include "time.h"
 #include "Display.h"
 // #include "ui.h"
@@ -86,7 +84,8 @@ void loop()
 {
   lv_timer_handler(); /* let the GUI do its work */
   delay(5);
-  // getLocalTime(&timeinfo);
+  getLocalTime(&timeinfo);
+
   // hour = timeinfo.tm_hour;
   // minute = timeinfo.tm_min;
   // second = timeinfo.tm_sec;
@@ -96,16 +95,11 @@ void loop()
   // lv_img_set_angle(ui_ImageArmMinute, angle);
   // angle = timeinfo.tm_hour * 300 + (int)minute / 2 * 10;
   // lv_img_set_angle(ui_ImageArmHour, angle);
-  // strftime(timeHour,3, "%H", &timeinfo);
-  // strftime(timeMinute,3, "%M", &timeinfo);
-  // strftime(timeSecond,3, "%S", &timeinfo);
-  // strcpy(fullTime, timeHour); // Copy str1 into result
-  // strcat(fullTime, ":");  // Add a space to result
-  // strcat(fullTime, timeMinute); // Concatenate str2 to result
-  // lv_label_set_text(ui_DigitalClockLabel, fullTime);
-  // lv_label_set_text(ui_DigitalClockSecondLabel, timeSecond);
-  // strftime(fullDate,20, "%d.%m.%Y", &timeinfo);
-  // lv_label_set_text(ui_DigitalClockDateLabel, fullDate);
+  strftime(fullTime,6, "%H"":""%M", &timeinfo);
+  strftime(timeSecond,3, "%S", &timeinfo);
+  gui_app->digital_clock_screen->set_time(fullTime, timeSecond);
+  strftime(fullDate,20, "%d.%m.%Y", &timeinfo);
+  gui_app->digital_clock_screen->set_date(fullDate);
 
   // ElegantOTA.loop();
   // if((unsigned long)millis()- time_now > 20000){

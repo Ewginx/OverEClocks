@@ -1,5 +1,16 @@
 #include "DigitalClockScreen.h"
 
+void DigitalClockScreen::set_time(char *fullTime, char *seconds)
+{
+    lv_label_set_text(this->ui_DigitalClockLabel, fullTime);
+    lv_label_set_text(this->ui_DigitalClockSecondLabel, seconds);
+
+}
+
+void DigitalClockScreen::set_date(char *date)
+{
+    lv_label_set_text(this->ui_DigitalClockDateLabel, date);
+}
 
 DigitalClockScreen::DigitalClockScreen()
 {
