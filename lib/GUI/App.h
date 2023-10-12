@@ -24,7 +24,7 @@ public:
     void swipe_alarm_screen();
     void screen_load_event_cb(lv_event_t *e);
     void settings_button_event_cb(lv_event_t *e);
-
+    void darkmode_switch_event_cb(lv_event_t *e);
     void init_gui();
     App(/* args */);
     ~App();

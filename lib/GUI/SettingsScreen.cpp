@@ -14,10 +14,6 @@ extern "C" void settings_city_edit_event_cb_wrapper(lv_event_t *e) {
   instance->settings_city_edit_event_cb(e);
 }
 
-extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
-  instance->darkmode_switch_event_cb(e);
-}
-
 extern "C" void settings_SSID_edit_event_cb_wrapper(lv_event_t *e) {
   instance->settings_SSID_edit_event_cb(e);
 }
@@ -128,7 +124,7 @@ SettingsScreen::SettingsScreen(lv_obj_t *screen)
     if (!theme->flags){
         lv_obj_add_state(ui_DarkmodeSwitch, LV_STATE_CHECKED);
     }
-    lv_obj_add_event_cb(ui_DarkmodeSwitch, darkmode_switch_event_cb_wrapper, LV_EVENT_ALL, NULL);
+    // lv_obj_add_event_cb(ui_DarkmodeSwitch, darkmode_switch_event_cb_wrapper, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_SettingsCityEdit, settings_city_edit_event_cb_wrapper, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_SettingsSSIDEdit, settings_SSID_edit_event_cb_wrapper, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_SettingsPasswordEdit, settings_password_edit_event_cb_wrapper, LV_EVENT_ALL, NULL);
@@ -194,39 +190,6 @@ void SettingsScreen::settings_city_edit_event_cb(lv_event_t *e){
     }
 }
 
-void SettingsScreen::darkmode_switch_event_cb(lv_event_t *e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t *target = lv_event_get_target(e);
-    if (event_code == LV_EVENT_VALUE_CHANGED)
-    {
-        lv_disp_t *disp = lv_disp_get_default();
-        if (lv_obj_has_state(target, LV_STATE_CHECKED))
-        {
-            lv_theme_t *theme = lv_theme_default_init(disp, lv_palette_main(LV_PALETTE_CYAN), lv_palette_main(LV_PALETTE_NONE),
-                                                      false, LV_FONT_DEFAULT);
-            lv_disp_set_theme(disp, theme);
-            // lv_obj_set_style_text_color(ui_SettingsButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_shadow_opa(ui_SettingsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_shadow_opa(ui_AlarmWorkingDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_shadow_opa(ui_AlarmWeekendDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_shadow_opa(ui_AlarmOneOffButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_text_color(ui_AlarmWorkingDayButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_text_color(ui_AlarmWeekendDayButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_text_color(ui_AlarmOneOffButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-        }
-        else
-        {
-            lv_theme_t *theme = lv_theme_default_init(disp, lv_palette_main(LV_PALETTE_TEAL), lv_palette_main(LV_PALETTE_TEAL),
-                                                      true, LV_FONT_DEFAULT);
-            lv_disp_set_theme(disp, theme);
-            // lv_obj_set_style_text_color(ui_SettingsButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_text_color(ui_AlarmWorkingDayButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_text_color(ui_AlarmWeekendDayButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            // lv_obj_set_style_text_color(ui_AlarmOneOffButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-        }
-    }
-}
 
 void SettingsScreen::settings_SSID_edit_event_cb(lv_event_t *e)
 {
@@ -268,7 +231,6 @@ SettingsScreen::~SettingsScreen()
 {
     if (ui_SettingsScreen != NULL)
     {
-        lv_obj_remove_event_cb(this->ui_DarkmodeSwitch, darkmode_switch_event_cb_wrapper);
         lv_obj_remove_event_cb(this->ui_SettingsCityEdit, settings_city_edit_event_cb_wrapper);
         lv_obj_remove_event_cb(this->ui_SettingsSSIDEdit, settings_SSID_edit_event_cb_wrapper);
         lv_obj_remove_event_cb(this->ui_SettingsPasswordEdit, settings_password_edit_event_cb_wrapper);

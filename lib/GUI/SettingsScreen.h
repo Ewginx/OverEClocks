@@ -36,7 +36,7 @@ public:
     void settings_password_edit_event_cb(lv_event_t *e);
     void keyboard_event_cb(lv_event_t *e);
     void home_button_event_cb(lv_event_t *e);
-
+    
     SettingsScreen(lv_obj_t *screen);
     ~SettingsScreen();
 };
