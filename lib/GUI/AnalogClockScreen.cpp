@@ -1,5 +1,16 @@
 #include "AnalogClockScreen.h"
 
+void AnalogClockScreen::set_time(int hour, int minute, int second)
+{
+    int angle = 0;
+    angle = second * 60;
+    lv_img_set_angle(this->ui_ImageArmSecond, angle);
+    angle = minute * 60;
+    lv_img_set_angle(this->ui_ImageArmMinute, angle);
+    angle = hour * 300 + (int)minute / 2 * 10;
+    lv_img_set_angle(this->ui_ImageArmHour, angle);
+}
+
 AnalogClockScreen::AnalogClockScreen()
 {
     LV_IMG_DECLARE(ui_img_watchface240_png);

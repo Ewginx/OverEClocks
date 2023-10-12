@@ -86,19 +86,20 @@ void loop()
   delay(5);
   getLocalTime(&timeinfo);
 
-  // hour = timeinfo.tm_hour;
-  // minute = timeinfo.tm_min;
-  // second = timeinfo.tm_sec;
+  hour = timeinfo.tm_hour;
+  minute = timeinfo.tm_min;
+  second = timeinfo.tm_sec;
   // angle = timeinfo.tm_sec * 60;
   // lv_img_set_angle(ui_ImageArmSecond, angle);
   // angle = timeinfo.tm_min * 60;
   // lv_img_set_angle(ui_ImageArmMinute, angle);
   // angle = timeinfo.tm_hour * 300 + (int)minute / 2 * 10;
   // lv_img_set_angle(ui_ImageArmHour, angle);
+  gui_app->analog_clock_screen->set_time(hour, minute, second);
   strftime(fullTime,6, "%H"":""%M", &timeinfo);
   strftime(timeSecond,3, "%S", &timeinfo);
   gui_app->digital_clock_screen->set_time(fullTime, timeSecond);
-  strftime(fullDate,20, "%d.%m.%Y", &timeinfo);
+  strftime(fullDate,25, "%d.%m.%Y, %A", &timeinfo);
   gui_app->digital_clock_screen->set_date(fullDate);
 
   // ElegantOTA.loop();
