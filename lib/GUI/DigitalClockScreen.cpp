@@ -44,7 +44,7 @@ DigitalClockScreen::DigitalClockScreen()
 
     ui_DigitalClockDateLabel = lv_label_create(ui_DigitalClockPanel);
     lv_obj_set_size(ui_DigitalClockDateLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(ui_DigitalClockDateLabel, 135, 215);
+    lv_obj_set_pos(ui_DigitalClockDateLabel, 90, 215);
     lv_obj_set_align(ui_DigitalClockDateLabel, LV_ALIGN_TOP_LEFT);
     // lv_label_set_text(ui_DigitalClockDateLabel, "04.05.2023");
     lv_obj_set_style_text_align(ui_DigitalClockDateLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
