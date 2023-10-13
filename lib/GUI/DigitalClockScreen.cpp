@@ -14,8 +14,8 @@ void DigitalClockScreen::set_date(char *date)
 
 DigitalClockScreen::DigitalClockScreen()
 {
-    LV_FONT_DECLARE(ui_font_Roboto120);
-    LV_FONT_DECLARE(ui_font_Roboto45);
+    // LV_FONT_DECLARE(ui_font_Roboto120);
+    // LV_FONT_DECLARE(ui_font_Roboto45);
     ui_DigitalClockScreen = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_DigitalClockScreen, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 

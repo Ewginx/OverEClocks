@@ -2,8 +2,19 @@
 // SquareLine Studio version: SquareLine Studio 1.2.3
 // LVGL version: 8.3.4
 // Project name: OverEClocks
+#ifdef __has_include
+    #if __has_include("lvgl.h")
+        #ifndef LV_LVGL_H_INCLUDE_SIMPLE
+            #define LV_LVGL_H_INCLUDE_SIMPLE
+        #endif
+    #endif
+#endif
 
-#include "ui.h"
+#if defined(LV_LVGL_H_INCLUDE_SIMPLE)
+    #include "lvgl.h"
+#else
+    #include "lvgl/lvgl.h"
+#endif
 
 #ifndef LV_ATTRIBUTE_MEM_ALIGN
     #define LV_ATTRIBUTE_MEM_ALIGN

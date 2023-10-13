@@ -1,5 +1,4 @@
 #include <lvgl.h>
-
 class DigitalClockScreen{
 
 public:
