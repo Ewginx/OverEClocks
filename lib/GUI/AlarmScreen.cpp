@@ -1,21 +1,21 @@
 #include "AlarmScreen.h"
 
-AlarmScreen *alarm_screen_instance;
+static AlarmScreen *instance;
 
 extern "C" void event_AlarmModalCancelButton_cb_wrapper(lv_event_t *e) {
-  alarm_screen_instance->event_AlarmModalCancelButton_cb(e);
+  instance->event_AlarmModalCancelButton_cb(e);
 }
 extern "C" void event_AlarmModalOkButton_cb_wrapper(lv_event_t *e) {
-  alarm_screen_instance->event_AlarmModalOkButton_cb(e);
+  instance->event_AlarmModalOkButton_cb(e);
 }
 extern "C" void event_WorkingDayButton_cb_wrapper(lv_event_t *e) {
-  alarm_screen_instance->event_WorkingDayButton_cb(e);
+  instance->event_WorkingDayButton_cb(e);
 } 
  extern "C" void event_WeekendButton_cb_wrapper(lv_event_t *e) {
-  alarm_screen_instance->event_WeekendButton_cb(e);
+  instance->event_WeekendButton_cb(e);
 }
 extern "C" void event_OneOffButton_cb_wrapper(lv_event_t *e) {
-  alarm_screen_instance->event_OneOffButton_cb(e);
+  instance->event_OneOffButton_cb(e);
 }    
 
 void AlarmScreen::ui_set_roller_time(const lv_obj_t *label)
@@ -131,7 +131,7 @@ void AlarmScreen::delete_alarm_modal_panel()
 
 AlarmScreen::AlarmScreen(/* args */)
 {
-    alarm_screen_instance = this;
+    instance = this;
     ui_AlarmModalPanel = NULL;
     ui_AlarmScreen = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_AlarmScreen, LV_OBJ_FLAG_SCROLLABLE); /// Flags
