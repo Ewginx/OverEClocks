@@ -38,6 +38,18 @@ void DockPanel::change_dock_parent(lv_obj_t *new_parent)
     lv_obj_set_parent(this->ui_BatteryLabel, lv_obj_get_child(new_parent, 0));
     lv_obj_set_parent(this->WiFiLabel, lv_obj_get_child(new_parent, 0));
 }
+void DockPanel::show_wifi_connection(bool wifi_enabled)
+{
+    if (!wifi_enabled)
+    {
+        lv_obj_add_flag(this->WiFiLabel, LV_OBJ_FLAG_HIDDEN);
+    }
+    else
+    {
+        lv_obj_clear_flag(this->WiFiLabel, LV_OBJ_FLAG_HIDDEN);
+    }
+    
+}
 DockPanel::~DockPanel()
 {
 }

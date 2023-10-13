@@ -59,6 +59,12 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
+  if(WiFi.status() != WL_CONNECTED){
+    gui_app->dock_panel->show_wifi_connection(false);
+  }
+  else{
+    gui_app->dock_panel->show_wifi_connection(true);
+    }
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
