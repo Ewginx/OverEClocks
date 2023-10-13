@@ -1,3 +1,4 @@
+#pragma once
 #include "AlarmScreen.h"
 #include "DigitalClockScreen.h"
 #include "AnalogClockScreen.h"
