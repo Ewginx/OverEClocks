@@ -16,6 +16,7 @@ extern "C" void settings_button_event_cb_wrapper(lv_event_t *e) {
 extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
   instance->darkmode_switch_event_cb(e);
 }
+
 void App::darkmode_switch_event_cb(lv_event_t *e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);

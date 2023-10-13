@@ -22,6 +22,8 @@ DockPanel::DockPanel(lv_obj_t *parent_panel)
     lv_obj_set_align(ui_SettingsButtonLabel, LV_ALIGN_CENTER);
     lv_label_set_text(ui_SettingsButtonLabel, LV_SYMBOL_SETTINGS);
     lv_obj_set_style_text_align(ui_SettingsButtonLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_SettingsButtonLabel, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
+
 }
 void DockPanel::change_dock_parent(lv_obj_t *new_parent)
 {
