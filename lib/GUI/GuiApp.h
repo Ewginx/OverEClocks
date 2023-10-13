@@ -5,7 +5,7 @@
 #include "WeatherScreen.h"
 #include "DockPanel.h"
 
-class App
+class GuiApp
 {
 private:
     /* data */
@@ -26,8 +26,8 @@ public:
     void settings_button_event_cb(lv_event_t *e);
     void darkmode_switch_event_cb(lv_event_t *e);
     void init_gui();
-    App(/* args */);
-    ~App();
+    GuiApp(/* args */);
+    ~GuiApp();
 };
 
 

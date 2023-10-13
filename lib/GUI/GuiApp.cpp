@@ -1,6 +1,6 @@
-#include "App.h"
+#include "GuiApp.h"
 
-static App *instance = NULL;
+static GuiApp *instance = NULL;
 
 extern "C" void swipe_screen_event_cb_wrapper(lv_event_t *e) {
   instance->swipe_screen_event_cb(e);
@@ -17,7 +17,7 @@ extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
   instance->darkmode_switch_event_cb(e);
 }
 
-void App::darkmode_switch_event_cb(lv_event_t *e)
+void GuiApp::darkmode_switch_event_cb(lv_event_t *e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
@@ -52,7 +52,7 @@ void App::darkmode_switch_event_cb(lv_event_t *e)
 }
 
 
-App::App(/* args */)
+GuiApp::GuiApp(/* args */)
 {   
     instance = this;
     alarm_screen = new AlarmScreen();
@@ -75,7 +75,7 @@ App::App(/* args */)
     
 };
 
-void App::init_gui(){
+void GuiApp::init_gui(){
     lv_disp_t *dispp = lv_disp_get_default();
     lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_TEAL), lv_palette_main(LV_PALETTE_TEAL),
                                               true, LV_FONT_DEFAULT);
@@ -83,7 +83,7 @@ void App::init_gui(){
     lv_disp_load_scr(digital_clock_screen->ui_DigitalClockScreen);
 };
 
-void App::swipe_screen_event_cb(lv_event_t *e){
+void GuiApp::swipe_screen_event_cb(lv_event_t *e){
     lv_obj_t *target = lv_event_get_target(e);
     if(target == this->digital_clock_screen->ui_DigitalClockScreen){
         this->swipe_digital_clock_screen();
@@ -103,7 +103,7 @@ void App::swipe_screen_event_cb(lv_event_t *e){
     
 }
 
-void App::swipe_digital_clock_screen(){
+void GuiApp::swipe_digital_clock_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT)
     {
         lv_scr_load_anim(this->weather_screen->ui_WeatherScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
@@ -114,7 +114,7 @@ void App::swipe_digital_clock_screen(){
     }
 }
 
-void App::swipe_analog_clock_screen(){
+void GuiApp::swipe_analog_clock_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT)
     {
         lv_scr_load_anim(this->digital_clock_screen->ui_DigitalClockScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
@@ -124,25 +124,25 @@ void App::swipe_analog_clock_screen(){
         lv_scr_load_anim(this->alarm_screen->ui_AlarmScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
-void App::swipe_weather_screen(){
+void GuiApp::swipe_weather_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT)
     {
         lv_scr_load_anim(this->digital_clock_screen->ui_DigitalClockScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
 
-void App::swipe_alarm_screen(){
+void GuiApp::swipe_alarm_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT)
     {
         lv_scr_load_anim(this->analog_clock_screen->ui_AnalogClockScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
 
-void  App::screen_load_event_cb(lv_event_t *e){
+void  GuiApp::screen_load_event_cb(lv_event_t *e){
     this->dock_panel->change_dock_parent(lv_scr_act());
 }
 
-void App::settings_button_event_cb(lv_event_t *e)
+void GuiApp::settings_button_event_cb(lv_event_t *e)
 {
     lv_obj_t *target = lv_event_get_target(e);
     this->settings_screen = new SettingsScreen(lv_scr_act());
@@ -150,6 +150,6 @@ void App::settings_button_event_cb(lv_event_t *e)
     lv_scr_load_anim( this->settings_screen->ui_SettingsScreen, LV_SCR_LOAD_ANIM_FADE_ON, SCREEN_CHANGE_ANIM_TIME, 0, false);
 }
 
-App::~App()
+GuiApp::~GuiApp()
 {
 }

@@ -4,8 +4,8 @@
 #include <Preferences.h>
 #include "time.h"
 #include "Display.h"
-// #include "ui.h"
-#include "App.h"
+#include "GuiApp.h"
+// #include "OEClocksApp.h"
 
 #define ONE_MINUTE_MS (60 * 1000)
 #define ONE_HOUR_MS (60 * 60 * 1000)
@@ -35,7 +35,7 @@ int second;
 Preferences preferences;
 AsyncWebServer server(80);
 Display *display;
-App *gui_app;
+GuiApp *gui_app;
 // 
 // LGFX tft;
 // #if LV_USE_LOG != 0
@@ -51,7 +51,7 @@ void setup() {
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   display = new Display();
-  gui_app = new App();
+  gui_app = new GuiApp();
   Serial.print("Will try to connect to WiFI");
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
