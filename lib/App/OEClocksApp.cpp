@@ -80,6 +80,7 @@ OEClocksApp::OEClocksApp(/* args */): server(80)
 {   
     display = new Display();
     gui_app = new GuiApp();
+    
 }
 
 OEClocksApp::~OEClocksApp()

@@ -12,16 +12,10 @@
 class OEClocksApp
 {
 private:
-    /* data */
-public:
     unsigned long time_now = 0;
     const char *ssid = "ssid";
     const char *password = "password";
     short int port = 80;
-    String weather_url = "jsonplaceholder.typicode.com";
-    WiFiClient wifi;
-    HttpClient client = HttpClient(wifi, weather_url, port);
-    const char *ntpServer = "pool.ntp.org";
     const long gmtOffset_sec = 36000;
     const int daylightOffset_sec = 0;
     struct tm timeinfo;
@@ -34,6 +28,13 @@ public:
     int hour;
     int minute;
     int second;
+    const char *ntpServer = "pool.ntp.org";
+    String weather_url = "jsonplaceholder.typicode.com";
+public:
+
+
+    WiFiClient wifi;
+    HttpClient client = HttpClient(wifi, weather_url, port);
     Preferences preferences;
     AsyncWebServer server;
     Display *display;
