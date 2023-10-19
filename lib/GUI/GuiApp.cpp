@@ -18,8 +18,6 @@ GuiApp::GuiApp(/* args */)
     digital_clock_screen = new DigitalClockScreen();
     analog_clock_screen = new AnalogClockScreen();
     weather_screen = new WeatherScreen();
-    timer = new Timer()
-    timer.setService(digital_clock_screen)
     dock_panel = new DockPanel(digital_clock_screen->ui_DigitalClockPanel);
     lv_obj_add_event_cb(digital_clock_screen->ui_DigitalClockScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
     lv_obj_add_event_cb(weather_screen->ui_WeatherScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
