@@ -7,7 +7,8 @@
 #include "time.h"
 #include "Display.h"
 #include "GuiApp.h"
-
+#include "Settings.h"
+#include "Config.h"
 
 class OEClocksApp
 {
@@ -32,18 +33,19 @@ private:
     String weather_url = "jsonplaceholder.typicode.com";
 public:
 
-
+    Settings *settings;
     WiFiClient wifi;
     HttpClient client = HttpClient(wifi, weather_url, port);
     Preferences preferences;
     AsyncWebServer server;
     Display *display;
     GuiApp *gui_app;
-    
+
     void setup();
 
     void loop();
-
+    void settings_button_event_cb(lv_event_t *e);
+    void darkmode_switch_event_cb(lv_event_t *e);
     OEClocksApp(/* args */);
     ~OEClocksApp();
 };

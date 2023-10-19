@@ -10,47 +10,6 @@ extern "C" void screen_load_event_cb_wrapper(lv_event_t *e) {
   instance->screen_load_event_cb(e);
 }
 
-extern "C" void settings_button_event_cb_wrapper(lv_event_t *e) {
-  instance->settings_button_event_cb(e);
-}
-extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
-  instance->darkmode_switch_event_cb(e);
-}
-
-void GuiApp::darkmode_switch_event_cb(lv_event_t *e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t *target = lv_event_get_target(e);
-    if (event_code == LV_EVENT_VALUE_CHANGED)
-    {
-        lv_disp_t *disp = lv_disp_get_default();
-        if (lv_obj_has_state(target, LV_STATE_CHECKED))
-        {
-            lv_theme_t *theme = lv_theme_default_init(disp, lv_palette_main(LV_PALETTE_CYAN), lv_palette_main(LV_PALETTE_NONE),
-                                                      false, LV_FONT_DEFAULT);
-            lv_disp_set_theme(disp, theme);
-            lv_obj_set_style_text_color(this->dock_panel->ui_SettingsButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(this->dock_panel->ui_SettingsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(this->alarm_screen->ui_AlarmWorkingDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(this->alarm_screen->ui_AlarmWeekendDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(this->alarm_screen->ui_AlarmOneOffButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->alarm_screen->ui_AlarmWorkingDayButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->alarm_screen->ui_AlarmWeekendDayButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->alarm_screen->ui_AlarmOneOffButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-        }
-        else
-        {
-            lv_theme_t *theme = lv_theme_default_init(disp, lv_palette_main(LV_PALETTE_TEAL), lv_palette_main(LV_PALETTE_TEAL),
-                                                      true, LV_FONT_DEFAULT);
-            lv_disp_set_theme(disp, theme);
-            lv_obj_set_style_text_color(this->dock_panel->ui_SettingsButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->alarm_screen->ui_AlarmWorkingDayButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->alarm_screen->ui_AlarmWeekendDayButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->alarm_screen->ui_AlarmOneOffButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-        }
-    }
-}
-
 
 GuiApp::GuiApp(/* args */)
 {   
@@ -59,7 +18,8 @@ GuiApp::GuiApp(/* args */)
     digital_clock_screen = new DigitalClockScreen();
     analog_clock_screen = new AnalogClockScreen();
     weather_screen = new WeatherScreen();
-    settings_screen = NULL;
+    timer = new Timer()
+    timer.setService(digital_clock_screen)
     dock_panel = new DockPanel(digital_clock_screen->ui_DigitalClockPanel);
     lv_obj_add_event_cb(digital_clock_screen->ui_DigitalClockScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
     lv_obj_add_event_cb(weather_screen->ui_WeatherScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
@@ -71,7 +31,6 @@ GuiApp::GuiApp(/* args */)
     lv_obj_add_event_cb(analog_clock_screen->ui_AnalogClockScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
     lv_obj_add_event_cb(alarm_screen->ui_AlarmScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
     
-    lv_obj_add_event_cb(dock_panel->ui_SettingsButton, settings_button_event_cb_wrapper, LV_EVENT_CLICKED, NULL);
     
 };
 
@@ -142,13 +101,6 @@ void  GuiApp::screen_load_event_cb(lv_event_t *e){
     this->dock_panel->change_dock_parent(lv_scr_act());
 }
 
-void GuiApp::settings_button_event_cb(lv_event_t *e)
-{
-    lv_obj_t *target = lv_event_get_target(e);
-    this->settings_screen = new SettingsScreen(lv_scr_act());
-    lv_obj_add_event_cb(this->settings_screen->ui_DarkmodeSwitch, darkmode_switch_event_cb_wrapper, LV_EVENT_ALL, NULL);
-    lv_scr_load_anim( this->settings_screen->ui_SettingsScreen, LV_SCR_LOAD_ANIM_FADE_ON, SCREEN_CHANGE_ANIM_TIME, 0, false);
-}
 
 GuiApp::~GuiApp()
 {
