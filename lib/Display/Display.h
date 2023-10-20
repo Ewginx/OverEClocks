@@ -104,14 +104,10 @@ private:
 
   void init_tft();
   void init_lvgl();
-  void ui_style();
-  void ui_main();
 
 public:
   Display();
   ~Display();
   void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p);
   void touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
-  LGFX *get_lgfx();
-  lv_obj_t *get_body_screen();
 };
