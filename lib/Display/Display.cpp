@@ -77,3 +77,7 @@ void Display::touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
     data->point.y = touchY;
   }
 }
+
+void Display::set_brightness(uint8_t value){
+  this->tft->setBrightness(value);
+}

@@ -43,6 +43,8 @@ public:
     void darkmode_switch_event_cb(lv_event_t *e);
     void settings_SSID_edit_event_cb(lv_event_t *e);
     void settings_password_edit_event_cb(lv_event_t *e);
+    void settings_brightnessSlider_event_cb(lv_event_t *e);
+    void settings_autoBrightness_checkbox_event_cb(lv_event_t *e);
     void keyboard_event_cb(lv_event_t *e);
     void home_button_event_cb(lv_event_t *e);
 

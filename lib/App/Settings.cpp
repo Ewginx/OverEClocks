@@ -21,6 +21,13 @@ extern "C" void settings_password_edit_event_cb_wrapper(lv_event_t *e) {
   instance->settings_password_edit_event_cb(e);
 }
 
+extern "C" void settings_brightnessSlider_event_cb_wrapper(lv_event_t *e) {
+  instance->settings_brightnessSlider_event_cb(e);
+}
+extern "C" void settings_autoBrightness_checkbox_event_cb_wrapper(lv_event_t *e) {
+  instance->settings_autoBrightness_checkbox_event_cb(e);
+}
+
 Settings::Settings(Display *display, Preferences &preferences)
 {   
     instance = this;
@@ -134,6 +141,24 @@ void Settings::settings_password_edit_event_cb(lv_event_t *e)
         lv_textarea_set_text(this->ui_SettingsPasswordEdit, "Password");
     }
 }
+void Settings::settings_brightnessSlider_event_cb(lv_event_t *e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t *target = lv_event_get_target(e);
+    this->_display->set_brightness((uint8_t)lv_slider_get_value(this->brightnessSlider));
+}
+void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t *target = lv_event_get_target(e);
+    bool checked = lv_obj_get_state(this->autoBrightnessCheckbox) & LV_STATE_CHECKED ? true : false;
+    if(checked){
+
+    }
+    else{
+
+    }
+}
 void Settings::init_settings_screen()
 {   
     this->ui_SettingsKeyboard = NULL;
@@ -163,7 +188,7 @@ void Settings::init_settings_screen()
 
     this->brightnessSlider = lv_slider_create(this->ui_SettingsPanel);
     lv_obj_align_to(this->brightnessSlider, this->ui_DarkmodeLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 10, 35);
-    lv_slider_set_range(this->brightnessSlider, 0 , 255);
+    lv_slider_set_range(this->brightnessSlider, 5 , 255);
 
     this->autoBrightnessCheckbox = lv_checkbox_create(this->ui_SettingsPanel);
     lv_obj_align_to(this->autoBrightnessCheckbox, this->brightnessSlider, LV_ALIGN_OUT_RIGHT_MID, 50, 0);
@@ -244,6 +269,8 @@ void Settings::init_settings_screen()
     lv_obj_add_event_cb(this->ui_SettingsCityEdit, settings_city_edit_event_cb_wrapper, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(this->ui_SettingsSSIDEdit, settings_SSID_edit_event_cb_wrapper, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(this->ui_SettingsPasswordEdit, settings_password_edit_event_cb_wrapper, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(this->brightnessSlider, settings_brightnessSlider_event_cb_wrapper, LV_EVENT_VALUE_CHANGED , NULL);
+    lv_obj_add_event_cb(this->autoBrightnessCheckbox, settings_autoBrightness_checkbox_event_cb_wrapper, LV_EVENT_VALUE_CHANGED  , NULL);
     lv_obj_add_event_cb(this->ui_SettingsHomeButton, home_button_event_cb_wrapper, LV_EVENT_CLICKED, NULL);
 }
 Settings::~Settings()
