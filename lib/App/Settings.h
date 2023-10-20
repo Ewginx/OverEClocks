@@ -30,6 +30,8 @@ public:
     lv_obj_t *ui_SettingsAPLabel;
     lv_obj_t *ui_SettingsIPLabel;
 
+    lv_obj_t *brightnessSlider;
+    lv_obj_t *autoBrightnessCheckbox;
 
     void init_settings_screen();
     void load_settings_screen(lv_obj_t *screen);

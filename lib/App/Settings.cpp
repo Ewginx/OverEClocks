@@ -161,6 +161,13 @@ void Settings::init_settings_screen()
     lv_obj_set_pos(this->ui_DarkmodeSwitch, 175, 15);
     lv_obj_set_align(this->ui_DarkmodeSwitch, LV_ALIGN_TOP_LEFT);
 
+    this->brightnessSlider = lv_slider_create(this->ui_SettingsPanel);
+    lv_obj_align_to(this->brightnessSlider, this->ui_DarkmodeLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 10, 35);
+    lv_slider_set_range(this->brightnessSlider, 0 , 255);
+
+    this->autoBrightnessCheckbox = lv_checkbox_create(this->ui_SettingsPanel);
+    lv_obj_align_to(this->autoBrightnessCheckbox, this->brightnessSlider, LV_ALIGN_OUT_RIGHT_MID, 50, 0);
+    lv_checkbox_set_text(this->autoBrightnessCheckbox, "Auto");
 
     this->ui_SettingsCityEdit = lv_textarea_create(this->ui_SettingsPanel);
     lv_obj_set_size(this->ui_SettingsCityEdit, 250, LV_SIZE_CONTENT); /// 33
