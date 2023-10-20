@@ -109,6 +109,7 @@ public:
   Display();
   ~Display();
   void set_brightness(uint8_t value);
+  int32_t get_brightness();
   void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p);
   void touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
 };

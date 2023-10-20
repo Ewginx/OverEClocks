@@ -44,6 +44,7 @@ void Settings::load_settings_screen(lv_obj_t *screen)
     if (!theme->flags){
         lv_obj_add_state(this->ui_DarkmodeSwitch, LV_STATE_CHECKED);
     }
+    lv_slider_set_value(this->brightnessSlider, this->_display->get_brightness(), LV_ANIM_OFF);
     this->home_screen = screen;
     lv_scr_load_anim( this->ui_SettingsScreen, LV_SCR_LOAD_ANIM_FADE_ON, SCREEN_CHANGE_ANIM_TIME, 0, false);
 }

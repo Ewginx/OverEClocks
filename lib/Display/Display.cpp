@@ -81,3 +81,6 @@ void Display::touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
 void Display::set_brightness(uint8_t value){
   this->tft->setBrightness(value);
 }
+int32_t Display::get_brightness(){
+  return (int32_t)this->tft->getBrightness();
+}
