@@ -1,4 +1,5 @@
 #pragma once
+#include <Arduino.h>
 #include "GuiApp.h"
 #include <ArduinoHttpClient.h>
 #include <ESPAsyncWebServer.h>
