@@ -14,20 +14,20 @@ extern "C" void screen_load_event_cb_wrapper(lv_event_t *e) {
 GuiApp::GuiApp(/* args */)
 {   
     instance = this;
-    alarm_screen = new AlarmScreen();
-    digital_clock_screen = new DigitalClockScreen();
-    analog_clock_screen = new AnalogClockScreen();
-    weather_screen = new WeatherScreen();
-    dock_panel = new DockPanel(digital_clock_screen->ui_DigitalClockPanel);
-    lv_obj_add_event_cb(digital_clock_screen->ui_DigitalClockScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
-    lv_obj_add_event_cb(weather_screen->ui_WeatherScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
-    lv_obj_add_event_cb(analog_clock_screen->ui_AnalogClockScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
-    lv_obj_add_event_cb(alarm_screen->ui_AlarmScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
+    alarm_screen = new Alarm();
+    digital_clock_screen = new DigitalClock();
+    analog_clock_screen = new AnalogClock();
+    weather_screen = new Weather();
+    dock_panel = new DockPanel(digital_clock_screen->digitalClockPanel);
+    lv_obj_add_event_cb(digital_clock_screen->digitalClockScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
+    lv_obj_add_event_cb(weather_screen->weatherScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
+    lv_obj_add_event_cb(analog_clock_screen->analogClockScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
+    lv_obj_add_event_cb(alarm_screen->alarmScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
     
-    lv_obj_add_event_cb(digital_clock_screen->ui_DigitalClockScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
-    lv_obj_add_event_cb(weather_screen->ui_WeatherScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
-    lv_obj_add_event_cb(analog_clock_screen->ui_AnalogClockScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
-    lv_obj_add_event_cb(alarm_screen->ui_AlarmScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
+    lv_obj_add_event_cb(digital_clock_screen->digitalClockScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
+    lv_obj_add_event_cb(weather_screen->weatherScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
+    lv_obj_add_event_cb(analog_clock_screen->analogClockScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
+    lv_obj_add_event_cb(alarm_screen->alarmScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
     
     
 };
@@ -37,23 +37,23 @@ void GuiApp::init_gui(){
     lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_TEAL), lv_palette_main(LV_PALETTE_TEAL),
                                               true, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
-    lv_disp_load_scr(digital_clock_screen->ui_DigitalClockScreen);
+    lv_disp_load_scr(digital_clock_screen->digitalClockScreen);
 };
 
 void GuiApp::swipe_screen_event_cb(lv_event_t *e){
     lv_obj_t *target = lv_event_get_target(e);
-    if(target == this->digital_clock_screen->ui_DigitalClockScreen){
+    if(target == this->digital_clock_screen->digitalClockScreen){
         this->swipe_digital_clock_screen();
     }
-    else if (target == this->weather_screen->ui_WeatherScreen)
+    else if (target == this->weather_screen->weatherScreen)
     {
         this->swipe_weather_screen();
     }
-    else if (target == this->analog_clock_screen->ui_AnalogClockScreen)
+    else if (target == this->analog_clock_screen->analogClockScreen)
     {
         this->swipe_analog_clock_screen();
     }
-    else if (target == this->alarm_screen->ui_AlarmScreen)
+    else if (target == this->alarm_screen->alarmScreen)
     {
         this->swipe_alarm_screen();
     }
@@ -63,35 +63,35 @@ void GuiApp::swipe_screen_event_cb(lv_event_t *e){
 void GuiApp::swipe_digital_clock_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT)
     {
-        lv_scr_load_anim(this->weather_screen->ui_WeatherScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        lv_scr_load_anim(this->weather_screen->weatherScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
     else if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT)
     {
-        lv_scr_load_anim(this->analog_clock_screen->ui_AnalogClockScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        lv_scr_load_anim(this->analog_clock_screen->analogClockScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
 
 void GuiApp::swipe_analog_clock_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT)
     {
-        lv_scr_load_anim(this->digital_clock_screen->ui_DigitalClockScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        lv_scr_load_anim(this->digital_clock_screen->digitalClockScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
     else if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT)
     {
-        lv_scr_load_anim(this->alarm_screen->ui_AlarmScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        lv_scr_load_anim(this->alarm_screen->alarmScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
 void GuiApp::swipe_weather_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT)
     {
-        lv_scr_load_anim(this->digital_clock_screen->ui_DigitalClockScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        lv_scr_load_anim(this->digital_clock_screen->digitalClockScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
 
 void GuiApp::swipe_alarm_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT)
     {
-        lv_scr_load_anim(this->analog_clock_screen->ui_AnalogClockScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        lv_scr_load_anim(this->analog_clock_screen->analogClockScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
 

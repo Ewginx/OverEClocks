@@ -1,9 +1,9 @@
 #pragma once
-#include "AlarmScreen.h"
-#include "DigitalClockScreen.h"
-#include "AnalogClockScreen.h"
+#include "Alarm.h"
+#include "DigitalClock.h"
+#include "AnalogClock.h"
 #include "Config.h"
-#include "WeatherScreen.h"
+#include "Weather.h"
 #include "DockPanel.h"
 
 
@@ -13,10 +13,10 @@ private:
     /* data */
 public:
 
-    AlarmScreen *alarm_screen;
-    DigitalClockScreen *digital_clock_screen;
-    AnalogClockScreen *analog_clock_screen;
-    WeatherScreen *weather_screen;
+    Alarm *alarm_screen;
+    DigitalClock *digital_clock_screen;
+    AnalogClock *analog_clock_screen;
+    Weather *weather_screen;
     DockPanel *dock_panel;
     void swipe_screen_event_cb(lv_event_t *e);
     void swipe_digital_clock_screen();

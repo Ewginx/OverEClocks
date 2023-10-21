@@ -15,7 +15,7 @@ OEClocksApp::OEClocksApp(/* args */): server(80)
     display = new Display();
     gui_app = new GuiApp();
     settings = new Settings(display, preferences);
-    lv_obj_add_event_cb(this->gui_app->dock_panel->ui_SettingsButton, settings_button_event_cb_wrapper, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(this->gui_app->dock_panel->settingsButton, settings_button_event_cb_wrapper, LV_EVENT_CLICKED, NULL);
     Serial.begin(115200);
     
 }
@@ -39,24 +39,24 @@ void OEClocksApp::darkmode_switch_event_cb(lv_event_t *e)
             lv_theme_t *theme = lv_theme_default_init(disp, lv_palette_main(LV_PALETTE_CYAN), lv_palette_main(LV_PALETTE_NONE),
                                                       false, LV_FONT_DEFAULT);
             lv_disp_set_theme(disp, theme);
-            lv_obj_set_style_text_color(this->gui_app->dock_panel->ui_SettingsButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(this->gui_app->dock_panel->ui_SettingsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(this->gui_app->alarm_screen->ui_AlarmWorkingDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(this->gui_app->alarm_screen->ui_AlarmWeekendDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(this->gui_app->alarm_screen->ui_AlarmOneOffButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->gui_app->alarm_screen->ui_AlarmWorkingDayButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->gui_app->alarm_screen->ui_AlarmWeekendDayButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->gui_app->alarm_screen->ui_AlarmOneOffButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(this->gui_app->dock_panel->settingsButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_shadow_opa(this->gui_app->dock_panel->settingsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_shadow_opa(this->gui_app->alarm_screen->workingDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_shadow_opa(this->gui_app->alarm_screen->weekendDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_shadow_opa(this->gui_app->alarm_screen->oneOffButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(this->gui_app->alarm_screen->workingDayButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(this->gui_app->alarm_screen->weekendDayButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(this->gui_app->alarm_screen->oneOffButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
         }
         else
         {
             lv_theme_t *theme = lv_theme_default_init(disp, lv_palette_main(LV_PALETTE_TEAL), lv_palette_main(LV_PALETTE_TEAL),
                                                       true, LV_FONT_DEFAULT);
             lv_disp_set_theme(disp, theme);
-            lv_obj_set_style_text_color(this->gui_app->dock_panel->ui_SettingsButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->gui_app->alarm_screen->ui_AlarmWorkingDayButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->gui_app->alarm_screen->ui_AlarmWeekendDayButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(this->gui_app->alarm_screen->ui_AlarmOneOffButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(this->gui_app->dock_panel->settingsButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(this->gui_app->alarm_screen->workingDayButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(this->gui_app->alarm_screen->weekendDayButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(this->gui_app->alarm_screen->oneOffButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
         }
     }
 }

@@ -7,9 +7,9 @@ private:
     /* data */
 public:
 
-    lv_obj_t *ui_BatteryLabel;
-    lv_obj_t *ui_SettingsButton;
-    lv_obj_t *ui_SettingsButtonLabel;
+    lv_obj_t *batteryLabel;
+    lv_obj_t *settingsButton;
+    lv_obj_t *settingsButtonLabel;
     lv_obj_t *WiFiLabel;
     void change_dock_parent(lv_obj_t * new_parent);
     void show_wifi_connection(bool wifi_enabled);

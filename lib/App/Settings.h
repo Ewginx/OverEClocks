@@ -1,7 +1,7 @@
 #pragma once
 #include "Preferences.h"
 #include "Display.h"
-#include "DigitalClockScreen.h"
+#include "DigitalClock.h"
 
 class Settings
 {
