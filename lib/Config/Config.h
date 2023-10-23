@@ -2,13 +2,14 @@
 // #include <Arduino.h>
 
 
-#define DEVICE_NAME "OverEClock"
+#define DEVICE_NAME "OEClock"
 #define WIFI_SCAN_ITER 5
 #define WIFI_CONNECT_TIMEOUT 10 * 1000
 
-#define TIME_UPDATE_INTERVAL 900
+#define GMT_OFFSET 10
+#define TIME_UPDATE_INTERVAL 400
 #define WEATHER_API_POLLING_INTERVAL 3 * 1000
-// #define WEATHER_API_POLLING_INTERVAL 120 * 1000
+// #define WEATHER_API_POLLING_INTERVAL 120 * 1000 //pass the interval from your weather api plan
 #define DISPLAY_WIDTH 480
 #define DISPLAY_HEIGHT 320
 

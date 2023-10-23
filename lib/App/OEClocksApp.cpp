@@ -20,6 +20,7 @@ OEClocksApp::OEClocksApp(/* args */): server(80)
     display = new Display();
     gui_app = new GuiApp();
     settings = new Settings(display, preferences);
+    time_app = new TimeApp(this->gui_app->digital_clock_screen, this->gui_app->analog_clock_screen, this->gui_app->alarm_screen);
     lv_obj_add_event_cb(this->gui_app->dock_panel->settingsButton, settings_button_event_cb_wrapper, LV_EVENT_CLICKED, NULL);
     Serial.begin(115200);
     
@@ -99,9 +100,9 @@ void OEClocksApp::setup()
     Serial.println("");
     Serial.print("Connected to WiFi network with IP Address: ");
     Serial.println(WiFi.localIP());
-
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-    getLocalTime(&timeinfo);
+    time_app->config_time();
+    // configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+    // getLocalTime(&timeinfo);
     // ElegantOTA.begin(&server);
     // server.begin();
     // #if LV_USE_LOG != 0
@@ -121,33 +122,28 @@ void OEClocksApp::loop()
     lv_timer_handler();
     delay(5);
 
+    time_app->notifyAboutTime();
+    // getLocalTime(&timeinfo);
+    // hour = timeinfo.tm_hour;
+    // minute = timeinfo.tm_min;
+    // second = timeinfo.tm_sec;
+    // gui_app->analog_clock_screen->set_time(hour, minute, second);
 
-    getLocalTime(&timeinfo);
-    hour = timeinfo.tm_hour;
-    minute = timeinfo.tm_min;
-    second = timeinfo.tm_sec;
-    gui_app->analog_clock_screen->set_time(hour, minute, second);
-
-    strftime(fullTime, 6, "%H"
-                          ":"
-                          "%M",
-             &timeinfo);
-    strftime(timeSecond, 3, "%S", &timeinfo);
-    gui_app->digital_clock_screen->set_time(fullTime, timeSecond);
-    strftime(fullDate, 25, "%d.%m.%Y, %A", &timeinfo);
-    gui_app->digital_clock_screen->set_date(fullDate);
+    // strftime(fullTime, 6, "%H"":""%M",&timeinfo);
+    // strftime(timeSecond, 3, "%S", &timeinfo);
+    // gui_app->digital_clock_screen->set_time(fullTime, timeSecond);
+    // strftime(fullDate, 25, "%d.%m.%Y, %A", &timeinfo);
+    // gui_app->digital_clock_screen->set_date(fullDate);
     // ElegantOTA.loop();
 }
 void OEClocksApp::send_weather_request(void *parameter)
 {
     for (;;)
     {
-        // if((unsigned long)millis()- time_now > WEATHER_API_POLLING_INTERVAL){
-        //     time_now = millis();
-            client.get("/comments?id=10");
-            int statusCode = client.responseStatusCode();
-            if (statusCode == 200)
-            {
+        client.get("/comments?id=10");
+        int statusCode = client.responseStatusCode();
+        if (statusCode == 200)
+        {
             String response = client.responseBody();
             Serial.print("Status code: ");
             Serial.println(statusCode);
@@ -156,8 +152,7 @@ void OEClocksApp::send_weather_request(void *parameter)
             Serial.println("Wait fifty seconds");
             Serial.print("loop() running on core ");
             Serial.println(xPortGetCoreID());
-            }
-        // }
+        }
     vTaskDelay(WEATHER_API_POLLING_INTERVAL/portTICK_PERIOD_MS);
     }
 }
