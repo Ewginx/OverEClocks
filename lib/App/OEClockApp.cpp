@@ -112,7 +112,6 @@ void OEClockApp::setup()
     // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
     //           { request->send(200, "text/plain", "Hi! This is ElegantOTA AsyncDemo."); });
     // WiFi.disconnect();
-    // ui_init();
     gui_app->init_gui();
 }
 
@@ -121,21 +120,10 @@ void OEClockApp::loop()
 {
     lv_timer_handler();
     delay(5);
-
     time_app->notifyAboutTime();
-    // getLocalTime(&timeinfo);
-    // hour = timeinfo.tm_hour;
-    // minute = timeinfo.tm_min;
-    // second = timeinfo.tm_sec;
-    // gui_app->analog_clock_screen->set_time(hour, minute, second);
-
-    // strftime(fullTime, 6, "%H"":""%M",&timeinfo);
-    // strftime(timeSecond, 3, "%S", &timeinfo);
-    // gui_app->digital_clock_screen->set_time(fullTime, timeSecond);
-    // strftime(fullDate, 25, "%d.%m.%Y, %A", &timeinfo);
-    // gui_app->digital_clock_screen->set_date(fullDate);
     // ElegantOTA.loop();
 }
+
 void OEClockApp::send_weather_request(void *parameter)
 {
     for (;;)
