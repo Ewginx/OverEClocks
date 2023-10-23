@@ -1,6 +1,6 @@
-#include "OEClocksApp.h"
+#include "OEClockApp.h"
 
-OEClocksApp *app;
+OEClockApp *app;
 // #define ONE_MINUTE_MS (60 * 1000)
 // #define ONE_HOUR_MS (60 * 60 * 1000)
 // #define TWELVE_HOUR_MS (12 * 60 * 60 * 1000)
@@ -17,7 +17,7 @@ OEClocksApp *app;
 // #endif
 
 void setup() {
-  app = new OEClocksApp();
+  app = new OEClockApp();
   app->setup();
   // #if LV_USE_LOG != 0
   //     lv_log_register_print_cb( my_print ); /* register print function for debugging */

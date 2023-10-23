@@ -11,7 +11,7 @@
 #include "Config.h"
 #include "TimeApp.h"
 
-class OEClocksApp
+class OEClockApp
 {
 private:
     // unsigned long time_now = 0;
@@ -39,8 +39,8 @@ public:
     
     void settings_button_event_cb(lv_event_t *e);
     void darkmode_switch_event_cb(lv_event_t *e);
-    OEClocksApp(/* args */);
-    ~OEClocksApp();
+    OEClockApp(/* args */);
+    ~OEClockApp();
 };
 
 

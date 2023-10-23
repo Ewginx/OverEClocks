@@ -1,6 +1,6 @@
-#include "OEClocksApp.h"
+#include "OEClockApp.h"
 
-static OEClocksApp *instance = NULL;
+static OEClockApp *instance = NULL;
 
 TaskHandle_t Task1;
 
@@ -14,7 +14,7 @@ extern "C" void send_weather_request_wrapper(void * parameter) {
   instance->send_weather_request(parameter);
 }
 
-OEClocksApp::OEClocksApp(/* args */): server(80)
+OEClockApp::OEClockApp(/* args */): server(80)
 {   
     instance = this;
     display = new Display();
@@ -26,14 +26,14 @@ OEClocksApp::OEClocksApp(/* args */): server(80)
     
 }
 
-void OEClocksApp::settings_button_event_cb(lv_event_t *e)
+void OEClockApp::settings_button_event_cb(lv_event_t *e)
 {    
         lv_obj_add_event_cb(this->settings->ui_DarkmodeSwitch, darkmode_switch_event_cb_wrapper, LV_EVENT_ALL, NULL);
 
         this->settings->load_settings_screen(lv_scr_act());
 }
 
-void OEClocksApp::darkmode_switch_event_cb(lv_event_t *e)
+void OEClockApp::darkmode_switch_event_cb(lv_event_t *e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
@@ -68,7 +68,7 @@ void OEClocksApp::darkmode_switch_event_cb(lv_event_t *e)
 }
 
 
-void OEClocksApp::setup()
+void OEClockApp::setup()
 {
     xTaskCreatePinnedToCore(
       send_weather_request_wrapper, /* Function to implement the task */
@@ -117,7 +117,7 @@ void OEClocksApp::setup()
 }
 
 
-void OEClocksApp::loop()
+void OEClockApp::loop()
 {
     lv_timer_handler();
     delay(5);
@@ -136,7 +136,7 @@ void OEClocksApp::loop()
     // gui_app->digital_clock_screen->set_date(fullDate);
     // ElegantOTA.loop();
 }
-void OEClocksApp::send_weather_request(void *parameter)
+void OEClockApp::send_weather_request(void *parameter)
 {
     for (;;)
     {
@@ -156,6 +156,6 @@ void OEClocksApp::send_weather_request(void *parameter)
     vTaskDelay(WEATHER_API_POLLING_INTERVAL/portTICK_PERIOD_MS);
     }
 }
-OEClocksApp::~OEClocksApp()
+OEClockApp::~OEClockApp()
 {
 }
