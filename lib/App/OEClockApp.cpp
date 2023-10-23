@@ -141,7 +141,7 @@ void OEClockApp::send_weather_request(void *parameter)
             Serial.print("loop() running on core ");
             Serial.println(xPortGetCoreID());
         }
-    vTaskDelay(WEATHER_API_POLLING_INTERVAL/portTICK_PERIOD_MS);
+    vTaskDelay(WEATHER_API_POLLING_INTERVAL_MILLISECONDS/portTICK_PERIOD_MS);
     }
 }
 OEClockApp::~OEClockApp()

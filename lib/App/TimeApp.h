@@ -14,7 +14,7 @@ private:
     Alarm *alarm;
     struct tm timeinfo;
 
-    const long gmtOffset_sec = 36 * GMT_OFFSET;
+    const long gmtOffset_sec = SECONDS_IN_ONE_HOUR * GMT_OFFSET;
     const int daylightOffset_sec = 0;
     const char *ntpServer = "pool.ntp.org";
 
