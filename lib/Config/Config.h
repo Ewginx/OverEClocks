@@ -1,13 +1,14 @@
 #pragma once
-#include <Arduino.h>
+// #include <Arduino.h>
 
 
 #define DEVICE_NAME "OverEClock"
 #define WIFI_SCAN_ITER 5
 #define WIFI_CONNECT_TIMEOUT 10 * 1000
 
-#define TIME_UPDATE_INTERVAL 60 * 1000
-
+#define TIME_UPDATE_INTERVAL 900
+#define WEATHER_API_POLLING_INTERVAL 3 * 1000
+// #define WEATHER_API_POLLING_INTERVAL 120 * 1000
 #define DISPLAY_WIDTH 480
 #define DISPLAY_HEIGHT 320
 

@@ -1,5 +1,8 @@
 #include "OEClocksApp.h"
+
 static OEClocksApp *instance = NULL;
+
+TaskHandle_t Task1;
 
 extern "C" void settings_button_event_cb_wrapper(lv_event_t *e) {
   instance->settings_button_event_cb(e);
@@ -7,7 +10,9 @@ extern "C" void settings_button_event_cb_wrapper(lv_event_t *e) {
 extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
   instance->darkmode_switch_event_cb(e);
 }
-
+extern "C" void send_weather_request_wrapper(void * parameter) {
+  instance->send_weather_request(parameter);
+}
 
 OEClocksApp::OEClocksApp(/* args */): server(80)
 {   
@@ -64,6 +69,14 @@ void OEClocksApp::darkmode_switch_event_cb(lv_event_t *e)
 
 void OEClocksApp::setup()
 {
+    xTaskCreatePinnedToCore(
+      send_weather_request_wrapper, /* Function to implement the task */
+      "request", /* Name of the task */
+      10000,  /* Stack size in words */
+      NULL,  /* Task input parameter */
+      0,  /* Priority of the task */
+      &Task1,  /* Task handle. */
+      0);
     // Serial.begin(115200);
     WiFi.mode(WIFI_STA);
     // display = new Display();
@@ -124,20 +137,29 @@ void OEClocksApp::loop()
     strftime(fullDate, 25, "%d.%m.%Y, %A", &timeinfo);
     gui_app->digital_clock_screen->set_date(fullDate);
     // ElegantOTA.loop();
-    // if((unsigned long)millis()- time_now > 20000){
-    //   time_now = millis();
-    //   client.get("/comments?id=10");
-    //   int statusCode = client.responseStatusCode();
-    //   if (statusCode == 200)
-    //   {
-    //   String response = client.responseBody();
-    //   Serial.print("Status code: ");
-    //   Serial.println(statusCode);
-    //   Serial.print("Response: ");
-    //   Serial.println(response);
-    //   Serial.println("Wait fifty seconds");
-    //   }
-    // }
+}
+void OEClocksApp::send_weather_request(void *parameter)
+{
+    for (;;)
+    {
+        // if((unsigned long)millis()- time_now > WEATHER_API_POLLING_INTERVAL){
+        //     time_now = millis();
+            client.get("/comments?id=10");
+            int statusCode = client.responseStatusCode();
+            if (statusCode == 200)
+            {
+            String response = client.responseBody();
+            Serial.print("Status code: ");
+            Serial.println(statusCode);
+            Serial.print("Response: ");
+            Serial.println(response);
+            Serial.println("Wait fifty seconds");
+            Serial.print("loop() running on core ");
+            Serial.println(xPortGetCoreID());
+            }
+        // }
+    vTaskDelay(WEATHER_API_POLLING_INTERVAL/portTICK_PERIOD_MS);
+    }
 }
 OEClocksApp::~OEClocksApp()
 {

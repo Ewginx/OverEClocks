@@ -101,4 +101,5 @@ Weather::Weather(){
     lv_obj_set_pos(weatherFirstTempLabel, -141, 119);
     lv_obj_set_align(weatherFirstTempLabel, LV_ALIGN_CENTER);
     lv_label_set_text(weatherFirstTempLabel, "7°C	");
-};
+}
+Weather::~Weather(){};
