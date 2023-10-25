@@ -36,8 +36,6 @@ public:
 
     void setup();
     void loop();
-
-    void send_weather_request(void * parameter);
     
     void settings_button_event_cb(lv_event_t *e);
     void darkmode_switch_event_cb(lv_event_t *e);
