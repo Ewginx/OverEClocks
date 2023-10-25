@@ -41,11 +41,12 @@ void OEClockApp::setup()
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED)
     {
-        delay(500);
+        delay(300);
         Serial.print(".");
     }
     if (WiFi.status() != WL_CONNECTED)
     {
+
         gui_app->dock_panel->show_wifi_connection(false);
     }
     else
@@ -55,8 +56,9 @@ void OEClockApp::setup()
     Serial.println("");
     Serial.print("Connected to WiFi network with IP Address: ");
     Serial.println(WiFi.localIP());
-    time_app->config_time();
     weather_app->create_weather_task();
+    time_app->config_time();
+
 
     // ElegantOTA.begin(&server);
     // server.begin();

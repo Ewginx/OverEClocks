@@ -13,19 +13,17 @@ void WeatherApp::send_weather_request(void *parameter)
     WeatherApp *l_pThis = (WeatherApp *) parameter;   
     for (;;)
     {
-        if(WiFi.status()== WL_CONNECTED){
+        if(WiFi.status() == WL_CONNECTED){
             l_pThis->client.get("/comments?id=10");
             int statusCode =  l_pThis->client.responseStatusCode();
+            Serial.print("Status code: ");
+            Serial.println(statusCode);
             if (statusCode == 200)
             {
                 String response =  l_pThis->client.responseBody();
-                Serial.print("Status code: ");
-                Serial.println(statusCode);
                 Serial.print("Response: ");
                 Serial.println(response);
-                Serial.println("Wait fifty seconds");
-                Serial.print("loop() running on core ");
-                Serial.println(xPortGetCoreID());
+                Serial.printf("Wait %i minutes", WEATHER_API_POLLING_INTERVAL_MINUTES);
             }
         }
         
