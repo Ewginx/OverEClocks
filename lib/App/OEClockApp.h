@@ -10,6 +10,7 @@
 #include "Settings.h"
 #include "Config.h"
 #include "TimeApp.h"
+#include "WeatherApp.h"
 
 class OEClockApp
 {
@@ -22,11 +23,12 @@ private:
     String weather_url = "jsonplaceholder.typicode.com";
 
     TimeApp *time_app;
+    WeatherApp *weather_app;
+    
 public:
 
     Settings *settings;
-    WiFiClient wifi;
-    HttpClient client = HttpClient(wifi, weather_url, port);
+
     Preferences preferences;
     AsyncWebServer server;
     Display *display;

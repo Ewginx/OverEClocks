@@ -12,6 +12,7 @@ private:
     DigitalClock *digital_clock;
     AnalogClock *analog_clock;
     Alarm *alarm;
+    
     struct tm timeinfo;
 
     const long gmtOffset_sec = SECONDS_IN_ONE_HOUR * GMT_OFFSET;
