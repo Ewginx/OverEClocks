@@ -99,7 +99,9 @@ void Settings::settings_city_edit_event_cb(lv_event_t *e){
     if (event_code == LV_EVENT_READY)
     {
         this->delete_keyboard();
-        lv_textarea_set_text(this->ui_SettingsCityEdit, "KHABAROVSK");
+        // _preferences.begin("OEClock");
+        // _preferences.putString("city", lv_textarea_get_text(this->ui_SettingsCityEdit));
+        // _preferences.end();
     }
 }
 
@@ -118,7 +120,9 @@ void Settings::settings_SSID_edit_event_cb(lv_event_t *e)
     if (event_code == LV_EVENT_READY)
     {
         this->delete_keyboard();
-        lv_textarea_set_text(this->ui_SettingsSSIDEdit, "ssid");
+        // _preferences.begin("OEClock");
+        // _preferences.putString("ssid", lv_textarea_get_text(ui_SettingsSSIDEdit));
+        // _preferences.end();
     }
 }
 
@@ -136,7 +140,9 @@ void Settings::settings_password_edit_event_cb(lv_event_t *e)
     if (event_code == LV_EVENT_READY)
     {
         this->delete_keyboard();
-        lv_textarea_set_text(this->ui_SettingsPasswordEdit, "Password");
+        // _preferences.begin("OEClock");
+        // _preferences.putString("password", lv_textarea_get_text(ui_SettingsPasswordEdit));
+        // _preferences.end();
     }
 }
 void Settings::settings_brightnessSlider_event_cb(lv_event_t *e)
@@ -144,12 +150,18 @@ void Settings::settings_brightnessSlider_event_cb(lv_event_t *e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     this->_display->set_brightness((uint8_t)lv_slider_get_value(this->brightnessSlider));
+    // _preferences.begin("OEClock");
+    // _preferences.putUChar("brightness_level", (uint8_t)lv_slider_get_value(this->brightnessSlider));
+    // _preferences.end();
 }
 void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     bool checked = lv_obj_get_state(this->autoBrightnessCheckbox) & LV_STATE_CHECKED ? true : false;
+    // _preferences.begin("OEClock");
+    // _preferences.putBool("auto_brightness", checked);
+    // _preferences.end();
     if(checked){
 
     }
