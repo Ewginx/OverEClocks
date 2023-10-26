@@ -33,14 +33,14 @@ DigitalClock::DigitalClock()
     lv_label_set_text(clockLabel, "00:00");
 
     lv_obj_set_style_text_align(clockLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(clockLabel, &ui_font_Roboto120, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(clockLabel, &font_Roboto120, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     secondsLabel = lv_label_create(digitalClockPanel);
     lv_obj_set_size(secondsLabel, 60, 40);
     lv_obj_align_to(secondsLabel, clockLabel, LV_ALIGN_BOTTOM_RIGHT, 50, -3);
     lv_label_set_text(secondsLabel, "00");
     lv_obj_set_style_text_align(secondsLabel, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(secondsLabel, &ui_font_Roboto45, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(secondsLabel, &font_Roboto45, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     dateLabel = lv_label_create(digitalClockPanel);
     lv_obj_set_size(dateLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
