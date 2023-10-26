@@ -32,9 +32,12 @@ void OEClockApp::setup()
 
 void OEClockApp::connect_wifi()
 {
+    preferences.begin("OEClock");
+    String ssid = preferences.getString("ssid", this->ssid);
+    String password =  preferences.getString("password", this->password);;
     WiFi.mode(WIFI_STA);
     Serial.print("Will try to connect to WiFI");
-    WiFi.begin(ssid, password);
+    WiFi.begin(ssid.c_str(), password.c_str());
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(300);

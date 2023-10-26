@@ -15,8 +15,8 @@ class OEClockApp
 {
 private:
     // unsigned long time_now = 0;
-    const char *ssid = "ssid";
-    const char *password = "password";
+    String ssid = "ssid";
+    String password = "password";
 
     TimeApp *time_app;
     WeatherApp *weather_app;
