@@ -30,6 +30,8 @@ public:
 
     void connect_wifi();
 
+    void setup_display_brightness();
+    
     void setup();
     void loop();
     OEClockApp(/* args */);

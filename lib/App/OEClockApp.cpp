@@ -56,6 +56,13 @@ void OEClockApp::connect_wifi()
     Serial.println(WiFi.localIP());
 }
 
+void OEClockApp::setup_display_brightness()
+{
+    preferences.begin(NAMESPACE);
+    display->set_brightness(preferences.getUChar("brightness_level", 255));
+    preferences.end();
+}
+
 void OEClockApp::loop()
 {
     lv_timer_handler();
