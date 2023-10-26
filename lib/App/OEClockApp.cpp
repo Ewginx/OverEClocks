@@ -32,7 +32,7 @@ void OEClockApp::setup()
 
 void OEClockApp::connect_wifi()
 {
-    preferences.begin("OEClock");
+    preferences.begin(NAMESPACE);
     String ssid = preferences.getString("ssid", this->ssid);
     String password =  preferences.getString("password", this->password);;
     WiFi.mode(WIFI_STA);

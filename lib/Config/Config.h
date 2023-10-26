@@ -21,6 +21,7 @@
 #define BAT_READS 24
 
 
+#define NAMESPACE "OEClock"
 
 #define HOUR_COUNT 24
 #define MINUTE_COUNT 60
