@@ -1,13 +1,9 @@
 #include "OEClockApp.h"
 
-static OEClockApp *instance = NULL;
 
-
-
-OEClockApp::OEClockApp(/* args */)
+OEClockApp::OEClockApp()
 {   
     Serial.begin(115200);
-    instance = this;
     display = new Display();
     gui_app = new GuiApp();
     weather_app = new WeatherApp();
@@ -18,9 +14,24 @@ OEClockApp::OEClockApp(/* args */)
 
 }
 
+
+
 void OEClockApp::setup()
 {
     esp_log_level_set("*", ESP_LOG_DEBUG);
+    this->connect_wifi();
+    weather_app->create_weather_task();
+    time_app->config_time();
+
+    // #if LV_USE_LOG != 0
+    //     lv_log_register_print_cb( my_print ); /* register print function for debugging */
+    // #endif
+
+    gui_app->init_gui();
+}
+
+void OEClockApp::connect_wifi()
+{
     WiFi.mode(WIFI_STA);
     Serial.print("Will try to connect to WiFI");
     WiFi.begin(ssid, password);
@@ -40,16 +51,7 @@ void OEClockApp::setup()
     }
     Serial.print("Connected to WiFi network with IP Address: ");
     Serial.println(WiFi.localIP());
-    weather_app->create_weather_task();
-    time_app->config_time();
-
-    // #if LV_USE_LOG != 0
-    //     lv_log_register_print_cb( my_print ); /* register print function for debugging */
-    // #endif
-
-    gui_app->init_gui();
 }
-
 
 void OEClockApp::loop()
 {

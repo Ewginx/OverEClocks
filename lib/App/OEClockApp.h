@@ -27,10 +27,11 @@ public:
     Display *display;
     GuiApp *gui_app;
     ServerApp *server_app;
-    
+
+    void connect_wifi();
+
     void setup();
     void loop();
-    
     OEClockApp(/* args */);
     ~OEClockApp();
 };
