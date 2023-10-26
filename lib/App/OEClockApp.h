@@ -7,7 +7,6 @@
 #include <Preferences.h>
 #include "Display.h"
 #include "GuiApp.h"
-#include "Settings.h"
 #include "Config.h"
 #include "TimeApp.h"
 #include "WeatherApp.h"
@@ -27,8 +26,6 @@ private:
     
 public:
 
-    Settings *settings;
-
     Preferences preferences;
     AsyncWebServer server;
     Display *display;
@@ -37,8 +34,6 @@ public:
     void setup();
     void loop();
     
-    void settings_button_event_cb(lv_event_t *e);
-    void darkmode_switch_event_cb(lv_event_t *e);
     OEClockApp(/* args */);
     ~OEClockApp();
 };

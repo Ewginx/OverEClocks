@@ -8,6 +8,9 @@
 
 class TimeApp
 {
+
+public:
+
 private:
     DigitalClock *digital_clock;
     AnalogClock *analog_clock;

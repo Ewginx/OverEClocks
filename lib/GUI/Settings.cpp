@@ -28,13 +28,10 @@ extern "C" void settings_autoBrightness_checkbox_event_cb_wrapper(lv_event_t *e)
   instance->settings_autoBrightness_checkbox_event_cb(e);
 }
 
-Settings::Settings(Display *display, Preferences &preferences)
+Settings::Settings()
 {   
     instance = this;
-    _display = display;
-    _preferences = preferences;
     this->init_settings_screen();
-
 
 }
 
@@ -159,6 +156,14 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e)
     else{
 
     }
+}
+void Settings::set_display(Display *display)
+{
+    _display = display;
+}
+void Settings::set_preferences(Preferences &preferences)
+{
+    _preferences = preferences;
 }
 void Settings::init_settings_screen()
 {   

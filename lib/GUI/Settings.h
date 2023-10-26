@@ -33,6 +33,9 @@ public:
     lv_obj_t *brightnessSlider;
     lv_obj_t *autoBrightnessCheckbox;
 
+    void set_display(Display *display);
+    void set_preferences(Preferences &preferences);
+
     void init_settings_screen();
     void load_settings_screen(lv_obj_t *screen);
     
@@ -49,7 +52,6 @@ public:
     void home_button_event_cb(lv_event_t *e);
 
     Settings();
-    Settings(Display *display, Preferences &preferences);
     ~Settings();
 };
 
