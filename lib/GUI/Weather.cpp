@@ -1,8 +1,8 @@
 #include "Weather.h"
 
 Weather::Weather(){
-    LV_IMG_DECLARE(ui_img_day_rain_png);
-    LV_IMG_DECLARE(ui_img_day_clear_png);
+    LV_IMG_DECLARE(img_day_rain_png);
+    LV_IMG_DECLARE(img_day_clear_png);
     weatherScreen = lv_obj_create(NULL);
     lv_obj_clear_flag(weatherScreen, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
@@ -15,7 +15,7 @@ Weather::Weather(){
     lv_obj_set_style_bg_opa(weatherPanel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weatherImage = lv_img_create(weatherPanel);
-    lv_img_set_src(weatherImage, &ui_img_day_clear_png);
+    lv_img_set_src(weatherImage, &img_day_clear_png);
     lv_obj_set_size(weatherImage, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 128
     lv_obj_set_pos(weatherImage, -140, -71);
     lv_obj_set_align(weatherImage, LV_ALIGN_CENTER);

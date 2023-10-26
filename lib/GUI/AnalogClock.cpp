@@ -13,10 +13,10 @@ void AnalogClock::set_time(int hour, int minute, int second)
 
 AnalogClock::AnalogClock()
 {
-    LV_IMG_DECLARE(ui_img_watchface240_png);
-    LV_IMG_DECLARE(ui_img_armhour_png);
-    LV_IMG_DECLARE(ui_img_armminute_png);
-    LV_IMG_DECLARE(ui_img_armsecond_png);
+    LV_IMG_DECLARE(img_watchface240_png);
+    LV_IMG_DECLARE(img_armhour_png);
+    LV_IMG_DECLARE(img_armminute_png);
+    LV_IMG_DECLARE(img_armsecond_png);
     analogClockScreen = lv_obj_create(NULL);
     lv_obj_clear_flag(analogClockScreen, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
@@ -28,7 +28,7 @@ AnalogClock::AnalogClock()
     lv_obj_set_style_bg_opa(analogClockPanel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     watchface = lv_img_create(analogClockScreen);
-    lv_img_set_src(watchface, &ui_img_watchface240_png);
+    lv_img_set_src(watchface, &img_watchface240_png);
     lv_obj_set_width(watchface, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(watchface, LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(watchface, LV_ALIGN_CENTER);
@@ -36,7 +36,7 @@ AnalogClock::AnalogClock()
     lv_obj_clear_flag(watchface, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
     imageArmHour = lv_img_create(analogClockScreen);
-    lv_img_set_src(imageArmHour, &ui_img_armhour_png);
+    lv_img_set_src(imageArmHour, &img_armhour_png);
     lv_obj_set_width(imageArmHour, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(imageArmHour, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(imageArmHour, 0);
@@ -48,7 +48,7 @@ AnalogClock::AnalogClock()
     lv_img_set_angle(imageArmHour, 450);
 
     imageArmMinute = lv_img_create(analogClockScreen);
-    lv_img_set_src(imageArmMinute, &ui_img_armminute_png);
+    lv_img_set_src(imageArmMinute, &img_armminute_png);
     lv_obj_set_width(imageArmMinute, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(imageArmMinute, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(imageArmMinute, 0);
@@ -60,7 +60,7 @@ AnalogClock::AnalogClock()
     lv_img_set_angle(imageArmMinute, 1800);
 
     imageArmSecond = lv_img_create(analogClockScreen);
-    lv_img_set_src(imageArmSecond, &ui_img_armsecond_png);
+    lv_img_set_src(imageArmSecond, &img_armsecond_png);
     lv_obj_set_width(imageArmSecond, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(imageArmSecond, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(imageArmSecond, 0);
