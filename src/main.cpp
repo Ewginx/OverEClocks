@@ -11,7 +11,8 @@ OEClockApp *app;
 // }
 // #endif
 
-void setup() {
+void setup()
+{
   app = new OEClockApp();
   app->setup();
   // #if LV_USE_LOG != 0
@@ -23,4 +24,3 @@ void loop()
 {
   app->loop();
 }
-
