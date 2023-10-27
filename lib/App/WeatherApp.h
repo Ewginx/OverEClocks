@@ -1,9 +1,9 @@
 #pragma once
 #include "Arduino.h"
-#include <ESPAsyncWebServer.h>
-#include <ElegantOTA.h>
 #include <HttpClient.h>
 #include <WiFiClient.h>
+#include <WiFi.h>
+#include <ArduinoJson.h>
 #include"Config.h"
 
 class WeatherApp
