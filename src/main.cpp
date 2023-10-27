@@ -1,12 +1,7 @@
 #include "OEClockApp.h"
 
 OEClockApp *app;
-// #define ONE_MINUTE_MS (60 * 1000)
-// #define ONE_HOUR_MS (60 * 60 * 1000)
-// #define TWELVE_HOUR_MS (12 * 60 * 60 * 1000)
 
-
-// LGFX tft;
 // #if LV_USE_LOG != 0
 // /* Serial debugging */
 // void my_print(const char * buf)
