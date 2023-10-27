@@ -5,10 +5,10 @@
 #define DEVICE_NAME "OEClock"
 
 
-
-#define GMT_OFFSET 10 // hours (need to check cases when its negative)
-#define TIME_UPDATE_INTERVAL 400
-#define WEATHER_API_POLLING_INTERVAL_MINUTES 3 //pass the interval according to your weather api plan
+/*hours (need to check cases when its negative)*/
+#define GMT_OFFSET 10
+/*pass the interval according to your weather api plan*/
+#define WEATHER_API_POLLING_INTERVAL_MINUTES 20
 
 
 
@@ -38,5 +38,6 @@
 #define HOUR_LABEL 0
 #define MINUTE_LABEL 3
 
+#define TIME_UPDATE_INTERVAL 400
 //C lang legacy
 #define SETTINGS_PANEL_HEIGHT 640
