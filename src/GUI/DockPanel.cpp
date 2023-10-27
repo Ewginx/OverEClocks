@@ -66,6 +66,18 @@ void DockPanel::show_wifi_connection(bool wifi_enabled)
     }
     
 }
+void DockPanel::set_temperature(char * temperature)
+{
+    char *temp = strcat(temperature, " °C");
+    lv_label_set_text(temperatureLabel, temp);
+    
+}
+void DockPanel::set_humidity(char * humidity)
+{
+    char *hum = strcat(humidity, "%");
+    lv_label_set_text(humidityLabel, hum);
+    
+}
 DockPanel::~DockPanel()
 {
 }
