@@ -3,7 +3,7 @@
 
 OEClockApp::OEClockApp()
 {   
-    Serial.begin(115200);
+
     display = new Display();
     gui_app = new GuiApp();
     weather_app = new WeatherApp();
@@ -18,6 +18,7 @@ OEClockApp::OEClockApp()
 
 void OEClockApp::setup()
 {
+    Serial.begin(115200);
     esp_log_level_set("*", ESP_LOG_DEBUG);
     this->connect_wifi();
     weather_app->create_weather_task();
