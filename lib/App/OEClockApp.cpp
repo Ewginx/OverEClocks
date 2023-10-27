@@ -44,14 +44,14 @@ void OEClockApp::connect_wifi()
         delay(300);
         Serial.print(".");
     }
-    if (WiFi.status() != WL_CONNECTED)
+    if (WiFi.status() == WL_CONNECTED)
     {
+        gui_app->dock_panel->show_wifi_connection(true);
 
-        gui_app->dock_panel->show_wifi_connection(false);
     }
     else
     {
-        gui_app->dock_panel->show_wifi_connection(true);
+        gui_app->dock_panel->show_wifi_connection(false);
     }
     Serial.print("Connected to WiFi network with IP Address: ");
     Serial.println(WiFi.localIP());
