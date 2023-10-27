@@ -22,7 +22,7 @@ void OEClockApp::setup()
     this->connect_wifi();
     weather_app->create_weather_task();
     time_app->config_time();
-
+    server_app->setup();
     // #if LV_USE_LOG != 0
     //     lv_log_register_print_cb( my_print ); /* register print function for debugging */
     // #endif

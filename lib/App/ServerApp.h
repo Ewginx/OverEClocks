@@ -8,6 +8,7 @@ private:
     AsyncWebServer server;
 
 public:
+    void setup();
     void run();
     ServerApp();
     ~ServerApp();
