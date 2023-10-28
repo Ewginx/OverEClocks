@@ -282,6 +282,7 @@ void Settings::init_settings_screen()
     lv_obj_set_align(ui_SettingsHomeButtonLabel, LV_ALIGN_CENTER);
     lv_label_set_text(this->ui_SettingsHomeButtonLabel, LV_SYMBOL_HOME);
     lv_obj_set_style_text_align(this->ui_SettingsHomeButtonLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(this->ui_SettingsHomeButtonLabel, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     
     lv_obj_add_event_cb(this->ui_SettingsCityEdit, settings_city_edit_event_cb_wrapper, LV_EVENT_ALL, NULL);
