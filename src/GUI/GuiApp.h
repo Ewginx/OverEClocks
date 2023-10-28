@@ -1,11 +1,11 @@
 #pragma once
-#include "Alarm.h"
-#include "DigitalClock.h"
-#include "AnalogClock.h"
-#include "Config.h"
-#include "Weather.h"
-#include "DockPanel.h"
-#include "Settings.h"
+#include "GUI/Alarm.h"
+#include "GUI/DigitalClock.h"
+#include "GUI/AnalogClock.h"
+#include "Config/Config.h"
+#include "GUI/Weather.h"
+#include "GUI/DockPanel.h"
+#include "GUI/Settings.h"
 
 
 class GuiApp

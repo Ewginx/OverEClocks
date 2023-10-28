@@ -1,4 +1,4 @@
-#include "GuiApp.h"
+#include "GUI/GuiApp.h"
 
 static GuiApp *instance = NULL;
 

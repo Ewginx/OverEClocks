@@ -3,13 +3,12 @@
 #include <WiFi.h>
 #include <Preferences.h>
 
-#include "GuiApp.h"
-#include "Display.h"
-#include "GuiApp.h"
-#include "Config.h"
-#include "TimeApp.h"
-#include "WeatherApp.h"
-#include "ServerApp.h"
+#include "GUI/GuiApp.h"
+#include "Display/Display.h"
+#include "Config/Config.h"
+#include "Apps/TimeApp.h"
+#include "Apps/WeatherApp.h"
+#include "Apps/ServerApp.h"
 
 class OEClockApp
 {

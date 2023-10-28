@@ -1,4 +1,4 @@
-#include "Weather.h"
+#include "GUI/Weather.h"
 
 Weather::Weather(){
     LV_IMG_DECLARE(img_day_rain_png);

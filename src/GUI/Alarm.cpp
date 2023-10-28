@@ -1,4 +1,4 @@
-#include "Alarm.h"
+#include "GUI/Alarm.h"
 
 static Alarm *instance;
 

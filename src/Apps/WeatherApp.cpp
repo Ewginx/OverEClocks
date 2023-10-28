@@ -1,4 +1,4 @@
-#include "WeatherApp.h"
+#include "Apps/WeatherApp.h"
 
 static WeatherApp *instance = NULL;
 

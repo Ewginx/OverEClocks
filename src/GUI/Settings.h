@@ -1,8 +1,7 @@
 #pragma once
 #include "Preferences.h"
-#include "Display.h"
-#include "DigitalClock.h"
-#include "Translation.h"
+#include "Display/Display.h"
+#include "GUI/DigitalClock.h"
 
 class Settings
 {

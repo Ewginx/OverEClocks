@@ -4,7 +4,7 @@
 #include <WiFiClient.h>
 #include <WiFi.h>
 #include <ArduinoJson.h>
-#include"Config.h"
+#include"Config/Config.h"
 
 class WeatherApp
 {

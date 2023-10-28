@@ -1,4 +1,4 @@
-#include "DigitalClock.h"
+#include "GUI/DigitalClock.h"
 
 void DigitalClock::set_time(char *fullTime, char *seconds)
 {

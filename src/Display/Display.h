@@ -1,7 +1,7 @@
 #pragma once
 #include <lvgl.h>
 #include <LovyanGFX.hpp>
-#include "Config.h"
+#include "Config/Config.h"
 
 class LGFX : public lgfx::LGFX_Device
 {

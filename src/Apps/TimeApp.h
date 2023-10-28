@@ -1,10 +1,10 @@
 #pragma once
 #include <Arduino.h>
 #include "time.h"
-#include "Alarm.h"
-#include "DigitalClock.h"
-#include "AnalogClock.h"
-#include "Config.h"
+#include "GUI/Alarm.h"
+#include "GUI/DigitalClock.h"
+#include "GUI/AnalogClock.h"
+#include "Config/Config.h"
 
 class TimeApp
 {

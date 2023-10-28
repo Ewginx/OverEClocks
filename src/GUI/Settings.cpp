@@ -1,4 +1,4 @@
-#include "Settings.h"
+#include "GUI/Settings.h"
 
 static Settings *instance = NULL;
 

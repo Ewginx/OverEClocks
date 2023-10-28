@@ -1,4 +1,4 @@
-#include "DockPanel.h"
+#include "GUI/DockPanel.h"
 
 
 DockPanel::DockPanel(lv_obj_t *parent_panel)
