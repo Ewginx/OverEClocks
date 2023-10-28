@@ -180,7 +180,7 @@ void Settings::set_preferences(Preferences &preferences)
 void Settings::init_settings_screen()
 {   
     this->ui_SettingsKeyboard = NULL;
-
+    LV_FONT_DECLARE(montserrat_18);
     this->ui_SettingsScreen = lv_obj_create(NULL);
     lv_obj_add_flag(this->ui_SettingsScreen, LV_OBJ_FLAG_IGNORE_LAYOUT); /// Flags
     lv_obj_set_scroll_dir(this->ui_SettingsScreen, LV_DIR_VER);
@@ -196,8 +196,8 @@ void Settings::init_settings_screen()
     lv_obj_set_size(this->ui_DarkmodeLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_DarkmodeLabel, 35, 15);
     lv_obj_set_align(this->ui_DarkmodeLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->ui_DarkmodeLabel, "Dark Mode");
-    lv_obj_set_style_text_font(this->ui_DarkmodeLabel, &lv_font_montserrat_18, LV_PART_MAIN);
+    lv_label_set_text(this->ui_DarkmodeLabel, "Светлая тема");
+    lv_obj_set_style_text_font(this->ui_DarkmodeLabel, &montserrat_18, LV_PART_MAIN);
 
     this-> ui_DarkmodeSwitch = lv_switch_create(this->ui_SettingsPanel);
     lv_obj_set_size(this->ui_DarkmodeSwitch, 50, 25);
@@ -210,7 +210,8 @@ void Settings::init_settings_screen()
 
     this->autoBrightnessCheckbox = lv_checkbox_create(this->ui_SettingsPanel);
     lv_obj_align_to(this->autoBrightnessCheckbox, this->brightnessSlider, LV_ALIGN_OUT_RIGHT_MID, 50, 0);
-    lv_checkbox_set_text(this->autoBrightnessCheckbox, "Auto");
+    lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &montserrat_18, LV_PART_MAIN);
+    lv_checkbox_set_text(this->autoBrightnessCheckbox, settings_translation["Auto"].c_str());
 
     this->ui_SettingsCityEdit = lv_textarea_create(this->ui_SettingsPanel);
     lv_obj_set_size(this->ui_SettingsCityEdit, 250, LV_SIZE_CONTENT); /// 33
@@ -224,8 +225,8 @@ void Settings::init_settings_screen()
     lv_obj_set_size(this->ui_SettingsCityLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_SettingsCityLabel, 20, this->settings_panel_height / 5);
     lv_obj_set_align(this->ui_SettingsCityLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->ui_SettingsCityLabel, "City and\ncountry code");
-    lv_obj_set_style_text_font(this->ui_SettingsCityLabel, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(this->ui_SettingsCityLabel, "Город и\nкод страны");
+    lv_obj_set_style_text_font(this->ui_SettingsCityLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(this->ui_SettingsCityLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->ui_SettingsSSIDEdit = lv_textarea_create(this->ui_SettingsPanel);
@@ -240,8 +241,8 @@ void Settings::init_settings_screen()
     lv_obj_set_size(this->ui_SettingsSSIDLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_SettingsSSIDLabel, 40, this->settings_panel_height / 5 + 70);
     lv_obj_set_align(this->ui_SettingsSSIDLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->ui_SettingsSSIDLabel, "WiFi SSID");
-    lv_obj_set_style_text_font(this->ui_SettingsSSIDLabel, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(this->ui_SettingsSSIDLabel, settings_translation["WiFi SSID"].c_str());
+    lv_obj_set_style_text_font(this->ui_SettingsSSIDLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->ui_SettingsPasswordEdit = lv_textarea_create(this->ui_SettingsPanel);
     lv_obj_set_size(this->ui_SettingsPasswordEdit, 250, LV_SIZE_CONTENT); /// 33
@@ -256,22 +257,22 @@ void Settings::init_settings_screen()
     lv_obj_set_size(this->ui_SettingsPasswordLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_SettingsPasswordLabel, 20, this->settings_panel_height / 5 + 65 * 2);
     lv_obj_set_align(this->ui_SettingsPasswordLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->ui_SettingsPasswordLabel, "WiFi Password");
-    lv_obj_set_style_text_font(this->ui_SettingsPasswordLabel, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(this->ui_SettingsPasswordLabel, settings_translation["WiFi Password"].c_str());
+    lv_obj_set_style_text_font(this->ui_SettingsPasswordLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->ui_SettingsAPLabel = lv_label_create(this->ui_SettingsPanel);
     lv_obj_set_size(this->ui_SettingsAPLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_SettingsAPLabel, 80, this->settings_panel_height - 60);
     lv_obj_set_align(this->ui_SettingsAPLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->ui_SettingsAPLabel, "AccessPoint IP:");
-    lv_obj_set_style_text_font(this->ui_SettingsAPLabel, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(this->ui_SettingsAPLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->ui_SettingsIPLabel = lv_label_create(this->ui_SettingsPanel);
     lv_obj_set_size(this->ui_SettingsIPLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_SettingsIPLabel, 230, this->settings_panel_height - 60);
     lv_obj_set_align(this->ui_SettingsIPLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->ui_SettingsIPLabel, "192.120.12.99");
-    lv_obj_set_style_text_font(this->ui_SettingsIPLabel, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(this->ui_SettingsIPLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->ui_SettingsHomeButton = lv_btn_create(this->ui_SettingsPanel);
     lv_obj_set_size(this->ui_SettingsHomeButton, 35, 35);
