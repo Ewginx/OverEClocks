@@ -196,7 +196,7 @@ void Settings::init_settings_screen()
     lv_obj_set_size(this->ui_DarkmodeLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_DarkmodeLabel, 35, 15);
     lv_obj_set_align(this->ui_DarkmodeLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->ui_DarkmodeLabel, "Светлая тема");
+    lv_label_set_text(this->ui_DarkmodeLabel, settings_translation[THEME]);
     lv_obj_set_style_text_font(this->ui_DarkmodeLabel, &montserrat_18, LV_PART_MAIN);
 
     this-> ui_DarkmodeSwitch = lv_switch_create(this->ui_SettingsPanel);
@@ -225,7 +225,7 @@ void Settings::init_settings_screen()
     lv_obj_set_size(this->ui_SettingsCityLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_SettingsCityLabel, 20, this->settings_panel_height / 5);
     lv_obj_set_align(this->ui_SettingsCityLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->ui_SettingsCityLabel, "Город и\nкод страны");
+    lv_label_set_text(this->ui_SettingsCityLabel, settings_translation[CITY]);
     lv_obj_set_style_text_font(this->ui_SettingsCityLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(this->ui_SettingsCityLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -264,7 +264,7 @@ void Settings::init_settings_screen()
     lv_obj_set_size(this->ui_SettingsAPLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_SettingsAPLabel, 80, this->settings_panel_height - 60);
     lv_obj_set_align(this->ui_SettingsAPLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->ui_SettingsAPLabel, "AccessPoint IP:");
+    lv_label_set_text(this->ui_SettingsAPLabel, settings_translation[ACCESS_POINT_IP]);
     lv_obj_set_style_text_font(this->ui_SettingsAPLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->ui_SettingsIPLabel = lv_label_create(this->ui_SettingsPanel);
