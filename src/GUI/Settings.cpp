@@ -211,7 +211,7 @@ void Settings::init_settings_screen()
     this->autoBrightnessCheckbox = lv_checkbox_create(this->ui_SettingsPanel);
     lv_obj_align_to(this->autoBrightnessCheckbox, this->brightnessSlider, LV_ALIGN_OUT_RIGHT_MID, 50, 0);
     lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &montserrat_18, LV_PART_MAIN);
-    lv_checkbox_set_text(this->autoBrightnessCheckbox, settings_translation["Auto"].c_str());
+    lv_checkbox_set_text(this->autoBrightnessCheckbox, settings_translation[AUTO]);
 
     this->ui_SettingsCityEdit = lv_textarea_create(this->ui_SettingsPanel);
     lv_obj_set_size(this->ui_SettingsCityEdit, 250, LV_SIZE_CONTENT); /// 33
@@ -241,7 +241,7 @@ void Settings::init_settings_screen()
     lv_obj_set_size(this->ui_SettingsSSIDLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_SettingsSSIDLabel, 40, this->settings_panel_height / 5 + 70);
     lv_obj_set_align(this->ui_SettingsSSIDLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->ui_SettingsSSIDLabel, settings_translation["WiFi SSID"].c_str());
+    lv_label_set_text(this->ui_SettingsSSIDLabel, settings_translation[WIFI_SSID]);
     lv_obj_set_style_text_font(this->ui_SettingsSSIDLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->ui_SettingsPasswordEdit = lv_textarea_create(this->ui_SettingsPanel);
@@ -257,7 +257,7 @@ void Settings::init_settings_screen()
     lv_obj_set_size(this->ui_SettingsPasswordLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ui_SettingsPasswordLabel, 20, this->settings_panel_height / 5 + 65 * 2);
     lv_obj_set_align(this->ui_SettingsPasswordLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->ui_SettingsPasswordLabel, settings_translation["WiFi Password"].c_str());
+    lv_label_set_text(this->ui_SettingsPasswordLabel, settings_translation[WIFI_PASSWORD]);
     lv_obj_set_style_text_font(this->ui_SettingsPasswordLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->ui_SettingsAPLabel = lv_label_create(this->ui_SettingsPanel);

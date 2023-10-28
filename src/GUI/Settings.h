@@ -2,6 +2,7 @@
 #include "Preferences.h"
 #include "Display/Display.h"
 #include "GUI/DigitalClock.h"
+#include "Translation/Translation.h"
 
 class Settings
 {
