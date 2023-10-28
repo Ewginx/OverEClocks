@@ -70,7 +70,7 @@ Weather::Weather(){
     lv_obj_set_align(feelsLikeLabel, LV_ALIGN_CENTER);
     lv_label_set_long_mode(feelsLikeLabel, LV_LABEL_LONG_CLIP);
     lv_label_set_text(feelsLikeLabel, "Feels like: 13°C");
-    lv_obj_set_style_text_font(feelsLikeLabel, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(feelsLikeLabel, &montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weatherTimesLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(weatherTimesLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
