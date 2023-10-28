@@ -15,4 +15,5 @@ enum settings_texts {
 
 };
 extern const char *settings_translation[];
+extern const char *digital_clock_translation[];
 // extern std::map<String, String> settings_translation;
