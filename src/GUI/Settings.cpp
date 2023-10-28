@@ -217,7 +217,7 @@ void Settings::init_settings_screen()
     lv_obj_set_pos(this->ui_SettingsCityEdit, 180, this->settings_panel_height / 5);
     lv_obj_set_align(this->ui_SettingsCityEdit, LV_ALIGN_TOP_LEFT);
     lv_textarea_set_max_length(this->ui_SettingsCityEdit, 100);
-    lv_textarea_set_placeholder_text(this->ui_SettingsCityEdit, "City, country code ISO-81118");
+    lv_textarea_set_placeholder_text(this->ui_SettingsCityEdit, settings_translation[CITY_PLACEHOLDER]);
     lv_textarea_set_one_line(this->ui_SettingsCityEdit, true);
 
     this->ui_SettingsCityLabel = lv_label_create(this->ui_SettingsPanel);
@@ -233,7 +233,7 @@ void Settings::init_settings_screen()
     lv_obj_set_pos(this->ui_SettingsSSIDEdit, 180, this->settings_panel_height / 5 + 60);
     lv_obj_set_align(this->ui_SettingsSSIDEdit, LV_ALIGN_TOP_LEFT);
     lv_textarea_set_max_length(this->ui_SettingsSSIDEdit, 50);
-    lv_textarea_set_placeholder_text(this->ui_SettingsSSIDEdit, "WiFi SSID");
+    lv_textarea_set_placeholder_text(this->ui_SettingsSSIDEdit, settings_translation[WIFI_SSID_PLACEHOLDER]);
     lv_textarea_set_one_line(this->ui_SettingsSSIDEdit, true);
 
     this->ui_SettingsSSIDLabel = lv_label_create(this->ui_SettingsPanel);
@@ -248,7 +248,7 @@ void Settings::init_settings_screen()
     lv_obj_set_pos(this->ui_SettingsPasswordEdit, 180, this->settings_panel_height / 5 + 60 * 2);
     lv_obj_set_align(this->ui_SettingsPasswordEdit, LV_ALIGN_TOP_LEFT);
     lv_textarea_set_max_length(this->ui_SettingsPasswordEdit, 100);
-    lv_textarea_set_placeholder_text(this->ui_SettingsPasswordEdit, "WiFi Password");
+    lv_textarea_set_placeholder_text(this->ui_SettingsPasswordEdit, settings_translation[WIFI_PASSWORD_PLACEHOLDER]);
     lv_textarea_set_one_line(this->ui_SettingsPasswordEdit, true);
     lv_textarea_set_password_mode(this->ui_SettingsPasswordEdit, true);
 
