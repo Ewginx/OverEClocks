@@ -7,8 +7,9 @@ void DigitalClock::set_time(char *fullTime, char *seconds)
 
 }
 
-void DigitalClock::set_date(char *date)
+void DigitalClock::set_date(char *date, int day)
 {
+    lv_label_set_text(this->dayLabel, digital_clock_translation[day]);
     lv_label_set_text(this->dateLabel, date);
 }
 
@@ -44,11 +45,17 @@ DigitalClock::DigitalClock()
 
     dateLabel = lv_label_create(digitalClockPanel);
     lv_obj_set_size(dateLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(dateLabel, 90, 215);
+    lv_obj_set_pos(dateLabel, 150, 190);
     lv_obj_set_align(dateLabel, LV_ALIGN_TOP_LEFT);
-    // lv_label_set_text(dateLabel, "04.05.2023");
     lv_obj_set_style_text_align(dateLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(dateLabel, &lv_font_montserrat_32, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(dateLabel, &montserrat_32, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    dayLabel = lv_label_create(digitalClockPanel);
+    lv_obj_set_size(dayLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_pos(dayLabel, 120, 235);
+    lv_obj_set_align(dayLabel, LV_ALIGN_TOP_LEFT);
+    lv_obj_set_style_text_align(dayLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(dayLabel, &montserrat_32, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 };
 

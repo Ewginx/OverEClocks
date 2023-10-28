@@ -24,8 +24,7 @@ private:
 
     char timeSecond[3];
     char fullTime[8];
-    char fullDate[25];
-    
+    char fullDate[11];
     unsigned long time_now = 0;
 
 public:

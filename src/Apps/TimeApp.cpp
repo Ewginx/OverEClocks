@@ -20,8 +20,8 @@ void TimeApp::notifyAboutTime()
                  &timeinfo);
         strftime(timeSecond, 3, "%S", &timeinfo);
         digital_clock->set_time(fullTime, timeSecond);
-        strftime(fullDate, 25, "%d.%m.%Y, %A", &timeinfo);
-        digital_clock->set_date(fullDate);
+        strftime(fullDate, 11, "%d.%m.%Y", &timeinfo);
+        digital_clock->set_date(fullDate, timeinfo.tm_wday);
     }
 }
 void TimeApp::config_time(){
