@@ -27,7 +27,7 @@ Weather::Weather(){
     lv_obj_set_pos(weatherCityLabel, 0, -126);
     lv_obj_set_align(weatherCityLabel, LV_ALIGN_CENTER);
     lv_label_set_text(weatherCityLabel, "London, GB");
-    lv_obj_set_style_text_font(weatherCityLabel, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(weatherCityLabel, &montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weatherTemperatureLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(weatherTemperatureLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1

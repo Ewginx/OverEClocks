@@ -180,7 +180,6 @@ void Settings::set_preferences(Preferences &preferences)
 void Settings::init_settings_screen()
 {   
     this->ui_SettingsKeyboard = NULL;
-    LV_FONT_DECLARE(montserrat_18);
     this->ui_SettingsScreen = lv_obj_create(NULL);
     lv_obj_add_flag(this->ui_SettingsScreen, LV_OBJ_FLAG_IGNORE_LAYOUT); /// Flags
     lv_obj_set_scroll_dir(this->ui_SettingsScreen, LV_DIR_VER);
