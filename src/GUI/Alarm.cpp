@@ -18,12 +18,12 @@ extern "C" void event_oneOffButton_cb_wrapper(lv_event_t *e) {
   instance->event_oneOffButton_cb(e);
 }    
 
-void Alarm::ui_set_roller_time(const lv_obj_t *label)
+void Alarm::set_roller_time(const lv_obj_t *label)
 {
     char alarm_buff[2];
-    parse_alarm_label(lv_label_get_text(label), hour_label, alarm_buff);
+    parse_alarm_label(lv_label_get_text(label), hour_position_on_label, alarm_buff);
     lv_roller_set_selected(hourRoller, atoi(alarm_buff), LV_ANIM_OFF);
-    parse_alarm_label(lv_label_get_text(label), minute_label, alarm_buff);
+    parse_alarm_label(lv_label_get_text(label), minute_position_on_label, alarm_buff);
     lv_roller_set_selected(minuteRoller, atoi(alarm_buff), LV_ANIM_OFF);
 }
 
@@ -31,9 +31,9 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
 {
     if (alarmModalPanel == NULL)
     {
-        char hour_count[hour * 3] = {0};
+        char hour_count[HOUR_COUNT * 3] = {0};
         char hour_buffer[4] = {0};
-        char minute_count[minute * 3] = {0};
+        char minute_count[MINUTE_COUNT * 3] = {0};
         char minute_buffer[3] = {0};
         alarmDummyPanel = lv_obj_create(alarmScreen);
         lv_obj_set_size(alarmDummyPanel, 480, 320);
@@ -43,9 +43,9 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
         lv_obj_set_size(alarmModalPanel, 250, 230);
         lv_obj_set_align(alarmModalPanel, LV_ALIGN_CENTER);
         lv_obj_clear_flag(alarmModalPanel, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-        for (short int i = 0; i < hour; i++)
+        for (short int i = 0; i < HOUR_COUNT; i++)
         {
-            if (i == hour - 1)
+            if (i == HOUR_COUNT - 1)
             {
                 sprintf(hour_buffer, "%2i", i);
             }
@@ -55,9 +55,9 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
             }
             strcat(hour_count, hour_buffer);
         }
-        for (short int i = 0; i < minute; i++)
+        for (short int i = 0; i < MINUTE_COUNT; i++)
         {
-            if (i == minute - 1)
+            if (i == MINUTE_COUNT - 1)
             {
                 sprintf(minute_buffer, "%02i", i);
             }
@@ -107,7 +107,7 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
         lv_obj_add_event_cb(modalCancelButton, event_alarmModalCancelButton_cb_wrapper, LV_EVENT_ALL, NULL);
         lv_obj_add_event_cb(modalOkButton, event_alarmModalOkButton_cb_wrapper, LV_EVENT_ALL, target_label);
         this->target_label = target_label;
-        this->ui_set_roller_time(target_label);
+        this->set_roller_time(target_label);
     }
 }
 
