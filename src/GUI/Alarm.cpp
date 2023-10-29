@@ -8,8 +8,8 @@ extern "C" void event_alarmModalCancelButton_cb_wrapper(lv_event_t *e) {
 extern "C" void event_alarmModalOkButton_cb_wrapper(lv_event_t *e) {
   instance->event_alarmModalOkButton_cb(e);
 }
-extern "C" void event_workingDayButton_cb_wrapper(lv_event_t *e) {
-  instance->event_workingDayButton_cb(e);
+extern "C" void event_weekdaysButton_cb_wrapper(lv_event_t *e) {
+  instance->event_weekdaysButton_cb(e);
 } 
  extern "C" void event_weekendButton_cb_wrapper(lv_event_t *e) {
   instance->event_weekendButton_cb(e);
@@ -144,60 +144,60 @@ Alarm::Alarm(/* args */)
     lv_obj_set_style_bg_color(alarmPanel, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(alarmPanel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    workingDayLabel = lv_label_create(alarmPanel);
-    lv_obj_set_size(workingDayLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(workingDayLabel, 10, 65);
-    lv_obj_set_align(workingDayLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(workingDayLabel, alarm_translation[WORKING_DAY_LABEL]);
-    lv_obj_set_style_text_font(workingDayLabel, &montserrat_18, LV_PART_MAIN);
+    weekdaysLabel = lv_label_create(alarmPanel);
+    lv_obj_set_size(weekdaysLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_pos(weekdaysLabel, 10, 65);
+    lv_obj_set_align(weekdaysLabel, LV_ALIGN_TOP_LEFT);
+    lv_label_set_text(weekdaysLabel, alarm_translation[WORKING_DAY_LABEL]);
+    lv_obj_set_style_text_font(weekdaysLabel, &montserrat_18, LV_PART_MAIN);
 
-    workingDayButton = lv_btn_create(alarmPanel);
-    lv_obj_set_size(workingDayButton, 70, 41);
-    lv_obj_align_to(workingDayButton, workingDayLabel, LV_ALIGN_BOTTOM_LEFT, 270, 10);
-    lv_obj_set_style_bg_opa(workingDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    weekdaysButton = lv_btn_create(alarmPanel);
+    lv_obj_set_size(weekdaysButton, 70, 41);
+    lv_obj_align_to(weekdaysButton, weekdaysLabel, LV_ALIGN_BOTTOM_LEFT, 270, 10);
+    lv_obj_set_style_bg_opa(weekdaysButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    workingDayButtonLabel = lv_label_create(workingDayButton);
-    lv_obj_set_size(workingDayButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_align(workingDayButtonLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(workingDayButtonLabel, "08:15");
-    lv_obj_set_style_text_font(workingDayButtonLabel, &montserrat_18, LV_PART_MAIN);
+    weekdaysButtonLabel = lv_label_create(weekdaysButton);
+    lv_obj_set_size(weekdaysButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_align(weekdaysButtonLabel, LV_ALIGN_CENTER);
+    lv_label_set_text(weekdaysButtonLabel, "08:15");
+    lv_obj_set_style_text_font(weekdaysButtonLabel, &montserrat_18, LV_PART_MAIN);
 
 
-    workingDaySwitch = lv_switch_create(alarmPanel);
-    lv_obj_set_size(workingDaySwitch, 50, 25);
-    lv_obj_align_to(workingDaySwitch, workingDayButton, LV_ALIGN_BOTTOM_LEFT, 80, 5);
+    weekdaysSwitch = lv_switch_create(alarmPanel);
+    lv_obj_set_size(weekdaysSwitch, 50, 25);
+    lv_obj_align_to(weekdaysSwitch, weekdaysButton, LV_ALIGN_BOTTOM_LEFT, 80, 5);
 
-    weekendDayLabel = lv_label_create(alarmPanel);
-    lv_obj_set_size(weekendDayLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_align_to(weekendDayLabel, workingDayLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
-    lv_label_set_text(weekendDayLabel, alarm_translation[WEEKEND_DAY_LABEL]);
-    lv_obj_set_style_text_font(weekendDayLabel, &montserrat_18, LV_PART_MAIN);
+    weekendLabel = lv_label_create(alarmPanel);
+    lv_obj_set_size(weekendLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_align_to(weekendLabel, weekdaysLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
+    lv_label_set_text(weekendLabel, alarm_translation[WEEKEND_DAY_LABEL]);
+    lv_obj_set_style_text_font(weekendLabel, &montserrat_18, LV_PART_MAIN);
 
-    weekendDayButton = lv_btn_create(alarmPanel);
-    lv_obj_set_size(weekendDayButton, 70, 41);
-    lv_obj_align_to(weekendDayButton, workingDayButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
-    lv_obj_set_style_bg_opa(weekendDayButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(weekendDayButton, &montserrat_18, LV_PART_MAIN);
+    weekendButton = lv_btn_create(alarmPanel);
+    lv_obj_set_size(weekendButton, 70, 41);
+    lv_obj_align_to(weekendButton, weekdaysButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
+    lv_obj_set_style_bg_opa(weekendButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(weekendButton, &montserrat_18, LV_PART_MAIN);
 
-    weekendDayButtonLabel = lv_label_create(weekendDayButton);
-    lv_obj_set_size(weekendDayButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_align(weekendDayButtonLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(weekendDayButtonLabel, "15:23");
-    lv_obj_set_style_text_font(weekendDayButtonLabel, &montserrat_18, LV_PART_MAIN);
+    weekendButtonLabel = lv_label_create(weekendButton);
+    lv_obj_set_size(weekendButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_align(weekendButtonLabel, LV_ALIGN_CENTER);
+    lv_label_set_text(weekendButtonLabel, "15:23");
+    lv_obj_set_style_text_font(weekendButtonLabel, &montserrat_18, LV_PART_MAIN);
 
-    weekendDaySwitch = lv_switch_create(alarmPanel);
-    lv_obj_set_size(weekendDaySwitch, 50, 25);
-    lv_obj_align_to(weekendDaySwitch, workingDaySwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
+    weekendSwitch = lv_switch_create(alarmPanel);
+    lv_obj_set_size(weekendSwitch, 50, 25);
+    lv_obj_align_to(weekendSwitch, weekdaysSwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
 
     oneOffLabel = lv_label_create(alarmPanel);
     lv_obj_set_size(oneOffLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_align_to(oneOffLabel, weekendDayLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
+    lv_obj_align_to(oneOffLabel, weekendLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
     lv_label_set_text(oneOffLabel, alarm_translation[ONEOFF_DAY_LABEL]);
     lv_obj_set_style_text_font(oneOffLabel, &montserrat_18, LV_PART_MAIN);
 
     oneOffButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(oneOffButton, 70, 41);
-    lv_obj_align_to(oneOffButton, weekendDayButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
+    lv_obj_align_to(oneOffButton, weekendButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
     lv_obj_set_style_bg_opa(oneOffButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     oneOffButtonLabel = lv_label_create(oneOffButton);
@@ -208,11 +208,11 @@ Alarm::Alarm(/* args */)
 
     oneOffSwitch = lv_switch_create(alarmPanel);
     lv_obj_set_size(oneOffSwitch, 50, 25);
-    lv_obj_align_to(oneOffSwitch, weekendDaySwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
+    lv_obj_align_to(oneOffSwitch, weekendSwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
 
 
-    lv_obj_add_event_cb(workingDayButton, event_workingDayButton_cb_wrapper, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(weekendDayButton, event_weekendButton_cb_wrapper, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(weekdaysButton, event_weekdaysButton_cb_wrapper, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(weekendButton, event_weekendButton_cb_wrapper, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(oneOffButton, event_oneOffButton_cb_wrapper, LV_EVENT_ALL, NULL);
 
 }
@@ -238,13 +238,13 @@ void Alarm::event_alarmModalOkButton_cb(lv_event_t *e)
     }
 }
 
-void Alarm::event_workingDayButton_cb(lv_event_t *e)
+void Alarm::event_weekdaysButton_cb(lv_event_t *e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_CLICKED)
     {
-        this->create_alarm_modal_panel(workingDayButtonLabel);
+        this->create_alarm_modal_panel(weekdaysButtonLabel);
     }
 }
 
@@ -254,7 +254,7 @@ void Alarm::event_weekendButton_cb(lv_event_t *e)
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_CLICKED)
     {
-        this->create_alarm_modal_panel(weekendDayButtonLabel);
+        this->create_alarm_modal_panel(weekendButtonLabel);
     }
 }
 

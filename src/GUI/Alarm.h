@@ -13,18 +13,23 @@ private:
 public:
     lv_obj_t *alarmScreen;
     lv_obj_t *alarmPanel;
-    lv_obj_t *workingDayLabel;
-    lv_obj_t *weekendDayLabel;
-    lv_obj_t *oneOffLabel;
-    lv_obj_t *workingDaySwitch;
-    lv_obj_t *weekendDaySwitch;
+
+    lv_obj_t *weekdaysLabel;
+    lv_obj_t *weekdaysButton;
+    lv_obj_t *weekdaysButtonLabel;
+    lv_obj_t *weekdaysSwitch;
+
+    lv_obj_t *weekendLabel;
+    lv_obj_t *weekendSwitch;
+    lv_obj_t *weekendButton;
+    lv_obj_t *weekendButtonLabel;
+
     lv_obj_t *oneOffSwitch;
-    lv_obj_t *workingDayButton;
-    lv_obj_t *workingDayButtonLabel;
-    lv_obj_t *weekendDayButton;
-    lv_obj_t *weekendDayButtonLabel;
+    lv_obj_t *oneOffLabel;
     lv_obj_t *oneOffButton;
     lv_obj_t *oneOffButtonLabel;
+
+
     lv_obj_t *alarmModalPanel;
     lv_obj_t *hourRoller;
     lv_obj_t *minuteRoller;
@@ -33,11 +38,12 @@ public:
     lv_obj_t *modalOkButton;
     lv_obj_t *modalOkButtonLabel;
     lv_obj_t *alarmDummyPanel;
+
     lv_obj_t *target_label;
 
     void event_alarmModalCancelButton_cb(lv_event_t *e);
     void event_alarmModalOkButton_cb(lv_event_t *e);
-    void event_workingDayButton_cb(lv_event_t *e);
+    void event_weekdaysButton_cb(lv_event_t *e);
     void event_weekendButton_cb(lv_event_t *e);
     void event_oneOffButton_cb(lv_event_t *e);
     void parse_alarm_label(char *string, int pos, char *buff);
