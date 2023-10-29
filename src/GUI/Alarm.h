@@ -9,6 +9,9 @@ class Alarm
 private:
     short int hour_position_on_label = 0;
     short int minute_position_on_label = 3;
+    bool workdays_enabled;
+    bool weekend_enabled;
+    bool oneOff_enabled;
 
 public:
     lv_obj_t *alarmScreen;
@@ -29,7 +32,6 @@ public:
     lv_obj_t *oneOffButton;
     lv_obj_t *oneOffButtonLabel;
 
-
     lv_obj_t *alarmModalPanel;
     lv_obj_t *hourRoller;
     lv_obj_t *minuteRoller;
@@ -41,17 +43,19 @@ public:
 
     lv_obj_t *target_label;
 
-    void event_alarmModalCancelButton_cb(lv_event_t *e);
-    void event_alarmModalOkButton_cb(lv_event_t *e);
-    void event_weekdaysButton_cb(lv_event_t *e);
-    void event_weekendButton_cb(lv_event_t *e);
-    void event_oneOffButton_cb(lv_event_t *e);
     void parse_alarm_label(char *string, int pos, char *buff);
     void set_roller_time(const lv_obj_t *label);
+
     void create_alarm_modal_panel(lv_obj_t *target_label);
     void delete_alarm_modal_panel();
+
+    void event_alarmModalCancelButton_cb(lv_event_t *e);
+    void event_alarmModalOkButton_cb(lv_event_t *e);
+
+    void event_alarmButtons_cb(lv_event_t *e);
+
+    void event_alarm_switch_cb(lv_event_t *e);
+
     Alarm(/* args */);
     ~Alarm();
 };
-
-
