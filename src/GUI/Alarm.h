@@ -9,9 +9,9 @@ class Alarm
 private:
     short int hour_position_on_label = 0;
     short int minute_position_on_label = 3;
-    bool workdays_enabled;
-    bool weekend_enabled;
-    bool oneOff_enabled;
+    bool workdays_enabled = false;
+    bool weekend_enabled = false;
+    bool oneOff_enabled = false;
 
 public:
     lv_obj_t *alarmScreen;
