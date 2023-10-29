@@ -14,6 +14,14 @@ enum settings_texts {
     ACCESS_POINT_IP,
 
 };
+enum alarm_texts {
+    WORKING_DAY_LABEL,
+    WEEKEND_DAY_LABEL,
+    ONEOFF_DAY_LABEL,
+    OK_BUTTON,
+    CANCEL_BUTTON,
+};
 extern const char *settings_translation[];
 extern const char *digital_clock_translation[];
+extern const char *alarm_translation[];
 // extern std::map<String, String> settings_translation;

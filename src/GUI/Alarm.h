@@ -1,6 +1,8 @@
 #pragma once
 #include "lvgl.h"
 #include <stdio.h>
+#include "Translation/Translation.h"
+
 class Alarm
 {
 private:

@@ -91,7 +91,7 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
         modalCancelButtonLabel = lv_label_create(modalCancelButton);
         lv_obj_set_size(modalCancelButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
         lv_obj_set_align(modalCancelButtonLabel, LV_ALIGN_CENTER);
-        lv_label_set_text(modalCancelButtonLabel, "Cancel");
+        lv_label_set_text(modalCancelButtonLabel, alarm_translation[CANCEL_BUTTON]);
         lv_obj_set_style_text_font(modalCancelButtonLabel, &montserrat_18, LV_PART_MAIN);
 
         modalOkButton = lv_btn_create(alarmModalPanel);
@@ -101,7 +101,7 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
         modalOkButtonLabel = lv_label_create(modalOkButton);
         lv_obj_set_size(modalOkButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
         lv_obj_set_align(modalOkButtonLabel, LV_ALIGN_CENTER);
-        lv_label_set_text(modalOkButtonLabel, "OK");
+        lv_label_set_text(modalOkButtonLabel, alarm_translation[OK_BUTTON]);
         lv_obj_set_style_text_font(modalOkButtonLabel, &montserrat_18, LV_PART_MAIN);
 
         lv_obj_add_event_cb(modalCancelButton, event_alarmModalCancelButton_cb_wrapper, LV_EVENT_ALL, NULL);
@@ -148,7 +148,7 @@ Alarm::Alarm(/* args */)
     lv_obj_set_size(workingDayLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(workingDayLabel, 10, 65);
     lv_obj_set_align(workingDayLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(workingDayLabel, "Alarm Clock Working Day");
+    lv_label_set_text(workingDayLabel, alarm_translation[WORKING_DAY_LABEL]);
     lv_obj_set_style_text_font(workingDayLabel, &montserrat_18, LV_PART_MAIN);
 
     workingDayButton = lv_btn_create(alarmPanel);
@@ -169,8 +169,8 @@ Alarm::Alarm(/* args */)
 
     weekendDayLabel = lv_label_create(alarmPanel);
     lv_obj_set_size(weekendDayLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_align_to(weekendDayLabel, workingDayLabel, LV_ALIGN_OUT_BOTTOM_MID, -105, 40);
-    lv_label_set_text(weekendDayLabel, "Alarm Clock Weekends");
+    lv_obj_align_to(weekendDayLabel, workingDayLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
+    lv_label_set_text(weekendDayLabel, alarm_translation[WEEKEND_DAY_LABEL]);
     lv_obj_set_style_text_font(weekendDayLabel, &montserrat_18, LV_PART_MAIN);
 
     weekendDayButton = lv_btn_create(alarmPanel);
@@ -191,8 +191,8 @@ Alarm::Alarm(/* args */)
 
     oneOffLabel = lv_label_create(alarmPanel);
     lv_obj_set_size(oneOffLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_align_to(oneOffLabel, weekendDayLabel, LV_ALIGN_OUT_BOTTOM_MID, -90, 40);
-    lv_label_set_text(oneOffLabel, "Alarm Clock One Off");
+    lv_obj_align_to(oneOffLabel, weekendDayLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
+    lv_label_set_text(oneOffLabel, alarm_translation[ONEOFF_DAY_LABEL]);
     lv_obj_set_style_text_font(oneOffLabel, &montserrat_18, LV_PART_MAIN);
 
     oneOffButton = lv_btn_create(alarmPanel);
