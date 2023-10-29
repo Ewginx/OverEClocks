@@ -34,7 +34,7 @@ Weather::Weather(){
     lv_obj_set_pos(weatherTemperatureLabel, -5, -18);
     lv_obj_set_align(weatherTemperatureLabel, LV_ALIGN_CENTER);
     lv_label_set_text(weatherTemperatureLabel, "13°C");
-    lv_obj_set_style_text_font(weatherTemperatureLabel, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(weatherTemperatureLabel, &montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     briefingLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(briefingLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1

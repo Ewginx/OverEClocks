@@ -370,7 +370,7 @@
 #define LV_FONT_MONTSERRAT_42 0
 #define LV_FONT_MONTSERRAT_44 0
 #define LV_FONT_MONTSERRAT_46 0
-#define LV_FONT_MONTSERRAT_48 1
+#define LV_FONT_MONTSERRAT_48 0
 
 /*Demonstrate special features*/
 #define LV_FONT_MONTSERRAT_12_SUBPX      0
@@ -385,7 +385,7 @@
 /*Optionally declare custom fonts here.
  *You can use these fonts as default font too and they will be available globally.
  *E.g. #define LV_FONT_CUSTOM_DECLARE   LV_FONT_DECLARE(my_font_1) LV_FONT_DECLARE(my_font_2)*/
-#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(font_Roboto120) LV_FONT_DECLARE(font_Roboto45) LV_FONT_DECLARE(montserrat_32) LV_FONT_DECLARE(montserrat_18) LV_FONT_DECLARE(montserrat_14) 
+#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(font_Roboto120) LV_FONT_DECLARE(font_Roboto45) LV_FONT_DECLARE(montserrat_32) LV_FONT_DECLARE(montserrat_18) LV_FONT_DECLARE(montserrat_14) LV_FONT_DECLARE(montserrat_48) 
 
 /*Always set a default font*/
 #define LV_FONT_DEFAULT &montserrat_14
