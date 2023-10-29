@@ -47,14 +47,14 @@ Weather::Weather(){
     lv_obj_set_pos(windLabel, 72, -96);
     lv_obj_set_align(windLabel, LV_ALIGN_CENTER);
     lv_label_set_text(windLabel, "3.1m/s WNW Gust: 2.3m/s");
-    lv_obj_set_style_text_font(windLabel, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(windLabel, &montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weatherHumidityLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(weatherHumidityLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 121
     lv_obj_set_pos(weatherHumidityLabel, 72, -80);
     lv_obj_set_align(weatherHumidityLabel, LV_ALIGN_CENTER);
     lv_label_set_text(weatherHumidityLabel, "Humidity: 75%");
-    lv_obj_set_style_text_font(weatherHumidityLabel, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(weatherHumidityLabel, &montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weatherMiscLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(weatherMiscLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 121
@@ -62,7 +62,7 @@ Weather::Weather(){
     lv_obj_set_align(weatherMiscLabel, LV_ALIGN_CENTER);
     lv_label_set_long_mode(weatherMiscLabel, LV_LABEL_LONG_CLIP);
     lv_label_set_text(weatherMiscLabel, "Visibility: 10.0km UV: 3");
-    lv_obj_set_style_text_font(weatherMiscLabel, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(weatherMiscLabel, &montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     feelsLikeLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(feelsLikeLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 121
