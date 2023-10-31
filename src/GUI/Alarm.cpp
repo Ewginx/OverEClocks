@@ -1,38 +1,42 @@
 #include "GUI/Alarm.h"
 
+#include "Alarm.h"
+
 static Alarm *instance;
 
 extern "C" void event_alarmModalCancelButton_cb_wrapper(lv_event_t *e) {
-  instance->event_alarmModalCancelButton_cb(e);
+    instance->event_alarmModalCancelButton_cb(e);
 }
 extern "C" void event_alarmModalOkButton_cb_wrapper(lv_event_t *e) {
-  instance->event_alarmModalOkButton_cb(e);
+    instance->event_alarmModalOkButton_cb(e);
+}
+extern "C" void event_offAlarmButton_cb_wrapper(lv_event_t *e) {
+    instance->event_offAlarmButton_cb(e);
 }
 extern "C" void event_alarmButtons_cb_wrapper(lv_event_t *e) {
-  instance->event_alarmButtons_cb(e);
-} 
-extern "C" void event_alarm_switch_cb_wrapper(lv_event_t *e) {
-  instance->event_alarm_switch_cb(e);
-}    
+    instance->event_alarmButtons_cb(e);
+}
 
-
-Alarm::Alarm(/* args */)
-{
+Alarm::Alarm(/* args */) {
     instance = this;
     alarmModalPanel = NULL;
     alarmScreen = lv_obj_create(NULL);
-    lv_obj_clear_flag(alarmScreen, LV_OBJ_FLAG_SCROLLABLE); /// Flags
+    lv_obj_clear_flag(alarmScreen,
+                      LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
     alarmPanel = lv_obj_create(alarmScreen);
     lv_obj_set_size(alarmPanel, lv_pct(100), lv_pct(100));
     lv_obj_set_pos(alarmPanel, 1, -1);
     lv_obj_set_align(alarmPanel, LV_ALIGN_CENTER);
-    lv_obj_clear_flag(alarmPanel, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-    lv_obj_set_style_bg_color(alarmPanel, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_clear_flag(alarmPanel,
+                      LV_OBJ_FLAG_SCROLLABLE); /// Flags
+    lv_obj_set_style_bg_color(alarmPanel, lv_color_hex(0xFFFFFF),
+                              LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(alarmPanel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weekdaysLabel = lv_label_create(alarmPanel);
-    lv_obj_set_size(weekdaysLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_size(weekdaysLabel, LV_SIZE_CONTENT,
+                    LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(weekdaysLabel, 10, 65);
     lv_obj_set_align(weekdaysLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(weekdaysLabel, alarm_translation[WORKING_DAY_LABEL]);
@@ -44,82 +48,80 @@ Alarm::Alarm(/* args */)
     lv_obj_set_style_bg_opa(weekdaysButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weekdaysButtonLabel = lv_label_create(weekdaysButton);
-    lv_obj_set_size(weekdaysButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_size(weekdaysButtonLabel, LV_SIZE_CONTENT,
+                    LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(weekdaysButtonLabel, LV_ALIGN_CENTER);
     lv_label_set_text(weekdaysButtonLabel, "08:15");
     lv_obj_set_style_text_font(weekdaysButtonLabel, &montserrat_18, LV_PART_MAIN);
-
 
     weekdaysSwitch = lv_switch_create(alarmPanel);
     lv_obj_set_size(weekdaysSwitch, 50, 25);
     lv_obj_align_to(weekdaysSwitch, weekdaysButton, LV_ALIGN_BOTTOM_LEFT, 80, 5);
 
-    weekendLabel = lv_label_create(alarmPanel);
-    lv_obj_set_size(weekendLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_align_to(weekendLabel, weekdaysLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
-    lv_label_set_text(weekendLabel, alarm_translation[WEEKEND_DAY_LABEL]);
-    lv_obj_set_style_text_font(weekendLabel, &montserrat_18, LV_PART_MAIN);
+    weekendsLabel = lv_label_create(alarmPanel);
+    lv_obj_set_size(weekendsLabel, LV_SIZE_CONTENT,
+                    LV_SIZE_CONTENT); /// 1
+    lv_obj_align_to(weekendsLabel, weekdaysLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
+    lv_label_set_text(weekendsLabel, alarm_translation[WEEKEND_DAY_LABEL]);
+    lv_obj_set_style_text_font(weekendsLabel, &montserrat_18, LV_PART_MAIN);
 
-    weekendButton = lv_btn_create(alarmPanel);
-    lv_obj_set_size(weekendButton, 70, 41);
-    lv_obj_align_to(weekendButton, weekdaysButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
-    lv_obj_set_style_bg_opa(weekendButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(weekendButton, &montserrat_18, LV_PART_MAIN);
+    weekendsButton = lv_btn_create(alarmPanel);
+    lv_obj_set_size(weekendsButton, 70, 41);
+    lv_obj_align_to(weekendsButton, weekdaysButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
+    lv_obj_set_style_bg_opa(weekendsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(weekendsButton, &montserrat_18, LV_PART_MAIN);
 
-    weekendButtonLabel = lv_label_create(weekendButton);
-    lv_obj_set_size(weekendButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_align(weekendButtonLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(weekendButtonLabel, "15:23");
-    lv_obj_set_style_text_font(weekendButtonLabel, &montserrat_18, LV_PART_MAIN);
+    weekendsButtonLabel = lv_label_create(weekendsButton);
+    lv_obj_set_size(weekendsButtonLabel, LV_SIZE_CONTENT,
+                    LV_SIZE_CONTENT); /// 1
+    lv_obj_set_align(weekendsButtonLabel, LV_ALIGN_CENTER);
+    lv_label_set_text(weekendsButtonLabel, "15:23");
+    lv_obj_set_style_text_font(weekendsButtonLabel, &montserrat_18, LV_PART_MAIN);
 
-    weekendSwitch = lv_switch_create(alarmPanel);
-    lv_obj_set_size(weekendSwitch, 50, 25);
-    lv_obj_align_to(weekendSwitch, weekdaysSwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
+    weekendsSwitch = lv_switch_create(alarmPanel);
+    lv_obj_set_size(weekendsSwitch, 50, 25);
+    lv_obj_align_to(weekendsSwitch, weekdaysSwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
 
     oneOffLabel = lv_label_create(alarmPanel);
-    lv_obj_set_size(oneOffLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_align_to(oneOffLabel, weekendLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
+    lv_obj_set_size(oneOffLabel, LV_SIZE_CONTENT,
+                    LV_SIZE_CONTENT); /// 1
+    lv_obj_align_to(oneOffLabel, weekendsLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
     lv_label_set_text(oneOffLabel, alarm_translation[ONEOFF_DAY_LABEL]);
     lv_obj_set_style_text_font(oneOffLabel, &montserrat_18, LV_PART_MAIN);
 
     oneOffButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(oneOffButton, 70, 41);
-    lv_obj_align_to(oneOffButton, weekendButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
+    lv_obj_align_to(oneOffButton, weekendsButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
     lv_obj_set_style_bg_opa(oneOffButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     oneOffButtonLabel = lv_label_create(oneOffButton);
-    lv_obj_set_size(oneOffButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_size(oneOffButtonLabel, LV_SIZE_CONTENT,
+                    LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(oneOffButtonLabel, LV_ALIGN_CENTER);
     lv_label_set_text(oneOffButtonLabel, "12:03");
     lv_obj_set_style_text_font(oneOffButtonLabel, &montserrat_18, LV_PART_MAIN);
 
     oneOffSwitch = lv_switch_create(alarmPanel);
     lv_obj_set_size(oneOffSwitch, 50, 25);
-    lv_obj_align_to(oneOffSwitch, weekendSwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
+    lv_obj_align_to(oneOffSwitch, weekendsSwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
 
-
-    lv_obj_add_event_cb(weekdaysButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED, NULL);
-    lv_obj_add_event_cb(weekendButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED, NULL);
-    lv_obj_add_event_cb(oneOffButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED, NULL);
-
-    lv_obj_add_event_cb(weekdaysSwitch, event_alarm_switch_cb_wrapper, LV_EVENT_VALUE_CHANGED, NULL);
-    lv_obj_add_event_cb(weekendSwitch, event_alarm_switch_cb_wrapper, LV_EVENT_VALUE_CHANGED, NULL);
-    lv_obj_add_event_cb(oneOffSwitch, event_alarm_switch_cb_wrapper, LV_EVENT_VALUE_CHANGED, NULL);
-
-}
-void Alarm::set_roller_time(const lv_obj_t *label)
-{
-    char alarm_buff[2];
-    parse_alarm_label(lv_label_get_text(label), hour_position_on_label, alarm_buff);
-    lv_roller_set_selected(hourRoller, atoi(alarm_buff), LV_ANIM_OFF);
-    parse_alarm_label(lv_label_get_text(label), minute_position_on_label, alarm_buff);
-    lv_roller_set_selected(minuteRoller, atoi(alarm_buff), LV_ANIM_OFF);
+    lv_obj_add_event_cb(weekdaysButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED,
+                        NULL);
+    lv_obj_add_event_cb(weekendsButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED,
+                        NULL);
+    lv_obj_add_event_cb(oneOffButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED,
+                        NULL);
 }
 
-void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
-{
-    if (alarmModalPanel == NULL)
-    {
+void Alarm::set_roller_time(const lv_obj_t *label) {
+    lv_roller_set_selected(hourRoller, parse_alarm_label(lv_label_get_text(label), true),
+                           LV_ANIM_OFF);
+    lv_roller_set_selected(
+        minuteRoller, parse_alarm_label(lv_label_get_text(label), false), LV_ANIM_OFF);
+}
+
+void Alarm::create_roller_modal_panel(lv_obj_t *target_label) {
+    if (alarmModalPanel == NULL) {
         char hour_count[HOUR_COUNT * 3] = {0};
         char hour_buffer[4] = {0};
         char minute_count[MINUTE_COUNT * 3] = {0};
@@ -131,43 +133,33 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
         alarmModalPanel = lv_obj_create(alarmDummyPanel);
         lv_obj_set_size(alarmModalPanel, 250, 230);
         lv_obj_set_align(alarmModalPanel, LV_ALIGN_CENTER);
-        lv_obj_clear_flag(alarmModalPanel, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-        for (short int i = 0; i < HOUR_COUNT; i++)
-        {
-            if (i == HOUR_COUNT - 1)
-            {
+        lv_obj_clear_flag(alarmModalPanel,
+                          LV_OBJ_FLAG_SCROLLABLE); /// Flags
+        for (short int i = 0; i < HOUR_COUNT; i++) {
+            if (i == HOUR_COUNT - 1) {
                 sprintf(hour_buffer, "%2i", i);
-            }
-            else
-            {
+            } else {
                 sprintf(hour_buffer, "%02i\n", i);
             }
             strcat(hour_count, hour_buffer);
         }
-        for (short int i = 0; i < MINUTE_COUNT; i++)
-        {
-            if (i == MINUTE_COUNT - 1)
-            {
+        for (short int i = 0; i < MINUTE_COUNT; i++) {
+            if (i == MINUTE_COUNT - 1) {
                 sprintf(minute_buffer, "%02i", i);
-            }
-            else
-            {
+            } else {
                 sprintf(minute_buffer, "%02i\n", i);
             }
             strcat(minute_count, minute_buffer);
         }
         hourRoller = lv_roller_create(alarmModalPanel);
-        lv_roller_set_options(hourRoller,
-                              hour_count, LV_ROLLER_MODE_INFINITE);
+        lv_roller_set_options(hourRoller, hour_count, LV_ROLLER_MODE_INFINITE);
         lv_obj_set_size(hourRoller, 90, 110);
         lv_obj_set_pos(hourRoller, -50, -35);
         lv_obj_set_align(hourRoller, LV_ALIGN_CENTER);
         lv_obj_set_style_text_font(hourRoller, &montserrat_18, LV_PART_MAIN);
 
         minuteRoller = lv_roller_create(alarmModalPanel);
-        lv_roller_set_options(minuteRoller,
-                              minute_count,
-                              LV_ROLLER_MODE_INFINITE);
+        lv_roller_set_options(minuteRoller, minute_count, LV_ROLLER_MODE_INFINITE);
         lv_obj_set_size(minuteRoller, 90, 110);
         lv_obj_align_to(minuteRoller, hourRoller, LV_ALIGN_BOTTOM_LEFT, 83, 18);
         lv_obj_set_style_text_font(minuteRoller, &montserrat_18, LV_PART_MAIN);
@@ -178,7 +170,8 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
         lv_obj_set_align(modalCancelButton, LV_ALIGN_BOTTOM_LEFT);
 
         modalCancelButtonLabel = lv_label_create(modalCancelButton);
-        lv_obj_set_size(modalCancelButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+        lv_obj_set_size(modalCancelButtonLabel, LV_SIZE_CONTENT,
+                        LV_SIZE_CONTENT); /// 1
         lv_obj_set_align(modalCancelButtonLabel, LV_ALIGN_CENTER);
         lv_label_set_text(modalCancelButtonLabel, alarm_translation[CANCEL_BUTTON]);
         lv_obj_set_style_text_font(modalCancelButtonLabel, &montserrat_18, LV_PART_MAIN);
@@ -188,23 +181,25 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label)
         lv_obj_align_to(modalOkButton, modalCancelButton, LV_ALIGN_BOTTOM_LEFT, 85, 10);
 
         modalOkButtonLabel = lv_label_create(modalOkButton);
-        lv_obj_set_size(modalOkButtonLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+        lv_obj_set_size(modalOkButtonLabel, LV_SIZE_CONTENT,
+                        LV_SIZE_CONTENT); /// 1
         lv_obj_set_align(modalOkButtonLabel, LV_ALIGN_CENTER);
         lv_label_set_text(modalOkButtonLabel, alarm_translation[OK_BUTTON]);
         lv_obj_set_style_text_font(modalOkButtonLabel, &montserrat_18, LV_PART_MAIN);
 
-        lv_obj_add_event_cb(modalCancelButton, event_alarmModalCancelButton_cb_wrapper, LV_EVENT_ALL, NULL);
-        lv_obj_add_event_cb(modalOkButton, event_alarmModalOkButton_cb_wrapper, LV_EVENT_ALL, target_label);
+        lv_obj_add_event_cb(modalCancelButton, event_alarmModalCancelButton_cb_wrapper,
+                            LV_EVENT_ALL, NULL);
+        lv_obj_add_event_cb(modalOkButton, event_alarmModalOkButton_cb_wrapper,
+                            LV_EVENT_ALL, target_label);
         this->target_label = target_label;
         this->set_roller_time(target_label);
     }
 }
 
-void Alarm::delete_alarm_modal_panel()
-{
-    if (alarmModalPanel != NULL)
-    {
-        lv_obj_remove_event_cb(modalCancelButton, event_alarmModalCancelButton_cb_wrapper);
+void Alarm::delete_roller_modal_panel() {
+    if (alarmModalPanel != NULL) {
+        lv_obj_remove_event_cb(modalCancelButton,
+                               event_alarmModalCancelButton_cb_wrapper);
         lv_obj_remove_event_cb(modalOkButton, event_alarmModalOkButton_cb_wrapper);
         lv_obj_del(alarmDummyPanel);
         alarmDummyPanel = NULL;
@@ -218,75 +213,160 @@ void Alarm::delete_alarm_modal_panel()
     }
 }
 
-void Alarm::event_alarmModalCancelButton_cb(lv_event_t *e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t *target = lv_event_get_target(e);
-    if (event_code == LV_EVENT_CLICKED)
-    {
-        this->delete_alarm_modal_panel();
+void Alarm::create_alarm_modal_panel(lv_obj_t *target_label) {
+    alarmDummyPanel = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(alarmDummyPanel, 480, 320);
+    lv_obj_set_align(alarmDummyPanel, LV_ALIGN_CENTER);
+    lv_obj_set_style_bg_opa(alarmDummyPanel, 200, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    alarmModalPanel = lv_obj_create(alarmDummyPanel);
+    lv_obj_set_size(alarmModalPanel, 240, 160);
+    lv_obj_set_align(alarmModalPanel, LV_ALIGN_CENTER);
+    lv_obj_clear_flag(alarmModalPanel, LV_OBJ_FLAG_SCROLLABLE);
+
+    alarmTimeLabel = lv_label_create(alarmModalPanel);
+    lv_obj_set_size(alarmTimeLabel, LV_SIZE_CONTENT,
+                    LV_SIZE_CONTENT); /// 1
+    lv_label_set_text(alarmTimeLabel, lv_label_get_text(target_label));
+    lv_obj_set_align(alarmTimeLabel, LV_ALIGN_CENTER);
+    lv_obj_set_pos(alarmTimeLabel, 0, -30);
+    lv_obj_set_style_text_font(alarmTimeLabel, &montserrat_32, LV_PART_MAIN);
+
+    modalOkButton = lv_btn_create(alarmModalPanel);
+    lv_obj_set_size(modalOkButton, 80, 45);
+    lv_obj_set_align(modalOkButton, LV_ALIGN_CENTER);
+    lv_obj_set_pos(modalOkButton, 0, 40);
+
+    modalOkButtonLabel = lv_label_create(modalOkButton);
+    lv_obj_set_size(modalOkButtonLabel, LV_SIZE_CONTENT,
+                    LV_SIZE_CONTENT); /// 1
+    lv_obj_set_align(modalOkButtonLabel, LV_ALIGN_CENTER);
+    lv_label_set_text(modalOkButtonLabel, alarm_translation[OK_BUTTON]);
+    lv_obj_set_style_text_font(modalOkButtonLabel, &montserrat_18, LV_PART_MAIN);
+
+    lv_obj_add_event_cb(modalOkButton, event_offAlarmButton_cb_wrapper, LV_EVENT_ALL,
+                        NULL);
+}
+
+void Alarm::delete_alarm_modal_panel() {
+    if (alarmModalPanel != NULL) {
+        lv_obj_remove_event_cb(modalOkButton, event_offAlarmButton_cb_wrapper);
+        lv_obj_del(alarmDummyPanel);
+        alarmDummyPanel = NULL;
+        alarmModalPanel = NULL;
+        modalOkButton = NULL;
+        modalOkButtonLabel = NULL;
     }
 }
 
-void Alarm::event_alarmModalOkButton_cb(lv_event_t *e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t *target = lv_event_get_target(e);
-    if (event_code == LV_EVENT_CLICKED)
-    {
-        lv_label_set_text_fmt(this->target_label, "%02i:%02i", lv_roller_get_selected(hourRoller), lv_roller_get_selected(minuteRoller));
-        this->delete_alarm_modal_panel();
+bool Alarm::is_weekends(int week_day) {
+    for (int i = 0; i++; i < 2) {
+        if (week_day == this->weekends_days[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Alarm::check_alarm_time(int hour, int minute, int week_day) {
+    int hour_from_label;
+    int minute_from_label;
+    if (lv_obj_get_state(weekendsSwitch) == LV_STATE_CHECKED) {
+        if (this->is_weekends(week_day)) {
+            hour_from_label =
+                parse_alarm_label(lv_label_get_text(weekendsButtonLabel), true);
+            minute_from_label =
+                parse_alarm_label(lv_label_get_text(weekendsButtonLabel), false);
+            if (hour == hour_from_label & minute == minute_from_label) {
+                if (!this->weekends_already_fired) {
+                    this->fire_alarm(weekendsButtonLabel);
+                    this->weekends_already_fired = true;
+                }
+            } else {
+                this->weekends_already_fired = false;
+            }
+        }
+    } else if (lv_obj_get_state(weekdaysSwitch) == LV_STATE_CHECKED) {
+        if (!this->is_weekends(week_day)) {
+            hour_from_label =
+                parse_alarm_label(lv_label_get_text(weekdaysButtonLabel), true);
+            minute_from_label =
+                parse_alarm_label(lv_label_get_text(weekdaysButtonLabel), false);
+            if (hour == hour_from_label & minute == minute_from_label) {
+                if (!this->weekdays_already_fired) {
+                    this->fire_alarm(weekdaysButtonLabel);
+                    this->weekdays_already_fired = true;
+                }
+            } else {
+                this->weekdays_already_fired = false;
+            }
+        }
+    } else if (lv_obj_has_state(oneOffSwitch, LV_STATE_CHECKED)) {
+        hour_from_label = parse_alarm_label(lv_label_get_text(oneOffButtonLabel), true);
+        minute_from_label =
+            parse_alarm_label(lv_label_get_text(oneOffButtonLabel), false);
+        if (hour == hour_from_label & minute == minute_from_label) {
+            this->fire_alarm(oneOffButtonLabel);
+            lv_obj_clear_state(oneOffSwitch, LV_STATE_CHECKED);
+        }
     }
 }
 
-void Alarm::event_alarmButtons_cb(lv_event_t *e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t *target = lv_event_get_target(e);
-    if (target == weekdaysButton)
-    {
-        target_label = weekdaysButtonLabel;
-    }
-    else if (target == weekendButton)
-    {
-        target_label =weekendButtonLabel;
-
-    }
-    else if (target == oneOffButton)
-    {
-        target_label = oneOffButtonLabel;
-
-    }
+void Alarm::fire_alarm(lv_obj_t *target_label) {
+    this->delete_roller_modal_panel();
     this->create_alarm_modal_panel(target_label);
 }
 
-
-void Alarm::event_alarm_switch_cb(lv_event_t *e)
-{
+void Alarm::event_alarmModalCancelButton_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
-    if (target == weekdaysSwitch)
-    {
-        workdays_enabled = lv_obj_get_state(weekdaysSwitch) & LV_STATE_CHECKED ? true : false;
-    }
-    else if (target == weekendSwitch)
-    {
-        weekend_enabled = lv_obj_get_state(weekendSwitch) & LV_STATE_CHECKED ? true : false;
-    }
-    else if (target == oneOffSwitch)
-    {
-        oneOff_enabled = lv_obj_get_state(oneOffSwitch) & LV_STATE_CHECKED ? true : false;
+    if (event_code == LV_EVENT_CLICKED) {
+        this->delete_roller_modal_panel();
     }
 }
 
-void Alarm::parse_alarm_label(char *string, int pos, char *buff)
-{
-    for (size_t i = 0; i < 2; i++)
-    {
-        buff[i] = string[i + pos];
+void Alarm::event_alarmModalOkButton_cb(lv_event_t *e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t *target = lv_event_get_target(e);
+    if (event_code == LV_EVENT_CLICKED) {
+        lv_label_set_text_fmt(this->target_label, "%02i:%02i",
+                              lv_roller_get_selected(hourRoller),
+                              lv_roller_get_selected(minuteRoller));
+        this->delete_roller_modal_panel();
     }
 }
 
-Alarm::~Alarm()
-{
+void Alarm::event_offAlarmButton_cb(lv_event_t *e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t *target = lv_event_get_target(e);
+    if (event_code == LV_EVENT_CLICKED) {
+        this->delete_alarm_modal_panel();
+    }
 }
+
+void Alarm::event_alarmButtons_cb(lv_event_t *e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t *target = lv_event_get_target(e);
+    if (target == weekdaysButton) {
+        target_label = weekdaysButtonLabel;
+    } else if (target == weekendsButton) {
+        target_label = weekendsButtonLabel;
+    } else if (target == oneOffButton) {
+        target_label = oneOffButtonLabel;
+    }
+    this->create_roller_modal_panel(target_label);
+}
+
+int Alarm::parse_alarm_label(char *string, bool hour) {
+    char alarm_buff[2];
+    for (size_t i = 0; i < 2; i++) {
+        if (hour) {
+            alarm_buff[i] = string[i + 0];
+        } else {
+            alarm_buff[i] = string[i + 3];
+        }
+    }
+    return atoi(alarm_buff);
+}
+
+Alarm::~Alarm() {}

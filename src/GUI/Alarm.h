@@ -1,19 +1,20 @@
 #pragma once
+#include "Config/Config.h"
+#include "Translation/Translation.h"
 #include "lvgl.h"
 #include <stdio.h>
-#include "Translation/Translation.h"
-#include "Config/Config.h"
+#include <time.h>
 
-class Alarm
-{
-private:
-    short int hour_position_on_label = 0;
-    short int minute_position_on_label = 3;
-    bool workdays_enabled = false;
-    bool weekend_enabled = false;
-    bool oneOff_enabled = false;
+class Alarm {
+  private:
+    int next_alarm_day_weekdays;
+    int next_alarm_day_weekends;
+    bool weekdays_already_fired = false;
+    bool weekends_already_fired = false;
+    struct tm *alarm_timeinfo;
+    const int weekends_days[2] = {0, 6};
 
-public:
+  public:
     lv_obj_t *alarmScreen;
     lv_obj_t *alarmPanel;
 
@@ -22,39 +23,49 @@ public:
     lv_obj_t *weekdaysButtonLabel;
     lv_obj_t *weekdaysSwitch;
 
-    lv_obj_t *weekendLabel;
-    lv_obj_t *weekendSwitch;
-    lv_obj_t *weekendButton;
-    lv_obj_t *weekendButtonLabel;
+    lv_obj_t *weekendsLabel;
+    lv_obj_t *weekendsSwitch;
+    lv_obj_t *weekendsButton;
+    lv_obj_t *weekendsButtonLabel;
 
     lv_obj_t *oneOffSwitch;
     lv_obj_t *oneOffLabel;
     lv_obj_t *oneOffButton;
     lv_obj_t *oneOffButtonLabel;
 
+    lv_obj_t *alarmDummyPanel;
     lv_obj_t *alarmModalPanel;
+
+    lv_obj_t *alarmTimeLabel;
+
     lv_obj_t *hourRoller;
     lv_obj_t *minuteRoller;
+
     lv_obj_t *modalCancelButton;
     lv_obj_t *modalCancelButtonLabel;
     lv_obj_t *modalOkButton;
     lv_obj_t *modalOkButtonLabel;
-    lv_obj_t *alarmDummyPanel;
 
     lv_obj_t *target_label;
 
-    void parse_alarm_label(char *string, int pos, char *buff);
+    int parse_alarm_label(char *string, bool hour = true);
     void set_roller_time(const lv_obj_t *label);
+
+    void create_roller_modal_panel(lv_obj_t *target_label);
+    void delete_roller_modal_panel();
 
     void create_alarm_modal_panel(lv_obj_t *target_label);
     void delete_alarm_modal_panel();
 
+    bool is_weekends(int week_day);
+    void check_alarm_time(int hour, int minute, int week_day);
+    void fire_alarm(lv_obj_t *target_label);
     void event_alarmModalCancelButton_cb(lv_event_t *e);
     void event_alarmModalOkButton_cb(lv_event_t *e);
 
-    void event_alarmButtons_cb(lv_event_t *e);
+    void event_offAlarmButton_cb(lv_event_t *e);
 
-    void event_alarm_switch_cb(lv_event_t *e);
+    void event_alarmButtons_cb(lv_event_t *e);
 
     Alarm(/* args */);
     ~Alarm();

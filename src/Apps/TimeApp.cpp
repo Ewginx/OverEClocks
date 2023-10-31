@@ -22,6 +22,12 @@ void TimeApp::notifyAboutTime()
         digital_clock->set_time(fullTime, timeSecond);
         strftime(fullDate, 12, "%d.%m.%Y,", &timeinfo);
         digital_clock->set_date(fullDate, timeinfo.tm_wday);
+        alarm->check_alarm_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_wday);
+        // timeinfo.tm_mday = timeinfo.tm_mday+7;
+        // time_t time = mktime(&timeinfo);
+        // struct tm *tm;
+        // tm = gmtime(&time);
+        // Serial.println(timeinfo.tm_mday);
     }
 }
 void TimeApp::config_time(){

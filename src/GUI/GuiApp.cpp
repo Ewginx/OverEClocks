@@ -131,10 +131,10 @@ void GuiApp::darkmode_switch_event_cb(lv_event_t *e)
             lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_shadow_opa(dock_panel->settingsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_shadow_opa(alarm->weekdaysButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(alarm->weekendButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_shadow_opa(alarm->weekendsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_shadow_opa(alarm->oneOffButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_color(alarm->weekdaysButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(alarm->weekendButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(alarm->weekendsButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_color(alarm->oneOffButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
         }
         else
@@ -144,7 +144,7 @@ void GuiApp::darkmode_switch_event_cb(lv_event_t *e)
             lv_disp_set_theme(disp, theme);
             lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_color(alarm->weekdaysButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(alarm->weekendButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(alarm->weekendsButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_color(alarm->oneOffButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
         }
     }

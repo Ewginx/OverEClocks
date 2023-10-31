@@ -24,6 +24,7 @@ void WeatherApp::send_weather_request(void *parameter)
                 Serial.print("Response: ");
                 Serial.println(response);
                 Serial.printf("Wait %i minutes", WEATHER_API_POLLING_INTERVAL_MINUTES);
+                Serial.println();
             }
         }
         
