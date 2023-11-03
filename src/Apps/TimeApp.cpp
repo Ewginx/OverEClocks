@@ -22,7 +22,7 @@ void TimeApp::notifyAboutTime()
         digital_clock->set_time(fullTime, timeSecond);
         strftime(fullDate, 12, "%d.%m.%Y,", &timeinfo);
         digital_clock->set_date(fullDate, timeinfo.tm_wday);
-        alarm->check_alarm_time(timeinfo);
+        alarm->check_alarm_clocks(timeinfo);
         // timeinfo.tm_mday = timeinfo.tm_mday+7;
         // time_t time = mktime(&timeinfo);
         // struct tm *tm;

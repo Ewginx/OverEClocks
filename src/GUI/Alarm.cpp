@@ -284,7 +284,7 @@ bool Alarm::is_weekends(int week_day) {
     return false;
 }
 
-void Alarm::check_alarm_time(struct tm timeinfo) {
+void Alarm::check_alarm_clocks(struct tm &timeinfo) {
     int hour_from_label;
     int minute_from_label;
     if (lv_obj_has_state(weekendsSwitch, LV_STATE_CHECKED)) {
