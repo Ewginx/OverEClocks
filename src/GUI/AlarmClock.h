@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <time.h>
 
-class Alarm {
+class AlarmClock {
   private:
     int next_alarm_day_weekdays;
     int next_alarm_day_weekends;
@@ -75,6 +75,6 @@ class Alarm {
 
     void event_alarmButtons_cb(lv_event_t *e);
 
-    Alarm(/* args */);
-    ~Alarm();
+    AlarmClock(/* args */);
+    ~AlarmClock();
 };

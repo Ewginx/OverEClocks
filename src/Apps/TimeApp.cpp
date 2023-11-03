@@ -1,6 +1,6 @@
 #include "Apps/TimeApp.h"
 
-TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, Alarm *alarm)
+TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, AlarmClock *alarm)
 {
     this->alarm = alarm;
     this->analog_clock = analog_clock;

@@ -1,8 +1,7 @@
-#include "GUI/Alarm.h"
+#include "GUI/AlarmClock.h"
 
-#include "Alarm.h"
 
-static Alarm *instance;
+static AlarmClock *instance;
 
 extern "C" void event_alarmModalCancelButton_cb_wrapper(lv_event_t *e) {
     instance->event_alarmModalCancelButton_cb(e);
@@ -17,7 +16,7 @@ extern "C" void event_alarmButtons_cb_wrapper(lv_event_t *e) {
     instance->event_alarmButtons_cb(e);
 }
 
-Alarm::Alarm(/* args */) {
+AlarmClock::AlarmClock(/* args */) {
     instance = this;
     alarmModalPanel = NULL;
     alarmScreen = lv_obj_create(NULL);
@@ -131,14 +130,14 @@ Alarm::Alarm(/* args */) {
                         NULL);
 }
 
-void Alarm::set_roller_time(const lv_obj_t *label) {
+void AlarmClock::set_roller_time(const lv_obj_t *label) {
     lv_roller_set_selected(hourRoller, parse_alarm_label(lv_label_get_text(label), true),
                            LV_ANIM_OFF);
     lv_roller_set_selected(
         minuteRoller, parse_alarm_label(lv_label_get_text(label), false), LV_ANIM_OFF);
 }
 
-void Alarm::create_roller_modal_panel(lv_obj_t *target_label) {
+void AlarmClock::create_roller_modal_panel(lv_obj_t *target_label) {
     if (alarmModalPanel == NULL) {
         char hour_count[HOUR_COUNT * 3] = {0};
         char hour_buffer[4] = {0};
@@ -214,7 +213,7 @@ void Alarm::create_roller_modal_panel(lv_obj_t *target_label) {
     }
 }
 
-void Alarm::delete_roller_modal_panel() {
+void AlarmClock::delete_roller_modal_panel() {
     if (alarmModalPanel != NULL) {
         lv_obj_remove_event_cb(modalCancelButton,
                                event_alarmModalCancelButton_cb_wrapper);
@@ -231,7 +230,7 @@ void Alarm::delete_roller_modal_panel() {
     }
 }
 
-void Alarm::create_alarm_modal_panel(lv_obj_t *target_label) {
+void AlarmClock::create_alarm_modal_panel(lv_obj_t *target_label) {
     alarmDummyPanel = lv_obj_create(lv_scr_act());
     lv_obj_set_size(alarmDummyPanel, 480, 320);
     lv_obj_set_align(alarmDummyPanel, LV_ALIGN_CENTER);
@@ -266,7 +265,7 @@ void Alarm::create_alarm_modal_panel(lv_obj_t *target_label) {
                         NULL);
 }
 
-void Alarm::delete_alarm_modal_panel() {
+void AlarmClock::delete_alarm_modal_panel() {
     if (alarmModalPanel != NULL) {
         lv_obj_remove_event_cb(modalOkButton, event_offAlarmButton_cb_wrapper);
         lv_obj_del(alarmDummyPanel);
@@ -277,14 +276,14 @@ void Alarm::delete_alarm_modal_panel() {
     }
 }
 
-bool Alarm::is_weekends(int week_day) {
+bool AlarmClock::is_weekends(int week_day) {
     if (week_day == 0 | week_day == 6) {
         return true;
     }
     return false;
 }
 
-void Alarm::check_alarm_clocks(struct tm &timeinfo) {
+void AlarmClock::check_alarm_clocks(struct tm &timeinfo) {
     int hour_from_label;
     int minute_from_label;
     if (lv_obj_has_state(weekendsSwitch, LV_STATE_CHECKED)) {
@@ -343,12 +342,12 @@ void Alarm::check_alarm_clocks(struct tm &timeinfo) {
     }
 }
 
-void Alarm::fire_alarm(lv_obj_t *target_label) {
+void AlarmClock::fire_alarm(lv_obj_t *target_label) {
     this->delete_roller_modal_panel();
     this->create_alarm_modal_panel(target_label);
 }
 
-void Alarm::calculate_oneOff_remaining_time(int hour, int minute) {
+void AlarmClock::calculate_oneOff_remaining_time(int hour, int minute) {
     struct tm timeinfo;
     getLocalTime(&timeinfo);
     time_t now = mktime(&timeinfo);
@@ -362,7 +361,7 @@ void Alarm::calculate_oneOff_remaining_time(int hour, int minute) {
     this->set_rings_in_label_text(difference, oneOffRingsInLabel);
 }
 
-void Alarm::calculate_weekends_remaining_time(int hour, int minute) {
+void AlarmClock::calculate_weekends_remaining_time(int hour, int minute) {
     struct tm timeinfo;
     getLocalTime(&timeinfo);
     time_t now = mktime(&timeinfo);
@@ -382,7 +381,7 @@ void Alarm::calculate_weekends_remaining_time(int hour, int minute) {
     this->set_rings_in_label_text(difference, weekendsRingsInLabel);
 }
 
-void Alarm::calculate_weekdays_remaining_time(int hour, int minute) {
+void AlarmClock::calculate_weekdays_remaining_time(int hour, int minute) {
     struct tm timeinfo;
     getLocalTime(&timeinfo);
     time_t now = mktime(&timeinfo);
@@ -417,7 +416,7 @@ void Alarm::calculate_weekdays_remaining_time(int hour, int minute) {
     this->set_rings_in_label_text(difference, weekdaysRingsInLabel);
 }
 
-void Alarm::set_rings_in_label_text(double &difference_in_seconds,
+void AlarmClock::set_rings_in_label_text(double &difference_in_seconds,
                                     lv_obj_t *rings_in_label) {
     String time;
     time.reserve(28);
@@ -433,7 +432,7 @@ void Alarm::set_rings_in_label_text(double &difference_in_seconds,
     lv_label_set_text(rings_in_label, time.c_str());
 }
 
-void Alarm::event_alarmModalCancelButton_cb(lv_event_t *e) {
+void AlarmClock::event_alarmModalCancelButton_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_CLICKED) {
@@ -441,7 +440,7 @@ void Alarm::event_alarmModalCancelButton_cb(lv_event_t *e) {
     }
 }
 
-void Alarm::event_alarmModalOkButton_cb(lv_event_t *e) {
+void AlarmClock::event_alarmModalOkButton_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_CLICKED) {
@@ -452,7 +451,7 @@ void Alarm::event_alarmModalOkButton_cb(lv_event_t *e) {
     }
 }
 
-void Alarm::event_offAlarmButton_cb(lv_event_t *e) {
+void AlarmClock::event_offAlarmButton_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_CLICKED) {
@@ -460,7 +459,7 @@ void Alarm::event_offAlarmButton_cb(lv_event_t *e) {
     }
 }
 
-void Alarm::event_alarmButtons_cb(lv_event_t *e) {
+void AlarmClock::event_alarmButtons_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (target == weekdaysButton) {
@@ -473,7 +472,7 @@ void Alarm::event_alarmButtons_cb(lv_event_t *e) {
     this->create_roller_modal_panel(target_label);
 }
 
-int Alarm::parse_alarm_label(char *string, bool hour) {
+int AlarmClock::parse_alarm_label(char *string, bool hour) {
     char alarm_buff[2];
     for (size_t i = 0; i < 2; i++) {
         if (hour) {
@@ -485,4 +484,4 @@ int Alarm::parse_alarm_label(char *string, bool hour) {
     return atoi(alarm_buff);
 }
 
-Alarm::~Alarm() {}
+AlarmClock::~AlarmClock() {}

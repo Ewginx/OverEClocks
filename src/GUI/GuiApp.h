@@ -1,5 +1,5 @@
 #pragma once
-#include "GUI/Alarm.h"
+#include "GUI/AlarmClock.h"
 #include "GUI/DigitalClock.h"
 #include "GUI/AnalogClock.h"
 #include "Config/Config.h"
@@ -14,7 +14,7 @@ private:
     /* data */
 public:
 
-    Alarm *alarm;
+    AlarmClock *alarm;
     DigitalClock *digital_clock;
     AnalogClock *analog_clock_screen;
     Weather *weather;

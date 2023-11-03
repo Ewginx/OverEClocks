@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include "time.h"
-#include "GUI/Alarm.h"
+#include "GUI/AlarmClock.h"
 #include "GUI/DigitalClock.h"
 #include "GUI/AnalogClock.h"
 #include "Config/Config.h"
@@ -14,7 +14,7 @@ public:
 private:
     DigitalClock *digital_clock;
     AnalogClock *analog_clock;
-    Alarm *alarm;
+    AlarmClock *alarm;
     
     struct tm timeinfo;
 
@@ -30,7 +30,7 @@ private:
 public:
     void notifyAboutTime();
     void config_time();
-    TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, Alarm *alarm);
+    TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, AlarmClock *alarm);
     ~TimeApp();
 };
 

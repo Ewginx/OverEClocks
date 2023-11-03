@@ -19,7 +19,7 @@ extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
 GuiApp::GuiApp(/* args */)
 {   
     instance = this;
-    alarm = new Alarm();
+    alarm = new AlarmClock();
     digital_clock = new DigitalClock();
     analog_clock_screen = new AnalogClock();
     weather = new Weather();
