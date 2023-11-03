@@ -14,7 +14,7 @@ public:
 private:
     DigitalClock *digital_clock;
     AnalogClock *analog_clock;
-    AlarmClock *alarm;
+    AlarmClock *alarm_clock;
     
     struct tm timeinfo;
 

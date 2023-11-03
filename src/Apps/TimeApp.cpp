@@ -1,8 +1,8 @@
 #include "Apps/TimeApp.h"
 
-TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, AlarmClock *alarm)
+TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, AlarmClock *alarm_clock)
 {
-    this->alarm = alarm;
+    this->alarm_clock = alarm_clock;
     this->analog_clock = analog_clock;
     this->digital_clock = digital_clock;
 }
@@ -22,7 +22,7 @@ void TimeApp::notifyAboutTime()
         digital_clock->set_time(fullTime, timeSecond);
         strftime(fullDate, 12, "%d.%m.%Y,", &timeinfo);
         digital_clock->set_date(fullDate, timeinfo.tm_wday);
-        alarm->check_alarm_clocks(timeinfo);
+        alarm_clock->check_alarm_clocks(timeinfo);
         // timeinfo.tm_mday = timeinfo.tm_mday+7;
         // time_t time = mktime(&timeinfo);
         // struct tm *tm;

@@ -19,7 +19,7 @@ extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
 GuiApp::GuiApp(/* args */)
 {   
     instance = this;
-    alarm = new AlarmClock();
+    alarm_clock = new AlarmClock();
     digital_clock = new DigitalClock();
     analog_clock_screen = new AnalogClock();
     weather = new Weather();
@@ -31,12 +31,12 @@ GuiApp::GuiApp(/* args */)
     lv_obj_add_event_cb(digital_clock->digitalClockScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
     lv_obj_add_event_cb(weather->weatherScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
     lv_obj_add_event_cb(analog_clock_screen->analogClockScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
-    lv_obj_add_event_cb(alarm->alarmScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
+    lv_obj_add_event_cb(alarm_clock->alarmScreen, swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
     
     lv_obj_add_event_cb(digital_clock->digitalClockScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
     lv_obj_add_event_cb(weather->weatherScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
     lv_obj_add_event_cb(analog_clock_screen->analogClockScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
-    lv_obj_add_event_cb(alarm->alarmScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
+    lv_obj_add_event_cb(alarm_clock->alarmScreen, screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
     
     lv_obj_add_event_cb(dock_panel->settingsButton, settings_button_event_cb_wrapper, LV_EVENT_CLICKED, NULL);
 
@@ -63,7 +63,7 @@ void GuiApp::swipe_screen_event_cb(lv_event_t *e){
     {
         this->swipe_analog_clock_screen();
     }
-    else if (target == this->alarm->alarmScreen)
+    else if (target == this->alarm_clock->alarmScreen)
     {
         this->swipe_alarm_screen();
     }
@@ -88,7 +88,7 @@ void GuiApp::swipe_analog_clock_screen(){
     }
     else if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT)
     {
-        lv_scr_load_anim(this->alarm->alarmScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        lv_scr_load_anim(this->alarm_clock->alarmScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
 void GuiApp::swipe_weather_screen(){
@@ -102,7 +102,7 @@ void GuiApp::swipe_alarm_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT)
     {
         lv_scr_load_anim(this->analog_clock_screen->analogClockScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
-        this->alarm->delete_roller_modal_panel();
+        this->alarm_clock->delete_roller_modal_panel();
     }
 }
 
@@ -131,12 +131,12 @@ void GuiApp::darkmode_switch_event_cb(lv_event_t *e)
             lv_disp_set_theme(disp, theme);
             lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_shadow_opa(dock_panel->settingsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(alarm->weekdaysButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(alarm->weekendsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_shadow_opa(alarm->oneOffButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(alarm->weekdaysButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(alarm->weekendsButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(alarm->oneOffButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_shadow_opa(alarm_clock->weekdaysButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_shadow_opa(alarm_clock->weekendsButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_shadow_opa(alarm_clock->oneOffButton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_black(), LV_PART_MAIN | LV_STATE_DEFAULT);
         }
         else
         {
@@ -144,9 +144,9 @@ void GuiApp::darkmode_switch_event_cb(lv_event_t *e)
                                                       true, LV_FONT_DEFAULT);
             lv_disp_set_theme(disp, theme);
             lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(alarm->weekdaysButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(alarm->weekendsButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_text_color(alarm->oneOffButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
         }
     }
 }

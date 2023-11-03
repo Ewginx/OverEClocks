@@ -14,7 +14,7 @@ private:
     /* data */
 public:
 
-    AlarmClock *alarm;
+    AlarmClock *alarm_clock;
     DigitalClock *digital_clock;
     AnalogClock *analog_clock_screen;
     Weather *weather;
