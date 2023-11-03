@@ -42,11 +42,11 @@ Alarm::Alarm(/* args */) {
     lv_label_set_text(weekdaysLabel, alarm_translation[WORKING_DAY_LABEL]);
     lv_obj_set_style_text_font(weekdaysLabel, &montserrat_18, LV_PART_MAIN);
 
-    weekdaysInLabel = lv_label_create(alarmPanel);
-    lv_obj_set_size(weekdaysInLabel, LV_SIZE_CONTENT,
+    weekdaysRingsInLabel = lv_label_create(alarmPanel);
+    lv_obj_set_size(weekdaysRingsInLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
-    lv_obj_set_style_text_font(weekdaysInLabel, &montserrat_14, LV_PART_MAIN);
-    lv_obj_align_to(weekdaysInLabel, weekdaysLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
+    lv_obj_set_style_text_font(weekdaysRingsInLabel, &montserrat_14, LV_PART_MAIN);
+    lv_obj_align_to(weekdaysRingsInLabel, weekdaysLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
 
     weekdaysButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(weekdaysButton, 70, 41);
@@ -71,11 +71,11 @@ Alarm::Alarm(/* args */) {
     lv_label_set_text(weekendsLabel, alarm_translation[WEEKEND_DAY_LABEL]);
     lv_obj_set_style_text_font(weekendsLabel, &montserrat_18, LV_PART_MAIN);
 
-    weekendsInLabel = lv_label_create(alarmPanel);
-    lv_obj_set_size(weekendsInLabel, LV_SIZE_CONTENT,
+    weekendsRingsInLabel = lv_label_create(alarmPanel);
+    lv_obj_set_size(weekendsRingsInLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
-    lv_obj_set_style_text_font(weekendsInLabel, &montserrat_14, LV_PART_MAIN);
-    lv_obj_align_to(weekendsInLabel, weekendsLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
+    lv_obj_set_style_text_font(weekendsRingsInLabel, &montserrat_14, LV_PART_MAIN);
+    lv_obj_align_to(weekendsRingsInLabel, weekendsLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
 
     weekendsButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(weekendsButton, 70, 41);
@@ -101,11 +101,11 @@ Alarm::Alarm(/* args */) {
     lv_label_set_text(oneOffLabel, alarm_translation[ONEOFF_DAY_LABEL]);
     lv_obj_set_style_text_font(oneOffLabel, &montserrat_18, LV_PART_MAIN);
 
-    oneOffInLabel = lv_label_create(alarmPanel);
-    lv_obj_set_size(oneOffInLabel, LV_SIZE_CONTENT,
+    oneOffRingsInLabel = lv_label_create(alarmPanel);
+    lv_obj_set_size(oneOffRingsInLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
-    lv_obj_set_style_text_font(oneOffInLabel, &montserrat_14, LV_PART_MAIN);
-    lv_obj_align_to(oneOffInLabel, oneOffLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
+    lv_obj_set_style_text_font(oneOffRingsInLabel, &montserrat_14, LV_PART_MAIN);
+    lv_obj_align_to(oneOffRingsInLabel, oneOffLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
 
     oneOffButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(oneOffButton, 70, 41);
@@ -305,7 +305,7 @@ void Alarm::check_alarm_time(struct tm timeinfo) {
         }
         this->calculate_weekends_remaining_time(hour_from_label, minute_from_label);
     } else {
-        lv_label_set_text(weekendsInLabel, "");
+        lv_label_set_text(weekendsRingsInLabel, "");
     }
 
     if (lv_obj_has_state(weekdaysSwitch, LV_STATE_CHECKED)) {
@@ -326,7 +326,7 @@ void Alarm::check_alarm_time(struct tm timeinfo) {
         }
         this->calculate_weekdays_remaining_time(hour_from_label, minute_from_label);
     } else {
-        lv_label_set_text(weekdaysInLabel, "");
+        lv_label_set_text(weekdaysRingsInLabel, "");
     }
     if (lv_obj_has_state(oneOffSwitch, LV_STATE_CHECKED)) {
         hour_from_label = parse_alarm_label(lv_label_get_text(oneOffButtonLabel), true);
@@ -339,7 +339,7 @@ void Alarm::check_alarm_time(struct tm timeinfo) {
             this->calculate_oneOff_remaining_time(hour_from_label, minute_from_label);
         }
     } else {
-        lv_label_set_text(oneOffInLabel, "");
+        lv_label_set_text(oneOffRingsInLabel, "");
     }
 }
 
@@ -370,7 +370,7 @@ void Alarm::calculate_oneOff_remaining_time(int hour, int minute) {
     time += alarm_translation[HOUR_SHORT];
     time += (int)difference % 86400 % 3600 / 60;
     time += alarm_translation[MINUTE_SHORT];
-    lv_label_set_text(oneOffInLabel, time.c_str());
+    lv_label_set_text(oneOffRingsInLabel, time.c_str());
 }
 
 void Alarm::calculate_weekends_remaining_time(int hour, int minute) {
@@ -402,7 +402,7 @@ void Alarm::calculate_weekends_remaining_time(int hour, int minute) {
     time += alarm_translation[HOUR_SHORT];
     time += (int)difference % 86400 % 3600 / 60;
     time += alarm_translation[MINUTE_SHORT];
-    lv_label_set_text(weekendsInLabel, time.c_str());
+    lv_label_set_text(weekendsRingsInLabel, time.c_str());
 }
 
 void Alarm::calculate_weekdays_remaining_time(int hour, int minute) {
@@ -449,7 +449,7 @@ void Alarm::calculate_weekdays_remaining_time(int hour, int minute) {
     time += alarm_translation[HOUR_SHORT];
     time += (int)difference % 86400 % 3600 / 60;
     time += alarm_translation[MINUTE_SHORT];
-    lv_label_set_text(weekdaysInLabel, time.c_str());
+    lv_label_set_text(weekdaysRingsInLabel, time.c_str());
 }
 
 void Alarm::event_alarmModalCancelButton_cb(lv_event_t *e) {

@@ -20,19 +20,19 @@ class Alarm {
     lv_obj_t *weekdaysButton;
     lv_obj_t *weekdaysButtonLabel;
     lv_obj_t *weekdaysSwitch;
-    lv_obj_t *weekdaysInLabel;
+    lv_obj_t *weekdaysRingsInLabel;
 
     lv_obj_t *weekendsLabel;
     lv_obj_t *weekendsSwitch;
     lv_obj_t *weekendsButton;
     lv_obj_t *weekendsButtonLabel;
-    lv_obj_t *weekendsInLabel;
+    lv_obj_t *weekendsRingsInLabel;
 
     lv_obj_t *oneOffSwitch;
     lv_obj_t *oneOffLabel;
     lv_obj_t *oneOffButton;
     lv_obj_t *oneOffButtonLabel;
-    lv_obj_t *oneOffInLabel;
+    lv_obj_t *oneOffRingsInLabel;
 
     lv_obj_t *alarmDummyPanel;
     lv_obj_t *alarmModalPanel;
