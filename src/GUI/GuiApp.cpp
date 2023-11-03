@@ -102,6 +102,7 @@ void GuiApp::swipe_alarm_screen(){
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT)
     {
         lv_scr_load_anim(this->analog_clock_screen->analogClockScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        this->alarm->delete_roller_modal_panel();
     }
 }
 
