@@ -359,18 +359,7 @@ void Alarm::calculate_oneOff_remaining_time(int hour, int minute) {
     timeinfo.tm_min = minute;
     time_t next_time = mktime(&timeinfo);
     double difference = difftime(next_time, now);
-    String time;
-    time.reserve(28);
-    time += alarm_translation[RINGS_IN];
-    if (difference > 86400) {
-        time += (int)difference / 86400;
-        time += alarm_translation[DAY_SHORT];
-    }
-    time += (int)difference % 86400 / 3600;
-    time += alarm_translation[HOUR_SHORT];
-    time += (int)difference % 86400 % 3600 / 60;
-    time += alarm_translation[MINUTE_SHORT];
-    lv_label_set_text(oneOffRingsInLabel, time.c_str());
+    this->set_rings_in_label_text(difference, oneOffRingsInLabel);
 }
 
 void Alarm::calculate_weekends_remaining_time(int hour, int minute) {
@@ -379,8 +368,7 @@ void Alarm::calculate_weekends_remaining_time(int hour, int minute) {
     time_t now = mktime(&timeinfo);
     int weekdays_add[5] = {5, 4, 3, 2, 1};
     if (0 < timeinfo.tm_wday < 6) {
-        timeinfo.tm_mday += weekdays_add[timeinfo.tm_wday-1];
-
+        timeinfo.tm_mday += weekdays_add[timeinfo.tm_wday - 1];
     }
     if (timeinfo.tm_wday == 6) {
         if (timeinfo.tm_hour > hour) {
@@ -391,18 +379,7 @@ void Alarm::calculate_weekends_remaining_time(int hour, int minute) {
     timeinfo.tm_min = minute;
     time_t next_time = mktime(&timeinfo);
     double difference = difftime(next_time, now);
-    String time;
-    time.reserve(28);
-    time += alarm_translation[RINGS_IN];
-    if (difference > 86400) {
-        time += (int)difference / 86400;
-        time += alarm_translation[DAY_SHORT];
-    }
-    time += (int)difference % 86400 / 3600;
-    time += alarm_translation[HOUR_SHORT];
-    time += (int)difference % 86400 % 3600 / 60;
-    time += alarm_translation[MINUTE_SHORT];
-    lv_label_set_text(weekendsRingsInLabel, time.c_str());
+    this->set_rings_in_label_text(difference, weekendsRingsInLabel);
 }
 
 void Alarm::calculate_weekdays_remaining_time(int hour, int minute) {
@@ -422,8 +399,7 @@ void Alarm::calculate_weekdays_remaining_time(int hour, int minute) {
     if (timeinfo.tm_wday == 6) {
         if (timeinfo.tm_hour > hour) {
             timeinfo.tm_mday += 1;
-        }
-        else{
+        } else {
             timeinfo.tm_mday += 2;
         }
     }
@@ -438,18 +414,23 @@ void Alarm::calculate_weekdays_remaining_time(int hour, int minute) {
     timeinfo.tm_min = minute;
     time_t next_time = mktime(&timeinfo);
     double difference = difftime(next_time, now);
+    this->set_rings_in_label_text(difference, weekdaysRingsInLabel);
+}
+
+void Alarm::set_rings_in_label_text(double &difference_in_seconds,
+                                    lv_obj_t *rings_in_label) {
     String time;
     time.reserve(28);
     time += alarm_translation[RINGS_IN];
-    if (difference > 86400) {
-        time += (int)difference / 86400;
+    if (difference_in_seconds > 86400) {
+        time += (int)difference_in_seconds / 86400;
         time += alarm_translation[DAY_SHORT];
     }
-    time += (int)difference % 86400 / 3600;
+    time += (int)difference_in_seconds % 86400 / 3600;
     time += alarm_translation[HOUR_SHORT];
-    time += (int)difference % 86400 % 3600 / 60;
+    time += (int)difference_in_seconds % 86400 % 3600 / 60;
     time += alarm_translation[MINUTE_SHORT];
-    lv_label_set_text(weekdaysRingsInLabel, time.c_str());
+    lv_label_set_text(rings_in_label, time.c_str());
 }
 
 void Alarm::event_alarmModalCancelButton_cb(lv_event_t *e) {

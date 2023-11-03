@@ -65,7 +65,7 @@ class Alarm {
     void calculate_oneOff_remaining_time(int hour, int minute);
     void calculate_weekends_remaining_time(int hour, int minute);
     void calculate_weekdays_remaining_time(int hour, int minute);
-
+    void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
     void event_alarmModalCancelButton_cb(lv_event_t *e);
     void event_alarmModalOkButton_cb(lv_event_t *e);
 
