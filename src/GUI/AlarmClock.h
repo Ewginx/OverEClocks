@@ -5,10 +5,8 @@
 #include <stdio.h>
 #include <time.h>
 
-class Alarm {
+class AlarmClock {
   private:
-    int next_alarm_day_weekdays;
-    int next_alarm_day_weekends;
     bool weekdays_already_fired = false;
     bool weekends_already_fired = false;
 
@@ -59,13 +57,14 @@ class Alarm {
     void delete_alarm_modal_panel();
 
     bool is_weekends(int week_day);
-    void check_alarm_time(struct tm timeinfo);
+    void check_alarm_clocks(tm &timeinfo);
     void fire_alarm(lv_obj_t *target_label);
 
     void calculate_oneOff_remaining_time(int hour, int minute);
     void calculate_weekends_remaining_time(int hour, int minute);
     void calculate_weekdays_remaining_time(int hour, int minute);
     void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
+
     void event_alarmModalCancelButton_cb(lv_event_t *e);
     void event_alarmModalOkButton_cb(lv_event_t *e);
 
@@ -73,6 +72,6 @@ class Alarm {
 
     void event_alarmButtons_cb(lv_event_t *e);
 
-    Alarm(/* args */);
-    ~Alarm();
+    AlarmClock(/* args */);
+    ~AlarmClock();
 };
