@@ -1,21 +1,19 @@
 #pragma once
-#include <Arduino.h>
-#include "time.h"
-#include "GUI/Alarm.h"
-#include "GUI/DigitalClock.h"
-#include "GUI/AnalogClock.h"
 #include "Config/Config.h"
+#include "GUI/AlarmClock.h"
+#include "GUI/AnalogClock.h"
+#include "GUI/DigitalClock.h"
+#include <Arduino.h>
+#include <time.h>
 
-class TimeApp
-{
+class TimeApp {
 
-public:
-
-private:
+  public:
+  private:
     DigitalClock *digital_clock;
     AnalogClock *analog_clock;
-    Alarm *alarm;
-    
+    AlarmClock *alarm_clock;
+
     struct tm timeinfo;
 
     const long gmtOffset_sec = SECONDS_IN_ONE_HOUR * GMT_OFFSET;
@@ -27,11 +25,9 @@ private:
     char fullDate[12];
     unsigned long time_now = 0;
 
-public:
+  public:
     void notifyAboutTime();
     void config_time();
-    TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, Alarm *alarm);
+    TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, AlarmClock *alarm_clock);
     ~TimeApp();
 };
-
-

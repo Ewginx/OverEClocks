@@ -5,14 +5,10 @@
 #include <stdio.h>
 #include <time.h>
 
-class Alarm {
+class AlarmClock {
   private:
-    int next_alarm_day_weekdays;
-    int next_alarm_day_weekends;
     bool weekdays_already_fired = false;
     bool weekends_already_fired = false;
-    struct tm *alarm_timeinfo;
-    const int weekends_days[2] = {0, 6};
 
   public:
     lv_obj_t *alarmScreen;
@@ -22,16 +18,19 @@ class Alarm {
     lv_obj_t *weekdaysButton;
     lv_obj_t *weekdaysButtonLabel;
     lv_obj_t *weekdaysSwitch;
+    lv_obj_t *weekdaysRingsInLabel;
 
     lv_obj_t *weekendsLabel;
     lv_obj_t *weekendsSwitch;
     lv_obj_t *weekendsButton;
     lv_obj_t *weekendsButtonLabel;
+    lv_obj_t *weekendsRingsInLabel;
 
     lv_obj_t *oneOffSwitch;
     lv_obj_t *oneOffLabel;
     lv_obj_t *oneOffButton;
     lv_obj_t *oneOffButtonLabel;
+    lv_obj_t *oneOffRingsInLabel;
 
     lv_obj_t *alarmDummyPanel;
     lv_obj_t *alarmModalPanel;
@@ -58,8 +57,14 @@ class Alarm {
     void delete_alarm_modal_panel();
 
     bool is_weekends(int week_day);
-    void check_alarm_time(int hour, int minute, int week_day);
+    void check_alarm_clocks(tm &timeinfo);
     void fire_alarm(lv_obj_t *target_label);
+
+    void calculate_oneOff_remaining_time(int hour, int minute);
+    void calculate_weekends_remaining_time(int hour, int minute);
+    void calculate_weekdays_remaining_time(int hour, int minute);
+    void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
+
     void event_alarmModalCancelButton_cb(lv_event_t *e);
     void event_alarmModalOkButton_cb(lv_event_t *e);
 
@@ -67,6 +72,6 @@ class Alarm {
 
     void event_alarmButtons_cb(lv_event_t *e);
 
-    Alarm(/* args */);
-    ~Alarm();
+    AlarmClock(/* args */);
+    ~AlarmClock();
 };

@@ -20,8 +20,16 @@ enum alarm_texts {
     ONEOFF_DAY_LABEL,
     OK_BUTTON,
     CANCEL_BUTTON,
+    RINGS_IN,
+    DAY_SHORT,
+    HOUR_SHORT,
+    MINUTE_SHORT,
+};
+enum weather_texts {
+    FEELS_LIKE,
 };
 extern const char *settings_translation[];
 extern const char *digital_clock_translation[];
 extern const char *alarm_translation[];
+extern const char *weather_translation[];
 // extern std::map<String, String> settings_translation;
