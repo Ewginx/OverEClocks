@@ -28,6 +28,6 @@ class TimeApp {
   public:
     void notifyAboutTime();
     void config_time();
-    TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, AlarmClock *alarm);
+    TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, AlarmClock *alarm_clock);
     ~TimeApp();
 };
