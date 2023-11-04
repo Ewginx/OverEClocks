@@ -7,8 +7,6 @@
 
 class AlarmClock {
   private:
-    int next_alarm_day_weekdays;
-    int next_alarm_day_weekends;
     bool weekdays_already_fired = false;
     bool weekends_already_fired = false;
 
@@ -66,7 +64,6 @@ class AlarmClock {
     void calculate_weekends_remaining_time(int hour, int minute);
     void calculate_weekdays_remaining_time(int hour, int minute);
     void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
-
 
     void event_alarmModalCancelButton_cb(lv_event_t *e);
     void event_alarmModalOkButton_cb(lv_event_t *e);

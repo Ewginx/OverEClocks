@@ -1,6 +1,5 @@
 #include "GUI/AlarmClock.h"
 
-
 static AlarmClock *instance;
 
 extern "C" void event_alarmModalCancelButton_cb_wrapper(lv_event_t *e) {
@@ -417,7 +416,7 @@ void AlarmClock::calculate_weekdays_remaining_time(int hour, int minute) {
 }
 
 void AlarmClock::set_rings_in_label_text(double &difference_in_seconds,
-                                    lv_obj_t *rings_in_label) {
+                                         lv_obj_t *rings_in_label) {
     String time;
     time.reserve(28);
     time += alarm_translation[RINGS_IN];
