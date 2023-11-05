@@ -11,7 +11,10 @@ public:
     lv_obj_t *briefingLabel;
     lv_obj_t *windLabel;
     lv_obj_t *weatherHumidityLabel;
-    lv_obj_t *weatherMiscLabel;
+    lv_obj_t *weatherPressureLabel;
+    lv_obj_t *weatherMaxTempLabel;
+    lv_obj_t *weatherMinTempLabel;
+    lv_obj_t *weatherProbabilityLabel;
     lv_obj_t *feelsLikeLabel;
     lv_obj_t *weatherTimesLabel;
     lv_obj_t *weatherFirstTempLabel;
