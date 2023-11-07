@@ -18,37 +18,12 @@ Weather::Weather() {
     weatherImage = lv_img_create(weatherPanel);
     lv_img_set_src(weatherImage, &img_day_clear_png);
     lv_obj_set_size(weatherImage, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 128
-    lv_obj_set_pos(weatherImage, 0, 30);
+    lv_obj_set_pos(weatherImage, 10, 30);
     lv_obj_set_align(weatherImage, LV_ALIGN_TOP_LEFT);
-
-    weatherCityLabel = lv_label_create(weatherPanel);
-    lv_obj_set_size(weatherCityLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(weatherCityLabel, 0, 15);
-    lv_obj_set_align(weatherCityLabel, LV_ALIGN_TOP_MID);
-    lv_label_set_text(weatherCityLabel, "city, RU");
-    lv_label_set_long_mode(weatherCityLabel, LV_LABEL_LONG_CLIP);
-    lv_obj_set_style_text_font(weatherCityLabel, &montserrat_18,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    weatherTemperatureLabel = lv_label_create(weatherPanel);
-    lv_obj_set_size(weatherTemperatureLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(weatherTemperatureLabel, -15, -60);
-    lv_obj_set_align(weatherTemperatureLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(weatherTemperatureLabel, "13°C");
-    lv_obj_set_style_text_font(weatherTemperatureLabel, &montserrat_48,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    feelsLikeLabel = lv_label_create(weatherPanel);
-    lv_obj_set_size(feelsLikeLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 121
-    lv_obj_set_pos(feelsLikeLabel, 0, -5);
-    lv_obj_set_align(feelsLikeLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(feelsLikeLabel, "Ощущается как: -24°C");
-    lv_obj_set_style_text_font(feelsLikeLabel, &montserrat_14,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
 
     windLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(windLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 121
-    lv_obj_set_pos(windLabel, 140, -90);
+    lv_obj_set_pos(windLabel, 140, -75);
     lv_obj_set_align(windLabel, LV_ALIGN_CENTER);
     lv_label_set_text(windLabel, "Ветер: 14.1 км/ч ЗСЗ");
     lv_obj_set_style_text_font(windLabel, &montserrat_14,
@@ -57,7 +32,7 @@ Weather::Weather() {
     weatherHumidityLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(weatherHumidityLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 121
     lv_obj_align_to(weatherHumidityLabel, windLabel, LV_ALIGN_BOTTOM_LEFT, 0, 25);
-    lv_label_set_text(weatherHumidityLabel, "Влажность: 75%");
+    lv_label_set_text(weatherHumidityLabel, "Влажность: 75%"); 
     lv_obj_set_style_text_font(weatherHumidityLabel, &montserrat_14,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -70,9 +45,34 @@ Weather::Weather() {
     lv_obj_set_style_text_font(weatherPressureLabel, &montserrat_14,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    weatherCityLabel = lv_label_create(weatherPanel);
+    lv_obj_set_size(weatherCityLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_pos(weatherCityLabel, 0, 30);
+    lv_obj_set_align(weatherCityLabel, LV_ALIGN_TOP_MID);
+    lv_label_set_text(weatherCityLabel, "city, RU");
+    lv_label_set_long_mode(weatherCityLabel, LV_LABEL_LONG_CLIP);
+    lv_obj_set_style_text_font(weatherCityLabel, &montserrat_14,
+                               LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    weatherTemperatureLabel = lv_label_create(weatherPanel);
+    lv_obj_set_size(weatherTemperatureLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_pos(weatherTemperatureLabel, -10, -45);
+    lv_obj_set_align(weatherTemperatureLabel, LV_ALIGN_CENTER);
+    lv_label_set_text(weatherTemperatureLabel, "13°C");
+    lv_obj_set_style_text_font(weatherTemperatureLabel, &montserrat_48,
+                               LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    feelsLikeLabel = lv_label_create(weatherPanel);
+    lv_obj_set_size(feelsLikeLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 121
+    lv_obj_set_pos(feelsLikeLabel, 40, 5);
+    lv_obj_set_align(feelsLikeLabel, LV_ALIGN_CENTER);
+    lv_label_set_text(feelsLikeLabel, "Ощущается как: -24°C");
+    lv_obj_set_style_text_font(feelsLikeLabel, &montserrat_18,
+                               LV_PART_MAIN | LV_STATE_DEFAULT);
+
     briefingLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(briefingLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(briefingLabel, 0, 30);
+    lv_obj_set_pos(briefingLabel, 0, 35);
     lv_obj_set_align(briefingLabel, LV_ALIGN_CENTER);
     lv_label_set_text(briefingLabel, "Переменная облачность. Возможен дождь.");
     lv_obj_set_style_text_font(briefingLabel, &montserrat_14,
@@ -104,7 +104,7 @@ Weather::Weather() {
 
     weatherTimesLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(weatherTimesLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(weatherTimesLabel, 0, 95);
+    lv_obj_set_pos(weatherTimesLabel, 0, 93);
     lv_obj_set_align(weatherTimesLabel, LV_ALIGN_CENTER);
     lv_label_set_text(weatherTimesLabel,
                       "Ночь               Утро               День               Вечер");
