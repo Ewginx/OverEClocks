@@ -284,7 +284,7 @@
 #define LV_USE_REFR_DEBUG 0
 
 /*Change the built in (v)snprintf functions*/
-#define LV_SPRINTF_CUSTOM 0
+#define LV_SPRINTF_CUSTOM 1
 #if LV_SPRINTF_CUSTOM
     #define LV_SPRINTF_INCLUDE <stdio.h>
     #define lv_snprintf  snprintf
@@ -385,7 +385,7 @@
 /*Optionally declare custom fonts here.
  *You can use these fonts as default font too and they will be available globally.
  *E.g. #define LV_FONT_CUSTOM_DECLARE   LV_FONT_DECLARE(my_font_1) LV_FONT_DECLARE(my_font_2)*/
-#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(font_Roboto120) LV_FONT_DECLARE(font_Roboto45) LV_FONT_DECLARE(montserrat_32) LV_FONT_DECLARE(montserrat_18) LV_FONT_DECLARE(montserrat_14) LV_FONT_DECLARE(montserrat_48) LV_FONT_DECLARE(montserrat_12) LV_FONT_DECLARE(wifi_symbols_20)
+#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(font_Roboto120) LV_FONT_DECLARE(font_Roboto45) LV_FONT_DECLARE(montserrat_32) LV_FONT_DECLARE(montserrat_18) LV_FONT_DECLARE(montserrat_14) LV_FONT_DECLARE(montserrat_48) LV_FONT_DECLARE(montserrat_12) LV_FONT_DECLARE(wifi_symbols_20) LV_FONT_DECLARE(weather_icon_font_full_18)
 
 /*Always set a default font*/
 #define LV_FONT_DEFAULT &montserrat_14
