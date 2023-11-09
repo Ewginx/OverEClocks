@@ -10,7 +10,7 @@ class WeatherApp
 {
 private:
     short int port = 80;
-    String weather_url = "jsonplaceholder.typicode.com";
+    Weather *weather;
     TaskHandle_t Weather_Task;
 public:
     WiFiClient wifi;
@@ -19,7 +19,7 @@ public:
     void create_weather_task();
     static void send_weather_request(void *parameter);
 
-    WeatherApp();
+    WeatherApp(Weather *weather);
     ~WeatherApp();
 };
 

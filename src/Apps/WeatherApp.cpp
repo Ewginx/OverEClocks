@@ -2,10 +2,9 @@
 
 static WeatherApp *instance = NULL;
 
-
-WeatherApp::WeatherApp()
-{
-
+WeatherApp::WeatherApp(Weather *weather) {
+    this->weather = weather;
+    this->setup_weather_url();
 }
 
 void WeatherApp::send_weather_request(void *parameter)
