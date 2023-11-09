@@ -1,5 +1,6 @@
 #pragma once
 #include "lvgl.h"
+#include "Config/Config.h"
 
 class Weather{
 public:
