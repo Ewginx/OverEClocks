@@ -23,7 +23,7 @@ class WeatherApp {
 
     void setup_weather_url();
     void deserialize_json_response(String &response);
-    void set_temperature(int temperature);
+    void set_temperature(double temperature);
     void set_feels_like(double temperature);
     void set_weather_condition(const char *conditions);
     void set_wind(double wind_speed, double wind_dir);

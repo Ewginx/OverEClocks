@@ -59,7 +59,7 @@ void WeatherApp::deserialize_json_response(String &response) {
 
     JsonObject current_weather = doc["current"];
     // current_weather["is_day"]; // 0
-    this->set_temperature(current_weather["temp_c"].as<int>());
+    this->set_temperature(current_weather["temp_c"].as<double>());
     JsonObject current_condition = current_weather["condition"];
     this->set_weather_condition(current_condition["text"].as<const char *>());
     // int current_condition_code = current_condition["code"].as<int>(); // 1000
@@ -97,8 +97,8 @@ void WeatherApp::deserialize_json_response(String &response) {
         doc["forecast"]["forecastday"][0]["hour"][13]["temp_c"].as<double>(),
         doc["forecast"]["forecastday"][0]["hour"][19]["temp_c"].as<double>());
 }
-void WeatherApp::set_temperature(int temperature) {
-    lv_label_set_text_fmt(weather->weatherTemperatureLabel, "%d°C", temperature);
+void WeatherApp::set_temperature(double temperature) {
+    lv_label_set_text_fmt(weather->weatherTemperatureLabel, "%0.1f°C", temperature);
 }
 void WeatherApp::set_feels_like(double temperature) {
     lv_label_set_text_fmt(weather->feelsLikeLabel, "Ощущается как: %0.1f°C", temperature);

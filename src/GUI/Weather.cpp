@@ -23,7 +23,7 @@ Weather::Weather() {
 
     windLabel = lv_label_create(weatherPanel);
     lv_label_set_text_fmt(windLabel, WIND_SYMBOL " %s км/ч " NO_DATA_SYMBOL, NO_DATA_SYMBOL);
-    lv_obj_set_pos(windLabel, 150, -40);
+    lv_obj_set_pos(windLabel, 165, -40);
     lv_obj_set_align(windLabel, LV_ALIGN_CENTER);
     lv_obj_set_style_text_font(windLabel, &weather_icon_font_full_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -41,7 +41,7 @@ Weather::Weather() {
     lv_obj_set_pos(weatherTemperatureLabel, 20, -45);
     lv_obj_set_align(weatherTemperatureLabel, LV_ALIGN_CENTER);
     lv_label_set_text_fmt(weatherTemperatureLabel, "%s°C", NO_DATA_SYMBOL);
-    lv_obj_set_style_text_font(weatherTemperatureLabel, &montserrat_48,
+    lv_obj_set_style_text_font(weatherTemperatureLabel, &temperature_font_48,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     feelsLikeLabel = lv_label_create(weatherPanel);
