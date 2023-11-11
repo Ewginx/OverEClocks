@@ -2,6 +2,9 @@
 #include "lvgl.h"
 #include "Config/Config.h"
 
+LV_IMG_DECLARE(img_day_rain_png);
+LV_IMG_DECLARE(img_day_clear_png);
+
 class Weather{
 public:
     lv_obj_t *weatherScreen;

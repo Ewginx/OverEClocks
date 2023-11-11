@@ -1,8 +1,9 @@
 #include "GUI/Weather.h"
 
+
+
 Weather::Weather() {
-    LV_IMG_DECLARE(img_day_rain_png);
-    LV_IMG_DECLARE(img_day_clear_png);
+
     weatherScreen = lv_obj_create(NULL);
     lv_obj_clear_flag(weatherScreen, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
