@@ -24,18 +24,19 @@ class WeatherApp {
     void setup_weather_url();
     void deserialize_json_response(String &response);
     void set_temperature(int temperature);
-    void set_feels_like(int temperature);
+    void set_feels_like(double temperature);
     void set_weather_condition(const char *conditions);
-    void set_wind(double wind_speed, const char *wind_dir);
+    void set_wind(double wind_speed, double wind_dir);
     void set_humidity(int humidity);
     void set_pressure(int pressure);
-    void set_precipitation_probability(int rain_probability, int snow_probability);
+    void set_precipitation_probability(int rain_probability, int snow_probability, int temp);
     void set_max_min_temperatures(int max_temp, int min_temp);
+    void set_daily_temperatures(double night_temp, double morning_temp, double afternoon_temp, double evening_temp);
     // void set_visibility(char *visibility);
     // void set_uv(char *uv);
     void set_city_and_country_code(const char *city, const char* country_code);
     // void set_hour_forecast();
-    // void set_weather_img(char *code);
+    void set_weather_img(int code);
     void create_weather_task();
     static void send_weather_request(void *parameter);
 
