@@ -1,7 +1,5 @@
 #include "GUI/Weather.h"
 
-
-
 Weather::Weather() {
 
     weatherScreen = lv_obj_create(NULL);
@@ -22,7 +20,8 @@ Weather::Weather() {
     lv_obj_set_align(weatherImage, LV_ALIGN_TOP_LEFT);
 
     windLabel = lv_label_create(weatherPanel);
-    lv_label_set_text_fmt(windLabel, WIND_SYMBOL " %s км/ч " NO_DATA_SYMBOL, NO_DATA_SYMBOL);
+    lv_label_set_text_fmt(windLabel, WIND_SYMBOL " %s %s " NO_DATA_SYMBOL, NO_DATA_SYMBOL,
+                          weather_translation[wind_speed_uom]);
     lv_obj_set_pos(windLabel, 165, -40);
     lv_obj_set_align(windLabel, LV_ALIGN_CENTER);
     lv_obj_set_style_text_font(windLabel, &weather_icon_font_full_18,
@@ -47,10 +46,12 @@ Weather::Weather() {
     feelsLikeLabel = lv_label_create(weatherPanel);
     lv_obj_set_pos(feelsLikeLabel, 40, 5);
     lv_obj_set_align(feelsLikeLabel, LV_ALIGN_CENTER);
-    lv_label_set_text_fmt(feelsLikeLabel, "Ощущается как: %s°C", NO_DATA_SYMBOL);
+    lv_label_set_text_fmt(feelsLikeLabel, "%s %s°C", weather_translation[feels_like],
+                          NO_DATA_SYMBOL);
     lv_obj_set_style_text_font(feelsLikeLabel, &montserrat_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(feelsLikeLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(feelsLikeLabel, LV_TEXT_ALIGN_CENTER,
+                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     briefingLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(briefingLabel, 320, LV_SIZE_CONTENT); /// 1
@@ -60,7 +61,8 @@ Weather::Weather() {
     lv_label_set_text(briefingLabel, NO_DATA_SYMBOL);
     lv_obj_set_style_text_font(briefingLabel, &montserrat_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(briefingLabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(briefingLabel, LV_TEXT_ALIGN_CENTER,
+                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weatherMaxTempLabel = lv_label_create(weatherPanel);
     lv_label_set_text_fmt(weatherMaxTempLabel, TEMP_UP_SYMBOL " %s°C", NO_DATA_SYMBOL);
@@ -77,7 +79,8 @@ Weather::Weather() {
                     -1);
 
     weatherProbabilityLabel = lv_label_create(weatherPanel);
-    lv_label_set_text_fmt(weatherProbabilityLabel, SNOWFLAKE_SYMBOL " %s%%", NO_DATA_SYMBOL);
+    lv_label_set_text_fmt(weatherProbabilityLabel, SNOWFLAKE_SYMBOL " %s%%",
+                          NO_DATA_SYMBOL);
     lv_obj_set_style_text_font(weatherProbabilityLabel, &weather_icon_font_full_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align_to(weatherProbabilityLabel, weatherMinTempLabel, LV_ALIGN_OUT_RIGHT_MID,
@@ -91,7 +94,8 @@ Weather::Weather() {
                     15, -1);
 
     weatherPressureLabel = lv_label_create(weatherPanel);
-    lv_label_set_text_fmt(weatherPressureLabel, PRESSURE_SYMBOL " %s мбар", NO_DATA_SYMBOL);
+    lv_label_set_text_fmt(weatherPressureLabel, PRESSURE_SYMBOL " %s %s", NO_DATA_SYMBOL,
+                          weather_translation[pressure_uom]);
     lv_obj_set_style_text_font(weatherPressureLabel, &weather_icon_font_full_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align_to(weatherPressureLabel, weatherHumidityLabel, LV_ALIGN_OUT_RIGHT_MID,
@@ -100,27 +104,31 @@ Weather::Weather() {
     weatherTimesLabel = lv_label_create(weatherPanel);
     lv_obj_set_pos(weatherTimesLabel, 0, 93);
     lv_obj_set_align(weatherTimesLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(weatherTimesLabel,
-                      "Ночь               Утро               День               Вечер");
+    lv_label_set_text_fmt(weatherTimesLabel,
+                          "%s%s%s%s",
+                          weather_translation[night], weather_translation[morning],
+                          weather_translation[afternoon], weather_translation[evening]);
+    lv_obj_set_style_text_align(weatherTimesLabel, LV_TEXT_ALIGN_CENTER,
+                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weatherFirstTempLabel = lv_label_create(weatherPanel);
     lv_obj_set_pos(weatherFirstTempLabel, 55, -10);
     lv_obj_set_align(weatherFirstTempLabel, LV_ALIGN_BOTTOM_LEFT);
-    lv_label_set_text(weatherFirstTempLabel, "-7°C");
+    lv_label_set_text_fmt(weatherFirstTempLabel, "%s°C", NO_DATA_SYMBOL);
 
     weatherSecondTempLabel = lv_label_create(weatherPanel);
     lv_obj_align_to(weatherSecondTempLabel, weatherFirstTempLabel, LV_ALIGN_OUT_RIGHT_TOP,
                     65, 0);
-    lv_label_set_text(weatherSecondTempLabel, "-10°C");
+    lv_label_set_text_fmt(weatherSecondTempLabel, "%s°C", NO_DATA_SYMBOL);
 
     weatherThirdTempLabel = lv_label_create(weatherPanel);
     lv_obj_align_to(weatherThirdTempLabel, weatherSecondTempLabel, LV_ALIGN_OUT_RIGHT_TOP,
                     65, 0);
-    lv_label_set_text(weatherThirdTempLabel, "-13°C");
+    lv_label_set_text_fmt(weatherThirdTempLabel, "%s°C", NO_DATA_SYMBOL);
 
     weatherFourthTempLabel = lv_label_create(weatherPanel);
     lv_obj_align_to(weatherFourthTempLabel, weatherThirdTempLabel, LV_ALIGN_OUT_RIGHT_TOP,
                     65, 0);
-    lv_label_set_text(weatherFourthTempLabel, "-18°C");
+    lv_label_set_text_fmt(weatherFourthTempLabel, "%s°C", NO_DATA_SYMBOL);
 }
 Weather::~Weather(){};

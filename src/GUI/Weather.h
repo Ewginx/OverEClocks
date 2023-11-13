@@ -1,6 +1,7 @@
 #pragma once
 #include "lvgl.h"
 #include "Config/Config.h"
+#include "Translation/Translation.h"
 
 LV_IMG_DECLARE(img_day_rain_png);
 LV_IMG_DECLARE(img_day_clear_png);

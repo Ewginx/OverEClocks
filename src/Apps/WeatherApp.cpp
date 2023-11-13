@@ -101,7 +101,8 @@ void WeatherApp::set_temperature(int temperature) {
     lv_label_set_text_fmt(weather->weatherTemperatureLabel, "%d°C", temperature);
 }
 void WeatherApp::set_feels_like(double temperature) {
-    lv_label_set_text_fmt(weather->feelsLikeLabel, "Ощущается как: %0.1f°C", temperature);
+    lv_label_set_text_fmt(weather->feelsLikeLabel, "%s %0.1f°C",
+                          weather_translation[feels_like], temperature);
 }
 void WeatherApp::set_weather_condition(const char *conditions) {
     lv_label_set_text(weather->briefingLabel, conditions);
@@ -125,8 +126,8 @@ void WeatherApp::set_wind(double wind_speed, double wind_dir) {
     } else if (22.5 <= wind_dir & wind_dir <= 67.5) {
         strcpy(wind_symbol, NE_WIND_SYMBOL);
     }
-    lv_label_set_text_fmt(weather->windLabel, WIND_SYMBOL " %.1f км/ч %s", wind_speed,
-                          wind_symbol);
+    lv_label_set_text_fmt(weather->windLabel, WIND_SYMBOL " %.1f %s %s", wind_speed,
+                          weather_translation[wind_speed_uom], wind_symbol);
 }
 void WeatherApp::set_humidity(int humidity) {
     lv_label_set_text_fmt(weather->weatherHumidityLabel, HUMIDITY_SYMBOL " %d%%",
@@ -160,8 +161,8 @@ void WeatherApp::set_daily_temperatures(double night_temp, double morning_temp,
     lv_label_set_text_fmt(weather->weatherFourthTempLabel, "%0.1f°C", evening_temp);
 }
 void WeatherApp::set_pressure(int pressure) {
-    lv_label_set_text_fmt(weather->weatherPressureLabel, PRESSURE_SYMBOL " %d мбар",
-                          pressure);
+    lv_label_set_text_fmt(weather->weatherPressureLabel, PRESSURE_SYMBOL " %d %s",
+                          pressure, weather_translation[pressure_uom]);
 }
 void WeatherApp::set_weather_img(int code) {
     if (code == 1000)

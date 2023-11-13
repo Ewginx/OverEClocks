@@ -37,7 +37,7 @@ AlarmClock::AlarmClock(/* args */) {
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(weekdaysLabel, 10, 65);
     lv_obj_set_align(weekdaysLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(weekdaysLabel, alarm_translation[WORKING_DAY_LABEL]);
+    lv_label_set_text(weekdaysLabel, alarm_translation[working_day_label]);
     lv_obj_set_style_text_font(weekdaysLabel, &montserrat_18, LV_PART_MAIN);
 
     weekdaysRingsInLabel = lv_label_create(alarmPanel);
@@ -66,7 +66,7 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_set_size(weekendsLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
     lv_obj_align_to(weekendsLabel, weekdaysLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
-    lv_label_set_text(weekendsLabel, alarm_translation[WEEKEND_DAY_LABEL]);
+    lv_label_set_text(weekendsLabel, alarm_translation[weekend_day_label]);
     lv_obj_set_style_text_font(weekendsLabel, &montserrat_18, LV_PART_MAIN);
 
     weekendsRingsInLabel = lv_label_create(alarmPanel);
@@ -96,7 +96,7 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_set_size(oneOffLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
     lv_obj_align_to(oneOffLabel, weekendsLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 40);
-    lv_label_set_text(oneOffLabel, alarm_translation[ONEOFF_DAY_LABEL]);
+    lv_label_set_text(oneOffLabel, alarm_translation[oneoff_day_label]);
     lv_obj_set_style_text_font(oneOffLabel, &montserrat_18, LV_PART_MAIN);
 
     oneOffRingsInLabel = lv_label_create(alarmPanel);
@@ -189,7 +189,7 @@ void AlarmClock::create_roller_modal_panel(lv_obj_t *target_label) {
         lv_obj_set_size(modalCancelButtonLabel, LV_SIZE_CONTENT,
                         LV_SIZE_CONTENT); /// 1
         lv_obj_set_align(modalCancelButtonLabel, LV_ALIGN_CENTER);
-        lv_label_set_text(modalCancelButtonLabel, alarm_translation[CANCEL_BUTTON]);
+        lv_label_set_text(modalCancelButtonLabel, alarm_translation[cancel_button]);
         lv_obj_set_style_text_font(modalCancelButtonLabel, &montserrat_18, LV_PART_MAIN);
 
         modalOkButton = lv_btn_create(alarmModalPanel);
@@ -200,7 +200,7 @@ void AlarmClock::create_roller_modal_panel(lv_obj_t *target_label) {
         lv_obj_set_size(modalOkButtonLabel, LV_SIZE_CONTENT,
                         LV_SIZE_CONTENT); /// 1
         lv_obj_set_align(modalOkButtonLabel, LV_ALIGN_CENTER);
-        lv_label_set_text(modalOkButtonLabel, alarm_translation[OK_BUTTON]);
+        lv_label_set_text(modalOkButtonLabel, alarm_translation[ok_button]);
         lv_obj_set_style_text_font(modalOkButtonLabel, &montserrat_18, LV_PART_MAIN);
 
         lv_obj_add_event_cb(modalCancelButton, event_alarmModalCancelButton_cb_wrapper,
@@ -257,7 +257,7 @@ void AlarmClock::create_alarm_modal_panel(lv_obj_t *target_label) {
     lv_obj_set_size(modalOkButtonLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(modalOkButtonLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(modalOkButtonLabel, alarm_translation[OK_BUTTON]);
+    lv_label_set_text(modalOkButtonLabel, alarm_translation[ok_button]);
     lv_obj_set_style_text_font(modalOkButtonLabel, &montserrat_18, LV_PART_MAIN);
 
     lv_obj_add_event_cb(modalOkButton, event_offAlarmButton_cb_wrapper, LV_EVENT_ALL,
@@ -419,15 +419,15 @@ void AlarmClock::set_rings_in_label_text(double &difference_in_seconds,
                                          lv_obj_t *rings_in_label) {
     String time;
     time.reserve(28);
-    time += alarm_translation[RINGS_IN];
+    time += alarm_translation[rings_in];
     if (difference_in_seconds > 86400) {
         time += (int)difference_in_seconds / 86400;
-        time += alarm_translation[DAY_SHORT];
+        time += alarm_translation[day_short];
     }
     time += (int)difference_in_seconds % 86400 / 3600;
-    time += alarm_translation[HOUR_SHORT];
+    time += alarm_translation[hour_short];
     time += (int)difference_in_seconds % 86400 % 3600 / 60;
-    time += alarm_translation[MINUTE_SHORT];
+    time += alarm_translation[minute_short];
     lv_label_set_text(rings_in_label, time.c_str());
 }
 
