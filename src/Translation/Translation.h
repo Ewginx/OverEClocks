@@ -3,30 +3,36 @@
 #include "Config/Config.h"
 // #include<map>
 enum settings_texts {
-    THEME,
-    AUTO,
-    CITY_PLACEHOLDER,
-    CITY,
-    WIFI_SSID_PLACEHOLDER,
-    WIFI_SSID,
-    WIFI_PASSWORD_PLACEHOLDER,
-    WIFI_PASSWORD,
-    ACCESS_POINT_IP,
+    theme,
+    auto_brightness,
+    city_placeholder,
+    city,
+    wifi_ssid_placeholder,
+    wifi_ssid,
+    wifi_password_placeholder,
+    wifi_password,
+    access_point_ip,
 
 };
 enum alarm_texts {
-    WORKING_DAY_LABEL,
-    WEEKEND_DAY_LABEL,
-    ONEOFF_DAY_LABEL,
-    OK_BUTTON,
-    CANCEL_BUTTON,
-    RINGS_IN,
-    DAY_SHORT,
-    HOUR_SHORT,
-    MINUTE_SHORT,
+    working_day_label,
+    weekend_day_label,
+    oneoff_day_label,
+    ok_button,
+    cancel_button,
+    rings_in,
+    day_short,
+    hour_short,
+    minute_short,
 };
 enum weather_texts {
-    FEELS_LIKE,
+    wind_speed_uom,
+    feels_like,
+    pressure_uom,
+    night,
+    morning,
+    afternoon,
+    evening,
 };
 extern const char *settings_translation[];
 extern const char *digital_clock_translation[];
