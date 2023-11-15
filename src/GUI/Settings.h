@@ -1,17 +1,17 @@
 #pragma once
-#include "Preferences.h"
 #include "Display/Display.h"
 #include "GUI/DigitalClock.h"
+#include "Preferences.h"
 #include "Translation/Translation.h"
 
-class Settings
-{
-private:
+
+class Settings {
+  private:
     Display *_display;
     Preferences _preferences;
-    int settings_panel_height = 640;
+    int _settings_panel_height = 640;
 
-public:
+  public:
     lv_obj_t *ui_SettingsKeyboard;
 
     lv_obj_t *home_screen;
@@ -39,12 +39,11 @@ public:
 
     void init_settings_screen();
     void load_settings_screen(lv_obj_t *screen);
-    
+
     void create_keyboard(lv_obj_t *target);
     void delete_keyboard();
 
     void settings_city_edit_event_cb(lv_event_t *e);
-    void darkmode_switch_event_cb(lv_event_t *e);
     void settings_SSID_edit_event_cb(lv_event_t *e);
     void settings_password_edit_event_cb(lv_event_t *e);
     void settings_brightnessSlider_event_cb(lv_event_t *e);
@@ -55,5 +54,3 @@ public:
     Settings();
     ~Settings();
 };
-
-
