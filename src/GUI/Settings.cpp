@@ -188,10 +188,10 @@ void Settings::init_settings_screen() {
     this->autoBrightnessCheckbox = lv_checkbox_create(this->ui_SettingsPanel);
     lv_obj_align_to(this->autoBrightnessCheckbox, this->brightnessSlider,
                     LV_ALIGN_OUT_RIGHT_MID, 50, 0);
-    lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &montserrat_18,
-                               LV_PART_MAIN);
     lv_checkbox_set_text(this->autoBrightnessCheckbox,
                          settings_translation[auto_brightness]);
+    lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &montserrat_18,
+                               LV_PART_MAIN | LV_PART_INDICATOR);
 
     this->ui_SettingsCityEdit = lv_textarea_create(this->ui_SettingsPanel);
     lv_obj_set_size(this->ui_SettingsCityEdit, 250, LV_SIZE_CONTENT); /// 33

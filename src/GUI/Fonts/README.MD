@@ -13,7 +13,17 @@ You can replace it with any font that has compatible extension (TFF or WOFF) and
 
 All you need to do is just font file to .c array via LVGL FontConverter with the right height (px) and character/range. 
 
-Don't forget to include the Basic Latin-1 and ° sign in the range. 
+Don't forget to include the Basic Latin-1 and ° sign in the range.  You also need to append *FontAwesome5-Solid+Brands+Regular* with 
+
+**61441,61448,61451,61452,61452,61453,61457,61459,61461,61465,
+61468,61473,61478,61479,61480,61502,61512,61515,61516,61517,
+61521,61522,61523,61524,61543,61544,61550,61552,61553,61556,
+61559,61560,61561,61563,61587,61589,61636,61637,61639,61671,
+61674,61683,61724,61732,61787,61931,62016,62017,62018,62019,
+62020,62087,62099,62212,62189,62810,63426,63650**
+
+symbols to font with 14px height (default font), which will add for you LV_SYMBOL_OK that used in checkbox and others symbols that used in keyboard for example.
+
 Except for 48 px font, which is only used to display the current temperature on the Weather Screen and therefore only needs ° and minus signs and all numbers
 
 ---
