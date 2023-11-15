@@ -1,19 +1,16 @@
 #pragma once
-#include "GUI/AlarmClock.h"
-#include "GUI/DigitalClock.h"
-#include "GUI/AnalogClock.h"
 #include "Config/Config.h"
-#include "GUI/Weather.h"
+#include "GUI/AlarmClock.h"
+#include "GUI/AnalogClock.h"
+#include "GUI/DigitalClock.h"
 #include "GUI/DockPanel.h"
 #include "GUI/Settings.h"
+#include "GUI/Weather.h"
 
-
-class GuiApp
-{
-private:
+class GuiApp {
+  private:
     /* data */
-public:
-
+  public:
     AlarmClock *alarm_clock;
     DigitalClock *digital_clock;
     AnalogClock *analog_clock_screen;
@@ -30,11 +27,11 @@ public:
 
     void settings_button_event_cb(lv_event_t *e);
     void darkmode_switch_event_cb(lv_event_t *e);
+    void set_light_theme(lv_disp_t *display);
+    void set_dark_theme(lv_disp_t *display);
     // void settings_textarea_event_cb(lv_event_t *e);
 
     void init_gui();
     GuiApp(/* args */);
     ~GuiApp();
 };
-
-
