@@ -106,7 +106,7 @@ void GuiApp::screen_load_event_cb(lv_event_t *e) {
 }
 
 void GuiApp::settings_button_event_cb(lv_event_t *e) {
-    lv_obj_add_event_cb(settings->ui_DarkmodeSwitch, darkmode_switch_event_cb_wrapper,
+    lv_obj_add_event_cb(settings->darkmodeSwitch, darkmode_switch_event_cb_wrapper,
                         LV_EVENT_ALL, NULL);
 
     settings->load_settings_screen(lv_scr_act());
