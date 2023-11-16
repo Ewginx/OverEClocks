@@ -163,9 +163,8 @@ void Settings::init_settings_screen() {
 
     this->settingsPanel = lv_obj_create(this->settingsScreen);
     lv_obj_set_size(this->settingsPanel, lv_pct(100), this->_settings_panel_height);
-    lv_obj_set_style_bg_color(this->settingsPanel, lv_color_hex(0xFFFFFF),
-                              LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(this->settingsPanel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(this->settingsPanel, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_bg_opa(this->settingsPanel, 0, 0);
     lv_obj_clear_flag(this->settingsPanel, LV_OBJ_FLAG_SCROLL_ELASTIC);
 
     this->darkmodeLabel = lv_label_create(this->settingsPanel);
@@ -191,7 +190,8 @@ void Settings::init_settings_screen() {
     lv_checkbox_set_text(this->autoBrightnessCheckbox,
                          settings_translation[auto_brightness]);
     lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &font_18, 0);
-    lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &font_18, LV_PART_INDICATOR | LV_STATE_CHECKED);
+    lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &font_18,
+                               LV_PART_INDICATOR | LV_STATE_CHECKED);
 
     this->cityTextArea = lv_textarea_create(this->settingsPanel);
     lv_obj_set_size(this->cityTextArea, 250, LV_SIZE_CONTENT); /// 33
@@ -207,10 +207,8 @@ void Settings::init_settings_screen() {
     lv_obj_set_pos(this->cityLabel, 20, this->_settings_panel_height / 5);
     lv_obj_set_align(this->cityLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->cityLabel, settings_translation[city]);
-    lv_obj_set_style_text_font(this->cityLabel, &font_18,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(this->cityLabel, LV_TEXT_ALIGN_CENTER,
-                                LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(this->cityLabel, &font_18, 0);
+    lv_obj_set_style_text_align(this->cityLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     this->SSIDTextArea = lv_textarea_create(this->settingsPanel);
     lv_obj_set_size(this->SSIDTextArea, 250, LV_SIZE_CONTENT);
@@ -226,8 +224,7 @@ void Settings::init_settings_screen() {
     lv_obj_set_pos(this->SSIDLabel, 40, this->_settings_panel_height / 5 + 70);
     lv_obj_set_align(this->SSIDLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->SSIDLabel, settings_translation[wifi_ssid]);
-    lv_obj_set_style_text_font(this->SSIDLabel, &font_18,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(this->SSIDLabel, &font_18, 0);
 
     this->passwordTextArea = lv_textarea_create(this->settingsPanel);
     lv_obj_set_size(this->passwordTextArea, 250, LV_SIZE_CONTENT); /// 33
@@ -246,24 +243,21 @@ void Settings::init_settings_screen() {
     lv_obj_set_pos(this->passwordLabel, 20, this->_settings_panel_height / 5 + 65 * 2);
     lv_obj_set_align(this->passwordLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->passwordLabel, settings_translation[wifi_password]);
-    lv_obj_set_style_text_font(this->passwordLabel, &font_18,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(this->passwordLabel, &font_18, 0);
 
     this->APLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_size(this->APLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->APLabel, 80, this->_settings_panel_height - 60);
     lv_obj_set_align(this->APLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->APLabel, settings_translation[access_point_ip]);
-    lv_obj_set_style_text_font(this->APLabel, &font_18,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(this->APLabel, &font_18, 0);
 
     this->IPLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_size(this->IPLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->IPLabel, 230, this->_settings_panel_height - 60);
     lv_obj_set_align(this->IPLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->IPLabel, "192.120.12.99");
-    lv_obj_set_style_text_font(this->IPLabel, &font_18,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(this->IPLabel, &font_18, 0);
 
     this->homeButton = lv_btn_create(this->settingsPanel);
     lv_obj_set_size(this->homeButton, 35, 35);
@@ -273,10 +267,8 @@ void Settings::init_settings_screen() {
     this->homeButtonLabel = lv_label_create(this->homeButton);
     lv_obj_set_align(homeButtonLabel, LV_ALIGN_CENTER);
     lv_label_set_text(this->homeButtonLabel, LV_SYMBOL_HOME);
-    lv_obj_set_style_text_align(this->homeButtonLabel, LV_TEXT_ALIGN_CENTER,
-                                LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(this->homeButtonLabel, &lv_font_montserrat_20,
-                               LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(this->homeButtonLabel, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_text_font(this->homeButtonLabel, &lv_font_montserrat_20, 0);
 
     lv_obj_add_event_cb(this->cityTextArea, settings_cityTextArea_event_cb_wrapper,
                         LV_EVENT_ALL, NULL);
