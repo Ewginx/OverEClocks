@@ -128,7 +128,7 @@ void GuiApp::darkmode_switch_event_cb(lv_event_t *e) {
 void GuiApp::set_light_theme(lv_disp_t *display) {
     lv_theme_t *theme =
         lv_theme_default_init(display, lv_palette_main(LV_PALETTE_CYAN),
-                              lv_palette_main(LV_PALETTE_NONE), false, LV_FONT_DEFAULT);
+                              lv_palette_main(LV_PALETTE_CYAN), false, LV_FONT_DEFAULT);
     lv_disp_set_theme(display, theme);
 
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_black(),
