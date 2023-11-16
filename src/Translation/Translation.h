@@ -33,6 +33,7 @@ enum weather_texts {
     morning,
     afternoon,
     evening,
+    no_data,
 };
 extern const char *settings_translation[];
 extern const char *digital_clock_translation[];
