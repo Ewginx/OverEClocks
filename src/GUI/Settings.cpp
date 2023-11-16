@@ -1,4 +1,5 @@
 #include "GUI/Settings.h"
+#include "Settings.h"
 
 static Settings *instance = NULL;
 
@@ -69,6 +70,10 @@ void Settings::delete_keyboard() {
     }
 }
 
+void Settings::set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3) {
+    lv_label_set_text_fmt(this->ipAddressLabel, "%s %d.%d.%d.%d",
+                          settings_translation[access_point_ip], ip0, ip1, ip2, ip3);
+}
 void Settings::keyboard_event_cb(lv_event_t *e) { this->delete_keyboard(); }
 
 void Settings::home_button_event_cb(lv_event_t *e) {
@@ -245,19 +250,13 @@ void Settings::init_settings_screen() {
     lv_label_set_text(this->passwordLabel, settings_translation[wifi_password]);
     lv_obj_set_style_text_font(this->passwordLabel, &font_18, 0);
 
-    this->APLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_size(this->APLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(this->APLabel, 80, this->_settings_panel_height - 60);
-    lv_obj_set_align(this->APLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->APLabel, settings_translation[access_point_ip]);
-    lv_obj_set_style_text_font(this->APLabel, &font_18, 0);
-
-    this->IPLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_size(this->IPLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(this->IPLabel, 230, this->_settings_panel_height - 60);
-    lv_obj_set_align(this->IPLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->IPLabel, "192.120.12.99");
-    lv_obj_set_style_text_font(this->IPLabel, &font_18, 0);
+    this->ipAddressLabel = lv_label_create(this->settingsPanel);
+    lv_obj_set_size(this->ipAddressLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_pos(this->ipAddressLabel, 80, this->_settings_panel_height - 60);
+    lv_obj_set_align(this->ipAddressLabel, LV_ALIGN_TOP_LEFT);
+    lv_label_set_text_fmt(this->ipAddressLabel, "%s%s",
+                          settings_translation[access_point_ip], "---.---.--.--");
+    lv_obj_set_style_text_font(this->ipAddressLabel, &font_18, 0);
 
     this->homeButton = lv_btn_create(this->settingsPanel);
     lv_obj_set_size(this->homeButton, 35, 35);
@@ -306,7 +305,7 @@ Settings::~Settings() {
     //     this->passwordTextArea = NULL;
     //     this->passwordLabel = NULL;
     //     this->APLabel = NULL;
-    //     this->IPLabel = NULL;
+    //     this->ipAddressLabel = NULL;
     //     this->homeButton = NULL;
     //     this->homeButtonLabel = NULL;
     // }

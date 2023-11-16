@@ -27,7 +27,7 @@ public:
     GuiApp *gui_app;
     ServerApp *server_app;
 
-    void connect_wifi();
+    void connect_to_wifi();
 
     void setup_display_brightness();
     

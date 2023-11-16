@@ -4,7 +4,6 @@
 #include "Preferences.h"
 #include "Translation/Translation.h"
 
-
 class Settings {
   private:
     Display *_display;
@@ -28,8 +27,7 @@ class Settings {
     lv_obj_t *passwordTextArea;
     lv_obj_t *homeButton;
     lv_obj_t *homeButtonLabel;
-    lv_obj_t *APLabel;
-    lv_obj_t *IPLabel;
+    lv_obj_t *ipAddressLabel;
 
     lv_obj_t *brightnessSlider;
     lv_obj_t *autoBrightnessCheckbox;
@@ -42,6 +40,8 @@ class Settings {
 
     void create_keyboard(lv_obj_t *target);
     void delete_keyboard();
+
+    void set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3);
 
     void settings_cityTextArea_event_cb(lv_event_t *e);
     void settings_SSIDTextArea_event_cb(lv_event_t *e);
