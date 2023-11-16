@@ -32,6 +32,7 @@ Weather::Weather() {
     lv_label_set_text_fmt(weatherCityLabel, "%s", weather_translation[no_data]);
     lv_label_set_long_mode(weatherCityLabel, LV_LABEL_LONG_SCROLL_CIRCULAR);
     lv_obj_set_style_text_font(weatherCityLabel, &font_18, 0);
+    lv_obj_set_style_text_align(weatherCityLabel, LV_TEXT_ALIGN_CENTER,0);
 
     weatherTemperatureLabel = lv_label_create(weatherPanel);
     lv_obj_set_pos(weatherTemperatureLabel, 20, -45);
@@ -99,21 +100,21 @@ Weather::Weather() {
     weatherFirstTempLabel = lv_label_create(weatherPanel);
     lv_obj_set_pos(weatherFirstTempLabel, 55, -10);
     lv_obj_set_align(weatherFirstTempLabel, LV_ALIGN_BOTTOM_LEFT);
-    lv_label_set_text_fmt(weatherFirstTempLabel, "%s°C", NO_DATA_SYMBOL);
+    lv_label_set_text(weatherFirstTempLabel, "  -°C");
 
     weatherSecondTempLabel = lv_label_create(weatherPanel);
     lv_obj_align_to(weatherSecondTempLabel, weatherFirstTempLabel, LV_ALIGN_OUT_RIGHT_TOP,
                     65, 0);
-    lv_label_set_text_fmt(weatherSecondTempLabel, "%s°C", NO_DATA_SYMBOL);
+    lv_label_set_text(weatherSecondTempLabel, "  -°C");
 
     weatherThirdTempLabel = lv_label_create(weatherPanel);
     lv_obj_align_to(weatherThirdTempLabel, weatherSecondTempLabel, LV_ALIGN_OUT_RIGHT_TOP,
                     65, 0);
-    lv_label_set_text_fmt(weatherThirdTempLabel, "%s°C", NO_DATA_SYMBOL);
+    lv_label_set_text(weatherThirdTempLabel, "  -°C");
 
     weatherFourthTempLabel = lv_label_create(weatherPanel);
     lv_obj_align_to(weatherFourthTempLabel, weatherThirdTempLabel, LV_ALIGN_OUT_RIGHT_TOP,
                     65, 0);
-    lv_label_set_text_fmt(weatherFourthTempLabel, "%s°C", NO_DATA_SYMBOL);
+    lv_label_set_text(weatherFourthTempLabel, "  -°C");
 }
 Weather::~Weather(){};
