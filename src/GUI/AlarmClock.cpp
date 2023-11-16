@@ -246,7 +246,7 @@ void AlarmClock::create_alarm_modal_panel(lv_obj_t *target_label) {
     lv_label_set_text(alarmTimeLabel, lv_label_get_text(target_label));
     lv_obj_set_align(alarmTimeLabel, LV_ALIGN_CENTER);
     lv_obj_set_pos(alarmTimeLabel, 0, -30);
-    lv_obj_set_style_text_font(alarmTimeLabel, &montserrat_32, LV_PART_MAIN);
+    lv_obj_set_style_text_font(alarmTimeLabel, &font_32, LV_PART_MAIN);
 
     modalOkButton = lv_btn_create(alarmModalPanel);
     lv_obj_set_size(modalOkButton, 80, 45);

@@ -24,7 +24,7 @@ Weather::Weather() {
                           weather_translation[wind_speed_uom]);
     lv_obj_set_pos(windLabel, 165, -40);
     lv_obj_set_align(windLabel, LV_ALIGN_CENTER);
-    lv_obj_set_style_text_font(windLabel, &weather_icon_font_full_18,
+    lv_obj_set_style_text_font(windLabel, &weather_font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weatherCityLabel = lv_label_create(weatherPanel);
@@ -66,14 +66,14 @@ Weather::Weather() {
 
     weatherMaxTempLabel = lv_label_create(weatherPanel);
     lv_label_set_text_fmt(weatherMaxTempLabel, TEMP_UP_SYMBOL " %s°C", NO_DATA_SYMBOL);
-    lv_obj_set_style_text_font(weatherMaxTempLabel, &weather_icon_font_full_18,
+    lv_obj_set_style_text_font(weatherMaxTempLabel, &weather_font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(weatherMaxTempLabel, -170, 65);
     lv_obj_set_align(weatherMaxTempLabel, LV_ALIGN_CENTER);
 
     weatherMinTempLabel = lv_label_create(weatherPanel);
     lv_label_set_text_fmt(weatherMinTempLabel, TEMP_DOWN_SYMBOL " %s°C", NO_DATA_SYMBOL);
-    lv_obj_set_style_text_font(weatherMinTempLabel, &weather_icon_font_full_18,
+    lv_obj_set_style_text_font(weatherMinTempLabel, &weather_font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align_to(weatherMinTempLabel, weatherMaxTempLabel, LV_ALIGN_OUT_RIGHT_MID, 15,
                     -1);
@@ -81,14 +81,14 @@ Weather::Weather() {
     weatherProbabilityLabel = lv_label_create(weatherPanel);
     lv_label_set_text_fmt(weatherProbabilityLabel, SNOWFLAKE_SYMBOL " %s%%",
                           NO_DATA_SYMBOL);
-    lv_obj_set_style_text_font(weatherProbabilityLabel, &weather_icon_font_full_18,
+    lv_obj_set_style_text_font(weatherProbabilityLabel, &weather_font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align_to(weatherProbabilityLabel, weatherMinTempLabel, LV_ALIGN_OUT_RIGHT_MID,
                     15, -1);
 
     weatherHumidityLabel = lv_label_create(weatherPanel);
     lv_label_set_text_fmt(weatherHumidityLabel, HUMIDITY_SYMBOL " %s%%", NO_DATA_SYMBOL);
-    lv_obj_set_style_text_font(weatherHumidityLabel, &weather_icon_font_full_18,
+    lv_obj_set_style_text_font(weatherHumidityLabel, &weather_font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align_to(weatherHumidityLabel, weatherProbabilityLabel, LV_ALIGN_OUT_RIGHT_MID,
                     15, -1);
@@ -96,7 +96,7 @@ Weather::Weather() {
     weatherPressureLabel = lv_label_create(weatherPanel);
     lv_label_set_text_fmt(weatherPressureLabel, PRESSURE_SYMBOL " %s %s", NO_DATA_SYMBOL,
                           weather_translation[pressure_uom]);
-    lv_obj_set_style_text_font(weatherPressureLabel, &weather_icon_font_full_18,
+    lv_obj_set_style_text_font(weatherPressureLabel, &weather_font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align_to(weatherPressureLabel, weatherHumidityLabel, LV_ALIGN_OUT_RIGHT_MID,
                     15, -1);

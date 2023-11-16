@@ -27,6 +27,9 @@ Except for 48 px font, which is only used to display the current temperature on 
 For WiFi connectivity symbols, you need to convert *MaterialIcons-Regular.ttf* font with this range codes:
 - **0xe648** for WiFi Connected
 - **0xe63e** for WiFi Disconnected
+- 
+---
+### Weather font
 
 For Weather screen symbols, you need to convert 
 1. *weathericons-regular-webfont.ttf* with range codes:
@@ -36,4 +39,5 @@ For Weather screen symbols, you need to convert
     - **0xe900,0xe901,0xe902,0xe903** (this symbols was converted from SVG file in IcoMoon App)
 3. then add **Montserrat-Regular.ttf* with code ranges of your language (you should probably add Basic Latin, at least for numbers, and ° sign)
 
-0x020 - 0x07F, 0x410 - 0x44F
+latin Basic 0x020 - 0x07F
+Russian 0x410 - 0x44F,0x401,0x451
