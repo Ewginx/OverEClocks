@@ -385,7 +385,7 @@
 /*Optionally declare custom fonts here.
  *You can use these fonts as default font too and they will be available globally.
  *E.g. #define LV_FONT_CUSTOM_DECLARE   LV_FONT_DECLARE(my_font_1) LV_FONT_DECLARE(my_font_2)*/
-#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(font_Roboto120) LV_FONT_DECLARE(font_Roboto45) LV_FONT_DECLARE(font_32) LV_FONT_DECLARE(font_18) LV_FONT_DECLARE(font_14) LV_FONT_DECLARE(temperature_font_48) LV_FONT_DECLARE(font_12) LV_FONT_DECLARE(wifi_symbols_20) LV_FONT_DECLARE(weather_font_18)
+#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(d_clock_font_120) LV_FONT_DECLARE(d_clock_font_45) LV_FONT_DECLARE(font_32) LV_FONT_DECLARE(font_18) LV_FONT_DECLARE(font_14) LV_FONT_DECLARE(temperature_font_48) LV_FONT_DECLARE(font_12) LV_FONT_DECLARE(wifi_symbols_20) LV_FONT_DECLARE(weather_font_18)
 
 /*Always set a default font*/
 #define LV_FONT_DEFAULT &font_14

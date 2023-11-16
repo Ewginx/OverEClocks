@@ -25,23 +25,24 @@ DigitalClock::DigitalClock() {
     lv_obj_set_size(clockLabel, 320, 100);
     lv_obj_set_pos(clockLabel, 0, 0);
     lv_obj_set_align(clockLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(clockLabel, "00:00");
+    lv_label_set_text(clockLabel, "--:--");
 
     lv_obj_set_style_text_align(clockLabel, LV_TEXT_ALIGN_LEFT, 0);
-    lv_obj_set_style_text_font(clockLabel, &font_Roboto120, 0);
+    lv_obj_set_style_text_font(clockLabel, &d_clock_font_120, 0);
 
     secondsLabel = lv_label_create(digitalClockPanel);
     lv_obj_set_size(secondsLabel, 60, 40);
     lv_obj_align_to(secondsLabel, clockLabel, LV_ALIGN_BOTTOM_RIGHT, 50, -3);
-    lv_label_set_text(secondsLabel, "00");
+    lv_label_set_text(secondsLabel, "--");
     lv_obj_set_style_text_align(secondsLabel, LV_TEXT_ALIGN_LEFT, 0);
-    lv_obj_set_style_text_font(secondsLabel, &font_Roboto45, 0);
+    lv_obj_set_style_text_font(secondsLabel, &d_clock_font_45, 0);
 
     dateLabel = lv_label_create(digitalClockPanel);
     lv_obj_set_pos(dateLabel, 0, 95);
     lv_obj_set_align(dateLabel, LV_ALIGN_CENTER);
     lv_obj_set_style_text_align(dateLabel, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_style_text_font(dateLabel, &font_32, 0);
+    lv_label_set_text(dateLabel, "--.--.----");
 };
 
 DigitalClock::~DigitalClock(){
