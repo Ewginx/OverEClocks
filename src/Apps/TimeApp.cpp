@@ -19,7 +19,7 @@ void TimeApp::notifyAboutTime() {
                  &timeinfo);
         strftime(timeSecond, 3, "%S", &timeinfo);
         digital_clock->set_time(fullTime, timeSecond);
-        strftime(fullDate, 12, "%d.%m.%Y,", &timeinfo);
+        strftime(fullDate, 12, "%d.%m.%Y", &timeinfo);
         digital_clock->set_date(fullDate, timeinfo.tm_wday);
         alarm_clock->check_alarm_clocks(timeinfo);
     }
