@@ -52,8 +52,8 @@ void Settings::create_keyboard(lv_obj_t *target) {
         lv_obj_set_pos(this->keyboard, 0, 0);
         lv_obj_set_align(this->keyboard, LV_ALIGN_BOTTOM_LEFT);
         lv_keyboard_set_textarea(this->keyboard, target);
-        lv_obj_add_event_cb(this->keyboard, keyboard_event_cb_wrapper,
-                            LV_EVENT_CANCEL, NULL);
+        lv_obj_add_event_cb(this->keyboard, keyboard_event_cb_wrapper, LV_EVENT_CANCEL,
+                            NULL);
     } else {
         lv_keyboard_set_textarea(this->keyboard, target);
     }
@@ -173,7 +173,7 @@ void Settings::init_settings_screen() {
     lv_obj_set_pos(this->darkmodeLabel, 35, 15);
     lv_obj_set_align(this->darkmodeLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->darkmodeLabel, settings_translation[theme]);
-    lv_obj_set_style_text_font(this->darkmodeLabel, &montserrat_18, LV_PART_MAIN);
+    lv_obj_set_style_text_font(this->darkmodeLabel, &font_18, LV_PART_MAIN);
 
     this->darkmodeSwitch = lv_switch_create(this->settingsPanel);
     lv_obj_set_size(this->darkmodeSwitch, 50, 25);
@@ -181,8 +181,8 @@ void Settings::init_settings_screen() {
     lv_obj_set_align(this->darkmodeSwitch, LV_ALIGN_TOP_LEFT);
 
     this->brightnessSlider = lv_slider_create(this->settingsPanel);
-    lv_obj_align_to(this->brightnessSlider, this->darkmodeLabel,
-                    LV_ALIGN_OUT_BOTTOM_LEFT, 10, 35);
+    lv_obj_align_to(this->brightnessSlider, this->darkmodeLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
+                    10, 35);
     lv_slider_set_range(this->brightnessSlider, 5, 255);
 
     this->autoBrightnessCheckbox = lv_checkbox_create(this->settingsPanel);
@@ -190,8 +190,8 @@ void Settings::init_settings_screen() {
                     LV_ALIGN_OUT_RIGHT_MID, 50, 0);
     lv_checkbox_set_text(this->autoBrightnessCheckbox,
                          settings_translation[auto_brightness]);
-    lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &montserrat_18,
-                               LV_PART_MAIN | LV_PART_INDICATOR);
+    lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &font_18, 0);
+    lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &font_18, LV_PART_INDICATOR | LV_STATE_CHECKED);
 
     this->cityTextArea = lv_textarea_create(this->settingsPanel);
     lv_obj_set_size(this->cityTextArea, 250, LV_SIZE_CONTENT); /// 33
@@ -207,7 +207,7 @@ void Settings::init_settings_screen() {
     lv_obj_set_pos(this->cityLabel, 20, this->_settings_panel_height / 5);
     lv_obj_set_align(this->cityLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->cityLabel, settings_translation[city]);
-    lv_obj_set_style_text_font(this->cityLabel, &montserrat_18,
+    lv_obj_set_style_text_font(this->cityLabel, &font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(this->cityLabel, LV_TEXT_ALIGN_CENTER,
                                 LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -226,7 +226,7 @@ void Settings::init_settings_screen() {
     lv_obj_set_pos(this->SSIDLabel, 40, this->_settings_panel_height / 5 + 70);
     lv_obj_set_align(this->SSIDLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->SSIDLabel, settings_translation[wifi_ssid]);
-    lv_obj_set_style_text_font(this->SSIDLabel, &montserrat_18,
+    lv_obj_set_style_text_font(this->SSIDLabel, &font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->passwordTextArea = lv_textarea_create(this->settingsPanel);
@@ -243,12 +243,10 @@ void Settings::init_settings_screen() {
     this->passwordLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_size(this->passwordLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(this->passwordLabel, 20,
-                   this->_settings_panel_height / 5 + 65 * 2);
+    lv_obj_set_pos(this->passwordLabel, 20, this->_settings_panel_height / 5 + 65 * 2);
     lv_obj_set_align(this->passwordLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->passwordLabel,
-                      settings_translation[wifi_password]);
-    lv_obj_set_style_text_font(this->passwordLabel, &montserrat_18,
+    lv_label_set_text(this->passwordLabel, settings_translation[wifi_password]);
+    lv_obj_set_style_text_font(this->passwordLabel, &font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->APLabel = lv_label_create(this->settingsPanel);
@@ -256,7 +254,7 @@ void Settings::init_settings_screen() {
     lv_obj_set_pos(this->APLabel, 80, this->_settings_panel_height - 60);
     lv_obj_set_align(this->APLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->APLabel, settings_translation[access_point_ip]);
-    lv_obj_set_style_text_font(this->APLabel, &montserrat_18,
+    lv_obj_set_style_text_font(this->APLabel, &font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->IPLabel = lv_label_create(this->settingsPanel);
@@ -264,7 +262,7 @@ void Settings::init_settings_screen() {
     lv_obj_set_pos(this->IPLabel, 230, this->_settings_panel_height - 60);
     lv_obj_set_align(this->IPLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->IPLabel, "192.120.12.99");
-    lv_obj_set_style_text_font(this->IPLabel, &montserrat_18,
+    lv_obj_set_style_text_font(this->IPLabel, &font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     this->homeButton = lv_btn_create(this->settingsPanel);
@@ -292,8 +290,8 @@ void Settings::init_settings_screen() {
     lv_obj_add_event_cb(this->autoBrightnessCheckbox,
                         settings_autoBrightness_checkbox_event_cb_wrapper,
                         LV_EVENT_VALUE_CHANGED, NULL);
-    lv_obj_add_event_cb(this->homeButton, home_button_event_cb_wrapper,
-                        LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(this->homeButton, home_button_event_cb_wrapper, LV_EVENT_CLICKED,
+                        NULL);
 }
 Settings::~Settings() {
     // if (settingsScreen != NULL)

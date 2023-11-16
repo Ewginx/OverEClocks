@@ -33,7 +33,7 @@ Weather::Weather() {
     lv_obj_set_align(weatherCityLabel, LV_ALIGN_TOP_MID);
     lv_label_set_text_fmt(weatherCityLabel, "%s", NO_DATA_SYMBOL);
     lv_label_set_long_mode(weatherCityLabel, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_obj_set_style_text_font(weatherCityLabel, &montserrat_18,
+    lv_obj_set_style_text_font(weatherCityLabel, &font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
 
     weatherTemperatureLabel = lv_label_create(weatherPanel);
@@ -48,7 +48,7 @@ Weather::Weather() {
     lv_obj_set_align(feelsLikeLabel, LV_ALIGN_CENTER);
     lv_label_set_text_fmt(feelsLikeLabel, "%s %s°C", weather_translation[feels_like],
                           NO_DATA_SYMBOL);
-    lv_obj_set_style_text_font(feelsLikeLabel, &montserrat_18,
+    lv_obj_set_style_text_font(feelsLikeLabel, &font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(feelsLikeLabel, LV_TEXT_ALIGN_CENTER,
                                 LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -59,7 +59,7 @@ Weather::Weather() {
     lv_obj_set_align(briefingLabel, LV_ALIGN_CENTER);
     lv_label_set_long_mode(briefingLabel, LV_LABEL_LONG_SCROLL_CIRCULAR);
     lv_label_set_text(briefingLabel, NO_DATA_SYMBOL);
-    lv_obj_set_style_text_font(briefingLabel, &montserrat_18,
+    lv_obj_set_style_text_font(briefingLabel, &font_18,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(briefingLabel, LV_TEXT_ALIGN_CENTER,
                                 LV_PART_MAIN | LV_STATE_DEFAULT);
