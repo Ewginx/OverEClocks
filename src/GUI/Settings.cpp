@@ -31,7 +31,7 @@ extern "C" void settings_autoBrightness_checkbox_event_cb_wrapper(lv_event_t *e)
 
 Settings::Settings() {
     instance = this;
-    this->init_settings_screen();
+    this->create_settings_screen();
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {
@@ -159,7 +159,7 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
 }
 void Settings::set_display(Display *display) { _display = display; }
 void Settings::set_preferences(Preferences &preferences) { _preferences = preferences; }
-void Settings::init_settings_screen() {
+void Settings::create_settings_screen() {
     this->keyboard = NULL;
     this->settingsScreen = lv_obj_create(NULL);
     lv_obj_add_flag(this->settingsScreen, LV_OBJ_FLAG_IGNORE_LAYOUT); /// Flags
@@ -173,7 +173,6 @@ void Settings::init_settings_screen() {
     lv_obj_clear_flag(this->settingsPanel, LV_OBJ_FLAG_SCROLL_ELASTIC);
 
     this->darkmodeLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_size(this->darkmodeLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->darkmodeLabel, 35, 15);
     lv_obj_set_align(this->darkmodeLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->darkmodeLabel, settings_translation[theme]);
@@ -208,7 +207,6 @@ void Settings::init_settings_screen() {
     lv_textarea_set_one_line(this->cityTextArea, true);
 
     this->cityLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_size(this->cityLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->cityLabel, 20, this->_settings_panel_height / 5);
     lv_obj_set_align(this->cityLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->cityLabel, settings_translation[city]);
@@ -225,7 +223,6 @@ void Settings::init_settings_screen() {
     lv_textarea_set_one_line(this->SSIDTextArea, true);
 
     this->SSIDLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_size(this->SSIDLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->SSIDLabel, 40, this->_settings_panel_height / 5 + 70);
     lv_obj_set_align(this->SSIDLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->SSIDLabel, settings_translation[wifi_ssid]);
@@ -243,15 +240,30 @@ void Settings::init_settings_screen() {
     lv_textarea_set_password_mode(this->passwordTextArea, true);
 
     this->passwordLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_size(this->passwordLabel, LV_SIZE_CONTENT,
-                    LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->passwordLabel, 20, this->_settings_panel_height / 5 + 65 * 2);
     lv_obj_set_align(this->passwordLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->passwordLabel, settings_translation[wifi_password]);
     lv_obj_set_style_text_font(this->passwordLabel, &font_18, 0);
+    
+    this->wifiLabel = lv_label_create(this->settingsPanel);
+    lv_obj_align_to(this->wifiLabel, this->passwordLabel,  LV_ALIGN_OUT_BOTTOM_LEFT, 0 , 30);
+    lv_label_set_text(this->wifiLabel, "WiFi включен");
+    lv_obj_set_style_text_font(this->wifiLabel, &font_18, 0);
+
+    this->wifiSwitch = lv_switch_create(this->settingsPanel);
+    lv_obj_set_size(this->wifiSwitch, 50, 25);
+    lv_obj_align_to(this->wifiSwitch,this->wifiLabel,  LV_ALIGN_OUT_RIGHT_MID, 30 , 0);
+
+    this->weatherLabel = lv_label_create(this->settingsPanel);
+    lv_obj_align_to(this->weatherLabel, this->wifiLabel,  LV_ALIGN_OUT_BOTTOM_LEFT, 0 , 25);
+    lv_label_set_text(this->weatherLabel, "Погода включена");
+    lv_obj_set_style_text_font(this->weatherLabel, &font_18, 0);
+
+    this->weatherSwitch = lv_switch_create(this->settingsPanel);
+    lv_obj_set_size(this->weatherSwitch, 50, 25);
+    lv_obj_align_to(this->weatherSwitch, this->weatherLabel, LV_ALIGN_OUT_RIGHT_MID, 30 , 0);
 
     this->ipAddressLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_size(this->ipAddressLabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT); /// 1
     lv_obj_set_pos(this->ipAddressLabel, 80, this->_settings_panel_height - 60);
     lv_obj_set_align(this->ipAddressLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text_fmt(this->ipAddressLabel, "%s%s",

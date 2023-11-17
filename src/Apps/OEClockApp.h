@@ -30,7 +30,8 @@ public:
     void connect_to_wifi();
 
     void setup_display_brightness();
-    
+    void wifi_switch_event_cb(lv_event_t *e);
+    void weather_switch_event_cb(lv_event_t *e);
     void setup();
     void loop();
     OEClockApp(/* args */);
