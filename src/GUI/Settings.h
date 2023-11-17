@@ -41,7 +41,7 @@ class Settings {
 
     void create_settings_screen();
     void load_settings_screen(lv_obj_t *screen);
-
+    void init_settings_screen();
     void create_keyboard(lv_obj_t *target);
     void delete_keyboard();
 

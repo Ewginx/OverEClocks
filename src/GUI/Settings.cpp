@@ -32,6 +32,7 @@ extern "C" void settings_autoBrightness_checkbox_event_cb_wrapper(lv_event_t *e)
 Settings::Settings() {
     instance = this;
     this->create_settings_screen();
+    this->init_settings_screen();
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {
@@ -44,6 +45,29 @@ void Settings::load_settings_screen(lv_obj_t *screen) {
     this->home_screen = screen;
     lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_FADE_ON,
                      SCREEN_CHANGE_ANIM_TIME, 0, false);
+}
+
+void Settings::init_settings_screen() {
+    _preferences.begin(NAMESPACE);
+    lv_label_set_text(this->cityTextArea, _preferences.getString("city", "").c_str());
+    lv_label_set_text(this->SSIDTextArea, _preferences.getString("ssid", "").c_str());
+    lv_label_set_text(this->passwordTextArea,
+                      _preferences.getString("password", "").c_str());
+    lv_slider_set_value(this->brightnessSlider,
+                        _preferences.getUChar("brightness_level", 255), LV_ANIM_OFF);
+    lv_obj_add_state(this->wifiSwitch, _preferences.getBool("wifi_enabled", true)
+                                           ? LV_STATE_CHECKED
+                                           : LV_STATE_DEFAULT);
+    lv_obj_add_state(this->weatherSwitch, _preferences.getBool("weather_enabled", true)
+                                              ? LV_STATE_CHECKED
+                                              : LV_STATE_DEFAULT);
+    lv_obj_add_state(this->darkmodeSwitch, _preferences.getBool("dark_theme", false)
+                                               ? LV_STATE_CHECKED
+                                               : LV_STATE_DEFAULT);
+    lv_obj_add_state(this->autoBrightnessCheckbox,
+                     _preferences.getBool("auto_brightness", true) ? LV_STATE_CHECKED
+                                                                   : LV_STATE_DEFAULT);
+    _preferences.end();
 }
 
 void Settings::create_keyboard(lv_obj_t *target) {
@@ -244,24 +268,26 @@ void Settings::create_settings_screen() {
     lv_obj_set_align(this->passwordLabel, LV_ALIGN_TOP_LEFT);
     lv_label_set_text(this->passwordLabel, settings_translation[wifi_password]);
     lv_obj_set_style_text_font(this->passwordLabel, &font_18, 0);
-    
+
     this->wifiLabel = lv_label_create(this->settingsPanel);
-    lv_obj_align_to(this->wifiLabel, this->passwordLabel,  LV_ALIGN_OUT_BOTTOM_LEFT, 0 , 30);
+    lv_obj_align_to(this->wifiLabel, this->passwordLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0,
+                    30);
     lv_label_set_text(this->wifiLabel, "WiFi включен");
     lv_obj_set_style_text_font(this->wifiLabel, &font_18, 0);
 
     this->wifiSwitch = lv_switch_create(this->settingsPanel);
     lv_obj_set_size(this->wifiSwitch, 50, 25);
-    lv_obj_align_to(this->wifiSwitch,this->wifiLabel,  LV_ALIGN_OUT_RIGHT_MID, 30 , 0);
+    lv_obj_align_to(this->wifiSwitch, this->wifiLabel, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
 
     this->weatherLabel = lv_label_create(this->settingsPanel);
-    lv_obj_align_to(this->weatherLabel, this->wifiLabel,  LV_ALIGN_OUT_BOTTOM_LEFT, 0 , 25);
+    lv_obj_align_to(this->weatherLabel, this->wifiLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 25);
     lv_label_set_text(this->weatherLabel, "Погода включена");
     lv_obj_set_style_text_font(this->weatherLabel, &font_18, 0);
 
     this->weatherSwitch = lv_switch_create(this->settingsPanel);
     lv_obj_set_size(this->weatherSwitch, 50, 25);
-    lv_obj_align_to(this->weatherSwitch, this->weatherLabel, LV_ALIGN_OUT_RIGHT_MID, 30 , 0);
+    lv_obj_align_to(this->weatherSwitch, this->weatherLabel, LV_ALIGN_OUT_RIGHT_MID, 30,
+                    0);
 
     this->ipAddressLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_pos(this->ipAddressLabel, 80, this->_settings_panel_height - 60);
