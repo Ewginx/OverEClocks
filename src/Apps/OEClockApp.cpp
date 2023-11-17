@@ -28,7 +28,7 @@ OEClockApp::OEClockApp() {
 void OEClockApp::setup() {
     Serial.begin(115200);
     esp_log_level_set("*", ESP_LOG_DEBUG);
-    this->connect_to_wifi();
+    // this->connect_to_wifi();
     weather_app->create_weather_task();
     time_app->config_time();
     server_app->setup();
@@ -38,6 +38,7 @@ void OEClockApp::setup() {
     // #endif
 
     gui_app->init_gui();
+    this->gui_app->settings->init_settings();
 }
 
 void OEClockApp::connect_to_wifi() {
@@ -77,14 +78,17 @@ void OEClockApp::wifi_switch_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
     lv_disp_t *disp = lv_disp_get_default();
     if (event_code == LV_EVENT_VALUE_CHANGED) {
-
+        this->preferences.begin(NAMESPACE);
+        this->preferences.putBool(
+            "wifi_enabled", lv_obj_has_state(target, LV_STATE_CHECKED) ? true : false);
+        this->preferences.end();
         if (lv_obj_has_state(target, LV_STATE_CHECKED)) {
             this->connect_to_wifi();
             Serial.println("WiFi connected");
         } else {
-            gui_app->settings->set_ipAddressLabel(0, 0, 0, 0);
+            this->gui_app->settings->set_ipAddressLabel(0, 0, 0, 0);
             Serial.println("Unable to connect to WiFi network");
-            gui_app->dock_panel->show_wifi_connection(false);
+            this->gui_app->dock_panel->show_wifi_connection(false);
             this->weather_app->enable_weather(false);
             lv_obj_add_state(this->gui_app->settings->weatherSwitch, LV_STATE_DEFAULT);
             WiFi.disconnect();
@@ -98,7 +102,10 @@ void OEClockApp::weather_switch_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
     lv_disp_t *disp = lv_disp_get_default();
     if (event_code == LV_EVENT_VALUE_CHANGED) {
-
+        this->preferences.begin(NAMESPACE);
+        this->preferences.putBool(
+            "weather_enab", lv_obj_has_state(target, LV_STATE_CHECKED) ? true : false);
+        this->preferences.end();
         if (lv_obj_has_state(target, LV_STATE_CHECKED)) {
             this->weather_app->enable_weather();
             Serial.println("Weather enabled");

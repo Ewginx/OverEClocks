@@ -41,10 +41,10 @@ class Settings {
 
     void create_settings_screen();
     void load_settings_screen(lv_obj_t *screen);
-    void init_settings_screen();
+    void init_settings();
     void create_keyboard(lv_obj_t *target);
     void delete_keyboard();
-
+    void save_darkmode_to_nvs();
     void set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3);
 
     void settings_cityTextArea_event_cb(lv_event_t *e);

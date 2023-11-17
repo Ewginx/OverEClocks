@@ -32,7 +32,6 @@ extern "C" void settings_autoBrightness_checkbox_event_cb_wrapper(lv_event_t *e)
 Settings::Settings() {
     instance = this;
     this->create_settings_screen();
-    this->init_settings_screen();
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {
@@ -47,27 +46,34 @@ void Settings::load_settings_screen(lv_obj_t *screen) {
                      SCREEN_CHANGE_ANIM_TIME, 0, false);
 }
 
-void Settings::init_settings_screen() {
+void Settings::init_settings() {
     _preferences.begin(NAMESPACE);
-    lv_label_set_text(this->cityTextArea, _preferences.getString("city", "").c_str());
-    lv_label_set_text(this->SSIDTextArea, _preferences.getString("ssid", "").c_str());
-    lv_label_set_text(this->passwordTextArea,
+    lv_textarea_add_text(this->cityTextArea, _preferences.getString("city", "").c_str());
+    lv_textarea_add_text(this->SSIDTextArea, _preferences.getString("ssid", "").c_str());
+    lv_textarea_add_text(this->passwordTextArea,
                       _preferences.getString("password", "").c_str());
-    lv_slider_set_value(this->brightnessSlider,
-                        _preferences.getUChar("brightness_level", 255), LV_ANIM_OFF);
+    lv_obj_add_state(this->autoBrightnessCheckbox,
+                     _preferences.getBool("auto_bright", true) ? LV_STATE_CHECKED
+                                                               : LV_STATE_DEFAULT);
     lv_obj_add_state(this->wifiSwitch, _preferences.getBool("wifi_enabled", true)
                                            ? LV_STATE_CHECKED
                                            : LV_STATE_DEFAULT);
-    lv_obj_add_state(this->weatherSwitch, _preferences.getBool("weather_enabled", true)
+    lv_obj_add_state(this->weatherSwitch, _preferences.getBool("weather_enab", true)
                                               ? LV_STATE_CHECKED
                                               : LV_STATE_DEFAULT);
     lv_obj_add_state(this->darkmodeSwitch, _preferences.getBool("dark_theme", false)
                                                ? LV_STATE_CHECKED
                                                : LV_STATE_DEFAULT);
-    lv_obj_add_state(this->autoBrightnessCheckbox,
-                     _preferences.getBool("auto_brightness", true) ? LV_STATE_CHECKED
-                                                                   : LV_STATE_DEFAULT);
+
+    lv_slider_set_value(this->brightnessSlider, _preferences.getUInt("brightness", 255),
+                        LV_ANIM_OFF);
     _preferences.end();
+    lv_event_send(this->darkmodeSwitch, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_event_send(this->brightnessSlider, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_event_send(this->weatherSwitch, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_event_send(this->wifiSwitch, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_event_send(this->autoBrightnessCheckbox, LV_EVENT_VALUE_CHANGED, NULL);
+    Serial.println("Settings initialized");
 }
 
 void Settings::create_keyboard(lv_obj_t *target) {
@@ -92,6 +98,14 @@ void Settings::delete_keyboard() {
         lv_obj_set_height(this->settingsPanel, this->_settings_panel_height);
         this->keyboard = NULL;
     }
+}
+
+void Settings::save_darkmode_to_nvs() {
+    this->_preferences.begin(NAMESPACE);
+    this->_preferences.putBool(
+        "dark_theme",
+        lv_obj_has_state(this->darkmodeSwitch, LV_STATE_CHECKED) ? true : false);
+    this->_preferences.end();
 }
 
 void Settings::set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3) {
@@ -119,9 +133,9 @@ void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        // _preferences.begin(NAMESPACE);
-        // _preferences.putString("city",
-        // lv_textarea_get_text(this->cityTextArea)); _preferences.end();
+        _preferences.begin(NAMESPACE);
+        _preferences.putString("city", lv_textarea_get_text(this->cityTextArea));
+        _preferences.end();
     }
 }
 
@@ -137,9 +151,9 @@ void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        // _preferences.begin(NAMESPACE);
-        // _preferences.putString("ssid", lv_textarea_get_text(SSIDTextArea));
-        // _preferences.end();
+        _preferences.begin(NAMESPACE);
+        _preferences.putString("ssid", lv_textarea_get_text(SSIDTextArea));
+        _preferences.end();
     }
 }
 
@@ -155,27 +169,28 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        // _preferences.begin(NAMESPACE);
-        // _preferences.putString("password",
-        // lv_textarea_get_text(passwordTextArea)); _preferences.end();
+        _preferences.begin(NAMESPACE);
+        _preferences.putString("password", lv_textarea_get_text(passwordTextArea));
+        _preferences.end();
     }
 }
 void Settings::settings_brightnessSlider_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     this->_display->set_brightness((uint8_t)lv_slider_get_value(this->brightnessSlider));
-    // _preferences.begin(NAMESPACE);
-    // _preferences.putUChar("brightness_level",
-    // (uint8_t)lv_slider_get_value(this->brightnessSlider)); _preferences.end();
+    _preferences.begin(NAMESPACE);
+    _preferences.putUInt("brightness", lv_slider_get_value(this->brightnessSlider));
+    _preferences.end();
 }
 void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     bool checked =
-        lv_obj_get_state(this->autoBrightnessCheckbox) & LV_STATE_CHECKED ? true : false;
-    // _preferences.begin(NAMESPACE);
-    // _preferences.putBool("auto_brightness", checked);
-    // _preferences.end();
+        lv_obj_has_state(this->autoBrightnessCheckbox, LV_STATE_CHECKED) ? true : false;
+    _preferences.begin(NAMESPACE);
+    _preferences.putBool(
+        "auto_bright", lv_obj_has_state(this->autoBrightnessCheckbox, LV_STATE_CHECKED));
+    _preferences.end();
     if (checked) {
 
     } else {
