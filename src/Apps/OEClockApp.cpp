@@ -29,6 +29,7 @@ void OEClockApp::setup() {
     Serial.begin(115200);
     esp_log_level_set("*", ESP_LOG_DEBUG);
     // this->connect_to_wifi();
+    this->gui_app->settings->init_settings();
     weather_app->create_weather_task();
     time_app->config_time();
     server_app->setup();
@@ -36,9 +37,7 @@ void OEClockApp::setup() {
     //     lv_log_register_print_cb( my_print ); /* register print function for debugging
     //     */
     // #endif
-
     gui_app->init_gui();
-    this->gui_app->settings->init_settings();
 }
 
 void OEClockApp::connect_to_wifi() {
@@ -67,11 +66,11 @@ void OEClockApp::connect_to_wifi() {
     }
 }
 
-void OEClockApp::setup_display_brightness() {
-    preferences.begin(NAMESPACE);
-    display->set_brightness(preferences.getUChar("brightness_level", 255));
-    preferences.end();
-}
+// void OEClockApp::setup_display_brightness() {
+//     preferences.begin(NAMESPACE);
+//     display->set_brightness((uint8_t)preferences.getUInt("brightness", 255));
+//     preferences.end();
+// }
 
 void OEClockApp::wifi_switch_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
