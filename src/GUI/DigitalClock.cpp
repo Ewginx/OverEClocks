@@ -26,8 +26,7 @@ DigitalClock::DigitalClock() {
     lv_obj_set_pos(clockLabel, 0, 0);
     lv_obj_set_align(clockLabel, LV_ALIGN_CENTER);
     lv_label_set_text(clockLabel, "--:--");
-
-    lv_obj_set_style_text_align(clockLabel, LV_TEXT_ALIGN_LEFT, 0);
+    lv_obj_set_style_text_align(clockLabel, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_style_text_font(clockLabel, &d_clock_font_120, 0);
 
     secondsLabel = lv_label_create(digitalClockPanel);
