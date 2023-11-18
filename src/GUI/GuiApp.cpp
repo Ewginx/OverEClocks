@@ -51,8 +51,6 @@ GuiApp::GuiApp(/* args */) {
 };
 
 void GuiApp::init_gui() {
-    lv_disp_t *disp = lv_disp_get_default();
-    // this->set_light_theme(disp);
     lv_disp_load_scr(digital_clock->digitalClockScreen);
 };
 
