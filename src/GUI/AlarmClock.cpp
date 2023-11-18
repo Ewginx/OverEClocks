@@ -44,6 +44,7 @@ AlarmClock::AlarmClock(/* args */) {
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_style_text_font(weekdaysRingsInLabel, &font_14, LV_PART_MAIN);
     lv_obj_align_to(weekdaysRingsInLabel, weekdaysLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
+    lv_label_set_text(weekdaysRingsInLabel, "");
 
     weekdaysButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(weekdaysButton, 70, 41);
@@ -73,6 +74,7 @@ AlarmClock::AlarmClock(/* args */) {
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_style_text_font(weekendsRingsInLabel, &font_14, LV_PART_MAIN);
     lv_obj_align_to(weekendsRingsInLabel, weekendsLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
+    lv_label_set_text(weekendsRingsInLabel, "");
 
     weekendsButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(weekendsButton, 70, 41);
@@ -103,6 +105,7 @@ AlarmClock::AlarmClock(/* args */) {
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_style_text_font(oneOffRingsInLabel, &font_14, LV_PART_MAIN);
     lv_obj_align_to(oneOffRingsInLabel, oneOffLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
+    lv_label_set_text(oneOffRingsInLabel, "");
 
     oneOffButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(oneOffButton, 70, 41);
