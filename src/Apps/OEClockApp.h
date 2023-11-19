@@ -19,6 +19,7 @@ private:
 
     TimeApp *time_app;
     WeatherApp *weather_app;
+    bool _wifi_connected = false;
     
 public:
 

@@ -46,7 +46,7 @@ class Settings {
     void delete_keyboard();
     void save_darkmode_to_nvs();
     void set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3);
-
+    
     void settings_cityTextArea_event_cb(lv_event_t *e);
     void settings_SSIDTextArea_event_cb(lv_event_t *e);
     void settings_passwordTextArea_event_cb(lv_event_t *e);

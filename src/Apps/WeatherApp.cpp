@@ -173,6 +173,7 @@ void WeatherApp::set_weather_img(int code) {
     }
 }
 void WeatherApp::create_weather_task() {
+    Serial.println("Task created");
     xTaskCreatePinnedToCore(
         this->send_weather_request, /* Function to implement the task */
         "request",                  /* Name of the task */

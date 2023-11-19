@@ -51,7 +51,7 @@ void Settings::init_settings() {
     lv_textarea_add_text(this->cityTextArea, _preferences.getString("city", "").c_str());
     lv_textarea_add_text(this->SSIDTextArea, _preferences.getString("ssid", "").c_str());
     lv_textarea_add_text(this->passwordTextArea,
-                      _preferences.getString("password", "").c_str());
+                         _preferences.getString("password", "").c_str());
     lv_obj_add_state(this->autoBrightnessCheckbox,
                      _preferences.getBool("auto_bright", true) ? LV_STATE_CHECKED
                                                                : LV_STATE_DEFAULT);
