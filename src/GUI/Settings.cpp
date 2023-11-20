@@ -28,6 +28,9 @@ extern "C" void settings_brightnessSlider_event_cb_wrapper(lv_event_t *e) {
 extern "C" void settings_autoBrightness_checkbox_event_cb_wrapper(lv_event_t *e) {
     instance->settings_autoBrightness_checkbox_event_cb(e);
 }
+extern "C" void weather_switch_event_cb_wrapper(lv_event_t *e) {
+    instance->weather_switch_event_cb(e);
+}
 
 Settings::Settings() {
     instance = this;
@@ -44,36 +47,6 @@ void Settings::load_settings_screen(lv_obj_t *screen) {
     this->home_screen = screen;
     lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_FADE_ON,
                      SCREEN_CHANGE_ANIM_TIME, 0, false);
-}
-
-void Settings::init_settings() {
-    _preferences.begin(NAMESPACE);
-    lv_textarea_add_text(this->cityTextArea, _preferences.getString("city", "").c_str());
-    lv_textarea_add_text(this->SSIDTextArea, _preferences.getString("ssid", "").c_str());
-    lv_textarea_add_text(this->passwordTextArea,
-                         _preferences.getString("password", "").c_str());
-    lv_obj_add_state(this->autoBrightnessCheckbox,
-                     _preferences.getBool("auto_bright", true) ? LV_STATE_CHECKED
-                                                               : LV_STATE_DEFAULT);
-    lv_obj_add_state(this->wifiSwitch, _preferences.getBool("wifi_enabled", true)
-                                           ? LV_STATE_CHECKED
-                                           : LV_STATE_DEFAULT);
-    lv_obj_add_state(this->weatherSwitch, _preferences.getBool("weather_enab", true)
-                                              ? LV_STATE_CHECKED
-                                              : LV_STATE_DEFAULT);
-    lv_obj_add_state(this->darkmodeSwitch, _preferences.getBool("dark_theme", false)
-                                               ? LV_STATE_CHECKED
-                                               : LV_STATE_DEFAULT);
-
-    lv_slider_set_value(this->brightnessSlider, _preferences.getUInt("brightness", 255),
-                        LV_ANIM_OFF);
-    _preferences.end();
-    lv_event_send(this->darkmodeSwitch, LV_EVENT_VALUE_CHANGED, NULL);
-    lv_event_send(this->brightnessSlider, LV_EVENT_VALUE_CHANGED, NULL);
-    lv_event_send(this->weatherSwitch, LV_EVENT_VALUE_CHANGED, NULL);
-    lv_event_send(this->wifiSwitch, LV_EVENT_VALUE_CHANGED, NULL);
-    lv_event_send(this->autoBrightnessCheckbox, LV_EVENT_VALUE_CHANGED, NULL);
-    Serial.println("Settings initialized");
 }
 
 void Settings::create_keyboard(lv_obj_t *target) {
@@ -111,6 +84,18 @@ void Settings::save_darkmode_to_nvs() {
 void Settings::set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3) {
     lv_label_set_text_fmt(this->ipAddressLabel, "%s %d.%d.%d.%d",
                           settings_translation[access_point_ip], ip0, ip1, ip2, ip3);
+}
+void Settings::weather_switch_event_cb(lv_event_t *e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t *target = lv_event_get_target(e);
+    if (event_code == LV_EVENT_VALUE_CHANGED) {
+        bool enabled = lv_obj_has_state(target, LV_STATE_CHECKED);
+        this->_preferences.begin(NAMESPACE);
+        this->_preferences.putBool(
+            "weather_enab", enabled);
+        this->_preferences.end();
+        lv_msg_send(MSG_WEATHER_ENABLED, static_cast<const void*>(&enabled));
+    }
 }
 void Settings::keyboard_event_cb(lv_event_t *e) { this->delete_keyboard(); }
 
@@ -198,6 +183,25 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
 }
 void Settings::set_display(Display *display) { _display = display; }
 void Settings::set_preferences(Preferences &preferences) { _preferences = preferences; }
+void Settings::set_weather_settings(const char *city, bool weather_enabled) {
+    lv_textarea_add_text(this->cityTextArea, city);
+    lv_obj_add_state(this->weatherSwitch,
+                     weather_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
+}
+void Settings::set_wifi_settings(const char *ssid, const char *password) {
+    lv_textarea_add_text(this->SSIDTextArea, ssid);
+    lv_textarea_add_text(this->passwordTextArea, password);
+}
+void Settings::set_darktheme_switch(bool dark_theme_enabled) {
+    lv_obj_add_state(this->darkmodeSwitch,
+                     dark_theme_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
+}
+void Settings::set_brightness_widgets(u_int32_t slider_value,
+                                      bool auto_brightness_enabled) {
+    lv_slider_set_value(this->brightnessSlider, slider_value, LV_ANIM_OFF);
+    lv_obj_add_state(this->autoBrightnessCheckbox,
+                     auto_brightness_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
+}
 void Settings::create_settings_screen() {
     this->keyboard = NULL;
     this->settingsScreen = lv_obj_create(NULL);
@@ -336,6 +340,8 @@ void Settings::create_settings_screen() {
                         LV_EVENT_VALUE_CHANGED, NULL);
     lv_obj_add_event_cb(this->homeButton, home_button_event_cb_wrapper, LV_EVENT_CLICKED,
                         NULL);
+    lv_obj_add_event_cb(this->weatherSwitch, weather_switch_event_cb_wrapper,
+                        LV_EVENT_VALUE_CHANGED, NULL);
 }
 Settings::~Settings() {
     // if (settingsScreen != NULL)

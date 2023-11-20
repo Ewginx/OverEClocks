@@ -28,11 +28,9 @@ public:
     GuiApp *gui_app;
     ServerApp *server_app;
 
+    void init_app();
     void connect_to_wifi();
-
-    void setup_display_brightness();
-    void wifi_switch_event_cb(lv_event_t *e);
-    void weather_switch_event_cb(lv_event_t *e);
+    void set_display_brightness(u_int32_t brightness);
     void setup();
     void loop();
     OEClockApp(/* args */);

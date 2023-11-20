@@ -2,10 +2,16 @@
 #include "WeatherApp.h"
 
 static WeatherApp *instance = NULL;
-
+void weather_enabled_cb(void * subscriber, lv_msg_t * msg){
+    Serial.println("Get msg in WeatherApp with payload:");
+    const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
+    Serial.println(*payload);
+}
 WeatherApp::WeatherApp(Weather *weather) {
+    instance = this;
     this->weather = weather;
     this->setup_weather_url();
+    lv_msg_subscribe(MSG_WEATHER_ENABLED, weather_enabled_cb, NULL);
 }
 
 void WeatherApp::send_weather_request(void *parameter) {

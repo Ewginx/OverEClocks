@@ -1,12 +1,7 @@
 #include "Apps/OEClockApp.h"
 #include "OEClockApp.h"
 
-static OEClockApp *instance = NULL;
-
-extern "C" void wifi_switch_event_cb_wrapper(lv_event_t *e) { instance->wifi_switch_event_cb(e); }
-extern "C" void weather_switch_event_cb_wrapper(lv_event_t *e) { instance->weather_switch_event_cb(e); }
 OEClockApp::OEClockApp() {
-    instance = this;
     display = new Display();
     gui_app = new GuiApp();
     weather_app = new WeatherApp(gui_app->weather);
@@ -15,28 +10,51 @@ OEClockApp::OEClockApp() {
     server_app = new ServerApp();
     gui_app->settings->set_display(display);
     gui_app->settings->set_preferences(preferences);
-    lv_obj_add_event_cb(this->gui_app->settings->wifiSwitch, wifi_switch_event_cb_wrapper,
-                        LV_EVENT_VALUE_CHANGED, NULL);
-    lv_obj_add_event_cb(this->gui_app->settings->weatherSwitch, weather_switch_event_cb_wrapper,
-                        LV_EVENT_VALUE_CHANGED, NULL);
 }
 
 void OEClockApp::setup() {
     Serial.begin(115200);
     esp_log_level_set("*", ESP_LOG_DEBUG);
-    // this->connect_to_wifi();
-    this->gui_app->settings->init_settings();
-    // if (this->_wifi_connected) {
-    //     weather_app->create_weather_task();
-    //     time_app->config_time();
-    //     server_app->setup();
-    // }
+    this->init_app();
+    this->connect_to_wifi();
+    if (this->_wifi_connected) {
+        weather_app->create_weather_task();
+        time_app->config_time();
+        server_app->setup();
+    }
 
     // #if LV_USE_LOG != 0
     //     lv_log_register_print_cb( my_print ); /* register print function for debugging
     //     */
     // #endif
     gui_app->init_gui();
+}
+
+void OEClockApp::init_app() {
+    preferences.begin(NAMESPACE);
+
+    this->gui_app->settings->set_wifi_settings(
+        preferences.getString("ssid", "N/A").c_str(),
+        preferences.getString("password", "N/A").c_str());
+
+    bool weather_enabled = preferences.getBool("weather_enab", true);
+    this->weather_app->enable_weather(weather_enabled);
+    String city = preferences.getString("city", "");
+    this->gui_app->settings->set_weather_settings(city.c_str(), weather_enabled);
+
+    bool auto_brightness = preferences.getBool("auto_bright", true);
+    u_int32_t brightness = preferences.getUInt("brightness", 255);
+    this->gui_app->settings->set_brightness_widgets(brightness, auto_brightness);
+
+    this->set_display_brightness(brightness);
+
+    this->gui_app->settings->set_darktheme_switch(
+        preferences.getBool("dark_theme", false));
+    lv_event_send(this->gui_app->settings->darkmodeSwitch, LV_EVENT_VALUE_CHANGED, NULL);
+
+    preferences.end();
+
+    Serial.println("Settings initialized");
 }
 
 void OEClockApp::connect_to_wifi() {
@@ -49,7 +67,6 @@ void OEClockApp::connect_to_wifi() {
     WiFi.begin(ssid.c_str(), password.c_str());
     int attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < 20) {
-        lv_timer_handler();
         delay(500);
         Serial.print(".");
         attempt++;
@@ -60,75 +77,21 @@ void OEClockApp::connect_to_wifi() {
                                               WiFi.localIP()[2], WiFi.localIP()[3]);
         Serial.print("Connected to WiFi network with IP Address: ");
         Serial.println(WiFi.localIP());
-        time_app->config_time();
-        server_app->setup();
     } else {
+        WiFi.softAP("OEClock", "1234");
+        gui_app->settings->set_ipAddressLabel(WiFi.softAPIP()[0], WiFi.softAPIP()[1],
+                                              WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
         this->_wifi_connected = false;
         Serial.println("Unable to connect to WiFi network");
+        lv_obj_clear_state(this->gui_app->settings->weatherSwitch, LV_STATE_CHECKED);
+        lv_obj_add_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
     }
+    this->gui_app->dock_panel->show_wifi_connection(this->_wifi_connected);
+    this->weather_app->enable_weather(this->_wifi_connected);
 }
 
-// void OEClockApp::setup_display_brightness() {
-//     preferences.begin(NAMESPACE);
-//     display->set_brightness((uint8_t)preferences.getUInt("brightness", 255));
-//     preferences.end();
-// }
-
-void OEClockApp::wifi_switch_event_cb(lv_event_t *e) {
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t *target = lv_event_get_target(e);
-
-    if (event_code == LV_EVENT_VALUE_CHANGED) {
-        this->preferences.begin(NAMESPACE);
-        this->preferences.putBool(
-            "wifi_enabled", lv_obj_has_state(target, LV_STATE_CHECKED) ? true : false);
-        this->preferences.end();
-        if (lv_obj_has_state(target, LV_STATE_CHECKED)) {
-            this->connect_to_wifi();
-            lv_obj_add_state(this->gui_app->settings->weatherSwitch, LV_STATE_CHECKED);
-            lv_obj_clear_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
-            lv_event_send(this->gui_app->settings->weatherSwitch, LV_EVENT_VALUE_CHANGED,
-                          NULL);
-            Serial.println("WiFi connected");
-        } else {
-            if (lv_obj_has_state(this->gui_app->settings->weatherSwitch, LV_STATE_CHECKED)) {
-                lv_obj_clear_state(this->gui_app->settings->weatherSwitch, LV_STATE_CHECKED);
-                lv_obj_add_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
-                lv_event_send(this->gui_app->settings->weatherSwitch, LV_EVENT_VALUE_CHANGED, NULL);
-            } else {
-                lv_obj_add_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
-            }
-            this->_wifi_connected = false;
-            this->gui_app->settings->set_ipAddressLabel(0, 0, 0, 0);
-            Serial.println("Unable to connect to WiFi network");
-            // lv_obj_add_state(this->gui_app->settings->weatherSwitch, LV_STATE_DEFAULT);
-            WiFi.disconnect();
-            Serial.println("WiFi disconnected");
-        }
-        this->gui_app->dock_panel->show_wifi_connection(this->_wifi_connected);
-        this->weather_app->enable_weather(this->_wifi_connected);
-    }
-}
-
-void OEClockApp::weather_switch_event_cb(lv_event_t *e) {
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t *target = lv_event_get_target(e);
-    Serial.println("weather event");
-    if (event_code == LV_EVENT_VALUE_CHANGED) {
-        this->preferences.begin(NAMESPACE);
-        this->preferences.putBool(
-            "weather_enab", lv_obj_has_state(target, LV_STATE_CHECKED) ? true : false);
-        this->preferences.end();
-        if (lv_obj_has_state(target, LV_STATE_CHECKED)) {
-            weather_app->create_weather_task();
-            this->weather_app->enable_weather();
-            Serial.println("Weather enabled");
-
-        } else {
-            this->weather_app->enable_weather(false);
-            Serial.println("Weather disabled");
-        }
-    }
+void OEClockApp::set_display_brightness(u_int32_t brightness) {
+    display->set_brightness((uint8_t)brightness);
 }
 
 void OEClockApp::loop() {
