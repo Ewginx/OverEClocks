@@ -52,7 +52,7 @@ void Settings::load_settings_screen(lv_obj_t *screen) {
 void Settings::create_keyboard(lv_obj_t *target) {
     if (this->keyboard == NULL) {
         this->keyboard = lv_keyboard_create(this->settingsScreen);
-        lv_obj_set_size(this->keyboard, lv_pct(100), 150);
+        lv_obj_set_size(this->keyboard, lv_pct(100), 130);
         lv_obj_set_pos(this->keyboard, 0, 0);
         lv_obj_set_align(this->keyboard, LV_ALIGN_BOTTOM_LEFT);
         lv_keyboard_set_textarea(this->keyboard, target);
@@ -91,10 +91,9 @@ void Settings::weather_switch_event_cb(lv_event_t *e) {
     if (event_code == LV_EVENT_VALUE_CHANGED) {
         bool enabled = lv_obj_has_state(target, LV_STATE_CHECKED);
         this->_preferences.begin(NAMESPACE);
-        this->_preferences.putBool(
-            "weather_enab", enabled);
+        this->_preferences.putBool("weather_enab", enabled);
         this->_preferences.end();
-        lv_msg_send(MSG_WEATHER_ENABLED, static_cast<const void*>(&enabled));
+        lv_msg_send(MSG_WEATHER_ENABLED, static_cast<const void *>(&enabled));
     }
 }
 void Settings::keyboard_event_cb(lv_event_t *e) { this->delete_keyboard(); }
@@ -110,7 +109,7 @@ void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_FOCUSED || event_code == LV_EVENT_CLICKED) {
-        lv_obj_set_height(this->settingsPanel, this->_settings_panel_height / 4);
+        lv_obj_set_height(this->settingsPanel, this->_settings_panel_height / 2);
         lv_obj_readjust_scroll(this->settingsScreen, LV_ANIM_OFF);
         lv_obj_scroll_to_y(this->settingsPanel,
                            lv_obj_get_y(lv_event_get_current_target(e)) - 80, LV_ANIM_ON);
@@ -128,7 +127,7 @@ void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_FOCUSED || event_code == LV_EVENT_CLICKED) {
-        lv_obj_set_height(this->settingsPanel, this->_settings_panel_height / 4);
+        lv_obj_set_height(this->settingsPanel, this->_settings_panel_height / 2);
         lv_obj_readjust_scroll(this->settingsScreen, LV_ANIM_OFF);
         lv_obj_scroll_to_y(this->settingsPanel,
                            lv_obj_get_y(lv_event_get_current_target(e)) - 80, LV_ANIM_ON);
@@ -146,7 +145,7 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_FOCUSED || event_code == LV_EVENT_CLICKED) {
-        lv_obj_set_height(this->settingsPanel, this->_settings_panel_height / 4);
+        lv_obj_set_height(this->settingsPanel, this->_settings_panel_height / 2);
         lv_obj_readjust_scroll(this->settingsScreen, LV_ANIM_OFF);
         lv_obj_scroll_to_y(this->settingsPanel,
                            lv_obj_get_y(lv_event_get_current_target(e)) - 80, LV_ANIM_ON);
@@ -228,7 +227,7 @@ void Settings::create_settings_screen() {
 
     this->brightnessSlider = lv_slider_create(this->settingsPanel);
     lv_obj_align_to(this->brightnessSlider, this->darkmodeLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
-                    10, 35);
+                    10, 30);
     lv_slider_set_range(this->brightnessSlider, 5, 255);
 
     this->autoBrightnessCheckbox = lv_checkbox_create(this->settingsPanel);
@@ -240,66 +239,60 @@ void Settings::create_settings_screen() {
     lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &font_18,
                                LV_PART_INDICATOR | LV_STATE_CHECKED);
 
+    this->cityLabel = lv_label_create(this->settingsPanel);
+    lv_obj_set_size(this->cityLabel, 120, 45);
+    lv_obj_set_pos(this->cityLabel, 20, this->_settings_panel_height / 5 + 25);
+    lv_obj_set_align(this->cityLabel, LV_ALIGN_TOP_LEFT);
+    lv_obj_set_style_text_align(this->cityLabel, LV_TEXT_ALIGN_CENTER, 0);
+    lv_label_set_text(this->cityLabel, settings_translation[city]);
+    lv_obj_set_style_text_font(this->cityLabel, &font_18, 0);
+    lv_obj_set_style_text_align(this->cityLabel, LV_TEXT_ALIGN_CENTER, 0);
+
     this->cityTextArea = lv_textarea_create(this->settingsPanel);
     lv_obj_set_size(this->cityTextArea, 250, LV_SIZE_CONTENT); /// 33
-    lv_obj_set_pos(this->cityTextArea, 180, this->_settings_panel_height / 5);
-    lv_obj_set_align(this->cityTextArea, LV_ALIGN_TOP_LEFT);
+    lv_obj_align_to(this->cityTextArea, this->cityLabel, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
     lv_textarea_set_max_length(this->cityTextArea, 100);
     lv_textarea_set_placeholder_text(this->cityTextArea,
                                      settings_translation[city_placeholder]);
     lv_textarea_set_one_line(this->cityTextArea, true);
 
-    this->cityLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_pos(this->cityLabel, 20, this->_settings_panel_height / 5);
-    lv_obj_set_align(this->cityLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->cityLabel, settings_translation[city]);
-    lv_obj_set_style_text_font(this->cityLabel, &font_18, 0);
-    lv_obj_set_style_text_align(this->cityLabel, LV_TEXT_ALIGN_CENTER, 0);
+    this->SSIDLabel = lv_label_create(this->settingsPanel);
+    lv_obj_set_size(this->SSIDLabel, 120, 45);
+    lv_obj_set_align(this->SSIDLabel, LV_ALIGN_TOP_LEFT);
+    lv_obj_align_to(this->SSIDLabel, this->cityLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 25);
+    lv_label_set_text(this->SSIDLabel, settings_translation[wifi_ssid]);
+    lv_obj_set_style_text_align(this->SSIDLabel, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_text_font(this->SSIDLabel, &font_18, 0);
 
     this->SSIDTextArea = lv_textarea_create(this->settingsPanel);
     lv_obj_set_size(this->SSIDTextArea, 250, LV_SIZE_CONTENT);
-    lv_obj_set_pos(this->SSIDTextArea, 180, this->_settings_panel_height / 5 + 60);
-    lv_obj_set_align(this->SSIDTextArea, LV_ALIGN_TOP_LEFT);
+    lv_obj_align_to(this->SSIDTextArea, this->SSIDLabel, LV_ALIGN_OUT_RIGHT_MID, 30, -10);
     lv_textarea_set_max_length(this->SSIDTextArea, 50);
     lv_textarea_set_placeholder_text(this->SSIDTextArea,
                                      settings_translation[wifi_ssid_placeholder]);
     lv_textarea_set_one_line(this->SSIDTextArea, true);
 
-    this->SSIDLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_pos(this->SSIDLabel, 40, this->_settings_panel_height / 5 + 70);
-    lv_obj_set_align(this->SSIDLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->SSIDLabel, settings_translation[wifi_ssid]);
-    lv_obj_set_style_text_font(this->SSIDLabel, &font_18, 0);
+    this->passwordLabel = lv_label_create(this->settingsPanel);
+    lv_obj_set_size(this->passwordLabel, 120, 45);
+    lv_obj_align_to(this->passwordLabel, this->SSIDLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0,
+                    15);
+    lv_label_set_text(this->passwordLabel, settings_translation[wifi_password]);
+    lv_obj_set_style_text_align(this->passwordLabel, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_text_font(this->passwordLabel, &font_18, 0);
 
     this->passwordTextArea = lv_textarea_create(this->settingsPanel);
     lv_obj_set_size(this->passwordTextArea, 250, LV_SIZE_CONTENT); /// 33
-    lv_obj_set_pos(this->passwordTextArea, 180,
-                   this->_settings_panel_height / 5 + 60 * 2);
-    lv_obj_set_align(this->passwordTextArea, LV_ALIGN_TOP_LEFT);
+    lv_obj_align_to(this->passwordTextArea, this->passwordLabel, LV_ALIGN_OUT_RIGHT_MID,
+                    30, -10);
     lv_textarea_set_max_length(this->passwordTextArea, 100);
     lv_textarea_set_placeholder_text(this->passwordTextArea,
                                      settings_translation[wifi_password_placeholder]);
     lv_textarea_set_one_line(this->passwordTextArea, true);
     lv_textarea_set_password_mode(this->passwordTextArea, true);
 
-    this->passwordLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_pos(this->passwordLabel, 20, this->_settings_panel_height / 5 + 65 * 2);
-    lv_obj_set_align(this->passwordLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->passwordLabel, settings_translation[wifi_password]);
-    lv_obj_set_style_text_font(this->passwordLabel, &font_18, 0);
-
-    this->wifiLabel = lv_label_create(this->settingsPanel);
-    lv_obj_align_to(this->wifiLabel, this->passwordLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0,
-                    30);
-    lv_label_set_text(this->wifiLabel, "WiFi включен");
-    lv_obj_set_style_text_font(this->wifiLabel, &font_18, 0);
-
-    this->wifiSwitch = lv_switch_create(this->settingsPanel);
-    lv_obj_set_size(this->wifiSwitch, 50, 25);
-    lv_obj_align_to(this->wifiSwitch, this->wifiLabel, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
-
     this->weatherLabel = lv_label_create(this->settingsPanel);
-    lv_obj_align_to(this->weatherLabel, this->wifiLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 25);
+    lv_obj_align_to(this->weatherLabel, this->passwordLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0,
+                    15);
     lv_label_set_text(this->weatherLabel, "Погода включена");
     lv_obj_set_style_text_font(this->weatherLabel, &font_18, 0);
 
@@ -307,6 +300,18 @@ void Settings::create_settings_screen() {
     lv_obj_set_size(this->weatherSwitch, 50, 25);
     lv_obj_align_to(this->weatherSwitch, this->weatherLabel, LV_ALIGN_OUT_RIGHT_MID, 30,
                     0);
+
+    this->wifiButton = lv_btn_create(this->settingsPanel);
+    lv_obj_set_size(this->wifiButton, 240, 35);
+    // lv_obj_set_align(this->wifiButton, LV_ALIGN_TOP_LEFT);
+    // lv_obj_set_pos(this->wifiButton, 20, this->_settings_panel_height - 105);
+    lv_obj_align_to(this->wifiButton, this->weatherLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
+                    0, 15);
+
+    this->wifiButtonLabel = lv_label_create(this->wifiButton);
+    lv_obj_set_align(this->wifiButtonLabel, LV_ALIGN_CENTER);
+    lv_label_set_text(this->wifiButtonLabel, "Переподключить WiFi");
+    lv_obj_set_style_text_font(this->wifiButtonLabel, &font_18, 0);
 
     this->ipAddressLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_pos(this->ipAddressLabel, 80, this->_settings_panel_height - 60);

@@ -65,6 +65,7 @@ void OEClockApp::connect_to_wifi() {
     WiFi.mode(WIFI_AP_STA);
     Serial.print("Will try to connect to WiFI");
     WiFi.begin(ssid.c_str(), password.c_str());
+    WiFi.softAP("OEClock", "admin1234");
     int attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < 20) {
         delay(500);
@@ -78,7 +79,7 @@ void OEClockApp::connect_to_wifi() {
         Serial.print("Connected to WiFi network with IP Address: ");
         Serial.println(WiFi.localIP());
     } else {
-        WiFi.softAP("OEClock", "1234");
+
         gui_app->settings->set_ipAddressLabel(WiFi.softAPIP()[0], WiFi.softAPIP()[1],
                                               WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
         this->_wifi_connected = false;

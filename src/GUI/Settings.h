@@ -8,7 +8,7 @@ class Settings {
   private:
     Display *_display;
     Preferences _preferences;
-    int _settings_panel_height = 640;
+    int _settings_panel_height = 450;
 
   public:
     lv_obj_t *keyboard;
@@ -25,8 +25,8 @@ class Settings {
     lv_obj_t *SSIDTextArea;
     lv_obj_t *passwordLabel;
     lv_obj_t *passwordTextArea;
-    lv_obj_t *wifiLabel;
-    lv_obj_t *wifiSwitch;
+    lv_obj_t *wifiButtonLabel;
+    lv_obj_t *wifiButton;
     lv_obj_t *weatherLabel;
     lv_obj_t *weatherSwitch;
     lv_obj_t *homeButton;
@@ -50,7 +50,7 @@ class Settings {
     void delete_keyboard();
     void save_darkmode_to_nvs();
     void set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3);
-    
+
     void weather_switch_event_cb(lv_event_t *e);
     void settings_cityTextArea_event_cb(lv_event_t *e);
     void settings_SSIDTextArea_event_cb(lv_event_t *e);
