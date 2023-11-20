@@ -50,7 +50,7 @@ Weather::Weather() {
 
     briefingLabel = lv_label_create(weatherPanel);
     lv_obj_set_size(briefingLabel, 320, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_pos(briefingLabel, 0, 35);
+    lv_obj_set_pos(briefingLabel, 0, 40);
     lv_obj_set_align(briefingLabel, LV_ALIGN_CENTER);
     lv_label_set_long_mode(briefingLabel, LV_LABEL_LONG_SCROLL_CIRCULAR);
     lv_label_set_text(briefingLabel, weather_translation[no_data]);
@@ -60,7 +60,7 @@ Weather::Weather() {
     weatherMaxTempLabel = lv_label_create(weatherPanel);
     lv_label_set_text_fmt(weatherMaxTempLabel, TEMP_UP_SYMBOL " %s°C", NO_DATA_SYMBOL);
     lv_obj_set_style_text_font(weatherMaxTempLabel, &weather_font_18, 0);
-    lv_obj_set_pos(weatherMaxTempLabel, -170, 65);
+    lv_obj_set_pos(weatherMaxTempLabel, -160, 75);
     lv_obj_set_align(weatherMaxTempLabel, LV_ALIGN_CENTER);
 
     weatherMinTempLabel = lv_label_create(weatherPanel);
@@ -74,7 +74,7 @@ Weather::Weather() {
                           NO_DATA_SYMBOL);
     lv_obj_set_style_text_font(weatherProbabilityLabel, &weather_font_18, 0);
     lv_obj_align_to(weatherProbabilityLabel, weatherMinTempLabel, LV_ALIGN_OUT_RIGHT_MID,
-                    15, -1);
+                    25, -1);
 
     weatherHumidityLabel = lv_label_create(weatherPanel);
     lv_label_set_text_fmt(weatherHumidityLabel, HUMIDITY_SYMBOL " %s%%", NO_DATA_SYMBOL);
@@ -87,10 +87,10 @@ Weather::Weather() {
                           weather_translation[pressure_uom]);
     lv_obj_set_style_text_font(weatherPressureLabel, &weather_font_18, 0);
     lv_obj_align_to(weatherPressureLabel, weatherHumidityLabel, LV_ALIGN_OUT_RIGHT_MID,
-                    15, -1);
+                    25, -1);
 
     weatherTimesLabel = lv_label_create(weatherPanel);
-    lv_obj_set_pos(weatherTimesLabel, 0, 93);
+    lv_obj_set_pos(weatherTimesLabel, 0, 103);
     lv_obj_set_align(weatherTimesLabel, LV_ALIGN_CENTER);
     lv_label_set_text_fmt(weatherTimesLabel, "%s%s%s%s", weather_translation[night],
                           weather_translation[morning], weather_translation[afternoon],
@@ -98,7 +98,7 @@ Weather::Weather() {
     lv_obj_set_style_text_align(weatherTimesLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     weatherFirstTempLabel = lv_label_create(weatherPanel);
-    lv_obj_set_pos(weatherFirstTempLabel, 55, -10);
+    lv_obj_set_pos(weatherFirstTempLabel, 55, -5);
     lv_obj_set_align(weatherFirstTempLabel, LV_ALIGN_BOTTOM_LEFT);
     lv_label_set_text(weatherFirstTempLabel, "  -°C");
 
