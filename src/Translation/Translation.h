@@ -12,6 +12,8 @@ enum settings_texts {
     wifi_password_placeholder,
     wifi_password,
     access_point_ip,
+    reconnect_wifi,
+    weather_enabled,
 
 };
 enum alarm_texts {

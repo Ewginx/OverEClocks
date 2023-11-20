@@ -292,8 +292,8 @@ void Settings::create_settings_screen() {
 
     this->weatherLabel = lv_label_create(this->settingsPanel);
     lv_obj_align_to(this->weatherLabel, this->passwordLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0,
-                    15);
-    lv_label_set_text(this->weatherLabel, "Погода включена");
+                    10);
+    lv_label_set_text(this->weatherLabel, settings_translation[weather_enabled]);
     lv_obj_set_style_text_font(this->weatherLabel, &font_18, 0);
 
     this->weatherSwitch = lv_switch_create(this->settingsPanel);
@@ -303,14 +303,12 @@ void Settings::create_settings_screen() {
 
     this->wifiButton = lv_btn_create(this->settingsPanel);
     lv_obj_set_size(this->wifiButton, 240, 35);
-    // lv_obj_set_align(this->wifiButton, LV_ALIGN_TOP_LEFT);
-    // lv_obj_set_pos(this->wifiButton, 20, this->_settings_panel_height - 105);
-    lv_obj_align_to(this->wifiButton, this->weatherLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
-                    0, 15);
+    lv_obj_align_to(this->wifiButton, this->weatherLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0,
+                    15);
 
     this->wifiButtonLabel = lv_label_create(this->wifiButton);
     lv_obj_set_align(this->wifiButtonLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(this->wifiButtonLabel, "Переподключить WiFi");
+    lv_label_set_text(this->wifiButtonLabel, settings_translation[reconnect_wifi]);
     lv_obj_set_style_text_font(this->wifiButtonLabel, &font_18, 0);
 
     this->ipAddressLabel = lv_label_create(this->settingsPanel);
