@@ -68,6 +68,7 @@ void OEClockApp::connect_to_wifi() {
     preferences.begin(NAMESPACE);
     this->ssid = preferences.getString("ssid");
     this->password = preferences.getString("password");
+    bool weather_enabled = this->preferences.getBool("weather_enab");
     preferences.end();
     WiFi.mode(WIFI_AP_STA);
     Serial.print("Will try to connect to WiFI");
@@ -87,9 +88,6 @@ void OEClockApp::connect_to_wifi() {
         Serial.print("Connected to WiFi network with IP Address: ");
         Serial.println(WiFi.localIP());
         lv_obj_clear_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
-        this->preferences.begin(NAMESPACE);
-        bool weather_enabled = this->preferences.getBool("weather_enab");
-        this->preferences.end();
         this->gui_app->settings->update_weather_switch_state(weather_enabled);
         this->weather_app->enable_weather(weather_enabled);
 

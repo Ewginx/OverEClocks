@@ -31,6 +31,9 @@ extern "C" void settings_autoBrightness_checkbox_event_cb_wrapper(lv_event_t *e)
 extern "C" void weather_switch_event_cb_wrapper(lv_event_t *e) {
     instance->weather_switch_event_cb(e);
 }
+extern "C" void wifi_button_event_cb_wrapper(lv_event_t *e) {
+    instance->wifi_button_event_cb(e);
+}
 
 Settings::Settings() {
     instance = this;
@@ -84,6 +87,9 @@ void Settings::save_darkmode_to_nvs() {
 void Settings::set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3) {
     lv_label_set_text_fmt(this->ipAddressLabel, "%s %d.%d.%d.%d",
                           settings_translation[access_point_ip], ip0, ip1, ip2, ip3);
+}
+void Settings::wifi_button_event_cb(lv_event_t *e) {
+    lv_msg_send(MSG_WIFI_RECONNECT, NULL);
 }
 void Settings::weather_switch_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
@@ -139,7 +145,6 @@ void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
         _preferences.begin(NAMESPACE);
         _preferences.putString("ssid", lv_textarea_get_text(SSIDTextArea));
         _preferences.end();
-        lv_msg_send(MSG_WIFI_RECONNECT, NULL);
     }
 }
 
@@ -158,7 +163,6 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
         _preferences.begin(NAMESPACE);
         _preferences.putString("password", lv_textarea_get_text(passwordTextArea));
         _preferences.end();
-        lv_msg_send(MSG_WIFI_RECONNECT, NULL);
     }
 }
 void Settings::settings_brightnessSlider_event_cb(lv_event_t *e) {
@@ -356,6 +360,8 @@ void Settings::create_settings_screen() {
                         NULL);
     lv_obj_add_event_cb(this->weatherSwitch, weather_switch_event_cb_wrapper,
                         LV_EVENT_VALUE_CHANGED, NULL);
+    lv_obj_add_event_cb(this->wifiButton, wifi_button_event_cb_wrapper, LV_EVENT_PRESSED,
+                        NULL);
 }
 Settings::~Settings() {
     // if (settingsScreen != NULL)

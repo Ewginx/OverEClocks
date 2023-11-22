@@ -16,7 +16,7 @@ class WeatherApp {
     Weather *weather;
     TaskHandle_t Weather_Task;
     bool url_is_ready = false;
-
+    bool _weather_api_enabled = false;
   public:
     WiFiClient wifi;
     HttpClient client = HttpClient(wifi, "api.weatherapi.com", port);

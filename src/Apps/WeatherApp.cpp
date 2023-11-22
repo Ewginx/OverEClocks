@@ -1,5 +1,4 @@
 #include "Apps/WeatherApp.h"
-#include "WeatherApp.h"
 
 static WeatherApp *instance = NULL;
 void weather_enabled_cb(void * subscriber, lv_msg_t * msg){
@@ -45,7 +44,9 @@ void WeatherApp::setup_weather_url() {
     this->weather_url += "ru";
     this->url_is_ready = true;
 }
-void WeatherApp::enable_weather(bool enable) {}
+void WeatherApp::enable_weather(bool enable) {
+    this->_weather_api_enabled = enable;
+}
 void WeatherApp::deserialize_json_response(String &response) {
     DynamicJsonDocument doc(4096);
 
