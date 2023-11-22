@@ -80,7 +80,7 @@ void Settings::save_darkmode_to_nvs() {
     this->_preferences.begin(NAMESPACE);
     this->_preferences.putBool(
         "dark_theme",
-        lv_obj_has_state(this->darkmodeSwitch, LV_STATE_CHECKED) ? true : false);
+        lv_obj_has_state(this->darkmodeSwitch, LV_STATE_CHECKED));
     this->_preferences.end();
 }
 
@@ -177,10 +177,10 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     bool checked =
-        lv_obj_has_state(this->autoBrightnessCheckbox, LV_STATE_CHECKED) ? true : false;
+        lv_obj_has_state(this->autoBrightnessCheckbox, LV_STATE_CHECKED);
     _preferences.begin(NAMESPACE);
     _preferences.putBool(
-        "auto_bright", lv_obj_has_state(this->autoBrightnessCheckbox, LV_STATE_CHECKED));
+        "auto_bright", checked);
     _preferences.end();
     if (checked) {
 
