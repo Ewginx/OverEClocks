@@ -31,7 +31,7 @@ DigitalClock::DigitalClock() {
 
     secondsLabel = lv_label_create(digitalClockPanel);
     lv_obj_set_size(secondsLabel, 60, 40);
-    lv_obj_align_to(secondsLabel, clockLabel, LV_ALIGN_BOTTOM_RIGHT, 50, -3);
+    lv_obj_align_to(secondsLabel, clockLabel, LV_ALIGN_BOTTOM_RIGHT, 55, -3);
     lv_label_set_text(secondsLabel, "--");
     lv_obj_set_style_text_align(secondsLabel, LV_TEXT_ALIGN_LEFT, 0);
     lv_obj_set_style_text_font(secondsLabel, &d_clock_font_45, 0);
