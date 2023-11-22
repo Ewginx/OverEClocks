@@ -44,6 +44,9 @@ class Settings {
     void set_darktheme_switch(bool dark_theme_enabled);
     void set_brightness_widgets(u_int32_t slider_value, bool auto_brightness_enabled);
 
+
+    void disable_weather_switch();
+    void update_weather_switch_state(bool weather_enabled);
     void create_settings_screen();
     void load_settings_screen(lv_obj_t *screen);
     void create_keyboard(lv_obj_t *target);

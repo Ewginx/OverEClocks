@@ -1,7 +1,13 @@
 #include "Apps/OEClockApp.h"
 #include "OEClockApp.h"
+static OEClockApp *instance = NULL;
 
+void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
+    Serial.println("Get message about reconnect to wifi");
+    instance->connect_to_wifi();
+}
 OEClockApp::OEClockApp() {
+    instance = this;
     display = new Display();
     gui_app = new GuiApp();
     weather_app = new WeatherApp(gui_app->weather);
@@ -10,6 +16,7 @@ OEClockApp::OEClockApp() {
     server_app = new ServerApp();
     gui_app->settings->set_display(display);
     gui_app->settings->set_preferences(preferences);
+    lv_msg_subscribe(MSG_WIFI_RECONNECT, reconnect_to_wifi_cb, NULL);
 }
 
 void OEClockApp::setup() {
@@ -59,8 +66,8 @@ void OEClockApp::init_app() {
 
 void OEClockApp::connect_to_wifi() {
     preferences.begin(NAMESPACE);
-    String ssid = preferences.getString("ssid", this->ssid);
-    String password = preferences.getString("password", this->password);
+    this->ssid = preferences.getString("ssid");
+    this->password = preferences.getString("password");
     preferences.end();
     WiFi.mode(WIFI_AP_STA);
     Serial.print("Will try to connect to WiFI");
@@ -68,6 +75,7 @@ void OEClockApp::connect_to_wifi() {
     WiFi.softAP("OEClock", "admin1234");
     int attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < 20) {
+        lv_timer_handler();
         delay(500);
         Serial.print(".");
         attempt++;
@@ -78,17 +86,22 @@ void OEClockApp::connect_to_wifi() {
                                               WiFi.localIP()[2], WiFi.localIP()[3]);
         Serial.print("Connected to WiFi network with IP Address: ");
         Serial.println(WiFi.localIP());
-    } else {
+        lv_obj_clear_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
+        this->preferences.begin(NAMESPACE);
+        bool weather_enabled = this->preferences.getBool("weather_enab");
+        this->preferences.end();
+        this->gui_app->settings->update_weather_switch_state(weather_enabled);
+        this->weather_app->enable_weather(weather_enabled);
 
+    } else {
         gui_app->settings->set_ipAddressLabel(WiFi.softAPIP()[0], WiFi.softAPIP()[1],
                                               WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
         this->_wifi_connected = false;
         Serial.println("Unable to connect to WiFi network");
-        lv_obj_clear_state(this->gui_app->settings->weatherSwitch, LV_STATE_CHECKED);
-        lv_obj_add_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
+        this->gui_app->settings->disable_weather_switch();
+        this->weather_app->enable_weather(false);
     }
     this->gui_app->dock_panel->show_wifi_connection(this->_wifi_connected);
-    this->weather_app->enable_weather(this->_wifi_connected);
 }
 
 void OEClockApp::set_display_brightness(u_int32_t brightness) {

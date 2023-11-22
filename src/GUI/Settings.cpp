@@ -120,6 +120,7 @@ void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
         _preferences.begin(NAMESPACE);
         _preferences.putString("city", lv_textarea_get_text(this->cityTextArea));
         _preferences.end();
+        lv_msg_send(MSG_WEATHER_SETTINGS_CHANGED, NULL);
     }
 }
 
@@ -138,6 +139,7 @@ void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
         _preferences.begin(NAMESPACE);
         _preferences.putString("ssid", lv_textarea_get_text(SSIDTextArea));
         _preferences.end();
+        lv_msg_send(MSG_WIFI_RECONNECT, NULL);
     }
 }
 
@@ -156,6 +158,7 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
         _preferences.begin(NAMESPACE);
         _preferences.putString("password", lv_textarea_get_text(passwordTextArea));
         _preferences.end();
+        lv_msg_send(MSG_WIFI_RECONNECT, NULL);
     }
 }
 void Settings::settings_brightnessSlider_event_cb(lv_event_t *e) {
@@ -200,6 +203,14 @@ void Settings::set_brightness_widgets(u_int32_t slider_value,
     lv_slider_set_value(this->brightnessSlider, slider_value, LV_ANIM_OFF);
     lv_obj_add_state(this->autoBrightnessCheckbox,
                      auto_brightness_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
+}
+void Settings::disable_weather_switch() {
+    lv_obj_clear_state(this->weatherSwitch, LV_STATE_CHECKED);
+    lv_obj_add_state(this->weatherSwitch, LV_STATE_DISABLED);
+}
+void Settings::update_weather_switch_state(bool weather_enabled) {
+    lv_obj_add_state(this->weatherSwitch,
+                     weather_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
 }
 void Settings::create_settings_screen() {
     this->keyboard = NULL;
