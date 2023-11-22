@@ -182,10 +182,7 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     _preferences.putBool(
         "auto_bright", checked);
     _preferences.end();
-    if (checked) {
-
-    } else {
-    }
+    lv_msg_send(MSG_AUTO_BRIGHTNESS, static_cast<const void *>(&checked));
 }
 void Settings::set_display(Display *display) { _display = display; }
 void Settings::set_preferences(Preferences &preferences) { _preferences = preferences; }
