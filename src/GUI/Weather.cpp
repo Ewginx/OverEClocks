@@ -12,6 +12,7 @@ Weather::Weather() {
     lv_obj_clear_flag(weatherPanel, LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_obj_set_style_bg_color(weatherPanel, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_bg_opa(weatherPanel, 0, 0);
+    lv_obj_add_flag(weatherPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weatherImage = lv_img_create(weatherPanel);
     lv_img_set_src(weatherImage, &img_day_rain_png);
@@ -32,7 +33,7 @@ Weather::Weather() {
     lv_label_set_text_fmt(weatherCityLabel, "%s", weather_translation[no_data]);
     lv_label_set_long_mode(weatherCityLabel, LV_LABEL_LONG_SCROLL_CIRCULAR);
     lv_obj_set_style_text_font(weatherCityLabel, &font_18, 0);
-    lv_obj_set_style_text_align(weatherCityLabel, LV_TEXT_ALIGN_CENTER,0);
+    lv_obj_set_style_text_align(weatherCityLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     weatherTemperatureLabel = lv_label_create(weatherPanel);
     lv_obj_set_pos(weatherTemperatureLabel, 20, -45);

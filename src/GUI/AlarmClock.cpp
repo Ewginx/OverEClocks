@@ -30,6 +30,7 @@ AlarmClock::AlarmClock(/* args */) {
                       LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_obj_set_style_bg_color(alarmPanel, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_bg_opa(alarmPanel, 0, 0);
+    lv_obj_add_flag(alarmPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weekdaysLabel = lv_label_create(alarmPanel);
     lv_obj_set_size(weekdaysLabel, LV_SIZE_CONTENT,
@@ -50,6 +51,7 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_set_size(weekdaysButton, 70, 41);
     lv_obj_align_to(weekdaysButton, weekdaysLabel, LV_ALIGN_BOTTOM_LEFT, 270, 10);
     lv_obj_set_style_bg_opa(weekdaysButton, 0, 0);
+    lv_obj_add_flag(weekdaysButton, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weekdaysButtonLabel = lv_label_create(weekdaysButton);
     lv_obj_set_size(weekdaysButtonLabel, LV_SIZE_CONTENT,
@@ -61,6 +63,7 @@ AlarmClock::AlarmClock(/* args */) {
     weekdaysSwitch = lv_switch_create(alarmPanel);
     lv_obj_set_size(weekdaysSwitch, 50, 25);
     lv_obj_align_to(weekdaysSwitch, weekdaysButton, LV_ALIGN_BOTTOM_LEFT, 80, 5);
+    lv_obj_add_flag(weekdaysSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weekendsLabel = lv_label_create(alarmPanel);
     lv_obj_set_size(weekendsLabel, LV_SIZE_CONTENT,
@@ -81,6 +84,7 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_align_to(weekendsButton, weekdaysButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
     lv_obj_set_style_bg_opa(weekendsButton, 0, 0);
     lv_obj_set_style_text_font(weekendsButton, &font_18, LV_PART_MAIN);
+    lv_obj_add_flag(weekendsButton, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weekendsButtonLabel = lv_label_create(weekendsButton);
     lv_obj_set_size(weekendsButtonLabel, LV_SIZE_CONTENT,
@@ -92,6 +96,7 @@ AlarmClock::AlarmClock(/* args */) {
     weekendsSwitch = lv_switch_create(alarmPanel);
     lv_obj_set_size(weekendsSwitch, 50, 25);
     lv_obj_align_to(weekendsSwitch, weekdaysSwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
+    lv_obj_add_flag(weekendsSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     oneOffLabel = lv_label_create(alarmPanel);
     lv_obj_set_size(oneOffLabel, LV_SIZE_CONTENT,
@@ -111,6 +116,7 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_set_size(oneOffButton, 70, 41);
     lv_obj_align_to(oneOffButton, weekendsButton, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
     lv_obj_set_style_bg_opa(oneOffButton, 0, 0);
+    lv_obj_add_flag(oneOffButton, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     oneOffButtonLabel = lv_label_create(oneOffButton);
     lv_obj_set_size(oneOffButtonLabel, LV_SIZE_CONTENT,
@@ -122,6 +128,7 @@ AlarmClock::AlarmClock(/* args */) {
     oneOffSwitch = lv_switch_create(alarmPanel);
     lv_obj_set_size(oneOffSwitch, 50, 25);
     lv_obj_align_to(oneOffSwitch, weekendsSwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
+    lv_obj_add_flag(oneOffSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     lv_obj_add_event_cb(weekdaysButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED,
                         NULL);
@@ -148,11 +155,15 @@ void AlarmClock::create_roller_modal_panel(lv_obj_t *target_label) {
         lv_obj_set_size(alarmDummyPanel, 480, 320);
         lv_obj_set_align(alarmDummyPanel, LV_ALIGN_CENTER);
         lv_obj_set_style_bg_opa(alarmDummyPanel, 200, 0);
+        lv_obj_add_flag(alarmDummyPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
+
         alarmModalPanel = lv_obj_create(alarmDummyPanel);
         lv_obj_set_size(alarmModalPanel, 250, 230);
         lv_obj_set_align(alarmModalPanel, LV_ALIGN_CENTER);
         lv_obj_clear_flag(alarmModalPanel,
                           LV_OBJ_FLAG_SCROLLABLE); /// Flags
+        lv_obj_add_flag(alarmModalPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
+
         for (short int i = 0; i < HOUR_COUNT; i++) {
             if (i == HOUR_COUNT - 1) {
                 sprintf(hour_buffer, "%2i", i);
@@ -175,17 +186,20 @@ void AlarmClock::create_roller_modal_panel(lv_obj_t *target_label) {
         lv_obj_set_pos(hourRoller, -50, -35);
         lv_obj_set_align(hourRoller, LV_ALIGN_CENTER);
         lv_obj_set_style_text_font(hourRoller, &font_18, LV_PART_MAIN);
+        lv_obj_add_flag(hourRoller, LV_OBJ_FLAG_EVENT_BUBBLE);
 
         minuteRoller = lv_roller_create(alarmModalPanel);
         lv_roller_set_options(minuteRoller, minute_count, LV_ROLLER_MODE_INFINITE);
         lv_obj_set_size(minuteRoller, 90, 110);
         lv_obj_align_to(minuteRoller, hourRoller, LV_ALIGN_BOTTOM_LEFT, 83, 18);
         lv_obj_set_style_text_font(minuteRoller, &font_18, LV_PART_MAIN);
+        lv_obj_add_flag(minuteRoller, LV_OBJ_FLAG_EVENT_BUBBLE);
 
         modalCancelButton = lv_btn_create(alarmModalPanel);
         lv_obj_set_size(modalCancelButton, 90, 45);
         lv_obj_set_pos(modalCancelButton, 13, 0);
         lv_obj_set_align(modalCancelButton, LV_ALIGN_BOTTOM_LEFT);
+        lv_obj_add_flag(modalCancelButton, LV_OBJ_FLAG_EVENT_BUBBLE);
 
         modalCancelButtonLabel = lv_label_create(modalCancelButton);
         lv_obj_set_size(modalCancelButtonLabel, LV_SIZE_CONTENT,
@@ -197,6 +211,7 @@ void AlarmClock::create_roller_modal_panel(lv_obj_t *target_label) {
         modalOkButton = lv_btn_create(alarmModalPanel);
         lv_obj_set_size(modalOkButton, 90, 45);
         lv_obj_align_to(modalOkButton, modalCancelButton, LV_ALIGN_BOTTOM_LEFT, 85, 10);
+        lv_obj_add_flag(modalOkButton, LV_OBJ_FLAG_EVENT_BUBBLE);
 
         modalOkButtonLabel = lv_label_create(modalOkButton);
         lv_obj_set_size(modalOkButtonLabel, LV_SIZE_CONTENT,

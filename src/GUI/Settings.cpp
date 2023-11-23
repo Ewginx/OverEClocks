@@ -61,6 +61,8 @@ void Settings::create_keyboard(lv_obj_t *target) {
         lv_keyboard_set_textarea(this->keyboard, target);
         lv_obj_add_event_cb(this->keyboard, keyboard_event_cb_wrapper, LV_EVENT_CANCEL,
                             NULL);
+        lv_obj_add_flag(this->keyboard, LV_OBJ_FLAG_EVENT_BUBBLE);
+
     } else {
         lv_keyboard_set_textarea(this->keyboard, target);
     }
@@ -78,9 +80,8 @@ void Settings::delete_keyboard() {
 
 void Settings::save_darkmode_to_nvs() {
     this->_preferences.begin(NAMESPACE);
-    this->_preferences.putBool(
-        "dark_theme",
-        lv_obj_has_state(this->darkmodeSwitch, LV_STATE_CHECKED));
+    this->_preferences.putBool("dark_theme",
+                               lv_obj_has_state(this->darkmodeSwitch, LV_STATE_CHECKED));
     this->_preferences.end();
 }
 
@@ -176,11 +177,9 @@ void Settings::settings_brightnessSlider_event_cb(lv_event_t *e) {
 void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
-    bool checked =
-        lv_obj_has_state(this->autoBrightnessCheckbox, LV_STATE_CHECKED);
+    bool checked = lv_obj_has_state(this->autoBrightnessCheckbox, LV_STATE_CHECKED);
     _preferences.begin(NAMESPACE);
-    _preferences.putBool(
-        "auto_bright", checked);
+    _preferences.putBool("auto_bright", checked);
     _preferences.end();
     lv_msg_send(MSG_AUTO_BRIGHTNESS, static_cast<const void *>(&checked));
 }
@@ -225,6 +224,7 @@ void Settings::create_settings_screen() {
     lv_obj_set_style_bg_color(this->settingsPanel, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_bg_opa(this->settingsPanel, 0, 0);
     lv_obj_clear_flag(this->settingsPanel, LV_OBJ_FLAG_SCROLL_ELASTIC);
+    lv_obj_add_flag(this->settingsPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->darkmodeLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_pos(this->darkmodeLabel, 35, 15);
@@ -236,11 +236,13 @@ void Settings::create_settings_screen() {
     lv_obj_set_size(this->darkmodeSwitch, 50, 25);
     lv_obj_set_pos(this->darkmodeSwitch, 175, 15);
     lv_obj_set_align(this->darkmodeSwitch, LV_ALIGN_TOP_LEFT);
+    lv_obj_add_flag(this->darkmodeSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->brightnessSlider = lv_slider_create(this->settingsPanel);
     lv_obj_align_to(this->brightnessSlider, this->darkmodeLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
                     10, 30);
     lv_slider_set_range(this->brightnessSlider, 5, 255);
+    lv_obj_add_flag(this->brightnessSlider, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->autoBrightnessCheckbox = lv_checkbox_create(this->settingsPanel);
     lv_obj_align_to(this->autoBrightnessCheckbox, this->brightnessSlider,
@@ -250,6 +252,7 @@ void Settings::create_settings_screen() {
     lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &font_18, 0);
     lv_obj_set_style_text_font(this->autoBrightnessCheckbox, &font_18,
                                LV_PART_INDICATOR | LV_STATE_CHECKED);
+    lv_obj_add_flag(this->autoBrightnessCheckbox, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->cityLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_size(this->cityLabel, 120, 45);
@@ -267,6 +270,7 @@ void Settings::create_settings_screen() {
     lv_textarea_set_placeholder_text(this->cityTextArea,
                                      settings_translation[city_placeholder]);
     lv_textarea_set_one_line(this->cityTextArea, true);
+    lv_obj_add_flag(this->cityTextArea, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->SSIDLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_size(this->SSIDLabel, 120, 45);
@@ -283,6 +287,7 @@ void Settings::create_settings_screen() {
     lv_textarea_set_placeholder_text(this->SSIDTextArea,
                                      settings_translation[wifi_ssid_placeholder]);
     lv_textarea_set_one_line(this->SSIDTextArea, true);
+    lv_obj_add_flag(this->SSIDTextArea, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->passwordLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_size(this->passwordLabel, 120, 45);
@@ -301,6 +306,7 @@ void Settings::create_settings_screen() {
                                      settings_translation[wifi_password_placeholder]);
     lv_textarea_set_one_line(this->passwordTextArea, true);
     lv_textarea_set_password_mode(this->passwordTextArea, true);
+    lv_obj_add_flag(this->passwordTextArea, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->weatherLabel = lv_label_create(this->settingsPanel);
     lv_obj_align_to(this->weatherLabel, this->passwordLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0,
@@ -312,11 +318,13 @@ void Settings::create_settings_screen() {
     lv_obj_set_size(this->weatherSwitch, 50, 25);
     lv_obj_align_to(this->weatherSwitch, this->weatherLabel, LV_ALIGN_OUT_RIGHT_MID, 30,
                     0);
+    lv_obj_add_flag(this->weatherSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->wifiButton = lv_btn_create(this->settingsPanel);
     lv_obj_set_size(this->wifiButton, 240, 35);
     lv_obj_align_to(this->wifiButton, this->weatherLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0,
                     15);
+    lv_obj_add_flag(this->wifiButton, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->wifiButtonLabel = lv_label_create(this->wifiButton);
     lv_obj_set_align(this->wifiButtonLabel, LV_ALIGN_CENTER);
