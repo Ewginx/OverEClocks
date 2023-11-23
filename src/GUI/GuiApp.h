@@ -9,11 +9,12 @@
 
 class GuiApp {
   private:
+    lv_timer_t *_screen_timer;
     /* data */
   public:
     AlarmClock *alarm_clock;
     DigitalClock *digital_clock;
-    AnalogClock *analog_clock_screen;
+    AnalogClock *analog_clock;
     Weather *weather;
     Settings *settings;
     DockPanel *dock_panel;
@@ -25,6 +26,8 @@ class GuiApp {
 
     void screen_load_event_cb(lv_event_t *e);
 
+    void user_activity_event_cb(lv_event_t *e);
+    void screen_timer_cb(lv_timer_t *timer);
     void settings_button_event_cb(lv_event_t *e);
     void darkmode_switch_event_cb(lv_event_t *e);
     void set_light_theme(lv_disp_t *display);

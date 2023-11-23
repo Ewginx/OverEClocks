@@ -11,7 +11,7 @@ OEClockApp::OEClockApp() {
     display = new Display();
     gui_app = new GuiApp();
     weather_app = new WeatherApp(gui_app->weather);
-    time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock_screen,
+    time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock,
                            this->gui_app->alarm_clock);
     server_app = new ServerApp();
     gui_app->settings->set_display(display);

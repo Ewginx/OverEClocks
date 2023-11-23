@@ -1,4 +1,5 @@
 #include "GUI/GuiApp.h"
+#include "GuiApp.h"
 
 static GuiApp *instance = NULL;
 
@@ -15,23 +16,29 @@ extern "C" void settings_button_event_cb_wrapper(lv_event_t *e) {
 extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
     instance->darkmode_switch_event_cb(e);
 }
+extern "C" void screen_timer_cb_wrapper(lv_timer_t *timer) {
+    instance->screen_timer_cb(timer);
+}
 
+extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
+    instance->user_activity_event_cb(e);
+}
 GuiApp::GuiApp(/* args */) {
     instance = this;
     alarm_clock = new AlarmClock();
     digital_clock = new DigitalClock();
-    analog_clock_screen = new AnalogClock();
+    analog_clock = new AnalogClock();
     weather = new Weather();
     settings = new Settings();
-
+    _screen_timer = NULL;
     dock_panel = new DockPanel(digital_clock->digitalClockPanel);
 
     lv_obj_add_event_cb(digital_clock->digitalClockScreen, swipe_screen_event_cb_wrapper,
                         LV_EVENT_GESTURE, NULL);
     lv_obj_add_event_cb(weather->weatherScreen, swipe_screen_event_cb_wrapper,
                         LV_EVENT_GESTURE, NULL);
-    lv_obj_add_event_cb(analog_clock_screen->analogClockScreen,
-                        swipe_screen_event_cb_wrapper, LV_EVENT_GESTURE, NULL);
+    lv_obj_add_event_cb(analog_clock->analogClockScreen, swipe_screen_event_cb_wrapper,
+                        LV_EVENT_GESTURE, NULL);
     lv_obj_add_event_cb(alarm_clock->alarmScreen, swipe_screen_event_cb_wrapper,
                         LV_EVENT_GESTURE, NULL);
 
@@ -39,20 +46,27 @@ GuiApp::GuiApp(/* args */) {
                         LV_EVENT_SCREEN_LOADED, NULL);
     lv_obj_add_event_cb(weather->weatherScreen, screen_load_event_cb_wrapper,
                         LV_EVENT_SCREEN_LOADED, NULL);
-    lv_obj_add_event_cb(analog_clock_screen->analogClockScreen,
-                        screen_load_event_cb_wrapper, LV_EVENT_SCREEN_LOADED, NULL);
+    lv_obj_add_event_cb(analog_clock->analogClockScreen, screen_load_event_cb_wrapper,
+                        LV_EVENT_SCREEN_LOADED, NULL);
     lv_obj_add_event_cb(alarm_clock->alarmScreen, screen_load_event_cb_wrapper,
+                        LV_EVENT_SCREEN_LOADED, NULL);
+    lv_obj_add_event_cb(settings->settingsScreen, screen_load_event_cb_wrapper,
                         LV_EVENT_SCREEN_LOADED, NULL);
 
     lv_obj_add_event_cb(dock_panel->settingsButton, settings_button_event_cb_wrapper,
                         LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(settings->darkmodeSwitch, darkmode_switch_event_cb_wrapper,
                         LV_EVENT_VALUE_CHANGED, NULL);
+
+    lv_obj_add_event_cb(alarm_clock->alarmScreen, user_activity_event_cb_wrapper,
+                        LV_EVENT_PRESSING, NULL);
+    lv_obj_add_event_cb(weather->weatherScreen, user_activity_event_cb_wrapper,
+                        LV_EVENT_PRESSING, NULL);
+    lv_obj_add_event_cb(settings->settingsScreen, user_activity_event_cb_wrapper,
+                        LV_EVENT_PRESSING, NULL);
 };
 
-void GuiApp::init_gui() {
-    lv_disp_load_scr(digital_clock->digitalClockScreen);
-};
+void GuiApp::init_gui() { lv_disp_load_scr(digital_clock->digitalClockScreen); };
 
 void GuiApp::swipe_screen_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
@@ -60,7 +74,7 @@ void GuiApp::swipe_screen_event_cb(lv_event_t *e) {
         this->swipe_digital_clock_screen();
     } else if (target == this->weather->weatherScreen) {
         this->swipe_weather_screen();
-    } else if (target == this->analog_clock_screen->analogClockScreen) {
+    } else if (target == this->analog_clock->analogClockScreen) {
         this->swipe_analog_clock_screen();
     } else if (target == this->alarm_clock->alarmScreen) {
         this->swipe_alarm_screen();
@@ -72,7 +86,7 @@ void GuiApp::swipe_digital_clock_screen() {
         lv_scr_load_anim(this->weather->weatherScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT,
                          SCREEN_CHANGE_ANIM_TIME, 0, false);
     } else if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT) {
-        lv_scr_load_anim(this->analog_clock_screen->analogClockScreen,
+        lv_scr_load_anim(this->analog_clock->analogClockScreen,
                          LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
@@ -95,14 +109,40 @@ void GuiApp::swipe_weather_screen() {
 
 void GuiApp::swipe_alarm_screen() {
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT) {
-        lv_scr_load_anim(this->analog_clock_screen->analogClockScreen,
+        lv_scr_load_anim(this->analog_clock->analogClockScreen,
                          LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
         this->alarm_clock->delete_roller_modal_panel();
     }
 }
 
 void GuiApp::screen_load_event_cb(lv_event_t *e) {
-    this->dock_panel->change_dock_parent(lv_scr_act());
+    if (lv_scr_act() != this->settings->settingsScreen) {
+        this->dock_panel->change_dock_parent(lv_scr_act());
+    }
+    if (this->_screen_timer != NULL) {
+        lv_timer_del(this->_screen_timer);
+    }
+    if (lv_scr_act() != instance->analog_clock->analogClockScreen &
+        lv_scr_act() != instance->digital_clock->digitalClockScreen) {
+        this->_screen_timer = lv_timer_create(screen_timer_cb_wrapper, SCREEN_SWAP_PERIOD, NULL);
+        lv_timer_set_repeat_count(this->_screen_timer, 1);
+    }
+}
+
+void GuiApp::user_activity_event_cb(lv_event_t *e) {
+    Serial.println("Timer was reset");
+    lv_timer_reset(this->_screen_timer);
+}
+
+void GuiApp::screen_timer_cb(lv_timer_t *timer) {
+    Serial.println("Timer callback fired");
+    instance->_screen_timer = NULL;
+    if (lv_scr_act() != instance->analog_clock->analogClockScreen &
+        lv_scr_act() != instance->digital_clock->digitalClockScreen) {
+        Serial.println("Screen was swapped to DigitalClock");
+        lv_scr_load_anim(instance->digital_clock->digitalClockScreen,
+                         LV_SCR_LOAD_ANIM_FADE_IN, SCREEN_CHANGE_ANIM_TIME, 0, false);
+    }
 }
 
 void GuiApp::settings_button_event_cb(lv_event_t *e) {
