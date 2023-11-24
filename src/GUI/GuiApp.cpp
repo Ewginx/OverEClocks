@@ -121,10 +121,12 @@ void GuiApp::screen_load_event_cb(lv_event_t *e) {
     }
     if (this->_screen_timer != NULL) {
         lv_timer_del(this->_screen_timer);
+        this->_screen_timer = NULL;
     }
     if (lv_scr_act() != instance->analog_clock->analogClockScreen &
         lv_scr_act() != instance->digital_clock->digitalClockScreen) {
-        this->_screen_timer = lv_timer_create(screen_timer_cb_wrapper, SCREEN_SWAP_PERIOD, NULL);
+        this->_screen_timer =
+            lv_timer_create(screen_timer_cb_wrapper, SCREEN_SWAP_PERIOD, NULL);
         lv_timer_set_repeat_count(this->_screen_timer, 1);
     }
 }
