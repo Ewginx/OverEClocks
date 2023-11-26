@@ -27,6 +27,7 @@ public:
     Display *display;
     GuiApp *gui_app;
     ServerApp *server_app;
+    
 
     void init_app();
     void connect_to_wifi();

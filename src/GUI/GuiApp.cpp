@@ -66,7 +66,7 @@ GuiApp::GuiApp(/* args */) {
                         LV_EVENT_PRESSING, NULL);
 };
 
-void GuiApp::init_gui() { lv_disp_load_scr(digital_clock->digitalClockScreen); };
+void GuiApp::init_gui() { lv_scr_load(digital_clock->digitalClockScreen); };
 
 void GuiApp::swipe_screen_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
@@ -158,7 +158,6 @@ void GuiApp::darkmode_switch_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
     lv_disp_t *disp = lv_disp_get_default();
     if (event_code == LV_EVENT_VALUE_CHANGED) {
-        Serial.println("Darkmode event");
         if (lv_obj_has_state(target, LV_STATE_CHECKED)) {
             this->set_dark_theme(disp);
         } else {
@@ -191,5 +190,16 @@ void GuiApp::set_dark_theme(lv_disp_t *display) {
     lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_white(), 0);
     lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_white(), 0);
     lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_white(), 0);
+}
+void GuiApp::create_loading_screen() {
+    loading_screen = lv_obj_create(NULL);
+    loading_spinner = lv_spinner_create(loading_screen, 500, 60);
+    lv_obj_set_size(loading_spinner, 100, 100);
+    lv_obj_center(loading_spinner);
+    lv_scr_load(loading_screen);
+}
+void GuiApp::delete_loading_screen() {
+    // lv_obj_del_delayed(loading_screen, 500);
+    lv_obj_del(loading_screen);
 }
 GuiApp::~GuiApp() {}
