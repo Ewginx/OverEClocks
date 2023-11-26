@@ -2,9 +2,8 @@
 
 static WeatherApp *instance = NULL;
 void weather_enabled_cb(void *subscriber, lv_msg_t *msg) {
-    Serial.println("Get msg in WeatherApp with payload:");
     const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
-    Serial.println(*payload);
+    instance->enable_weather(payload);
 }
 WeatherApp::WeatherApp(Weather *weather, SemaphoreHandle_t &mutex) {
     instance = this;
@@ -17,7 +16,7 @@ WeatherApp::WeatherApp(Weather *weather, SemaphoreHandle_t &mutex) {
 void WeatherApp::send_weather_request(void *parameter) {
     WeatherApp *l_pThis = (WeatherApp *)parameter;
     for (;;) {
-        if (WiFi.status() == WL_CONNECTED & l_pThis->url_is_ready) {
+        if (WiFi.status() == WL_CONNECTED & l_pThis->url_is_ready & l_pThis->_weather_api_enabled) {
             l_pThis->client.get(l_pThis->weather_url.c_str());
             int statusCode = l_pThis->client.responseStatusCode();
             Serial.print("Status code: ");
