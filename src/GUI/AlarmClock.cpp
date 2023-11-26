@@ -382,8 +382,13 @@ void AlarmClock::calculate_weekends_remaining_time(int hour, int minute) {
     getLocalTime(&timeinfo);
     time_t now = mktime(&timeinfo);
     int weekdays_add[5] = {5, 4, 3, 2, 1};
-    if (0 < timeinfo.tm_wday < 6) {
+    if (0 < timeinfo.tm_wday & timeinfo.tm_wday < 6 ) {
         timeinfo.tm_mday += weekdays_add[timeinfo.tm_wday - 1];
+    }
+    if (timeinfo.tm_wday == 0) {
+        if (timeinfo.tm_hour > hour) {
+            timeinfo.tm_mday += 6;
+        }
     }
     if (timeinfo.tm_wday == 6) {
         if (timeinfo.tm_hour > hour) {
