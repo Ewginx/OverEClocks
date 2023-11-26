@@ -17,6 +17,7 @@ class WeatherApp {
     TaskHandle_t Weather_Task;
     bool url_is_ready = false;
     bool _weather_api_enabled = false;
+    SemaphoreHandle_t _mutex;
   public:
     WiFiClient wifi;
     HttpClient client = HttpClient(wifi, "api.weatherapi.com", port);
@@ -44,6 +45,6 @@ class WeatherApp {
     void create_weather_task();
     static void send_weather_request(void *parameter);
 
-    WeatherApp(Weather *weather);
+    WeatherApp(Weather *weather, SemaphoreHandle_t &mutex);
     ~WeatherApp();
 };

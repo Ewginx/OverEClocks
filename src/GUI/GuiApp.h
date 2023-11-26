@@ -18,6 +18,10 @@ class GuiApp {
     Weather *weather;
     Settings *settings;
     DockPanel *dock_panel;
+
+    lv_obj_t *loading_screen;
+    lv_obj_t *loading_spinner;
+
     void swipe_screen_event_cb(lv_event_t *e);
     void swipe_digital_clock_screen();
     void swipe_analog_clock_screen();
@@ -32,6 +36,9 @@ class GuiApp {
     void darkmode_switch_event_cb(lv_event_t *e);
     void set_light_theme(lv_disp_t *display);
     void set_dark_theme(lv_disp_t *display);
+
+    void create_loading_screen();
+    void delete_loading_screen();
     // void settings_textarea_event_cb(lv_event_t *e);
 
     void init_gui();

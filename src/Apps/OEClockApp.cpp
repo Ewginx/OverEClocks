@@ -2,15 +2,26 @@
 #include "OEClockApp.h"
 static OEClockApp *instance = NULL;
 
+SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
+
 void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     Serial.println("Get message about reconnect to wifi");
     instance->connect_to_wifi();
+}
+void update_display(void *parameter) {
+    for (;;) {
+        xSemaphoreTake(mutex, portMAX_DELAY);
+        uint32_t time_till_next = lv_timer_handler();
+        xSemaphoreGive(mutex);
+        vTaskDelay(time_till_next / portTICK_PERIOD_MS);
+    }
+    vTaskDelete(NULL);
 }
 OEClockApp::OEClockApp() {
     instance = this;
     display = new Display();
     gui_app = new GuiApp();
-    weather_app = new WeatherApp(gui_app->weather);
+    weather_app = new WeatherApp(gui_app->weather, mutex);
     time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock,
                            this->gui_app->alarm_clock);
     server_app = new ServerApp();
@@ -21,8 +32,18 @@ OEClockApp::OEClockApp() {
 
 void OEClockApp::setup() {
     Serial.begin(115200);
-    esp_log_level_set("*", ESP_LOG_DEBUG);
+    this->gui_app->create_loading_screen();
+    TaskHandle_t update_display_task;
+    xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
+                            "update_display_task", /* Name of the task */
+                            10000,                 /* Stack size in words */
+                            NULL,                  /* Task input parameter */
+                            0,                     /* Priority of the task */
+                            &update_display_task,  /* Task handle. */
+                            0);
+    xSemaphoreTake(mutex, portMAX_DELAY);
     this->init_app();
+    xSemaphoreGive(mutex);
     this->connect_to_wifi();
     if (this->_wifi_connected) {
         weather_app->create_weather_task();
@@ -34,7 +55,10 @@ void OEClockApp::setup() {
     //     lv_log_register_print_cb( my_print ); /* register print function for debugging
     //     */
     // #endif
+
     gui_app->init_gui();
+    this->gui_app->delete_loading_screen();
+    vTaskDelete(update_display_task);
 }
 
 void OEClockApp::init_app() {
@@ -52,7 +76,6 @@ void OEClockApp::init_app() {
     bool auto_brightness = preferences.getBool("auto_bright", true);
     u_int32_t brightness = preferences.getUInt("brightness", 255);
     this->gui_app->settings->set_brightness_widgets(brightness, auto_brightness);
-
     this->set_display_brightness(brightness);
 
     this->gui_app->settings->set_darktheme_switch(
@@ -76,11 +99,12 @@ void OEClockApp::connect_to_wifi() {
     WiFi.softAP("OEClock", "admin1234");
     int attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < 20) {
-        lv_timer_handler();
+        // lv_timer_handler();
         delay(500);
         Serial.print(".");
         attempt++;
     }
+    xSemaphoreTake(mutex, portMAX_DELAY);
     if (WiFi.status() == WL_CONNECTED) {
         this->_wifi_connected = true;
         gui_app->settings->set_ipAddressLabel(WiFi.localIP()[0], WiFi.localIP()[1],
@@ -100,6 +124,7 @@ void OEClockApp::connect_to_wifi() {
         this->weather_app->enable_weather(false);
     }
     this->gui_app->dock_panel->show_wifi_connection(this->_wifi_connected);
+    xSemaphoreGive(mutex);
 }
 
 void OEClockApp::set_display_brightness(u_int32_t brightness) {
@@ -107,11 +132,11 @@ void OEClockApp::set_display_brightness(u_int32_t brightness) {
 }
 
 void OEClockApp::loop() {
-    lv_timer_handler();
-    delay(5);
+    lv_timer_handler_run_in_period(5);
     if (this->_wifi_connected) {
         time_app->notifyAboutTime();
         server_app->run();
+        // Serial.println(ESP.getFreeHeap());
     }
 }
 

@@ -1,13 +1,14 @@
 #include "Apps/WeatherApp.h"
 
 static WeatherApp *instance = NULL;
-void weather_enabled_cb(void * subscriber, lv_msg_t * msg){
+void weather_enabled_cb(void *subscriber, lv_msg_t *msg) {
     Serial.println("Get msg in WeatherApp with payload:");
     const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
     Serial.println(*payload);
 }
-WeatherApp::WeatherApp(Weather *weather) {
+WeatherApp::WeatherApp(Weather *weather, SemaphoreHandle_t &mutex) {
     instance = this;
+    this->_mutex = mutex;
     this->weather = weather;
     this->setup_weather_url();
     lv_msg_subscribe(MSG_WEATHER_ENABLED, weather_enabled_cb, NULL);
@@ -23,7 +24,9 @@ void WeatherApp::send_weather_request(void *parameter) {
             Serial.println(statusCode);
             if (statusCode == 200) {
                 String response = l_pThis->client.responseBody();
+                xSemaphoreTake(l_pThis->_mutex, portMAX_DELAY);
                 l_pThis->deserialize_json_response(response);
+                xSemaphoreGive(l_pThis->_mutex);
                 Serial.print("Response: ");
                 Serial.println(response);
                 Serial.printf("Waiting %i minutes for the next request",
@@ -44,9 +47,7 @@ void WeatherApp::setup_weather_url() {
     this->weather_url += "ru";
     this->url_is_ready = true;
 }
-void WeatherApp::enable_weather(bool enable) {
-    this->_weather_api_enabled = enable;
-}
+void WeatherApp::enable_weather(bool enable) { this->_weather_api_enabled = enable; }
 void WeatherApp::deserialize_json_response(String &response) {
     DynamicJsonDocument doc(4096);
 
@@ -180,7 +181,6 @@ void WeatherApp::set_weather_img(int code) {
     }
 }
 void WeatherApp::create_weather_task() {
-    Serial.println("Task created");
     xTaskCreatePinnedToCore(
         this->send_weather_request, /* Function to implement the task */
         "request",                  /* Name of the task */
