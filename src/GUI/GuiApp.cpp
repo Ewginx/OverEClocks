@@ -133,7 +133,9 @@ void GuiApp::screen_load_event_cb(lv_event_t *e) {
 
 void GuiApp::user_activity_event_cb(lv_event_t *e) {
     Serial.println("Timer was reset");
-    lv_timer_reset(this->_screen_timer);
+    if (this->_screen_timer != NULL) {
+        lv_timer_reset(this->_screen_timer);
+    }
 }
 
 void GuiApp::screen_timer_cb(lv_timer_t *timer) {
