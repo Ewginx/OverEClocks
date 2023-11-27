@@ -70,7 +70,7 @@ void OEClockApp::init_app() {
 
     bool weather_enabled = preferences.getBool("weather_enab", true);
     this->weather_app->enable_weather(weather_enabled);
-    String city = preferences.getString("city", "");
+    String city = preferences.getString("city").c_str();
     this->gui_app->settings->set_weather_settings(city.c_str(), weather_enabled);
 
     bool auto_brightness = preferences.getBool("auto_bright", true);
@@ -82,6 +82,8 @@ void OEClockApp::init_app() {
         preferences.getBool("dark_theme", false));
     lv_event_send(this->gui_app->settings->darkmodeSwitch, LV_EVENT_VALUE_CHANGED, NULL);
 
+    this->weather_app->setup_weather_url(city.c_str(),
+                                         preferences.getString("language").c_str());
     preferences.end();
 
     Serial.println("Settings initialized");

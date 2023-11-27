@@ -6,6 +6,7 @@ enum settings_texts {
     theme,
     auto_brightness,
     city_placeholder,
+    language_placeholder,
     city,
     wifi_ssid_placeholder,
     wifi_ssid,

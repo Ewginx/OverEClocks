@@ -9,8 +9,8 @@ WeatherApp::WeatherApp(Weather *weather, SemaphoreHandle_t &mutex) {
     instance = this;
     this->_mutex = mutex;
     this->weather = weather;
-    this->setup_weather_url();
     lv_msg_subscribe(MSG_WEATHER_ENABLED, weather_enabled_cb, NULL);
+    lv_msg_subscribe(MSG_WEATHER_SETTINGS_CHANGED, weather_enabled_cb, NULL);
 }
 
 void WeatherApp::send_weather_request(void *parameter) {
@@ -37,13 +37,13 @@ void WeatherApp::send_weather_request(void *parameter) {
         vTaskDelay(WEATHER_API_POLLING_INTERVAL_MILLISECONDS / portTICK_PERIOD_MS);
     }
 }
-void WeatherApp::setup_weather_url() {
+void WeatherApp::setup_weather_url(const char* city, const char* language) {
     this->weather_url += API_KEY;
     this->weather_url += "&q=";
-    this->weather_url += "city";
+    this->weather_url += city;
     this->weather_url += "&aqi=no";
     this->weather_url += "&lang=";
-    this->weather_url += "ru";
+    this->weather_url += language;
     this->url_is_ready = true;
 }
 void WeatherApp::enable_weather(bool enable) { this->_weather_api_enabled = enable; }

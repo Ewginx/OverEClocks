@@ -23,7 +23,7 @@ class WeatherApp {
     HttpClient client = HttpClient(wifi, "api.weatherapi.com", port);
     // HttpClient client = HttpClient(wifi, "jsonplaceholder.typicode.com", port);
 
-    void setup_weather_url();
+    void setup_weather_url(const char* city, const char* language);
     void enable_weather(bool enable=true);
     void deserialize_json_response(String &response);
     void set_temperature(int temperature);

@@ -20,6 +20,7 @@ class Settings {
     lv_obj_t *darkmodeLabel;
     lv_obj_t *darkmodeSwitch;
     lv_obj_t *cityTextArea;
+    lv_obj_t *languageTextArea;
     lv_obj_t *cityLabel;
     lv_obj_t *SSIDLabel;
     lv_obj_t *SSIDTextArea;
@@ -57,6 +58,7 @@ class Settings {
     void wifi_button_event_cb(lv_event_t *e);
     void weather_switch_event_cb(lv_event_t *e);
     void settings_cityTextArea_event_cb(lv_event_t *e);
+    void settings_languageTextArea_event_cb(lv_event_t *e);
     void settings_SSIDTextArea_event_cb(lv_event_t *e);
     void settings_passwordTextArea_event_cb(lv_event_t *e);
     void settings_brightnessSlider_event_cb(lv_event_t *e);

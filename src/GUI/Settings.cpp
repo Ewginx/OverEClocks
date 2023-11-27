@@ -13,7 +13,9 @@ extern "C" void home_button_event_cb_wrapper(lv_event_t *e) {
 extern "C" void settings_cityTextArea_event_cb_wrapper(lv_event_t *e) {
     instance->settings_cityTextArea_event_cb(e);
 }
-
+extern "C" void settings_languageTextArea_event_cb_wrapper(lv_event_t *e) {
+    instance->settings_languageTextArea_event_cb(e);
+}
 extern "C" void settings_SSIDTextArea_event_cb_wrapper(lv_event_t *e) {
     instance->settings_SSIDTextArea_event_cb(e);
 }
@@ -130,7 +132,24 @@ void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
         lv_msg_send(MSG_WEATHER_SETTINGS_CHANGED, NULL);
     }
 }
-
+void Settings::settings_languageTextArea_event_cb(lv_event_t *e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t *target = lv_event_get_target(e);
+    if (event_code == LV_EVENT_FOCUSED || event_code == LV_EVENT_CLICKED) {
+        lv_obj_set_height(this->settingsPanel, this->_settings_panel_height / 2);
+        lv_obj_readjust_scroll(this->settingsScreen, LV_ANIM_OFF);
+        lv_obj_scroll_to_y(this->settingsPanel,
+                           lv_obj_get_y(lv_event_get_current_target(e)) - 80, LV_ANIM_ON);
+        this->create_keyboard(lv_event_get_current_target(e));
+    }
+    if (event_code == LV_EVENT_READY) {
+        this->delete_keyboard();
+        _preferences.begin(NAMESPACE);
+        _preferences.putString("language", lv_textarea_get_text(this->languageTextArea));
+        _preferences.end();
+        lv_msg_send(MSG_WEATHER_SETTINGS_CHANGED, NULL);
+    }
+}
 void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
@@ -256,7 +275,7 @@ void Settings::create_settings_screen() {
 
     this->cityLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_size(this->cityLabel, 120, 45);
-    lv_obj_set_pos(this->cityLabel, 20, this->_settings_panel_height / 5 + 25);
+    lv_obj_set_pos(this->cityLabel, 10, this->_settings_panel_height / 5 + 25);
     lv_obj_set_align(this->cityLabel, LV_ALIGN_TOP_LEFT);
     lv_obj_set_style_text_align(this->cityLabel, LV_TEXT_ALIGN_CENTER, 0);
     lv_label_set_text(this->cityLabel, settings_translation[city]);
@@ -264,13 +283,23 @@ void Settings::create_settings_screen() {
     lv_obj_set_style_text_align(this->cityLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     this->cityTextArea = lv_textarea_create(this->settingsPanel);
-    lv_obj_set_size(this->cityTextArea, 250, LV_SIZE_CONTENT); /// 33
-    lv_obj_align_to(this->cityTextArea, this->cityLabel, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
+    lv_obj_set_size(this->cityTextArea, 200, LV_SIZE_CONTENT); /// 33
+    lv_obj_align_to(this->cityTextArea, this->cityLabel, LV_ALIGN_OUT_RIGHT_MID, 20, 0);
     lv_textarea_set_max_length(this->cityTextArea, 100);
     lv_textarea_set_placeholder_text(this->cityTextArea,
                                      settings_translation[city_placeholder]);
     lv_textarea_set_one_line(this->cityTextArea, true);
     lv_obj_add_flag(this->cityTextArea, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    this->languageTextArea = lv_textarea_create(this->settingsPanel);
+    lv_obj_set_size(this->languageTextArea, 60, LV_SIZE_CONTENT); /// 33
+    lv_obj_align_to(this->languageTextArea, this->cityTextArea, LV_ALIGN_OUT_RIGHT_MID,
+                    10, 0);
+    lv_textarea_set_max_length(this->languageTextArea, 100);
+    lv_textarea_set_placeholder_text(this->languageTextArea,
+                                     settings_translation[language_placeholder]);
+    lv_textarea_set_one_line(this->languageTextArea, true);
+    lv_obj_add_flag(this->languageTextArea, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->SSIDLabel = lv_label_create(this->settingsPanel);
     lv_obj_set_size(this->SSIDLabel, 120, 45);
@@ -282,7 +311,7 @@ void Settings::create_settings_screen() {
 
     this->SSIDTextArea = lv_textarea_create(this->settingsPanel);
     lv_obj_set_size(this->SSIDTextArea, 250, LV_SIZE_CONTENT);
-    lv_obj_align_to(this->SSIDTextArea, this->SSIDLabel, LV_ALIGN_OUT_RIGHT_MID, 30, -10);
+    lv_obj_align_to(this->SSIDTextArea, this->SSIDLabel, LV_ALIGN_OUT_RIGHT_MID, 20, -10);
     lv_textarea_set_max_length(this->SSIDTextArea, 50);
     lv_textarea_set_placeholder_text(this->SSIDTextArea,
                                      settings_translation[wifi_ssid_placeholder]);
@@ -300,7 +329,7 @@ void Settings::create_settings_screen() {
     this->passwordTextArea = lv_textarea_create(this->settingsPanel);
     lv_obj_set_size(this->passwordTextArea, 250, LV_SIZE_CONTENT); /// 33
     lv_obj_align_to(this->passwordTextArea, this->passwordLabel, LV_ALIGN_OUT_RIGHT_MID,
-                    30, -10);
+                    20, -10);
     lv_textarea_set_max_length(this->passwordTextArea, 100);
     lv_textarea_set_placeholder_text(this->passwordTextArea,
                                      settings_translation[wifi_password_placeholder]);
@@ -350,6 +379,8 @@ void Settings::create_settings_screen() {
     lv_obj_set_style_text_font(this->homeButtonLabel, &lv_font_montserrat_20, 0);
 
     lv_obj_add_event_cb(this->cityTextArea, settings_cityTextArea_event_cb_wrapper,
+                        LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(this->languageTextArea, settings_languageTextArea_event_cb_wrapper,
                         LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(this->SSIDTextArea, settings_SSIDTextArea_event_cb_wrapper,
                         LV_EVENT_ALL, NULL);
