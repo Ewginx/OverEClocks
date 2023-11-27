@@ -129,7 +129,7 @@ void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
         _preferences.begin(NAMESPACE);
         _preferences.putString("city", lv_textarea_get_text(this->cityTextArea));
         _preferences.end();
-        lv_msg_send(MSG_WEATHER_SETTINGS_CHANGED, NULL);
+        lv_msg_send(MSG_WEATHER_CITY_CHANGED, static_cast<const void *>(lv_textarea_get_text(this->cityTextArea)));
     }
 }
 void Settings::settings_languageTextArea_event_cb(lv_event_t *e) {
@@ -147,7 +147,7 @@ void Settings::settings_languageTextArea_event_cb(lv_event_t *e) {
         _preferences.begin(NAMESPACE);
         _preferences.putString("language", lv_textarea_get_text(this->languageTextArea));
         _preferences.end();
-        lv_msg_send(MSG_WEATHER_SETTINGS_CHANGED, NULL);
+        lv_msg_send(MSG_WEATHER_LANGUAGE_CHANGED, static_cast<const void *>(lv_textarea_get_text(this->languageTextArea)));
     }
 }
 void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
@@ -204,8 +204,9 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
 }
 void Settings::set_display(Display *display) { _display = display; }
 void Settings::set_preferences(Preferences &preferences) { _preferences = preferences; }
-void Settings::set_weather_settings(const char *city, bool weather_enabled) {
+void Settings::set_weather_settings(const char *city, const char *language, bool weather_enabled) {
     lv_textarea_add_text(this->cityTextArea, city);
+    lv_textarea_add_text(this->languageTextArea, language);
     lv_obj_add_state(this->weatherSwitch,
                      weather_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
 }
@@ -380,8 +381,8 @@ void Settings::create_settings_screen() {
 
     lv_obj_add_event_cb(this->cityTextArea, settings_cityTextArea_event_cb_wrapper,
                         LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(this->languageTextArea, settings_languageTextArea_event_cb_wrapper,
-                        LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(this->languageTextArea,
+                        settings_languageTextArea_event_cb_wrapper, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(this->SSIDTextArea, settings_SSIDTextArea_event_cb_wrapper,
                         LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(this->passwordTextArea,

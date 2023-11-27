@@ -11,8 +11,10 @@
 class WeatherApp {
   private:
     short int port = 80;
-    String weather_url =
-        "/v1/forecast.json"; // ?key={API_KEY}&q={CITY}&aqi=no&lang={COUNTRY_CODE}
+    String _city;
+    String _language;
+    String _api_url = "/v1/forecast.json";
+    String _weather_url;
     Weather *weather;
     TaskHandle_t Weather_Task;
     bool url_is_ready = false;
@@ -21,9 +23,11 @@ class WeatherApp {
   public:
     WiFiClient wifi;
     HttpClient client = HttpClient(wifi, "api.weatherapi.com", port);
-    // HttpClient client = HttpClient(wifi, "jsonplaceholder.typicode.com", port);
 
-    void setup_weather_url(const char* city, const char* language);
+    void set_city_string(const char* city);
+    void set_language_string(const char* language);
+
+    void setup_weather_url();
     void enable_weather(bool enable=true);
     void deserialize_json_response(String &response);
     void set_temperature(int temperature);

@@ -32,7 +32,6 @@ OEClockApp::OEClockApp() {
 
 void OEClockApp::setup() {
     Serial.begin(115200);
-    this->gui_app->create_loading_screen();
     TaskHandle_t update_display_task;
     xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
                             "update_display_task", /* Name of the task */
@@ -41,6 +40,7 @@ void OEClockApp::setup() {
                             0,                     /* Priority of the task */
                             &update_display_task,  /* Task handle. */
                             0);
+    this->gui_app->create_loading_screen();
     xSemaphoreTake(mutex, portMAX_DELAY);
     this->init_app();
     xSemaphoreGive(mutex);
@@ -70,8 +70,9 @@ void OEClockApp::init_app() {
 
     bool weather_enabled = preferences.getBool("weather_enab", true);
     this->weather_app->enable_weather(weather_enabled);
-    String city = preferences.getString("city").c_str();
-    this->gui_app->settings->set_weather_settings(city.c_str(), weather_enabled);
+    String city = preferences.getString("city");
+    String language = preferences.getString("language");
+    this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str(), weather_enabled);
 
     bool auto_brightness = preferences.getBool("auto_bright", true);
     u_int32_t brightness = preferences.getUInt("brightness", 255);
@@ -81,11 +82,10 @@ void OEClockApp::init_app() {
     this->gui_app->settings->set_darktheme_switch(
         preferences.getBool("dark_theme", false));
     lv_event_send(this->gui_app->settings->darkmodeSwitch, LV_EVENT_VALUE_CHANGED, NULL);
-
-    this->weather_app->setup_weather_url(city.c_str(),
-                                         preferences.getString("language").c_str());
+    this->weather_app->set_city_string(city.c_str());
+    this->weather_app->set_language_string(language.c_str());
     preferences.end();
-
+    this->weather_app->setup_weather_url();
     Serial.println("Settings initialized");
 }
 

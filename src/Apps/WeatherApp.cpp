@@ -5,19 +5,31 @@ void weather_enabled_cb(void *subscriber, lv_msg_t *msg) {
     const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
     instance->enable_weather(payload);
 }
+void weather_city_changed_cb(void *subscriber, lv_msg_t *msg) {
+    const char *city = static_cast<const char *>(lv_msg_get_payload(msg));
+    instance->set_city_string(city);
+    instance->setup_weather_url();
+}
+void weather_language_changed_cb(void *subscriber, lv_msg_t *msg) {
+    const char *language = static_cast<const char *>(lv_msg_get_payload(msg));
+    instance->set_language_string(language);
+    instance->setup_weather_url();
+}
 WeatherApp::WeatherApp(Weather *weather, SemaphoreHandle_t &mutex) {
     instance = this;
     this->_mutex = mutex;
     this->weather = weather;
     lv_msg_subscribe(MSG_WEATHER_ENABLED, weather_enabled_cb, NULL);
-    lv_msg_subscribe(MSG_WEATHER_SETTINGS_CHANGED, weather_enabled_cb, NULL);
+    lv_msg_subscribe(MSG_WEATHER_CITY_CHANGED, weather_city_changed_cb, NULL);
+    lv_msg_subscribe(MSG_WEATHER_LANGUAGE_CHANGED, weather_language_changed_cb, NULL);
 }
 
 void WeatherApp::send_weather_request(void *parameter) {
     WeatherApp *l_pThis = (WeatherApp *)parameter;
     for (;;) {
-        if (WiFi.status() == WL_CONNECTED & l_pThis->url_is_ready & l_pThis->_weather_api_enabled) {
-            l_pThis->client.get(l_pThis->weather_url.c_str());
+        if (WiFi.status() == WL_CONNECTED & l_pThis->url_is_ready &
+            l_pThis->_weather_api_enabled) {
+            l_pThis->client.get(l_pThis->_weather_url.c_str());
             int statusCode = l_pThis->client.responseStatusCode();
             Serial.print("Status code: ");
             Serial.println(statusCode);
@@ -37,15 +49,19 @@ void WeatherApp::send_weather_request(void *parameter) {
         vTaskDelay(WEATHER_API_POLLING_INTERVAL_MILLISECONDS / portTICK_PERIOD_MS);
     }
 }
-void WeatherApp::setup_weather_url(const char* city, const char* language) {
-    this->weather_url += API_KEY;
-    this->weather_url += "&q=";
-    this->weather_url += city;
-    this->weather_url += "&aqi=no";
-    this->weather_url += "&lang=";
-    this->weather_url += language;
+void WeatherApp::setup_weather_url() {
+    this->_weather_url.clear();
+    this->_weather_url += this->_api_url;
+    this->_weather_url += API_KEY;
+    this->_weather_url += "&q=";
+    this->_weather_url += this->_city;
+    this->_weather_url += "&aqi=no";
+    this->_weather_url += "&lang=";
+    this->_weather_url += this->_language;
     this->url_is_ready = true;
 }
+void WeatherApp::set_language_string(const char *language) { this->_language = language; }
+void WeatherApp::set_city_string(const char *city) { this->_city = city; }
 void WeatherApp::enable_weather(bool enable) { this->_weather_api_enabled = enable; }
 void WeatherApp::deserialize_json_response(String &response) {
     DynamicJsonDocument doc(4096);

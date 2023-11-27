@@ -40,11 +40,10 @@ class Settings {
     void set_display(Display *display);
     void set_preferences(Preferences &preferences);
 
-    void set_weather_settings(const char *city, bool weather_enabled);
+    void set_weather_settings(const char *city, const char *language, bool weather_enabled);
     void set_wifi_settings(const char *ssid, const char *password);
     void set_darktheme_switch(bool dark_theme_enabled);
     void set_brightness_widgets(u_int32_t slider_value, bool auto_brightness_enabled);
-
 
     void disable_weather_switch();
     void update_weather_switch_state(bool weather_enabled);
