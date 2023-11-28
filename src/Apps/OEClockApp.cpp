@@ -10,10 +10,11 @@ void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
 }
 void update_display(void *parameter) {
     for (;;) {
-        xSemaphoreTake(mutex, portMAX_DELAY);
-        uint32_t time_till_next = lv_timer_handler();
-        xSemaphoreGive(mutex);
-        vTaskDelay(time_till_next / portTICK_PERIOD_MS);
+        if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+            lv_timer_handler();
+            xSemaphoreGive(mutex);
+        }
+        vTaskDelay(5 / portTICK_PERIOD_MS);
     }
     vTaskDelete(NULL);
 }
@@ -21,7 +22,7 @@ OEClockApp::OEClockApp() {
     instance = this;
     display = new Display();
     gui_app = new GuiApp();
-    weather_app = new WeatherApp(gui_app->weather, mutex);
+    weather_app = new WeatherApp(gui_app->weather);
     time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock,
                            this->gui_app->alarm_clock);
     server_app = new ServerApp();
@@ -46,17 +47,20 @@ void OEClockApp::setup() {
     if (this->_wifi_connected) {
         time_app->config_time();
         server_app->setup();
-        weather_app->create_weather_task();
     }
 
     // #if LV_USE_LOG != 0
-    //     lv_log_register_print_cb( my_print ); /* register print function for debugging
+    //     lv_log_register_print_cb( my_print ); /* register print function for
+    //     debugging
     //     */
     // #endif
-
-    gui_app->init_gui();
-    this->gui_app->delete_loading_screen();
+    if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        gui_app->init_gui();
+        this->gui_app->delete_loading_screen();
+        xSemaphoreGive(mutex);
+    }
     vTaskDelete(update_display_task);
+    weather_app->create_weather_task();
 }
 
 void OEClockApp::init_app() {
@@ -110,27 +114,34 @@ void OEClockApp::connect_to_wifi() {
         Serial.print(".");
         attempt++;
     }
-    xSemaphoreTake(mutex, portMAX_DELAY);
     if (WiFi.status() == WL_CONNECTED) {
         this->_wifi_connected = true;
-        gui_app->settings->set_ipAddressLabel(WiFi.localIP()[0], WiFi.localIP()[1],
-                                              WiFi.localIP()[2], WiFi.localIP()[3]);
+        this->weather_app->enable_weather(weather_enabled);
+        if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+            gui_app->settings->set_ipAddressLabel(WiFi.localIP()[0], WiFi.localIP()[1],
+                                                  WiFi.localIP()[2], WiFi.localIP()[3]);
+            lv_obj_clear_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
+            this->gui_app->settings->update_weather_switch_state(weather_enabled);
+            xSemaphoreGive(mutex);
+        }
         Serial.print("Connected to WiFi network with IP Address: ");
         Serial.println(WiFi.localIP());
-        lv_obj_clear_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
-        this->gui_app->settings->update_weather_switch_state(weather_enabled);
-        this->weather_app->enable_weather(weather_enabled);
-
     } else {
-        gui_app->settings->set_ipAddressLabel(WiFi.softAPIP()[0], WiFi.softAPIP()[1],
-                                              WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
-        this->_wifi_connected = false;
-        Serial.println("Unable to connect to WiFi network");
-        this->gui_app->settings->disable_weather_switch();
         this->weather_app->enable_weather(false);
+        this->_wifi_connected = false;
+        if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+            this->gui_app->settings->disable_weather_switch();
+            gui_app->settings->set_ipAddressLabel(WiFi.softAPIP()[0], WiFi.softAPIP()[1],
+                                                  WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
+            xSemaphoreGive(mutex);
+        }
+        Serial.println("Unable to connect to WiFi network");
     }
-    this->gui_app->dock_panel->show_wifi_connection(this->_wifi_connected);
-    xSemaphoreGive(mutex);
+    if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->gui_app->dock_panel->show_wifi_connection(this->_wifi_connected);
+        xSemaphoreGive(mutex);
+    }
+    Serial.println("Exit connect to wifi method");
 }
 
 void OEClockApp::set_display_brightness(u_int32_t brightness) {

@@ -15,9 +15,8 @@ void weather_language_changed_cb(void *subscriber, lv_msg_t *msg) {
     instance->set_language_string(language);
     instance->setup_weather_url();
 }
-WeatherApp::WeatherApp(Weather *weather, SemaphoreHandle_t &mutex) {
+WeatherApp::WeatherApp(Weather *weather) {
     instance = this;
-    this->_mutex = mutex;
     this->weather = weather;
     lv_msg_subscribe(MSG_WEATHER_ENABLED, weather_enabled_cb, NULL);
     lv_msg_subscribe(MSG_WEATHER_CITY_CHANGED, weather_city_changed_cb, NULL);
@@ -35,9 +34,7 @@ void WeatherApp::send_weather_request(void *parameter) {
             Serial.println(statusCode);
             if (statusCode == 200) {
                 String response = l_pThis->client.responseBody();
-                xSemaphoreTake(l_pThis->_mutex, portMAX_DELAY);
                 l_pThis->deserialize_json_response(response);
-                xSemaphoreGive(l_pThis->_mutex);
                 Serial.print("Response: ");
                 Serial.println(response);
                 Serial.printf("Waiting %i minutes for the next request",
