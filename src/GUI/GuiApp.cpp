@@ -199,7 +199,7 @@ void GuiApp::create_loading_screen() {
     lv_scr_load(loading_screen);
 }
 void GuiApp::delete_loading_screen() {
-    // lv_obj_del_delayed(loading_screen, 500);
-    lv_obj_del(loading_screen);
+    lv_obj_del_delayed(loading_spinner, 600);
+    lv_obj_del_delayed(loading_screen, 800);
 }
 GuiApp::~GuiApp() {}

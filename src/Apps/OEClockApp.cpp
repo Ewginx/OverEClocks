@@ -33,6 +33,7 @@ OEClockApp::OEClockApp() {
 void OEClockApp::setup() {
     Serial.begin(115200);
     TaskHandle_t update_display_task;
+    this->gui_app->create_loading_screen();
     xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
                             "update_display_task", /* Name of the task */
                             10000,                 /* Stack size in words */
@@ -40,15 +41,12 @@ void OEClockApp::setup() {
                             0,                     /* Priority of the task */
                             &update_display_task,  /* Task handle. */
                             0);
-    this->gui_app->create_loading_screen();
-    xSemaphoreTake(mutex, portMAX_DELAY);
     this->init_app();
-    xSemaphoreGive(mutex);
     this->connect_to_wifi();
     if (this->_wifi_connected) {
-        weather_app->create_weather_task();
         time_app->config_time();
         server_app->setup();
+        weather_app->create_weather_task();
     }
 
     // #if LV_USE_LOG != 0
@@ -63,29 +61,35 @@ void OEClockApp::setup() {
 
 void OEClockApp::init_app() {
     preferences.begin(NAMESPACE);
-
-    this->gui_app->settings->set_wifi_settings(
-        preferences.getString("ssid", "N/A").c_str(),
-        preferences.getString("password", "N/A").c_str());
-
-    bool weather_enabled = preferences.getBool("weather_enab", true);
-    this->weather_app->enable_weather(weather_enabled);
+    this->ssid = preferences.getString("ssid", "N/A");
+    this->password = preferences.getString("password", "N/A");
     String city = preferences.getString("city");
     String language = preferences.getString("language");
-    this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str(), weather_enabled);
-
     bool auto_brightness = preferences.getBool("auto_bright", true);
     u_int32_t brightness = preferences.getUInt("brightness", 255);
-    this->gui_app->settings->set_brightness_widgets(brightness, auto_brightness);
-    this->set_display_brightness(brightness);
+    bool weather_enabled = preferences.getBool("weather_enab", true);
+    bool dark_theme_enabled = preferences.getBool("dark_theme", false);
+    preferences.end();
 
-    this->gui_app->settings->set_darktheme_switch(
-        preferences.getBool("dark_theme", false));
-    lv_event_send(this->gui_app->settings->darkmodeSwitch, LV_EVENT_VALUE_CHANGED, NULL);
     this->weather_app->set_city_string(city.c_str());
     this->weather_app->set_language_string(language.c_str());
-    preferences.end();
     this->weather_app->setup_weather_url();
+    this->weather_app->enable_weather(weather_enabled);
+    this->set_display_brightness(brightness);
+
+    if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->gui_app->settings->set_wifi_settings(this->ssid.c_str(),
+                                                   this->password.c_str());
+        this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str(),
+                                                      weather_enabled);
+        this->gui_app->settings->set_brightness_widgets(brightness, auto_brightness);
+        this->gui_app->settings->set_darktheme_switch(dark_theme_enabled);
+        lv_event_send(this->gui_app->settings->darkmodeSwitch, LV_EVENT_VALUE_CHANGED,
+                      NULL);
+        xSemaphoreGive(mutex);
+    } else {
+        Serial.println("Can't obtain mutex");
+    }
     Serial.println("Settings initialized");
 }
 
