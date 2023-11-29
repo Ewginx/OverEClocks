@@ -26,6 +26,7 @@ public:
     lv_obj_t *weatherSecondTempLabel;
     lv_obj_t *weatherThirdTempLabel;
     lv_obj_t *weatherFourthTempLabel;
+    void set_no_data_values();
     Weather();
     ~Weather();
 

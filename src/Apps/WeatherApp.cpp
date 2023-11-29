@@ -3,7 +3,7 @@
 static WeatherApp *instance = NULL;
 void weather_enabled_cb(void *subscriber, lv_msg_t *msg) {
     const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
-    instance->enable_weather(payload);
+    instance->enable_weather(*payload);
 }
 void weather_city_changed_cb(void *subscriber, lv_msg_t *msg) {
     const char *city = static_cast<const char *>(lv_msg_get_payload(msg));
@@ -59,7 +59,23 @@ void WeatherApp::setup_weather_url() {
 }
 void WeatherApp::set_language_string(const char *language) { this->_language = language; }
 void WeatherApp::set_city_string(const char *city) { this->_city = city; }
-void WeatherApp::enable_weather(bool enable) { this->_weather_api_enabled = enable; }
+void WeatherApp::enable_weather(bool enable) {
+    if (enable) {
+        if (!this->_weather_api_enabled) {
+            vTaskResume(this->_weather_task);
+        } else {
+            Serial.println("Task already resumed!");
+        }
+    } else {
+        if (this->_weather_api_enabled) {
+            vTaskSuspend(this->_weather_task);
+            this->weather->set_no_data_values();
+        } else {
+            Serial.println("Task already suspended!");
+        }
+    }
+    this->_weather_api_enabled = enable;
+}
 void WeatherApp::deserialize_json_response(String &response) {
     DynamicJsonDocument doc(4096);
 
@@ -199,7 +215,8 @@ void WeatherApp::create_weather_task() {
         10000,                      /* Stack size in words */
         this,                       /* Task input parameter */
         0,                          /* Priority of the task */
-        &this->Weather_Task,        /* Task handle. */
+        &this->_weather_task,       /* Task handle. */
         0);
+    vTaskSuspend(this->_weather_task);
 }
 WeatherApp::~WeatherApp() {}

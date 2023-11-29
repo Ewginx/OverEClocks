@@ -16,7 +16,7 @@ class WeatherApp {
     String _api_url = "/v1/forecast.json";
     String _weather_url;
     Weather *weather;
-    TaskHandle_t Weather_Task;
+    TaskHandle_t _weather_task;
     bool url_is_ready = false;
     bool _weather_api_enabled = false;
   public:

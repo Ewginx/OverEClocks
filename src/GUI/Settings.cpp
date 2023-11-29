@@ -1,5 +1,4 @@
 #include "GUI/Settings.h"
-#include "Settings.h"
 
 static Settings *instance = NULL;
 

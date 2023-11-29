@@ -43,6 +43,7 @@ void OEClockApp::setup() {
                             &update_display_task,  /* Task handle. */
                             0);
     this->init_app();
+    weather_app->create_weather_task();
     this->connect_to_wifi();
     if (this->_wifi_connected) {
         time_app->config_time();
@@ -60,7 +61,6 @@ void OEClockApp::setup() {
         xSemaphoreGive(mutex);
     }
     vTaskDelete(update_display_task);
-    weather_app->create_weather_task();
 }
 
 void OEClockApp::init_app() {
@@ -78,7 +78,7 @@ void OEClockApp::init_app() {
     this->weather_app->set_city_string(city.c_str());
     this->weather_app->set_language_string(language.c_str());
     this->weather_app->setup_weather_url();
-    this->weather_app->enable_weather(weather_enabled);
+    // this->weather_app->enable_weather(weather_enabled);
     this->set_display_brightness(brightness);
 
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
