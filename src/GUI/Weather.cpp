@@ -35,7 +35,6 @@ Weather::Weather() {
     weatherTemperatureLabel = lv_label_create(weatherPanel);
     lv_obj_set_pos(weatherTemperatureLabel, 20, -45);
     lv_obj_set_align(weatherTemperatureLabel, LV_ALIGN_CENTER);
-
     lv_obj_set_style_text_font(weatherTemperatureLabel, &temperature_font_48, 0);
 
     feelsLikeLabel = lv_label_create(weatherPanel);
@@ -54,23 +53,23 @@ Weather::Weather() {
 
     weatherMaxTempLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherMaxTempLabel, &weather_font_18, 0);
-    lv_obj_set_pos(weatherMaxTempLabel, -160, 75);
+    lv_obj_set_pos(weatherMaxTempLabel, -150, 75);
     lv_obj_set_align(weatherMaxTempLabel, LV_ALIGN_CENTER);
 
     weatherMinTempLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherMinTempLabel, &weather_font_18, 0);
-    lv_obj_align_to(weatherMinTempLabel, weatherMaxTempLabel, LV_ALIGN_OUT_RIGHT_MID, 15,
+    lv_obj_align_to(weatherMinTempLabel, weatherMaxTempLabel, LV_ALIGN_OUT_RIGHT_MID, 25,
                     -1);
 
     weatherProbabilityLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherProbabilityLabel, &weather_font_18, 0);
     lv_obj_align_to(weatherProbabilityLabel, weatherMinTempLabel, LV_ALIGN_OUT_RIGHT_MID,
-                    25, -1);
+                    35, -1);
 
     weatherHumidityLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherHumidityLabel, &weather_font_18, 0);
     lv_obj_align_to(weatherHumidityLabel, weatherProbabilityLabel, LV_ALIGN_OUT_RIGHT_MID,
-                    15, -1);
+                    30, -1);
 
     weatherPressureLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherPressureLabel, &weather_font_18, 0);
