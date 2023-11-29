@@ -25,7 +25,7 @@ class WeatherApp {
 
     void set_city_string(const char* city);
     void set_language_string(const char* language);
-
+    String url_encode(const char *str);
     void setup_weather_url();
     void enable_weather(bool enable=true);
     void deserialize_json_response(String &response);

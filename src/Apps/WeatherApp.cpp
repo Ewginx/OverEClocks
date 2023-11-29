@@ -58,7 +58,9 @@ void WeatherApp::setup_weather_url() {
     this->url_is_ready = true;
 }
 void WeatherApp::set_language_string(const char *language) { this->_language = language; }
-void WeatherApp::set_city_string(const char *city) { this->_city = city; }
+void WeatherApp::set_city_string(const char *city) {
+    this->_city = this->url_encode(city);
+}
 void WeatherApp::enable_weather(bool enable) {
     if (enable) {
         if (!this->_weather_api_enabled) {
@@ -207,6 +209,23 @@ void WeatherApp::set_weather_img(int code) {
     else {
         lv_img_set_src(weather->weatherImage, &img_day_rain_png);
     }
+}
+String WeatherApp::url_encode(const char *str){
+    String encodedMsg = "";
+    char *hex = "0123456789ABCDEF";
+    while (*str != '\0') {
+        if (('a' <= *str && *str <= 'z') || ('A' <= *str && *str <= 'Z') ||
+            ('0' <= *str && *str <= '9') || *str == '-' || *str == '_' ||
+            *str == '.' || *str == '~') {
+            encodedMsg += *str;
+        } else {
+            encodedMsg += '%';
+            encodedMsg += hex[(unsigned char)*str >> 4];
+            encodedMsg += hex[*str & 0xf];
+        }
+        str++;
+    }
+    return encodedMsg;
 }
 void WeatherApp::create_weather_task() {
     xTaskCreatePinnedToCore(
