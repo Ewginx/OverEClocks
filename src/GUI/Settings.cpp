@@ -56,7 +56,7 @@ void Settings::load_settings_screen(lv_obj_t *screen) {
 void Settings::create_keyboard(lv_obj_t *target) {
     if (this->keyboard == NULL) {
         this->keyboard = lv_keyboard_create(this->settingsScreen);
-        lv_obj_set_size(this->keyboard, lv_pct(100), 130);
+        lv_obj_set_size(this->keyboard, lv_pct(100), 160);
         lv_obj_set_pos(this->keyboard, 0, 0);
         lv_obj_set_align(this->keyboard, LV_ALIGN_BOTTOM_LEFT);
         lv_keyboard_set_textarea(this->keyboard, target);
