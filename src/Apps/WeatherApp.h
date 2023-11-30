@@ -23,6 +23,7 @@ class WeatherApp {
     WiFiClient wifi;
     HttpClient client = HttpClient(wifi, "api.weatherapi.com", port);
 
+    void update_weather();
     void set_city_string(const char* city);
     void set_language_string(const char* language);
     String url_encode(const char *str);

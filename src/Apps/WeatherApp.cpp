@@ -15,9 +15,11 @@ void weather_language_changed_cb(void *subscriber, lv_msg_t *msg) {
     instance->set_language_string(language);
     instance->setup_weather_url();
 }
+void weather_update_cb(void *subscriber, lv_msg_t *msg) { instance->update_weather(); }
 WeatherApp::WeatherApp(Weather *weather) {
     instance = this;
     this->weather = weather;
+    lv_msg_subscribe(MSG_WEATHER_UPDATE, weather_update_cb, NULL);
     lv_msg_subscribe(MSG_WEATHER_ENABLED, weather_enabled_cb, NULL);
     lv_msg_subscribe(MSG_WEATHER_CITY_CHANGED, weather_city_changed_cb, NULL);
     lv_msg_subscribe(MSG_WEATHER_LANGUAGE_CHANGED, weather_language_changed_cb, NULL);
@@ -210,13 +212,20 @@ void WeatherApp::set_weather_img(int code) {
         lv_img_set_src(weather->weatherImage, &img_day_rain_png);
     }
 }
-String WeatherApp::url_encode(const char *str){
+void WeatherApp::update_weather() {
+    if(this->_weather_api_enabled){
+        Serial.println("Weather must be updated");
+        vTaskSuspend(this->_weather_task);
+        vTaskResume(this->_weather_task);
+    }
+}
+String WeatherApp::url_encode(const char *str) {
     String encodedMsg = "";
     char *hex = "0123456789ABCDEF";
     while (*str != '\0') {
         if (('a' <= *str && *str <= 'z') || ('A' <= *str && *str <= 'Z') ||
-            ('0' <= *str && *str <= '9') || *str == '-' || *str == '_' ||
-            *str == '.' || *str == '~') {
+            ('0' <= *str && *str <= '9') || *str == '-' || *str == '_' || *str == '.' ||
+            *str == '~') {
             encodedMsg += *str;
         } else {
             encodedMsg += '%';

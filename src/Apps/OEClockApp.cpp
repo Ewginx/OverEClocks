@@ -84,8 +84,7 @@ void OEClockApp::init_app() {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->settings->set_wifi_settings(this->ssid.c_str(),
                                                    this->password.c_str());
-        this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str(),
-                                                      weather_enabled);
+        this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str());
         this->gui_app->settings->set_brightness_widgets(brightness, auto_brightness);
         this->gui_app->settings->set_darktheme_switch(dark_theme_enabled);
         lv_event_send(this->gui_app->settings->darkmodeSwitch, LV_EVENT_VALUE_CHANGED,
@@ -121,7 +120,7 @@ void OEClockApp::connect_to_wifi() {
             gui_app->settings->set_ipAddressLabel(WiFi.localIP()[0], WiFi.localIP()[1],
                                                   WiFi.localIP()[2], WiFi.localIP()[3]);
             lv_obj_clear_state(this->gui_app->settings->weatherSwitch, LV_STATE_DISABLED);
-            this->gui_app->settings->update_weather_switch_state(weather_enabled);
+            this->gui_app->settings->update_weather_controls_state(weather_enabled);
             xSemaphoreGive(mutex);
         }
         Serial.print("Connected to WiFi network with IP Address: ");
@@ -130,7 +129,7 @@ void OEClockApp::connect_to_wifi() {
         this->weather_app->enable_weather(false);
         this->_wifi_connected = false;
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-            this->gui_app->settings->disable_weather_switch();
+            this->gui_app->settings->disable_weather_controls();
             gui_app->settings->set_ipAddressLabel(WiFi.softAPIP()[0], WiFi.softAPIP()[1],
                                                   WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
             xSemaphoreGive(mutex);
