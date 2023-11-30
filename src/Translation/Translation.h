@@ -14,7 +14,7 @@ enum settings_texts {
     wifi_password,
     access_point_ip,
     reconnect_wifi,
-    weather_enabled,
+    update_weather,
 
 };
 enum alarm_texts {
