@@ -221,7 +221,7 @@ void WeatherApp::update_weather() {
 }
 String WeatherApp::url_encode(const char *str) {
     String encodedMsg = "";
-    char *hex = "0123456789ABCDEF";
+    const char *hex = "0123456789ABCDEF";
     while (*str != '\0') {
         if (('a' <= *str && *str <= 'z') || ('A' <= *str && *str <= 'Z') ||
             ('0' <= *str && *str <= '9') || *str == '-' || *str == '_' || *str == '.' ||
