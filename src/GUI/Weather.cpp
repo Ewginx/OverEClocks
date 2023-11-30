@@ -53,28 +53,33 @@ Weather::Weather() {
 
     weatherMaxTempLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherMaxTempLabel, &weather_font_18, 0);
-    lv_obj_set_pos(weatherMaxTempLabel, -150, 75);
+    lv_obj_set_pos(weatherMaxTempLabel, -160, 75);
     lv_obj_set_align(weatherMaxTempLabel, LV_ALIGN_CENTER);
+    lv_obj_set_style_text_align(weatherMaxTempLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     weatherMinTempLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherMinTempLabel, &weather_font_18, 0);
-    lv_obj_align_to(weatherMinTempLabel, weatherMaxTempLabel, LV_ALIGN_OUT_RIGHT_MID, 25,
+    lv_obj_align_to(weatherMinTempLabel, weatherMaxTempLabel, LV_ALIGN_OUT_RIGHT_MID, 35,
                     -1);
+    lv_obj_set_style_text_align(weatherMinTempLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     weatherProbabilityLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherProbabilityLabel, &weather_font_18, 0);
     lv_obj_align_to(weatherProbabilityLabel, weatherMinTempLabel, LV_ALIGN_OUT_RIGHT_MID,
-                    35, -1);
+                    50, -1);
+    lv_obj_set_style_text_align(weatherProbabilityLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     weatherHumidityLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherHumidityLabel, &weather_font_18, 0);
     lv_obj_align_to(weatherHumidityLabel, weatherProbabilityLabel, LV_ALIGN_OUT_RIGHT_MID,
-                    30, -1);
+                    25, -1);
+    lv_obj_set_style_text_align(weatherHumidityLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     weatherPressureLabel = lv_label_create(weatherPanel);
     lv_obj_set_style_text_font(weatherPressureLabel, &weather_font_18, 0);
     lv_obj_align_to(weatherPressureLabel, weatherHumidityLabel, LV_ALIGN_OUT_RIGHT_MID,
-                    25, -1);
+                    30, -1);
+    lv_obj_set_style_text_align(weatherPressureLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     weatherTimesLabel = lv_label_create(weatherPanel);
     lv_obj_set_pos(weatherTimesLabel, 0, 103);
