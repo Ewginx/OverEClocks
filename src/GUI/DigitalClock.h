@@ -14,6 +14,7 @@ class DigitalClock {
 
     void set_time(char *fullTime, char *seconds);
     void set_date(char *date, int day);
+    void set_default_values();
 
     DigitalClock();
     ~DigitalClock();
