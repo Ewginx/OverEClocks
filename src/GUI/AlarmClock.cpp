@@ -1,4 +1,4 @@
-#include "GUI/AlarmClock.h"
+#include "AlarmClock.h"
 
 static AlarmClock *instance;
 

@@ -1,4 +1,4 @@
-#include "GUI/DockPanel.h"
+#include "DockPanel.h"
 
 DockPanel::DockPanel(lv_obj_t *parent_panel) {
     lv_obj_t *panel = parent_panel;

@@ -1,4 +1,4 @@
-#include "GUI/AnalogClock.h"
+#include "AnalogClock.h"
 
 void AnalogClock::set_time(int hour, int minute, int second) {
     int angle = 0;
