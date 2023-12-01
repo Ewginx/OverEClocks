@@ -1,4 +1,4 @@
-#include "GUI/AlarmClock.h"
+#include "AlarmClock.h"
 
 static AlarmClock *instance;
 
@@ -45,7 +45,6 @@ AlarmClock::AlarmClock(/* args */) {
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_style_text_font(weekdaysRingsInLabel, &font_14, LV_PART_MAIN);
     lv_obj_align_to(weekdaysRingsInLabel, weekdaysLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
-    lv_label_set_text(weekdaysRingsInLabel, "");
 
     weekdaysButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(weekdaysButton, 70, 41);
@@ -57,7 +56,6 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_set_size(weekdaysButtonLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(weekdaysButtonLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(weekdaysButtonLabel, "08:15");
     lv_obj_set_style_text_font(weekdaysButtonLabel, &font_18, LV_PART_MAIN);
 
     weekdaysSwitch = lv_switch_create(alarmPanel);
@@ -77,7 +75,6 @@ AlarmClock::AlarmClock(/* args */) {
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_style_text_font(weekendsRingsInLabel, &font_14, LV_PART_MAIN);
     lv_obj_align_to(weekendsRingsInLabel, weekendsLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
-    lv_label_set_text(weekendsRingsInLabel, "");
 
     weekendsButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(weekendsButton, 70, 41);
@@ -90,7 +87,6 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_set_size(weekendsButtonLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(weekendsButtonLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(weekendsButtonLabel, "15:23");
     lv_obj_set_style_text_font(weekendsButtonLabel, &font_18, LV_PART_MAIN);
 
     weekendsSwitch = lv_switch_create(alarmPanel);
@@ -110,7 +106,6 @@ AlarmClock::AlarmClock(/* args */) {
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_style_text_font(oneOffRingsInLabel, &font_14, LV_PART_MAIN);
     lv_obj_align_to(oneOffRingsInLabel, oneOffLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0, 0);
-    lv_label_set_text(oneOffRingsInLabel, "");
 
     oneOffButton = lv_btn_create(alarmPanel);
     lv_obj_set_size(oneOffButton, 70, 41);
@@ -122,7 +117,6 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_set_size(oneOffButtonLabel, LV_SIZE_CONTENT,
                     LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(oneOffButtonLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(oneOffButtonLabel, "12:03");
     lv_obj_set_style_text_font(oneOffButtonLabel, &font_18, LV_PART_MAIN);
 
     oneOffSwitch = lv_switch_create(alarmPanel);
@@ -130,6 +124,8 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_align_to(oneOffSwitch, weekendsSwitch, LV_ALIGN_OUT_BOTTOM_MID, 0, 35);
     lv_obj_add_flag(oneOffSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
+    this->set_default_values();
+    
     lv_obj_add_event_cb(weekdaysButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED,
                         NULL);
     lv_obj_add_event_cb(weekendsButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED,
@@ -382,7 +378,7 @@ void AlarmClock::calculate_weekends_remaining_time(int hour, int minute) {
     getLocalTime(&timeinfo);
     time_t now = mktime(&timeinfo);
     int weekdays_add[5] = {5, 4, 3, 2, 1};
-    if (0 < timeinfo.tm_wday & timeinfo.tm_wday < 6 ) {
+    if (0 < timeinfo.tm_wday & timeinfo.tm_wday < 6) {
         timeinfo.tm_mday += weekdays_add[timeinfo.tm_wday - 1];
     }
     if (timeinfo.tm_wday == 0) {
@@ -451,6 +447,15 @@ void AlarmClock::set_rings_in_label_text(double &difference_in_seconds,
     time += (int)difference_in_seconds % 86400 % 3600 / 60;
     time += alarm_translation[minute_short];
     lv_label_set_text(rings_in_label, time.c_str());
+}
+
+void AlarmClock::set_default_values() {
+    lv_label_set_text(weekdaysRingsInLabel, "");
+    lv_label_set_text(weekdaysButtonLabel, "08:00");
+    lv_label_set_text(weekendsRingsInLabel, "");
+    lv_label_set_text(weekendsButtonLabel, "11:00");
+    lv_label_set_text(oneOffRingsInLabel, "");
+    lv_label_set_text(oneOffButtonLabel, "18:36");
 }
 
 void AlarmClock::event_alarmModalCancelButton_cb(lv_event_t *e) {

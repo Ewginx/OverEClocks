@@ -1,4 +1,4 @@
-#include "GUI/DockPanel.h"
+#include "DockPanel.h"
 
 DockPanel::DockPanel(lv_obj_t *parent_panel) {
     lv_obj_t *panel = parent_panel;
@@ -7,28 +7,24 @@ DockPanel::DockPanel(lv_obj_t *parent_panel) {
     lv_obj_set_pos(batteryLabel, 10, 0);
     lv_obj_set_align(batteryLabel, LV_ALIGN_TOP_LEFT);
     lv_obj_set_size(batteryLabel, 40, 30);
-    lv_label_set_text(batteryLabel, LV_SYMBOL_BATTERY_2);
     lv_obj_set_style_text_font(batteryLabel, &lv_font_montserrat_20, 0);
 
     WiFiLabel = lv_label_create(panel);
     lv_obj_set_pos(WiFiLabel, 45, 0);
     lv_obj_set_align(WiFiLabel, LV_ALIGN_TOP_LEFT);
     lv_obj_set_size(WiFiLabel, 40, 30);
-    lv_label_set_text(WiFiLabel, WIFI_CONNECTED_SYMBOL);
     lv_obj_set_style_text_font(WiFiLabel, &wifi_symbols_20, 0);
 
     temperatureLabel = lv_label_create(panel);
     lv_obj_set_pos(temperatureLabel, 75, 0);
     lv_obj_set_align(temperatureLabel, LV_ALIGN_TOP_LEFT);
     lv_obj_set_size(temperatureLabel, 60, 30);
-    lv_label_set_text(temperatureLabel, "20 °C");
     lv_obj_set_style_text_font(temperatureLabel, &lv_font_montserrat_20, 0);
 
     humidityLabel = lv_label_create(panel);
     lv_obj_set_pos(humidityLabel, 135, 0);
     lv_obj_set_align(humidityLabel, LV_ALIGN_TOP_LEFT);
     lv_obj_set_size(humidityLabel, 60, 30);
-    lv_label_set_text(humidityLabel, "80%");
     lv_obj_set_style_text_font(humidityLabel, &lv_font_montserrat_20, 0);
 
     settingsButton = lv_btn_create(panel);
@@ -64,5 +60,11 @@ void DockPanel::set_temperature(char *temperature) {
 void DockPanel::set_humidity(char *humidity) {
     char *hum = strcat(humidity, "%");
     lv_label_set_text(humidityLabel, hum);
+}
+void DockPanel::set_default_values() {
+    lv_label_set_text(batteryLabel, LV_SYMBOL_BATTERY_2);
+    lv_label_set_text(WiFiLabel, WIFI_DISCONNECTED_SYMBOL);
+    lv_label_set_text(temperatureLabel, "25 °C");
+    lv_label_set_text(humidityLabel, "45%");
 }
 DockPanel::~DockPanel() {}

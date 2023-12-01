@@ -11,6 +11,7 @@ public:
     lv_obj_t *imageArmMinute;
     lv_obj_t *imageArmSecond;
     void set_time(int hour, int minute, int second);
+    void set_default_values();
     AnalogClock();
     ~AnalogClock();
 

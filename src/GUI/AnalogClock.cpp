@@ -1,4 +1,4 @@
-#include "GUI/AnalogClock.h"
+#include "AnalogClock.h"
 
 void AnalogClock::set_time(int hour, int minute, int second) {
     int angle = 0;
@@ -10,6 +10,9 @@ void AnalogClock::set_time(int hour, int minute, int second) {
     lv_img_set_angle(this->imageArmHour, angle);
 }
 
+void AnalogClock::set_default_values() {
+    this->set_time(0,0,0);
+}
 AnalogClock::AnalogClock() {
     LV_IMG_DECLARE(img_watchface240_png);
     LV_IMG_DECLARE(img_armhour_png);
@@ -43,7 +46,7 @@ AnalogClock::AnalogClock() {
     lv_obj_add_flag(imageArmHour, LV_OBJ_FLAG_ADV_HITTEST);  /// Flags
     lv_obj_clear_flag(imageArmHour, LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_img_set_pivot(imageArmHour, 9, 77);
-    lv_img_set_angle(imageArmHour, 450);
+
 
     imageArmMinute = lv_img_create(analogClockScreen);
     lv_img_set_src(imageArmMinute, &img_armminute_png);
@@ -55,7 +58,7 @@ AnalogClock::AnalogClock() {
     lv_obj_add_flag(imageArmMinute, LV_OBJ_FLAG_ADV_HITTEST);  /// Flags
     lv_obj_clear_flag(imageArmMinute, LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_img_set_pivot(imageArmMinute, 9, 105);
-    lv_img_set_angle(imageArmMinute, 1800);
+
 
     imageArmSecond = lv_img_create(analogClockScreen);
     lv_img_set_src(imageArmSecond, &img_armsecond_png);
@@ -67,7 +70,8 @@ AnalogClock::AnalogClock() {
     lv_obj_add_flag(imageArmSecond, LV_OBJ_FLAG_ADV_HITTEST);  /// Flags
     lv_obj_clear_flag(imageArmSecond, LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_img_set_pivot(imageArmSecond, 5, 115);
-    lv_img_set_angle(imageArmSecond, 3150);
+
+    this->set_default_values();
 };
 
 AnalogClock::~AnalogClock(){};

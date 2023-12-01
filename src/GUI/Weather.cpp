@@ -1,4 +1,4 @@
-#include "GUI/Weather.h"
+#include "Weather.h"
 
 Weather::Weather() {
     weatherScreen = lv_obj_create(NULL);

@@ -1,4 +1,3 @@
-#include "GUI/GuiApp.h"
 #include "GuiApp.h"
 
 static GuiApp *instance = NULL;
