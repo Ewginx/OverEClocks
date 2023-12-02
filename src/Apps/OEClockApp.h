@@ -31,6 +31,7 @@ public:
 
     void init_app();
     void connect_to_wifi();
+    void handle_wifi_state(bool wifi_connected);
     void set_display_brightness(u_int32_t brightness);
     void setup();
     void loop();
