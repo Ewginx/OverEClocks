@@ -18,7 +18,9 @@ extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
 extern "C" void screen_timer_cb_wrapper(lv_timer_t *timer) {
     instance->screen_timer_cb(timer);
 }
-
+extern "C" void dock_panel_timer_cb_wrapper(lv_timer_t *timer) {
+    instance->dock_panel_timer_cb(timer);
+}
 extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
     instance->user_activity_event_cb(e);
 }
@@ -30,6 +32,9 @@ GuiApp::GuiApp(/* args */) {
     weather = new Weather();
     settings = new Settings();
     _screen_timer = NULL;
+    _dock_panel_timer =
+        lv_timer_create(dock_panel_timer_cb_wrapper, DOCK_PANEL_HIDE_PERIOD, NULL);
+    lv_timer_set_repeat_count(this->_dock_panel_timer, 1);
     dock_panel = new DockPanel(digital_clock->digitalClockPanel);
 
     lv_obj_add_event_cb(digital_clock->digitalClockScreen, swipe_screen_event_cb_wrapper,
@@ -62,6 +67,10 @@ GuiApp::GuiApp(/* args */) {
     lv_obj_add_event_cb(weather->weatherScreen, user_activity_event_cb_wrapper,
                         LV_EVENT_PRESSING, NULL);
     lv_obj_add_event_cb(settings->settingsScreen, user_activity_event_cb_wrapper,
+                        LV_EVENT_PRESSING, NULL);
+    lv_obj_add_event_cb(analog_clock->analogClockScreen, user_activity_event_cb_wrapper,
+                        LV_EVENT_PRESSING, NULL);
+    lv_obj_add_event_cb(digital_clock->digitalClockScreen, user_activity_event_cb_wrapper,
                         LV_EVENT_PRESSING, NULL);
 };
 
@@ -135,17 +144,33 @@ void GuiApp::user_activity_event_cb(lv_event_t *e) {
     if (this->_screen_timer != NULL) {
         lv_timer_reset(this->_screen_timer);
     }
+    if (this->_dock_panel_timer == NULL) {
+        this->_dock_panel_timer =
+            lv_timer_create(dock_panel_timer_cb_wrapper, DOCK_PANEL_HIDE_PERIOD, NULL);
+        lv_timer_set_repeat_count(this->_dock_panel_timer, 1);
+    }
+    if (this->_dock_panel_timer != NULL) {
+        this->dock_panel->show();
+        lv_timer_reset(this->_dock_panel_timer);
+    }
 }
 
 void GuiApp::screen_timer_cb(lv_timer_t *timer) {
-    Serial.println("Timer callback fired");
-    instance->_screen_timer = NULL;
-    if (lv_scr_act() != instance->analog_clock->analogClockScreen &
-        lv_scr_act() != instance->digital_clock->digitalClockScreen) {
+    Serial.println("Screen timer callback fired");
+    this->_screen_timer = NULL;
+    if (lv_scr_act() != this->analog_clock->analogClockScreen &
+        lv_scr_act() != this->digital_clock->digitalClockScreen) {
         Serial.println("Screen was swapped to DigitalClock");
-        lv_scr_load_anim(instance->digital_clock->digitalClockScreen,
+        lv_scr_load_anim(this->digital_clock->digitalClockScreen,
                          LV_SCR_LOAD_ANIM_FADE_IN, SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
+}
+
+void GuiApp::dock_panel_timer_cb(lv_timer_t *timer) {
+    Serial.println("Dock panel timer callback fired");
+    lv_timer_del(this->_dock_panel_timer);
+    this->_dock_panel_timer = NULL;
+    this->dock_panel->hide();
 }
 
 void GuiApp::settings_button_event_cb(lv_event_t *e) {
@@ -197,9 +222,7 @@ void GuiApp::create_loading_screen() {
     lv_obj_center(loading_spinner);
     lv_scr_load(loading_screen);
 }
-void GuiApp::delete_loading_screen() {
-    lv_obj_del(loading_screen);
-}
+void GuiApp::delete_loading_screen() { lv_obj_del(loading_screen); }
 void GuiApp::set_screens_to_default_values() {
     this->digital_clock->set_default_values();
     this->analog_clock->set_default_values();

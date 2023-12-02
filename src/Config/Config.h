@@ -35,7 +35,8 @@
 #define DISPLAY_HEIGHT 320
 
 //period in which active screen will be set back to DigitalClockScreen if no user activity is presented
-#define SCREEN_SWAP_PERIOD 30000
+#define SCREEN_SWAP_PERIOD MILLISECONDS * 30 
+#define DOCK_PANEL_HIDE_PERIOD MILLISECONDS * 15
 
 
 #define WEATHER_API_POLLING_INTERVAL_MILLISECONDS (MILLISECONDS * WEATHER_API_POLLING_INTERVAL_MINUTES * 60)

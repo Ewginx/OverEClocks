@@ -41,6 +41,20 @@ DockPanel::DockPanel(lv_obj_t *parent_panel) {
 
     this->set_default_values();
 }
+void DockPanel::hide() {
+    lv_obj_set_pos(temperatureLabel, 15, 0);
+    lv_obj_set_pos(humidityLabel, 75, 0);
+    lv_obj_add_flag(this->settingsButton, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(this->batteryLabel, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(this->WiFiLabel, LV_OBJ_FLAG_HIDDEN);
+}
+void DockPanel::show() {
+    lv_obj_set_pos(temperatureLabel, 75, 0);
+    lv_obj_set_pos(humidityLabel, 135, 0);
+    lv_obj_clear_flag(this->settingsButton, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(this->batteryLabel, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(this->WiFiLabel, LV_OBJ_FLAG_HIDDEN);
+}
 void DockPanel::change_dock_parent(lv_obj_t *new_parent) {
     lv_obj_set_parent(this->settingsButton, lv_obj_get_child(new_parent, 0));
     lv_obj_set_parent(this->batteryLabel, lv_obj_get_child(new_parent, 0));
