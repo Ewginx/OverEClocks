@@ -1,5 +1,8 @@
+//DockPanel Symbols
 #define WIFI_CONNECTED_SYMBOL "\uE63E"
 #define WIFI_DISCONNECTED_SYMBOL "\uE648"
+
+//Weather Symbols
 #define PRESSURE_SYMBOL "\uf079"
 #define HUMIDITY_SYMBOL "\uf07a"
 #define NO_DATA_SYMBOL "\uf07b"

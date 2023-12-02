@@ -402,7 +402,7 @@ void Settings::create_settings_screen() {
     lv_obj_set_align(homeButtonLabel, LV_ALIGN_CENTER);
     lv_label_set_text(this->homeButtonLabel, LV_SYMBOL_HOME);
     lv_obj_set_style_text_align(this->homeButtonLabel, LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_set_style_text_font(this->homeButtonLabel, &lv_font_montserrat_20, 0);
+    lv_obj_set_style_text_font(this->homeButtonLabel, &dock_panel_font_20, 0);
 
     lv_obj_add_event_cb(this->cityTextArea, settings_cityTextArea_event_cb_wrapper,
                         LV_EVENT_ALL, NULL);
