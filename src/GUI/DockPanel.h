@@ -15,8 +15,8 @@ public:
     lv_obj_t *humidityLabel;
     lv_obj_t *WiFiLabel;
 
-    void set_temperature(char * temperature);
-    void set_humidity(char * humidity);
+    void set_temperature(int temperature);
+    void set_humidity(int humidity);
     void set_default_values();
     void show();
     void hide();

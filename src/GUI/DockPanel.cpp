@@ -69,18 +69,16 @@ void DockPanel::show_wifi_connection(bool wifi_enabled) {
         lv_label_set_text(WiFiLabel, WIFI_CONNECTED_SYMBOL);
     }
 }
-void DockPanel::set_temperature(char *temperature) {
-    char *temp = strcat(temperature, " °C");
-    lv_label_set_text(temperatureLabel, temp);
+void DockPanel::set_temperature(int temperature) {
+    lv_label_set_text_fmt(temperatureLabel, "%d °C", temperature);
 }
-void DockPanel::set_humidity(char *humidity) {
-    char *hum = strcat(humidity, "%");
-    lv_label_set_text(humidityLabel, hum);
+void DockPanel::set_humidity(int humidity) {
+    lv_label_set_text_fmt(humidityLabel,  "%d %",humidity);
 }
 void DockPanel::set_default_values() {
     lv_label_set_text(batteryLabel, LV_SYMBOL_BATTERY_2);
     lv_label_set_text(WiFiLabel, WIFI_DISCONNECTED_SYMBOL);
-    lv_label_set_text(temperatureLabel, "25 °C");
-    lv_label_set_text(humidityLabel, "45%");
+    lv_label_set_text(temperatureLabel, "-- °C");
+    lv_label_set_text(humidityLabel, "-- %");
 }
 DockPanel::~DockPanel() {}
