@@ -38,6 +38,8 @@ DockPanel::DockPanel(lv_obj_t *parent_panel) {
     lv_label_set_text(settingsButtonLabel, LV_SYMBOL_SETTINGS);
     lv_obj_set_style_text_align(settingsButtonLabel, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_style_text_font(settingsButtonLabel, &lv_font_montserrat_20, 0);
+
+    this->set_default_values();
 }
 void DockPanel::change_dock_parent(lv_obj_t *new_parent) {
     lv_obj_set_parent(this->settingsButton, lv_obj_get_child(new_parent, 0));
