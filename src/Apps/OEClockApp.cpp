@@ -3,6 +3,9 @@
 static OEClockApp *instance = NULL;
 
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
+void serial_print(const char * buf) {
+    Serial.println(buf);
+}
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
     Serial.print("Disconnected from WiFi access point. Reason: ");
     Serial.println(info.wifi_sta_disconnected.reason);
@@ -63,6 +66,7 @@ void OEClockApp::setup() {
     vTaskDelete(update_display_task);
     WiFi.onEvent(WiFiStationDisconnected,
                  WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+    lv_log_register_print_cb(serial_print);
 }
 
 void OEClockApp::init_app() {
