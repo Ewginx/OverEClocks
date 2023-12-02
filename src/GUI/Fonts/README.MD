@@ -33,7 +33,7 @@ For WiFi connectivity symbols, you need to add *MaterialIcons-Regular.ttf* font 
 - **0xe63e** for WiFi Disconnected
   
 And add *Montserrat-Regular.ttf* with this symbols:
-**1234567890 CF%.°**
+**1234567890 CF%.°-**
 
 ---
 ### Weather font
