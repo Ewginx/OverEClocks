@@ -1,5 +1,6 @@
 #pragma once
 #include "Config/Config.h"
+#include "Preferences.h"
 #include "Translation/Translation.h"
 #include "lvgl.h"
 #include <stdio.h>
@@ -9,6 +10,7 @@ class AlarmClock {
   private:
     bool weekdays_already_fired = false;
     bool weekends_already_fired = false;
+    Preferences _preferences;
 
   public:
     lv_obj_t *alarmScreen;
@@ -70,7 +72,9 @@ class AlarmClock {
     void event_alarmModalOkButton_cb(lv_event_t *e);
     void event_offAlarmButton_cb(lv_event_t *e);
     void event_alarmButtons_cb(lv_event_t *e);
-  
+    
+    void set_preferences(Preferences &preferences);
+
     AlarmClock(/* args */);
     ~AlarmClock();
 };

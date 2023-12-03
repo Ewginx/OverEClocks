@@ -474,6 +474,11 @@ void AlarmClock::event_alarmModalOkButton_cb(lv_event_t *e) {
                               lv_roller_get_selected(hourRoller),
                               lv_roller_get_selected(minuteRoller));
         this->delete_roller_modal_panel();
+        _preferences.begin(NAMESPACE);
+        _preferences.putString("weekdays_time", lv_label_get_text(this->weekdaysButtonLabel));
+        _preferences.putString("weekends_time", lv_label_get_text(this->weekendsButtonLabel));
+        _preferences.putString("oneOff_time", lv_label_get_text(this->oneOffButtonLabel));
+        _preferences.end();
     }
 }
 
@@ -509,5 +514,5 @@ int AlarmClock::parse_alarm_label(char *string, bool hour) {
     }
     return atoi(alarm_buff);
 }
-
+void AlarmClock::set_preferences(Preferences &preferences) { _preferences = preferences; }
 AlarmClock::~AlarmClock() {}

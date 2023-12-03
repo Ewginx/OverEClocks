@@ -36,6 +36,7 @@ OEClockApp::OEClockApp() {
     server_app = new ServerApp();
     gui_app->settings->set_display(display);
     gui_app->settings->set_preferences(preferences);
+    gui_app->alarm_clock->set_preferences(preferences);
     lv_msg_subscribe(MSG_WIFI_RECONNECT, reconnect_to_wifi_cb, NULL);
 }
 
