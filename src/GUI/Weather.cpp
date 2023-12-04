@@ -14,7 +14,6 @@ Weather::Weather() {
     lv_obj_add_flag(weatherPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weatherImage = lv_img_create(weatherPanel);
-    lv_img_set_src(weatherImage, &img_day_rain_png);
     lv_obj_set_pos(weatherImage, 10, 30);
     lv_obj_set_align(weatherImage, LV_ALIGN_TOP_LEFT);
 

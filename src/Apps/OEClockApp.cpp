@@ -2,27 +2,8 @@
 
 static OEClockApp *instance = NULL;
 
-SPIClass SPISD;
-
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
-int SD_init() {
-    SPISD.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
-    if (!SD.begin(SD_CS, SPISD, 24000000)) {
-        Serial.println("Card Mount Failed");
-        return 1;
-    } else {
-        Serial.println("Card mounted!!");
-    }
-    uint8_t cardType = SD.cardType();
 
-    if (cardType == CARD_NONE) {
-        Serial.println("No TF card attached");
-        return 1;
-    }
-    uint64_t cardSize = SD.cardSize() / (1024 * 1024);
-    Serial.printf("TF Card Size: %lluMB\n", cardSize);
-    return 0;
-}
 void serial_print(const char *buf) { Serial.println(buf); }
 void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
@@ -60,7 +41,7 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
 
 void OEClockApp::setup() {
     Serial.begin(115200);
-    SD_init();
+    lv_port_sd_fs_init();
     TaskHandle_t update_display_task;
     this->gui_app->create_loading_screen();
     xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */

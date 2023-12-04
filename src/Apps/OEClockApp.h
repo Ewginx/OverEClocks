@@ -1,11 +1,11 @@
 #pragma once
-#include "Apps/ServerApp.h"
-#include "Apps/TimeApp.h"
-#include "Apps/WeatherApp.h"
 #include "Config/Config.h"
 #include "Display/Display.h"
+#include "Filesystem.h"
 #include "GUI/GuiApp.h"
-
+#include "ServerApp.h"
+#include "TimeApp.h"
+#include "WeatherApp.h"
 #include <Arduino.h>
 #include <FS.h>
 #include <Preferences.h>
