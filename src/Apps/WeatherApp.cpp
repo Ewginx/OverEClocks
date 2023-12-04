@@ -206,11 +206,9 @@ void WeatherApp::set_pressure(int pressure) {
                           pressure, weather_translation[pressure_uom]);
 }
 void WeatherApp::set_weather_img(int code) {
-    if (code == 1000)
-        lv_img_set_src(this->weather->weatherImage, "S:/icons/icon.png");
-    else {
-        lv_img_set_src(this->weather->weatherImage, "S:/icons/icon_2.png");
-    }
+    char code_buf[18];
+    sprintf(code_buf, "S:/icons/%d.png", code);
+    lv_img_set_src(this->weather->weatherImage, code_buf);
 }
 void WeatherApp::update_weather() {
     if (this->_weather_api_enabled) {
