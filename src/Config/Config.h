@@ -2,6 +2,7 @@
 // #include <Arduino.h>
 #include "MessageCodes.h"
 #include "Symbols.h"
+#include "Pins.h"
 
 #define DEVICE_NAME "OEClock"
 

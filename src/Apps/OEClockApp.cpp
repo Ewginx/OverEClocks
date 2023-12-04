@@ -4,14 +4,9 @@ static OEClockApp *instance = NULL;
 
 SPIClass SPISD;
 
-#define SPI_MOSI 13
-#define SPI_MISO 33
-#define SPI_SCK 14
-#define SD_CS 27
-
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
 int SD_init() {
-    SPISD.begin(SPI_SCK, SPI_MISO, SPI_MOSI, SD_CS);
+    SPISD.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
     if (!SD.begin(SD_CS, SPISD, 24000000)) {
         Serial.println("Card Mount Failed");
         return 1;
