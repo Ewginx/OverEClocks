@@ -1,18 +1,20 @@
 #pragma once
-#include <Arduino.h>
-#include <WiFi.h>
-#include <Preferences.h>
-
-#include "GUI/GuiApp.h"
-#include "Display/Display.h"
-#include "Config/Config.h"
+#include "Apps/ServerApp.h"
 #include "Apps/TimeApp.h"
 #include "Apps/WeatherApp.h"
-#include "Apps/ServerApp.h"
+#include "Config/Config.h"
+#include "Display/Display.h"
+#include "GUI/GuiApp.h"
 
-class OEClockApp
-{
-private:
+#include <Arduino.h>
+#include <FS.h>
+#include <Preferences.h>
+#include <SD.h>
+#include <SPI.h>
+#include <WiFi.h>
+
+class OEClockApp {
+  private:
     // unsigned long time_now = 0;
     String ssid = "ssid";
     String password = "password";
@@ -20,14 +22,12 @@ private:
     TimeApp *time_app;
     WeatherApp *weather_app;
     bool _wifi_connected = false;
-    
-public:
 
+  public:
     Preferences preferences;
     Display *display;
     GuiApp *gui_app;
     ServerApp *server_app;
-    
 
     void init_app();
     void connect_to_wifi();
@@ -38,5 +38,3 @@ public:
     OEClockApp(/* args */);
     ~OEClockApp();
 };
-
-

@@ -29,9 +29,9 @@ public:
       cfg.use_lock = true;
       cfg.dma_channel = SPI_DMA_CH_AUTO;
 
-      cfg.pin_sclk = 18;
-      cfg.pin_mosi = 23;
-      cfg.pin_miso = 19;
+      cfg.pin_sclk = 14; //18
+      cfg.pin_mosi = 27; //23
+      cfg.pin_miso = 12; //19
       cfg.pin_dc = 2;
       _bus_instance.config(cfg);
       _panel_instance.setBus(&_bus_instance);
@@ -80,15 +80,15 @@ public:
       cfg.y_min = 0;
       cfg.y_max = 479;
       cfg.pin_int = 38;
-      cfg.bus_shared = true;
+      cfg.bus_shared = true; //true
       cfg.offset_rotation = 0;
 
       cfg.spi_host = VSPI_HOST;
       cfg.freq = 1000000;
-      cfg.pin_sclk = 18;
-      cfg.pin_mosi = 23;
-      cfg.pin_miso = 19;
-      cfg.pin_cs = 5;
+      cfg.pin_sclk = 14; //18
+      cfg.pin_mosi = 27; //23
+      cfg.pin_miso = 12; //19
+      cfg.pin_cs = 13;
       _touch_instance.config(cfg);
       _panel_instance.setTouch(&_touch_instance);
     }

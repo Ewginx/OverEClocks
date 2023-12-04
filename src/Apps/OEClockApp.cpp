@@ -1,18 +1,33 @@
 #include "Apps/OEClockApp.h"
 #include "OEClockApp.h"
 static OEClockApp *instance = NULL;
-
+SPIClass SPISD(HSPI);
+#define SPI_MOSI 23
+#define SPI_MISO 19
+#define SPI_SCK 18
+#define SD_CS 5
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
-void serial_print(const char * buf) {
-    Serial.println(buf);
+int SD_init() {
+    SPISD.begin(SPI_SCK, SPI_MISO, SPI_MOSI, SD_CS);
+    if (!SD.begin(SD_CS, SPISD, 24000000)) {
+        Serial.println("Card Mount Failed");
+        return 1;
+    } else {
+        Serial.println("Card mounted!!");
+    }
+    uint8_t cardType = SD.cardType();
+
+    if (cardType == CARD_NONE) {
+        Serial.println("No TF card attached");
+        return 1;
+    }
+
+    uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+    Serial.printf("TF Card Size: %lluMB\n", cardSize);
+    //   listDir(SD, "/", 2);
+    return 0;
 }
-void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-    Serial.print("Disconnected from WiFi access point. Reason: ");
-    Serial.println(info.wifi_sta_disconnected.reason);
-    instance->handle_wifi_state(false);
-    // Serial.println("Trying to Reconnect");
-    // WiFi.reconnect();
-}
+void serial_print(const char *buf) { Serial.println(buf); }
 void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
 }
@@ -39,9 +54,17 @@ OEClockApp::OEClockApp() {
     gui_app->alarm_clock->set_preferences(preferences);
     lv_msg_subscribe(MSG_WIFI_RECONNECT, reconnect_to_wifi_cb, NULL);
 }
+void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+    Serial.print("Disconnected from WiFi access point. Reason: ");
+    Serial.println(info.wifi_sta_disconnected.reason);
+    instance->handle_wifi_state(false);
+    // Serial.println("Trying to Reconnect");
+    // WiFi.reconnect();
+}
 
 void OEClockApp::setup() {
     Serial.begin(115200);
+    SD_init();
     TaskHandle_t update_display_task;
     this->gui_app->create_loading_screen();
     xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
