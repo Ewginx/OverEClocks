@@ -1,11 +1,14 @@
-#include "Apps/OEClockApp.h"
 #include "OEClockApp.h"
+
 static OEClockApp *instance = NULL;
-SPIClass SPISD(HSPI);
-#define SPI_MOSI 23
-#define SPI_MISO 19
-#define SPI_SCK 18
-#define SD_CS 5
+
+SPIClass SPISD;
+
+#define SPI_MOSI 13
+#define SPI_MISO 33
+#define SPI_SCK 14
+#define SD_CS 27
+
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
 int SD_init() {
     SPISD.begin(SPI_SCK, SPI_MISO, SPI_MOSI, SD_CS);
@@ -21,10 +24,8 @@ int SD_init() {
         Serial.println("No TF card attached");
         return 1;
     }
-
     uint64_t cardSize = SD.cardSize() / (1024 * 1024);
     Serial.printf("TF Card Size: %lluMB\n", cardSize);
-    //   listDir(SD, "/", 2);
     return 0;
 }
 void serial_print(const char *buf) { Serial.println(buf); }

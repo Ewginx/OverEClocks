@@ -589,7 +589,7 @@
 #define LV_USE_FLEX 1
 
 /*A layout similar to Grid in CSS.*/
-#define LV_USE_GRID 1
+#define LV_USE_GRID 0
 
 /*---------------------
  * 3rd party libraries
@@ -598,7 +598,7 @@
 /*File system interfaces for common APIs */
 
 /*API for fopen, fread, etc*/
-#define LV_USE_FS_STDIO 1
+#define LV_USE_FS_STDIO 0
 #if LV_USE_FS_STDIO
     #define LV_FS_STDIO_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
     #define LV_FS_STDIO_PATH ""         /*Set the working directory. File/directory paths will be appended to it.*/
@@ -606,7 +606,7 @@
 #endif
 
 /*API for open, read, etc*/
-#define LV_USE_FS_POSIX 1
+#define LV_USE_FS_POSIX 0
 #if LV_USE_FS_POSIX
     #define LV_FS_POSIX_LETTER 'S'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
     #define LV_FS_POSIX_PATH ""         /*Set the working directory. File/directory paths will be appended to it.*/
