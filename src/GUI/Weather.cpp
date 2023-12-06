@@ -14,7 +14,7 @@ Weather::Weather() {
     lv_obj_add_flag(weatherPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weatherImage = lv_img_create(weatherPanel);
-    lv_obj_set_pos(weatherImage, 40, 50);
+    lv_obj_set_pos(weatherImage, 10, 30);
     lv_obj_set_align(weatherImage, LV_ALIGN_TOP_LEFT);
 
     windLabel = lv_label_create(weatherPanel);
