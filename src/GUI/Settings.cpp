@@ -44,14 +44,10 @@ Settings::Settings() {
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {
-    lv_theme_t *theme = lv_disp_get_theme(NULL);
-    if (theme->flags) {
-        lv_obj_add_state(this->darkmodeSwitch, LV_STATE_CHECKED);
-    }
     lv_slider_set_value(this->brightnessSlider, this->_display->get_brightness(),
                         LV_ANIM_OFF);
     this->home_screen = screen;
-    lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_FADE_ON,
+    lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_NONE,
                      SCREEN_CHANGE_ANIM_TIME, 0, false);
 }
 
@@ -119,7 +115,7 @@ void Settings::keyboard_event_cb(lv_event_t *e) { this->delete_keyboard(); }
 void Settings::home_button_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
     lv_event_send(this->keyboard, LV_EVENT_CANCEL, NULL);
-    lv_scr_load_anim(this->home_screen, LV_SCR_LOAD_ANIM_FADE_ON, SCREEN_CHANGE_ANIM_TIME,
+    lv_scr_load_anim(this->home_screen, LV_SCR_LOAD_ANIM_NONE, SCREEN_CHANGE_ANIM_TIME,
                      0, false);
 }
 
