@@ -14,7 +14,9 @@ extern "C" void event_offAlarmButton_cb_wrapper(lv_event_t *e) {
 extern "C" void event_alarmButtons_cb_wrapper(lv_event_t *e) {
     instance->event_alarmButtons_cb(e);
 }
-
+extern "C" void event_alarmSwitch_cb_wrapper(lv_event_t *e) {
+    instance->event_alarmSwitch_cb(e);
+}
 AlarmClock::AlarmClock(/* args */) {
     instance = this;
     alarmModalPanel = NULL;
@@ -125,13 +127,20 @@ AlarmClock::AlarmClock(/* args */) {
     lv_obj_add_flag(oneOffSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->set_default_values();
-    
+
     lv_obj_add_event_cb(weekdaysButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED,
                         NULL);
     lv_obj_add_event_cb(weekendsButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED,
                         NULL);
     lv_obj_add_event_cb(oneOffButton, event_alarmButtons_cb_wrapper, LV_EVENT_CLICKED,
                         NULL);
+
+    lv_obj_add_event_cb(weekdaysSwitch, event_alarmSwitch_cb_wrapper,
+                        LV_EVENT_VALUE_CHANGED, NULL);
+    lv_obj_add_event_cb(weekendsSwitch, event_alarmSwitch_cb_wrapper,
+                        LV_EVENT_VALUE_CHANGED, NULL);
+    lv_obj_add_event_cb(oneOffSwitch, event_alarmSwitch_cb_wrapper,
+                        LV_EVENT_VALUE_CHANGED, NULL);
 }
 
 void AlarmClock::set_roller_time(const lv_obj_t *label) {
@@ -458,6 +467,21 @@ void AlarmClock::set_default_values() {
     lv_label_set_text(oneOffButtonLabel, "18:36");
 }
 
+void AlarmClock::set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw) {
+    lv_obj_add_state(this->weekdaysSwitch,
+                     weekdays_sw ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
+    lv_obj_add_state(this->weekendsSwitch,
+                     weekends_sw ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
+    lv_obj_add_state(this->oneOffSwitch, oneOff_sw ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
+}
+
+void AlarmClock::set_alarm_buttons(const char *weekdays_time, const char *weekends_time,
+                                   const char *oneOff_time) {
+    lv_label_set_text(weekdaysButtonLabel, weekdays_time);
+    lv_label_set_text(weekendsButtonLabel, weekends_time);
+    lv_label_set_text(oneOffButtonLabel, oneOff_time);
+}
+
 void AlarmClock::event_alarmModalCancelButton_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
@@ -475,8 +499,10 @@ void AlarmClock::event_alarmModalOkButton_cb(lv_event_t *e) {
                               lv_roller_get_selected(minuteRoller));
         this->delete_roller_modal_panel();
         _preferences.begin(NAMESPACE);
-        _preferences.putString("weekdays_time", lv_label_get_text(this->weekdaysButtonLabel));
-        _preferences.putString("weekends_time", lv_label_get_text(this->weekendsButtonLabel));
+        _preferences.putString("weekdays_time",
+                               lv_label_get_text(this->weekdaysButtonLabel));
+        _preferences.putString("weekends_time",
+                               lv_label_get_text(this->weekendsButtonLabel));
         _preferences.putString("oneOff_time", lv_label_get_text(this->oneOffButtonLabel));
         _preferences.end();
     }
@@ -501,6 +527,17 @@ void AlarmClock::event_alarmButtons_cb(lv_event_t *e) {
         target_label = oneOffButtonLabel;
     }
     this->create_roller_modal_panel(target_label);
+}
+
+void AlarmClock::event_alarmSwitch_cb(lv_event_t *e) {
+    _preferences.begin(NAMESPACE);
+    _preferences.putBool("weekdays_sw",
+                         lv_obj_has_state(this->weekdaysSwitch, LV_STATE_CHECKED));
+    _preferences.putBool("weekends_sw",
+                         lv_obj_has_state(this->weekendsSwitch, LV_STATE_CHECKED));
+    _preferences.putBool("oneOff_sw",
+                         lv_obj_has_state(this->oneOffSwitch, LV_STATE_CHECKED));
+    _preferences.end();
 }
 
 int AlarmClock::parse_alarm_label(char *string, bool hour) {
