@@ -67,12 +67,16 @@ class AlarmClock {
     void calculate_weekdays_remaining_time(int hour, int minute);
     void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
     void set_default_values();
+    void set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw);
+    void set_alarm_buttons(const char *weekdays_time, const char *weekends_time,
+                           const char *oneOff_time);
 
     void event_alarmModalCancelButton_cb(lv_event_t *e);
     void event_alarmModalOkButton_cb(lv_event_t *e);
     void event_offAlarmButton_cb(lv_event_t *e);
     void event_alarmButtons_cb(lv_event_t *e);
-    
+    void event_alarmSwitch_cb(lv_event_t *e);
+
     void set_preferences(Preferences &preferences);
 
     AlarmClock(/* args */);

@@ -80,6 +80,12 @@ void OEClockApp::init_app() {
     u_int32_t brightness = preferences.getUInt("brightness", 255);
     bool weather_enabled = preferences.getBool("weather_enab", true);
     bool dark_theme_enabled = preferences.getBool("dark_theme", false);
+    bool weekdays_sw = preferences.getBool("weekdays_sw", false);
+    bool weekends_sw = preferences.getBool("weekends_sw", false);
+    bool oneOff_sw = preferences.getBool("oneOff_sw", false);
+    String weekdays_time = preferences.getString("weekdays_time", "08:00");
+    String weekends_time = preferences.getString("weekends_time", "09:15");
+    String oneOff_time = preferences.getString("oneOff_time", "13:23");
     preferences.end();
 
     this->weather_app->set_city_string(city.c_str());
@@ -88,6 +94,9 @@ void OEClockApp::init_app() {
     this->set_display_brightness(brightness);
 
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->gui_app->alarm_clock->set_alarm_switches(weekdays_sw, weekends_sw,
+                                                       oneOff_sw);
+        this->gui_app->alarm_clock->set_alarm_buttons(weekdays_time.c_str(), weekends_time.c_str(), oneOff_time.c_str());
         this->gui_app->settings->set_wifi_settings(this->ssid.c_str(),
                                                    this->password.c_str());
         this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str());
