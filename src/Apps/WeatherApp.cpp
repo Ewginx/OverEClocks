@@ -103,8 +103,8 @@ void WeatherApp::deserialize_json_response(String &response) {
     this->set_temperature(current_weather["temp_c"].as<int>());
     JsonObject current_condition = current_weather["condition"];
     this->set_weather_condition(current_condition["text"].as<const char *>());
-    // int current_condition_code = current_condition["code"].as<int>(); // 1000
-
+    // int current_condition_code = ; // 1000
+    this->set_weather_img(current_condition["icon"].as<const char *>());
     // current_weather["wind_dir"];  // SW
     this->set_wind(current_weather["wind_kph"].as<int>(),
                    current_weather["wind_degree"].as<double>());
@@ -205,15 +205,32 @@ void WeatherApp::set_pressure(int pressure) {
     lv_label_set_text_fmt(weather->weatherPressureLabel, PRESSURE_SYMBOL " %d %s",
                           pressure, weather_translation[pressure_uom]);
 }
-void WeatherApp::set_weather_img(int code) {
-    if (code == 1000)
-        lv_img_set_src(weather->weatherImage, &img_day_clear_png);
-    else {
-        lv_img_set_src(weather->weatherImage, &img_day_rain_png);
+void WeatherApp::set_weather_img(const char *link) {
+    char code_buf[23];
+    if (link[35] == 'n') {
+        char code[4];
+        code[0] = link[41];
+        code[1] = link[42];
+        code[2] = link[43];
+        code[3] = '\0';
+        char folder[] = "night";
+        sprintf(code_buf, "S:/icons/%s/%s.bin", folder, code);
+
+    } else {
+        char code[4];
+        code[0] = link[39];
+        code[1] = link[40];
+        code[2] = link[41];
+        code[3] = '\0';
+        char folder[] = "day";
+        sprintf(code_buf, "S:/icons/%s/%s.bin", folder, code);
     }
+    lv_img_set_src(this->weather->weatherImage, code_buf);
+    // //cdn.weatherapi.com/weather/64x64/day/368.png
+    // //cdn.weatherapi.com/weather/64x64/night/368.png
 }
 void WeatherApp::update_weather() {
-    if(this->_weather_api_enabled){
+    if (this->_weather_api_enabled) {
         Serial.println("Weather must be updated");
         vTaskSuspend(this->_weather_task);
         vTaskResume(this->_weather_task);

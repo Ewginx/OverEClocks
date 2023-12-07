@@ -141,7 +141,7 @@
  *With complex image decoders (e.g. PNG or JPG) caching can save the continuous open/decode of images.
  *However the opened images might consume additional RAM.
  *0: to disable caching*/
-#define LV_IMG_CACHE_DEF_SIZE 0
+#define LV_IMG_CACHE_DEF_SIZE 1
 
 /*Number of stops allowed per gradient. Increase this to allow more stops.
  *This adds (sizeof(lv_color_t) + 1) bytes per additional stop*/
@@ -240,7 +240,7 @@
     #define LV_LOG_TRACE_TIMER      1
     #define LV_LOG_TRACE_INDEV      1
     #define LV_LOG_TRACE_DISP_REFR  1
-    #define LV_LOG_TRACE_EVENT      1
+    #define LV_LOG_TRACE_EVENT      0
     #define LV_LOG_TRACE_OBJ_CREATE 1
     #define LV_LOG_TRACE_LAYOUT     1
     #define LV_LOG_TRACE_ANIM       1
@@ -589,7 +589,7 @@
 #define LV_USE_FLEX 1
 
 /*A layout similar to Grid in CSS.*/
-#define LV_USE_GRID 1
+#define LV_USE_GRID 0
 
 /*---------------------
  * 3rd party libraries
@@ -598,7 +598,7 @@
 /*File system interfaces for common APIs */
 
 /*API for fopen, fread, etc*/
-#define LV_USE_FS_STDIO 1
+#define LV_USE_FS_STDIO 0
 #if LV_USE_FS_STDIO
     #define LV_FS_STDIO_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
     #define LV_FS_STDIO_PATH ""         /*Set the working directory. File/directory paths will be appended to it.*/
@@ -606,7 +606,7 @@
 #endif
 
 /*API for open, read, etc*/
-#define LV_USE_FS_POSIX 1
+#define LV_USE_FS_POSIX 0
 #if LV_USE_FS_POSIX
     #define LV_FS_POSIX_LETTER 'S'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
     #define LV_FS_POSIX_PATH ""         /*Set the working directory. File/directory paths will be appended to it.*/
@@ -629,7 +629,7 @@
 #endif
 
 /*PNG decoder library*/
-#define LV_USE_PNG 1
+#define LV_USE_PNG 0
 
 /*BMP decoder library*/
 #define LV_USE_BMP 0

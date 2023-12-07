@@ -1,18 +1,10 @@
-#include "Apps/OEClockApp.h"
 #include "OEClockApp.h"
+
 static OEClockApp *instance = NULL;
 
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
-void serial_print(const char * buf) {
-    Serial.println(buf);
-}
-void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-    Serial.print("Disconnected from WiFi access point. Reason: ");
-    Serial.println(info.wifi_sta_disconnected.reason);
-    instance->handle_wifi_state(false);
-    // Serial.println("Trying to Reconnect");
-    // WiFi.reconnect();
-}
+
+void serial_print(const char *buf) { Serial.println(buf); }
 void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
 }
@@ -39,9 +31,17 @@ OEClockApp::OEClockApp() {
     gui_app->alarm_clock->set_preferences(preferences);
     lv_msg_subscribe(MSG_WIFI_RECONNECT, reconnect_to_wifi_cb, NULL);
 }
+void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+    Serial.print("Disconnected from WiFi access point. Reason: ");
+    Serial.println(info.wifi_sta_disconnected.reason);
+    instance->handle_wifi_state(false);
+    // Serial.println("Trying to Reconnect");
+    // WiFi.reconnect();
+}
 
 void OEClockApp::setup() {
     Serial.begin(115200);
+    lv_port_sd_fs_init();
     TaskHandle_t update_display_task;
     this->gui_app->create_loading_screen();
     xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
