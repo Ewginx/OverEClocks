@@ -5,7 +5,8 @@ static OEClockApp *instance = NULL;
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
 
 void serial_print(const char *buf) { Serial.println(buf); }
-void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
+extern "C" void bme_timer_cb_wrapper(lv_timer_t *timer) { instance->bme_timer_cb(timer); }
+extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
 }
 void update_display(void *parameter) {
@@ -41,6 +42,9 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
 
 void OEClockApp::setup() {
     Serial.begin(115200);
+    if (!_bme_sensor.begin(0x76)) {
+        Serial.print("Can't find the sensor");
+    }
     lv_port_sd_fs_init();
     TaskHandle_t update_display_task;
     this->gui_app->create_loading_screen();
@@ -57,12 +61,13 @@ void OEClockApp::setup() {
     if (this->_wifi_connected) {
         time_app->config_time();
     }
-    server_app->setup();
+    this->server_app->setup();
 
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-        gui_app->init_gui();
+        this->gui_app->init_gui();
         this->gui_app->delete_loading_screen();
         xSemaphoreGive(mutex);
+        this->_bme_timer = lv_timer_create(bme_timer_cb_wrapper, 600, NULL);
     }
     vTaskDelete(update_display_task);
     WiFi.onEvent(WiFiStationDisconnected,
@@ -96,7 +101,8 @@ void OEClockApp::init_app() {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->alarm_clock->set_alarm_switches(weekdays_sw, weekends_sw,
                                                        oneOff_sw);
-        this->gui_app->alarm_clock->set_alarm_buttons(weekdays_time.c_str(), weekends_time.c_str(), oneOff_time.c_str());
+        this->gui_app->alarm_clock->set_alarm_buttons(
+            weekdays_time.c_str(), weekends_time.c_str(), oneOff_time.c_str());
         this->gui_app->settings->set_wifi_settings(this->ssid.c_str(),
                                                    this->password.c_str());
         this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str());
@@ -128,6 +134,12 @@ void OEClockApp::connect_to_wifi() {
         attempt++;
     }
     this->handle_wifi_state(WiFi.status() == WL_CONNECTED);
+}
+
+void OEClockApp::bme_timer_cb(lv_timer_t *timer) {
+    this->gui_app->dock_panel->set_temperature(this->_bme_sensor.readTemperature() - 1);
+    this->gui_app->dock_panel->set_humidity(
+        static_cast<int>(this->_bme_sensor.readHumidity()));
 }
 
 void OEClockApp::handle_wifi_state(bool wifi_connected) {
