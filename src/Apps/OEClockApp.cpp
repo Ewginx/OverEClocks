@@ -6,6 +6,13 @@ SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
 
 void serial_print(const char *buf) { Serial.println(buf); }
 extern "C" void bme_timer_cb_wrapper(lv_timer_t *timer) { instance->bme_timer_cb(timer); }
+extern "C" void light_sensor_timer_cb_wrapper(lv_timer_t *timer) {
+    instance->light_sensor_timer_cb(timer);
+}
+extern "C" void auto_brightness_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
+    instance->set_auto_brightness_timer(*payload);
+}
 extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
 }
@@ -31,6 +38,7 @@ OEClockApp::OEClockApp() {
     gui_app->settings->set_preferences(preferences);
     gui_app->alarm_clock->set_preferences(preferences);
     lv_msg_subscribe(MSG_WIFI_RECONNECT, reconnect_to_wifi_cb, NULL);
+    lv_msg_subscribe(MSG_AUTO_BRIGHTNESS, auto_brightness_cb_wrapper, NULL);
 }
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
     Serial.print("Disconnected from WiFi access point. Reason: ");
@@ -42,8 +50,13 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
 
 void OEClockApp::setup() {
     Serial.begin(115200);
+    Wire.begin();
+    Wire.setClock(400000);
     if (!_bme_sensor.begin(0x76)) {
-        Serial.print("Can't find the sensor");
+        Serial.println("Can't find the BME280 sensor");
+    }
+    if (!_light_sensor.begin()) {
+        Serial.println("Can't find the light sensor");
     }
     lv_port_sd_fs_init();
     TaskHandle_t update_display_task;
@@ -99,6 +112,7 @@ void OEClockApp::init_app() {
     this->set_display_brightness(brightness);
 
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->set_auto_brightness_timer(auto_brightness);
         this->gui_app->alarm_clock->set_alarm_switches(weekdays_sw, weekends_sw,
                                                        oneOff_sw);
         this->gui_app->alarm_clock->set_alarm_buttons(
@@ -141,6 +155,16 @@ void OEClockApp::bme_timer_cb(lv_timer_t *timer) {
     this->gui_app->dock_panel->set_humidity(
         static_cast<int>(this->_bme_sensor.readHumidity()));
 }
+void OEClockApp::light_sensor_timer_cb(lv_timer_t *timer) {
+    int light_level = static_cast<int>(this->_light_sensor.readLightLevel());
+    if (light_level < 10) {
+        this->set_display_brightness(5);
+    } else if (light_level > 50 & light_level < 100) {
+        this->set_display_brightness(128);
+    } else if (light_level > 100) {
+        this->set_display_brightness(255);
+    }
+}
 
 void OEClockApp::handle_wifi_state(bool wifi_connected) {
     this->_wifi_connected = wifi_connected;
@@ -176,6 +200,15 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
 
 void OEClockApp::set_display_brightness(u_int32_t brightness) {
     display->set_brightness((uint8_t)brightness);
+}
+
+void OEClockApp::set_auto_brightness_timer(bool auto_brightness) {
+    if (this->_light_sensor_timer == NULL & auto_brightness) {
+        _light_sensor_timer = lv_timer_create(light_sensor_timer_cb_wrapper, 600, NULL);
+    } else if (this->_light_sensor_timer != NULL & !auto_brightness) {
+        lv_timer_del(this->_light_sensor_timer);
+        this->_light_sensor_timer == NULL;
+    }
 }
 
 void OEClockApp::loop() {

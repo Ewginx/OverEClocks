@@ -10,6 +10,7 @@
 #include <Preferences.h>
 #include <WiFi.h>
 #include <Adafruit_BME280.h>
+#include <BH1750.h>
 
 class OEClockApp {
   private:
@@ -21,7 +22,9 @@ class OEClockApp {
     WeatherApp *weather_app;
     bool _wifi_connected = false;
     Adafruit_BME280 _bme_sensor;
+    BH1750 _light_sensor;
     lv_timer_t * _bme_timer = NULL;
+    lv_timer_t * _light_sensor_timer = NULL;
 
   public:
     Preferences preferences;
@@ -32,10 +35,13 @@ class OEClockApp {
     void init_app();
     void connect_to_wifi();
     void bme_timer_cb(lv_timer_t *timer);
+    void light_sensor_timer_cb(lv_timer_t *timer);
     void handle_wifi_state(bool wifi_connected);
     void set_display_brightness(u_int32_t brightness);
+    void set_auto_brightness_timer(bool auto_brightness);
     void setup();
     void loop();
     OEClockApp(/* args */);
     ~OEClockApp();
 };
+
