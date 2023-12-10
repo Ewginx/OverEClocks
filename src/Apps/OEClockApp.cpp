@@ -16,6 +16,9 @@ extern "C" void auto_brightness_cb_wrapper(void *subscriber, lv_msg_t *msg) {
 extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
 }
+extern "C" void anim_brightness_change_cb(void *var, int32_t v) {
+    instance->set_display_brightness(v);
+}
 void update_display(void *parameter) {
     for (;;) {
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
@@ -77,6 +80,7 @@ void OEClockApp::setup() {
     this->server_app->setup();
 
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        lv_anim_init(&_brightness_anim);
         this->gui_app->init_gui();
         this->gui_app->delete_loading_screen();
         xSemaphoreGive(mutex);
@@ -157,12 +161,16 @@ void OEClockApp::bme_timer_cb(lv_timer_t *timer) {
 }
 void OEClockApp::light_sensor_timer_cb(lv_timer_t *timer) {
     int light_level = static_cast<int>(this->_light_sensor.readLightLevel());
+    int old_brightness = this->display->get_brightness();
     if (light_level < 10) {
-        this->set_display_brightness(5);
+        this->change_brightness_smoothly(5, old_brightness);
+        // this->set_display_brightness(5);
     } else if (light_level > 50 & light_level < 100) {
-        this->set_display_brightness(128);
+        this->change_brightness_smoothly(128, old_brightness);
+        // this->set_display_brightness(128);
     } else if (light_level > 100) {
-        this->set_display_brightness(255);
+        this->change_brightness_smoothly(255, old_brightness);
+        // this->set_display_brightness(255);
     }
 }
 
@@ -207,8 +215,16 @@ void OEClockApp::set_auto_brightness_timer(bool auto_brightness) {
         _light_sensor_timer = lv_timer_create(light_sensor_timer_cb_wrapper, 600, NULL);
     } else if (this->_light_sensor_timer != NULL & !auto_brightness) {
         lv_timer_del(this->_light_sensor_timer);
-        this->_light_sensor_timer == NULL;
+        this->_light_sensor_timer = NULL;
     }
+}
+
+void OEClockApp::change_brightness_smoothly(int new_light_level, int old_light_level) {
+    lv_anim_set_exec_cb(&_brightness_anim, anim_brightness_change_cb);
+    lv_anim_set_var(&_brightness_anim, NULL);
+    lv_anim_set_time(&_brightness_anim, 300);
+    lv_anim_set_values(&_brightness_anim, old_light_level, new_light_level);
+    lv_anim_start(&_brightness_anim);
 }
 
 void OEClockApp::loop() {
