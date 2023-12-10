@@ -28,7 +28,7 @@ class GuiApp {
     void swipe_analog_clock_screen();
     void swipe_weather_screen();
     void swipe_alarm_screen();
-
+    void switch_darktheme(bool darktheme_enabled);
     void screen_load_event_cb(lv_event_t *e);
 
     void user_activity_event_cb(lv_event_t *e);

@@ -112,6 +112,7 @@ void OEClockApp::init_app() {
     this->set_display_brightness(brightness);
 
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->gui_app->switch_darktheme(dark_theme_enabled);
         this->set_auto_brightness_timer(auto_brightness);
         this->gui_app->alarm_clock->set_alarm_switches(weekdays_sw, weekends_sw,
                                                        oneOff_sw);
@@ -122,8 +123,7 @@ void OEClockApp::init_app() {
         this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str());
         this->gui_app->settings->set_brightness_widgets(brightness, auto_brightness);
         this->gui_app->settings->set_darktheme_switch(dark_theme_enabled);
-        lv_event_send(this->gui_app->settings->darkmodeSwitch, LV_EVENT_VALUE_CHANGED,
-                      NULL);
+
         xSemaphoreGive(mutex);
     } else {
         Serial.println("Can't obtain mutex");
