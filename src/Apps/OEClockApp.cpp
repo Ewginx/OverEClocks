@@ -71,6 +71,7 @@ void OEClockApp::setup() {
                             0,                     /* Priority of the task */
                             &update_display_task,  /* Task handle. */
                             0);
+    lv_anim_init(&_brightness_anim);
     this->init_app();
     weather_app->create_weather_task();
     this->connect_to_wifi();
@@ -80,7 +81,6 @@ void OEClockApp::setup() {
     this->server_app->setup();
 
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-        lv_anim_init(&_brightness_anim);
         this->gui_app->init_gui();
         this->gui_app->delete_loading_screen();
         xSemaphoreGive(mutex);
