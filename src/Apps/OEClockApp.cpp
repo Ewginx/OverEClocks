@@ -3,7 +3,14 @@
 static OEClockApp *instance = NULL;
 
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
-
+int map_light_level(int light_level) {
+    if(light_level>100){
+        return 255;
+    }
+    float slope = 2.55;
+    int output = static_cast<int>(5 + slope * light_level);
+    return output;
+}
 void serial_print(const char *buf) { Serial.println(buf); }
 extern "C" void bme_timer_cb_wrapper(lv_timer_t *timer) { instance->bme_timer_cb(timer); }
 extern "C" void light_sensor_timer_cb_wrapper(lv_timer_t *timer) {
@@ -162,16 +169,7 @@ void OEClockApp::bme_timer_cb(lv_timer_t *timer) {
 void OEClockApp::light_sensor_timer_cb(lv_timer_t *timer) {
     int light_level = static_cast<int>(this->_light_sensor.readLightLevel());
     int old_brightness = this->display->get_brightness();
-    if (light_level < 10) {
-        this->change_brightness_smoothly(5, old_brightness);
-        // this->set_display_brightness(5);
-    } else if (light_level > 50 & light_level < 100) {
-        this->change_brightness_smoothly(128, old_brightness);
-        // this->set_display_brightness(128);
-    } else if (light_level > 100) {
-        this->change_brightness_smoothly(255, old_brightness);
-        // this->set_display_brightness(255);
-    }
+    this->change_brightness_smoothly(map_light_level(light_level), old_brightness);
 }
 
 void OEClockApp::handle_wifi_state(bool wifi_connected) {

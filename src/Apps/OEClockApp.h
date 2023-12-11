@@ -6,11 +6,12 @@
 #include "ServerApp.h"
 #include "TimeApp.h"
 #include "WeatherApp.h"
+#include <Adafruit_BME280.h>
 #include <Arduino.h>
+#include <BH1750.h>
 #include <Preferences.h>
 #include <WiFi.h>
-#include <Adafruit_BME280.h>
-#include <BH1750.h>
+
 
 class OEClockApp {
   private:
@@ -24,8 +25,8 @@ class OEClockApp {
     lv_anim_t _brightness_anim;
     Adafruit_BME280 _bme_sensor;
     BH1750 _light_sensor;
-    lv_timer_t * _bme_timer = NULL;
-    lv_timer_t * _light_sensor_timer = NULL;
+    lv_timer_t *_bme_timer = NULL;
+    lv_timer_t *_light_sensor_timer = NULL;
 
   public:
     Preferences preferences;
@@ -46,4 +47,3 @@ class OEClockApp {
     OEClockApp(/* args */);
     ~OEClockApp();
 };
-
