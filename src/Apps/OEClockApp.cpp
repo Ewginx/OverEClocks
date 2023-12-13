@@ -114,7 +114,8 @@ void OEClockApp::init_app() {
         this->gui_app->settings->set_wifi_settings(this->ssid.c_str(),
                                                    this->password.c_str());
         this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str());
-        this->gui_app->settings->set_brightness_widgets(brightness, auto_brightness);
+        this->gui_app->settings->set_brightness_slider(brightness);
+        this->gui_app->settings->set_brightness_checkbox(auto_brightness);
         this->gui_app->settings->set_darktheme_switch(dark_theme_enabled);
 
         xSemaphoreGive(mutex);

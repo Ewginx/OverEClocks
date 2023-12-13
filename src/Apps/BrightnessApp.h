@@ -20,7 +20,8 @@ class BrightnessApp {
     void set_auto_brightness_timer(bool auto_brightness);
     void light_sensor_timer_cb();
     void set_display_brightness(u_int32_t brightness);
-    void get_light_level();
+    void update_settings_slider(u_int32_t slider_value);
+    int get_light_level();
     BrightnessApp(Display *display, Settings *settings);
     ~BrightnessApp();
 };

@@ -16,7 +16,9 @@ extern "C" void anim_brightness_change_cb(void *var, int32_t v) {
 void BrightnessApp::light_sensor_timer_cb() {
     int light_level = static_cast<int>(this->_light_sensor.readLightLevel());
     int old_brightness = this->_display->get_brightness();
-    this->change_brightness_smoothly(this->map_light_level(light_level), old_brightness);
+    int new_brightness = this->map_light_level(light_level);
+    this->change_brightness_smoothly(new_brightness, old_brightness);
+    this->update_settings_slider(new_brightness);
 }
 void BrightnessApp::set_auto_brightness_timer(bool auto_brightness) {
     if (this->_light_sensor_timer == NULL & auto_brightness) {
@@ -36,8 +38,11 @@ void BrightnessApp::change_brightness_smoothly(int new_light_level, int old_ligh
 void BrightnessApp::set_display_brightness(u_int32_t brightness) {
     this->_display->set_brightness((uint8_t)brightness);
 }
-void BrightnessApp::get_light_level() {
-    Serial.println(this->_light_sensor.readLightLevel());
+void BrightnessApp::update_settings_slider(u_int32_t slider_value) {
+    this->_settings->set_brightness_slider(slider_value, true);
+}
+int BrightnessApp::get_light_level() {
+    return static_cast<int>(this->_light_sensor.readLightLevel());
 }
 bool BrightnessApp::begin() {
     if (!_light_sensor.begin()) {
@@ -49,7 +54,7 @@ bool BrightnessApp::begin() {
     }
 }
 int BrightnessApp::map_light_level(int light_level) {
-    if (light_level > 110) {
+    if (light_level > 105) {
         return 255;
     }
     float slope = 2.55;
