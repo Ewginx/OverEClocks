@@ -123,6 +123,15 @@ void GuiApp::swipe_alarm_screen() {
     }
 }
 
+void GuiApp::switch_darktheme(bool darktheme_enabled) {
+    lv_disp_t *disp = lv_disp_get_default();
+    if (darktheme_enabled) {
+        this->set_dark_theme(disp);
+    } else {
+        this->set_light_theme(disp);
+    }
+}
+
 void GuiApp::screen_load_event_cb(lv_event_t *e) {
     if (lv_scr_act() != this->settings->settingsScreen) {
         this->dock_panel->change_dock_parent(lv_scr_act());

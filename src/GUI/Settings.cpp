@@ -47,8 +47,8 @@ void Settings::load_settings_screen(lv_obj_t *screen) {
     lv_slider_set_value(this->brightnessSlider, this->_display->get_brightness(),
                         LV_ANIM_OFF);
     this->home_screen = screen;
-    lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_NONE,
-                     SCREEN_CHANGE_ANIM_TIME, 0, false);
+    lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_NONE, SCREEN_CHANGE_ANIM_TIME,
+                     0, false);
 }
 
 void Settings::create_keyboard(lv_obj_t *target) {
@@ -115,8 +115,8 @@ void Settings::keyboard_event_cb(lv_event_t *e) { this->delete_keyboard(); }
 void Settings::home_button_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
     lv_event_send(this->keyboard, LV_EVENT_CANCEL, NULL);
-    lv_scr_load_anim(this->home_screen, LV_SCR_LOAD_ANIM_NONE, SCREEN_CHANGE_ANIM_TIME,
-                     0, false);
+    lv_scr_load_anim(this->home_screen, LV_SCR_LOAD_ANIM_NONE, SCREEN_CHANGE_ANIM_TIME, 0,
+                     false);
 }
 
 void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
@@ -224,9 +224,10 @@ void Settings::set_darktheme_switch(bool dark_theme_enabled) {
     lv_obj_add_state(this->darkmodeSwitch,
                      dark_theme_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
 }
-void Settings::set_brightness_widgets(u_int32_t slider_value,
-                                      bool auto_brightness_enabled) {
-    lv_slider_set_value(this->brightnessSlider, slider_value, LV_ANIM_OFF);
+void Settings::set_brightness_slider(u_int32_t slider_value, bool with_anim) {
+        lv_slider_set_value(this->brightnessSlider, slider_value, with_anim ? LV_ANIM_ON: LV_ANIM_OFF);
+}
+void Settings::set_brightness_checkbox(bool auto_brightness_enabled) {
     lv_obj_add_state(this->autoBrightnessCheckbox,
                      auto_brightness_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
 }

@@ -6,9 +6,11 @@ SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
 
 void serial_print(const char *buf) { Serial.println(buf); }
 extern "C" void bme_timer_cb_wrapper(lv_timer_t *timer) { instance->bme_timer_cb(timer); }
+
 extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
 }
+
 void update_display(void *parameter) {
     for (;;) {
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
@@ -27,6 +29,7 @@ OEClockApp::OEClockApp() {
     time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock,
                            this->gui_app->alarm_clock);
     server_app = new ServerApp();
+    brightness_app = new BrightnessApp(this->display, this->gui_app->settings);
     gui_app->settings->set_display(display);
     gui_app->settings->set_preferences(preferences);
     gui_app->alarm_clock->set_preferences(preferences);
@@ -42,9 +45,12 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
 
 void OEClockApp::setup() {
     Serial.begin(115200);
+    Wire.begin();
+    Wire.setClock(400000);
     if (!_bme_sensor.begin(0x76)) {
-        Serial.print("Can't find the sensor");
+        Serial.println("Can't find the BME280 sensor");
     }
+    brightness_app->begin();
     lv_port_sd_fs_init();
     TaskHandle_t update_display_task;
     this->gui_app->create_loading_screen();
@@ -66,8 +72,8 @@ void OEClockApp::setup() {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->init_gui();
         this->gui_app->delete_loading_screen();
-        xSemaphoreGive(mutex);
         this->_bme_timer = lv_timer_create(bme_timer_cb_wrapper, 600, NULL);
+        xSemaphoreGive(mutex);
     }
     vTaskDelete(update_display_task);
     WiFi.onEvent(WiFiStationDisconnected,
@@ -96,9 +102,11 @@ void OEClockApp::init_app() {
     this->weather_app->set_city_string(city.c_str());
     this->weather_app->set_language_string(language.c_str());
     this->weather_app->setup_weather_url();
-    this->set_display_brightness(brightness);
+    this->brightness_app->set_display_brightness(brightness);
 
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->gui_app->switch_darktheme(dark_theme_enabled);
+        this->brightness_app->set_auto_brightness_timer(auto_brightness);
         this->gui_app->alarm_clock->set_alarm_switches(weekdays_sw, weekends_sw,
                                                        oneOff_sw);
         this->gui_app->alarm_clock->set_alarm_buttons(
@@ -106,10 +114,10 @@ void OEClockApp::init_app() {
         this->gui_app->settings->set_wifi_settings(this->ssid.c_str(),
                                                    this->password.c_str());
         this->gui_app->settings->set_weather_settings(city.c_str(), language.c_str());
-        this->gui_app->settings->set_brightness_widgets(brightness, auto_brightness);
+        this->gui_app->settings->set_brightness_slider(brightness);
+        this->gui_app->settings->set_brightness_checkbox(auto_brightness);
         this->gui_app->settings->set_darktheme_switch(dark_theme_enabled);
-        lv_event_send(this->gui_app->settings->darkmodeSwitch, LV_EVENT_VALUE_CHANGED,
-                      NULL);
+
         xSemaphoreGive(mutex);
     } else {
         Serial.println("Can't obtain mutex");
@@ -172,10 +180,6 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
         this->gui_app->dock_panel->show_wifi_connection(this->_wifi_connected);
         xSemaphoreGive(mutex);
     }
-}
-
-void OEClockApp::set_display_brightness(u_int32_t brightness) {
-    display->set_brightness((uint8_t)brightness);
 }
 
 void OEClockApp::loop() {
