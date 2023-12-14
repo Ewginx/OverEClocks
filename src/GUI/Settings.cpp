@@ -205,6 +205,11 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     bool checked = lv_obj_has_state(this->autoBrightnessCheckbox, LV_STATE_CHECKED);
+    if (checked) {
+        lv_obj_add_state(this->brightnessSlider, LV_STATE_DISABLED);
+    } else {
+        lv_obj_clear_state(this->brightnessSlider, LV_STATE_DISABLED);
+    }
     _preferences.begin(NAMESPACE);
     _preferences.putBool("auto_bright", checked);
     _preferences.end();
@@ -225,11 +230,17 @@ void Settings::set_darktheme_switch(bool dark_theme_enabled) {
                      dark_theme_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
 }
 void Settings::set_brightness_slider(u_int32_t slider_value, bool with_anim) {
-        lv_slider_set_value(this->brightnessSlider, slider_value, with_anim ? LV_ANIM_ON: LV_ANIM_OFF);
+    lv_slider_set_value(this->brightnessSlider, slider_value,
+                        with_anim ? LV_ANIM_ON : LV_ANIM_OFF);
 }
 void Settings::set_brightness_checkbox(bool auto_brightness_enabled) {
     lv_obj_add_state(this->autoBrightnessCheckbox,
                      auto_brightness_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
+    if (auto_brightness_enabled) {
+        lv_obj_add_state(this->brightnessSlider, LV_STATE_DISABLED);
+    } else {
+        lv_obj_clear_state(this->brightnessSlider, LV_STATE_DISABLED);
+    }
 }
 void Settings::disable_weather_controls() {
     lv_obj_clear_state(this->weatherSwitch, LV_STATE_CHECKED);
