@@ -5,7 +5,6 @@ static OEClockApp *instance = NULL;
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
 
 void serial_print(const char *buf) { Serial.println(buf); }
-extern "C" void bme_timer_cb_wrapper(lv_timer_t *timer) { instance->bme_timer_cb(timer); }
 
 extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
@@ -30,6 +29,7 @@ OEClockApp::OEClockApp() {
                            this->gui_app->alarm_clock);
     server_app = new ServerApp();
     brightness_app = new BrightnessApp(this->display, this->gui_app->settings);
+    microclimate_app = new MicroclimateApp(this->gui_app->dock_panel);
     gui_app->settings->set_display(display);
     gui_app->settings->set_preferences(preferences);
     gui_app->alarm_clock->set_preferences(preferences);
@@ -47,10 +47,8 @@ void OEClockApp::setup() {
     Serial.begin(115200);
     Wire.begin();
     Wire.setClock(400000);
-    if (!_bme_sensor.begin(0x76)) {
-        Serial.println("Can't find the BME280 sensor");
-    }
     brightness_app->begin();
+    microclimate_app->begin();
     lv_port_sd_fs_init();
     TaskHandle_t update_display_task;
     this->gui_app->create_loading_screen();
@@ -72,7 +70,6 @@ void OEClockApp::setup() {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->init_gui();
         this->gui_app->delete_loading_screen();
-        this->_bme_timer = lv_timer_create(bme_timer_cb_wrapper, 600, NULL);
         xSemaphoreGive(mutex);
     }
     vTaskDelete(update_display_task);
@@ -142,12 +139,6 @@ void OEClockApp::connect_to_wifi() {
         attempt++;
     }
     this->handle_wifi_state(WiFi.status() == WL_CONNECTED);
-}
-
-void OEClockApp::bme_timer_cb(lv_timer_t *timer) {
-    this->gui_app->dock_panel->set_temperature(this->_bme_sensor.readTemperature() - 1);
-    this->gui_app->dock_panel->set_humidity(
-        static_cast<int>(this->_bme_sensor.readHumidity()));
 }
 
 void OEClockApp::handle_wifi_state(bool wifi_connected) {
