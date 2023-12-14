@@ -323,7 +323,7 @@ void AlarmClock::check_alarm_clocks(struct tm &timeinfo) {
                 this->weekends_already_fired = false;
             }
         }
-        this->calculate_weekends_remaining_time(hour_from_label, minute_from_label);
+        this->calculate_weekends_remaining_time(hour_from_label, minute_from_label, timeinfo);
     } else {
         lv_label_set_text(weekendsRingsInLabel, "");
     }
@@ -344,7 +344,7 @@ void AlarmClock::check_alarm_clocks(struct tm &timeinfo) {
                 this->weekdays_already_fired = false;
             }
         }
-        this->calculate_weekdays_remaining_time(hour_from_label, minute_from_label);
+        this->calculate_weekdays_remaining_time(hour_from_label, minute_from_label, timeinfo);
     } else {
         lv_label_set_text(weekdaysRingsInLabel, "");
     }
@@ -356,7 +356,8 @@ void AlarmClock::check_alarm_clocks(struct tm &timeinfo) {
             this->fire_alarm(oneOffButtonLabel);
             lv_obj_clear_state(oneOffSwitch, LV_STATE_CHECKED);
         } else {
-            this->calculate_oneOff_remaining_time(hour_from_label, minute_from_label);
+            this->calculate_oneOff_remaining_time(hour_from_label, minute_from_label,
+                                                  timeinfo);
         }
     } else {
         lv_label_set_text(oneOffRingsInLabel, "");
@@ -368,76 +369,77 @@ void AlarmClock::fire_alarm(lv_obj_t *target_label) {
     this->create_alarm_modal_panel(target_label);
 }
 
-void AlarmClock::calculate_oneOff_remaining_time(int hour, int minute) {
-    struct tm timeinfo;
-    getLocalTime(&timeinfo);
-    time_t now = mktime(&timeinfo);
-    if (timeinfo.tm_hour > hour) {
-        timeinfo.tm_mday += 1;
+void AlarmClock::calculate_oneOff_remaining_time(int hour, int minute,
+                                                 struct tm &timeinfo) {
+    struct tm timeinfo_local;
+    this->copy_timeinfo_struct(timeinfo_local, timeinfo);
+    time_t now = mktime(&timeinfo_local);
+    if (timeinfo_local.tm_hour > hour) {
+        timeinfo_local.tm_mday += 1;
     }
-    timeinfo.tm_hour = hour;
-    timeinfo.tm_min = minute;
-    time_t next_time = mktime(&timeinfo);
+    timeinfo_local.tm_hour = hour;
+    timeinfo_local.tm_min = minute;
+    time_t next_time = mktime(&timeinfo_local);
     double difference = difftime(next_time, now);
     this->set_rings_in_label_text(difference, oneOffRingsInLabel);
 }
 
-void AlarmClock::calculate_weekends_remaining_time(int hour, int minute) {
-    struct tm timeinfo;
-    getLocalTime(&timeinfo);
+void AlarmClock::calculate_weekends_remaining_time(int hour, int minute, struct tm &timeinfo) {
+    struct tm timeinfo_local;
+    this->copy_timeinfo_struct(timeinfo_local, timeinfo);
     time_t now = mktime(&timeinfo);
     int weekdays_add[5] = {5, 4, 3, 2, 1};
-    if (0 < timeinfo.tm_wday & timeinfo.tm_wday < 6) {
-        timeinfo.tm_mday += weekdays_add[timeinfo.tm_wday - 1];
+    if (0 < timeinfo_local.tm_wday & timeinfo_local.tm_wday < 6) {
+        timeinfo_local.tm_mday += weekdays_add[timeinfo_local.tm_wday - 1];
     }
-    if (timeinfo.tm_wday == 0) {
-        if (timeinfo.tm_hour > hour) {
-            timeinfo.tm_mday += 6;
+    if (timeinfo_local.tm_wday == 0) {
+        if (timeinfo_local.tm_hour > hour) {
+            timeinfo_local.tm_mday += 6;
         }
     }
-    if (timeinfo.tm_wday == 6) {
-        if (timeinfo.tm_hour > hour) {
-            timeinfo.tm_mday += 1;
+    if (timeinfo_local.tm_wday == 6) {
+        if (timeinfo_local.tm_hour > hour) {
+            timeinfo_local.tm_mday += 1;
         }
     }
-    timeinfo.tm_hour = hour;
-    timeinfo.tm_min = minute;
-    time_t next_time = mktime(&timeinfo);
+    timeinfo_local.tm_hour = hour;
+    timeinfo_local.tm_min = minute;
+    time_t next_time = mktime(&timeinfo_local);
     double difference = difftime(next_time, now);
     this->set_rings_in_label_text(difference, weekendsRingsInLabel);
 }
 
-void AlarmClock::calculate_weekdays_remaining_time(int hour, int minute) {
-    struct tm timeinfo;
-    getLocalTime(&timeinfo);
-    time_t now = mktime(&timeinfo);
-    if (0 < timeinfo.tm_wday < 5) {
-        if (timeinfo.tm_hour > hour) {
-            timeinfo.tm_mday += 1;
+void AlarmClock::calculate_weekdays_remaining_time(int hour, int minute, struct tm &timeinfo) {
+    struct tm timeinfo_local;
+    this->copy_timeinfo_struct(timeinfo_local, timeinfo);
+    time_t now = mktime(&timeinfo_local);
+    if (0 < timeinfo_local.tm_wday < 5) {
+        if (timeinfo_local.tm_hour > hour) {
+            timeinfo_local.tm_mday += 1;
         }
     }
-    if (timeinfo.tm_wday == 5) {
-        if (timeinfo.tm_hour > hour) {
-            timeinfo.tm_mday += 3;
+    if (timeinfo_local.tm_wday == 5) {
+        if (timeinfo_local.tm_hour > hour) {
+            timeinfo_local.tm_mday += 3;
         }
     }
-    if (timeinfo.tm_wday == 6) {
-        if (timeinfo.tm_hour > hour) {
-            timeinfo.tm_mday += 1;
+    if (timeinfo_local.tm_wday == 6) {
+        if (timeinfo_local.tm_hour > hour) {
+            timeinfo_local.tm_mday += 1;
         } else {
-            timeinfo.tm_mday += 2;
+            timeinfo_local.tm_mday += 2;
         }
     }
-    if (timeinfo.tm_wday == 0) {
-        if (timeinfo.tm_hour > hour) {
-            timeinfo.tm_mday += 2;
+    if (timeinfo_local.tm_wday == 0) {
+        if (timeinfo_local.tm_hour > hour) {
+            timeinfo_local.tm_mday += 2;
         } else {
-            timeinfo.tm_mday += 1;
+            timeinfo_local.tm_mday += 1;
         }
     }
-    timeinfo.tm_hour = hour;
-    timeinfo.tm_min = minute;
-    time_t next_time = mktime(&timeinfo);
+    timeinfo_local.tm_hour = hour;
+    timeinfo_local.tm_min = minute;
+    time_t next_time = mktime(&timeinfo_local);
     double difference = difftime(next_time, now);
     this->set_rings_in_label_text(difference, weekdaysRingsInLabel);
 }
@@ -552,4 +554,16 @@ int AlarmClock::parse_alarm_label(char *string, bool hour) {
     return atoi(alarm_buff);
 }
 void AlarmClock::set_preferences(Preferences &preferences) { _preferences = preferences; }
+void AlarmClock::copy_timeinfo_struct(tm &new_tm, tm &old_tm) {
+    new_tm.tm_hour = old_tm.tm_hour;
+    new_tm.tm_min = old_tm.tm_min;
+    new_tm.tm_mday = old_tm.tm_mday;
+    new_tm.tm_sec = old_tm.tm_sec;
+    new_tm.tm_mon = old_tm.tm_mon;
+    new_tm.tm_year = old_tm.tm_year;
+    new_tm.tm_wday = old_tm.tm_wday;
+    new_tm.tm_yday = old_tm.tm_yday;
+    new_tm.tm_isdst = old_tm.tm_isdst;
+}
+
 AlarmClock::~AlarmClock() {}

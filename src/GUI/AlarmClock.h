@@ -62,9 +62,9 @@ class AlarmClock {
     void check_alarm_clocks(tm &timeinfo);
     void fire_alarm(lv_obj_t *target_label);
 
-    void calculate_oneOff_remaining_time(int hour, int minute);
-    void calculate_weekends_remaining_time(int hour, int minute);
-    void calculate_weekdays_remaining_time(int hour, int minute);
+    void calculate_oneOff_remaining_time(int hour, int minute, struct tm &timeinfo);
+    void calculate_weekends_remaining_time(int hour, int minute, struct tm &timeinfo);
+    void calculate_weekdays_remaining_time(int hour, int minute, struct tm &timeinfo);
     void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
     void set_default_values();
     void set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw);
@@ -78,6 +78,8 @@ class AlarmClock {
     void event_alarmSwitch_cb(lv_event_t *e);
 
     void set_preferences(Preferences &preferences);
+
+    void copy_timeinfo_struct(struct tm &new_tm, struct tm &old_tm);
 
     AlarmClock(/* args */);
     ~AlarmClock();
