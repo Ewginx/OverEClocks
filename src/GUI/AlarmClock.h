@@ -10,7 +10,35 @@ class AlarmClock {
   private:
     bool weekdays_already_fired = false;
     bool weekends_already_fired = false;
+
+    char _hour_count[HOUR_COUNT * 3] = {0};
+    char _minute_count[MINUTE_COUNT * 3] = {0};
+
     Preferences _preferences;
+
+    int parse_alarm_label(char *string, bool hour = true);
+    void set_roller_time(const lv_obj_t *label);
+
+    void create_roller_modal_panel(lv_obj_t *target_label);
+    void create_roller_data();
+    void create_alarm_modal_panel(lv_obj_t *target_label);
+    void delete_alarm_modal_panel();
+
+    static bool is_weekends(int week_day);
+    static void copy_timeinfo_struct(struct tm &new_tm, struct tm &old_tm);
+
+    void check_weekends_alarm_clock(tm &timeinfo);
+    void check_weekdays_alarm_clock(tm &timeinfo);
+    void check_oneOff_alarm_clock(tm &timeinfo);
+
+    void fire_alarm(lv_obj_t *target_label);
+
+    void calculate_oneOff_remaining_time(int hour, int minute, struct tm &timeinfo);
+    void calculate_weekends_remaining_time(int hour, int minute, struct tm &timeinfo);
+    void calculate_weekdays_remaining_time(int hour, int minute, struct tm &timeinfo);
+
+    void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
+    void set_default_values();
 
   public:
     lv_obj_t *alarmScreen;
@@ -49,27 +77,9 @@ class AlarmClock {
 
     lv_obj_t *target_label;
 
-    int parse_alarm_label(char *string, bool hour = true);
-    void set_roller_time(const lv_obj_t *label);
-
-    void create_roller_modal_panel(lv_obj_t *target_label);
-    void delete_roller_modal_panel();
-
-    void create_alarm_modal_panel(lv_obj_t *target_label);
-    void delete_alarm_modal_panel();
-
-    bool is_weekends(int week_day);
     void check_alarm_clocks(tm &timeinfo);
-    void fire_alarm(lv_obj_t *target_label);
 
-    void calculate_oneOff_remaining_time(int hour, int minute);
-    void calculate_weekends_remaining_time(int hour, int minute);
-    void calculate_weekdays_remaining_time(int hour, int minute);
-    void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
-    void set_default_values();
-    void set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw);
-    void set_alarm_buttons(const char *weekdays_time, const char *weekends_time,
-                           const char *oneOff_time);
+    void delete_roller_modal_panel();
 
     void event_alarmModalCancelButton_cb(lv_event_t *e);
     void event_alarmModalOkButton_cb(lv_event_t *e);
@@ -77,6 +87,9 @@ class AlarmClock {
     void event_alarmButtons_cb(lv_event_t *e);
     void event_alarmSwitch_cb(lv_event_t *e);
 
+    void set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw);
+    void set_alarm_buttons(const char *weekdays_time, const char *weekends_time,
+                           const char *oneOff_time);
     void set_preferences(Preferences &preferences);
 
     AlarmClock(/* args */);
