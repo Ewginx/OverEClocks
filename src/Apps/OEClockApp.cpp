@@ -85,7 +85,7 @@ void OEClockApp::setup() {
 
 void OEClockApp::init_app() {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-        this->gui_app->switch_darktheme(this->state_app->dark_theme_enabled);
+        this->gui_app->switch_theme(this->state_app->dark_theme_enabled);
         this->brightness_app->set_auto_brightness_timer(this->state_app->auto_brightness);
         this->gui_app->alarm_clock->set_alarm_switches(
             this->state_app->weekdays_switch_enabled,
@@ -101,7 +101,7 @@ void OEClockApp::init_app() {
         this->gui_app->settings->set_brightness_slider(this->state_app->brightness_level);
         this->gui_app->settings->set_brightness_checkbox(
             this->state_app->auto_brightness);
-        this->gui_app->settings->set_darktheme_switch(
+        this->gui_app->settings->set_theme_switch(
             this->state_app->dark_theme_enabled);
 
         xSemaphoreGive(mutex);

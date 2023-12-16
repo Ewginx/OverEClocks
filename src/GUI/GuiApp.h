@@ -29,14 +29,14 @@ class GuiApp {
     void swipe_analog_clock_screen();
     void swipe_weather_screen();
     void swipe_alarm_screen();
-    void switch_darktheme(bool darktheme_enabled);
+    void switch_theme(bool dark_theme_enabled);
     void screen_load_event_cb(lv_event_t *e);
 
     void user_activity_event_cb(lv_event_t *e);
     void screen_timer_cb(lv_timer_t *timer);
     void dock_panel_timer_cb(lv_timer_t *timer);
     void settings_button_event_cb(lv_event_t *e);
-    void darkmode_switch_event_cb(lv_event_t *e);
+    void theme_switch_event_cb(lv_event_t *e);
     void set_light_theme(lv_disp_t *display);
     void set_dark_theme(lv_disp_t *display);
 

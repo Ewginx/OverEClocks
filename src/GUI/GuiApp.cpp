@@ -12,8 +12,8 @@ extern "C" void screen_load_event_cb_wrapper(lv_event_t *e) {
 extern "C" void settings_button_event_cb_wrapper(lv_event_t *e) {
     instance->settings_button_event_cb(e);
 }
-extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
-    instance->darkmode_switch_event_cb(e);
+extern "C" void theme_switch_event_cb_wrapper(lv_event_t *e) {
+    instance->theme_switch_event_cb(e);
 }
 extern "C" void screen_timer_cb_wrapper(lv_timer_t *timer) {
     instance->screen_timer_cb(timer);
@@ -60,7 +60,7 @@ GuiApp::GuiApp(StateApp *state_app) {
 
     lv_obj_add_event_cb(dock_panel->settingsButton, settings_button_event_cb_wrapper,
                         LV_EVENT_CLICKED, NULL);
-    lv_obj_add_event_cb(settings->darkmodeSwitch, darkmode_switch_event_cb_wrapper,
+    lv_obj_add_event_cb(settings->themeSwitch, theme_switch_event_cb_wrapper,
                         LV_EVENT_VALUE_CHANGED, NULL);
 
     lv_obj_add_event_cb(alarm_clock->alarmScreen, user_activity_event_cb_wrapper,
@@ -124,7 +124,7 @@ void GuiApp::swipe_alarm_screen() {
     }
 }
 
-void GuiApp::switch_darktheme(bool darktheme_enabled) {
+void GuiApp::switch_theme(bool darktheme_enabled) {
     lv_disp_t *disp = lv_disp_get_default();
     if (darktheme_enabled) {
         this->set_dark_theme(disp);
@@ -187,12 +187,12 @@ void GuiApp::settings_button_event_cb(lv_event_t *e) {
     settings->load_settings_screen(lv_scr_act());
 }
 
-void GuiApp::darkmode_switch_event_cb(lv_event_t *e) {
+void GuiApp::theme_switch_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     lv_disp_t *disp = lv_disp_get_default();
     if (event_code == LV_EVENT_VALUE_CHANGED) {
-        this->switch_darktheme(lv_obj_has_state(target, LV_STATE_CHECKED));
+        this->switch_theme(lv_obj_has_state(target, LV_STATE_CHECKED));
         this->state_app->save_dark_theme_enabled(
             lv_obj_has_state(target, LV_STATE_CHECKED));
     }

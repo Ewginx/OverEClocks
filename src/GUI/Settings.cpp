@@ -206,8 +206,8 @@ void Settings::set_wifi_settings(const char *ssid, const char *password) {
     lv_textarea_add_text(this->SSIDTextArea, ssid);
     lv_textarea_add_text(this->passwordTextArea, password);
 }
-void Settings::set_darktheme_switch(bool dark_theme_enabled) {
-    lv_obj_add_state(this->darkmodeSwitch,
+void Settings::set_theme_switch(bool dark_theme_enabled) {
+    lv_obj_add_state(this->themeSwitch,
                      dark_theme_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
 }
 void Settings::set_brightness_slider(u_int32_t slider_value, bool with_anim) {
@@ -247,20 +247,20 @@ void Settings::create_settings_screen() {
     lv_obj_clear_flag(this->settingsPanel, LV_OBJ_FLAG_SCROLL_ELASTIC);
     lv_obj_add_flag(this->settingsPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
-    this->darkmodeLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_pos(this->darkmodeLabel, 35, 15);
-    lv_obj_set_align(this->darkmodeLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->darkmodeLabel, settings_translation[theme]);
-    lv_obj_set_style_text_font(this->darkmodeLabel, &font_18, LV_PART_MAIN);
+    this->themeLabel = lv_label_create(this->settingsPanel);
+    lv_obj_set_pos(this->themeLabel, 35, 15);
+    lv_obj_set_align(this->themeLabel, LV_ALIGN_TOP_LEFT);
+    lv_label_set_text(this->themeLabel, settings_translation[theme]);
+    lv_obj_set_style_text_font(this->themeLabel, &font_18, LV_PART_MAIN);
 
-    this->darkmodeSwitch = lv_switch_create(this->settingsPanel);
-    lv_obj_set_size(this->darkmodeSwitch, 50, 25);
-    lv_obj_set_pos(this->darkmodeSwitch, 175, 15);
-    lv_obj_set_align(this->darkmodeSwitch, LV_ALIGN_TOP_LEFT);
-    lv_obj_add_flag(this->darkmodeSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
+    this->themeSwitch = lv_switch_create(this->settingsPanel);
+    lv_obj_set_size(this->themeSwitch, 50, 25);
+    lv_obj_set_pos(this->themeSwitch, 175, 15);
+    lv_obj_set_align(this->themeSwitch, LV_ALIGN_TOP_LEFT);
+    lv_obj_add_flag(this->themeSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->brightnessSlider = lv_slider_create(this->settingsPanel);
-    lv_obj_align_to(this->brightnessSlider, this->darkmodeLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
+    lv_obj_align_to(this->brightnessSlider, this->themeLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
                     10, 30);
     lv_slider_set_range(this->brightnessSlider, 5, 255);
     lv_obj_add_flag(this->brightnessSlider, LV_OBJ_FLAG_EVENT_BUBBLE);
@@ -428,8 +428,8 @@ Settings::~Settings() {
     //     lv_obj_remove_event_cb(this->homeButton,
     //     home_button_event_cb_wrapper); this->settingsScreen = NULL;
     //     this->settingsPanel = NULL;
-    //     this->darkmodeLabel = NULL;
-    //     this->darkmodeSwitch = NULL;
+    //     this->themeLabel = NULL;
+    //     this->themeSwitch = NULL;
     //     this->cityTextArea = NULL;
     //     this->cityLabel = NULL;
     //     this->SSIDTextArea = NULL;

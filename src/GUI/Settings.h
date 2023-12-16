@@ -19,8 +19,8 @@ class Settings {
     lv_obj_t *settingsScreen;
     lv_obj_t *settingsPanel;
 
-    lv_obj_t *darkmodeLabel;
-    lv_obj_t *darkmodeSwitch;
+    lv_obj_t *themeLabel;
+    lv_obj_t *themeSwitch;
 
     lv_obj_t *cityTextArea;
     lv_obj_t *languageTextArea;
@@ -52,7 +52,7 @@ class Settings {
 
     void set_weather_settings(const char *city, const char *language);
     void set_wifi_settings(const char *ssid, const char *password);
-    void set_darktheme_switch(bool dark_theme_enabled);
+    void set_theme_switch(bool dark_theme_enabled);
     void set_brightness_slider(u_int32_t slider_value, bool with_anim = false);
     void set_brightness_checkbox(bool auto_brightness_enabled);
 
