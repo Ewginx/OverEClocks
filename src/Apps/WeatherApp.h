@@ -18,8 +18,6 @@ class WeatherApp {
     StateApp *_state_app;
     bool _weather_running = false;
 
-    void create_weather_task();
-
     void deserialize_json_response(String &response);
 
     void set_temperature(int temperature);
@@ -42,6 +40,8 @@ class WeatherApp {
   public:
     WiFiClient wifi;
     HttpClient client = HttpClient(wifi, "api.weatherapi.com", _port);
+
+    void create_weather_task();
 
     void update_weather();
 
