@@ -8,7 +8,6 @@ extern "C" void keyboard_event_cb_wrapper(lv_event_t *e) {
 extern "C" void home_button_event_cb_wrapper(lv_event_t *e) {
     instance->home_button_event_cb(e);
 }
-
 extern "C" void settings_cityTextArea_event_cb_wrapper(lv_event_t *e) {
     instance->settings_cityTextArea_event_cb(e);
 }
@@ -18,11 +17,9 @@ extern "C" void settings_languageTextArea_event_cb_wrapper(lv_event_t *e) {
 extern "C" void settings_SSIDTextArea_event_cb_wrapper(lv_event_t *e) {
     instance->settings_SSIDTextArea_event_cb(e);
 }
-
 extern "C" void settings_passwordTextArea_event_cb_wrapper(lv_event_t *e) {
     instance->settings_passwordTextArea_event_cb(e);
 }
-
 extern "C" void settings_brightnessSlider_event_cb_wrapper(lv_event_t *e) {
     instance->settings_brightnessSlider_event_cb(e);
 }
@@ -45,7 +42,7 @@ Settings::Settings(StateApp *state_app) {
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {
-    lv_slider_set_value(this->brightnessSlider, this->_display->get_brightness(),
+    lv_slider_set_value(this->brightnessSlider, this->_state_app->brightness_level,
                         LV_ANIM_OFF);
     this->home_screen = screen;
     lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_NONE, SCREEN_CHANGE_ANIM_TIME,
@@ -180,10 +177,9 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
 void Settings::settings_brightnessSlider_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
-    this->_display->set_brightness((uint8_t)lv_slider_get_value(
-        this->brightnessSlider)); // TODO add message for BrightnessApp about changed
-                                  // TODO brightness_level
-    this->_state_app->save_brightness_level(lv_slider_get_value(this->brightnessSlider));
+    unsigned int brightness_level = lv_slider_get_value(this->brightnessSlider);
+    this->_state_app->save_brightness_level(brightness_level);
+    lv_msg_send(MSG_BRIGHTNESS_CHANGED, static_cast<const void *>(&brightness_level));
 }
 void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
@@ -197,7 +193,6 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     this->_state_app->save_auto_brightness_enabled(checked);
     lv_msg_send(MSG_AUTO_BRIGHTNESS, static_cast<const void *>(&checked));
 }
-void Settings::set_display(Display *display) { _display = display; }
 void Settings::set_weather_settings(const char *city, const char *language) {
     lv_textarea_add_text(this->cityTextArea, city);
     lv_textarea_add_text(this->languageTextArea, language);

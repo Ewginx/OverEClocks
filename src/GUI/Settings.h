@@ -7,7 +7,6 @@
 
 class Settings {
   private:
-    Display *_display;
     StateApp *_state_app;
     int _settings_panel_height = 450;
 
@@ -47,8 +46,6 @@ class Settings {
 
     lv_obj_t *brightnessSlider;
     lv_obj_t *autoBrightnessCheckbox;
-
-    void set_display(Display *display);
 
     void set_weather_settings(const char *city, const char *language);
     void set_wifi_settings(const char *ssid, const char *password);

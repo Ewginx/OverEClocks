@@ -37,7 +37,6 @@ OEClockApp::OEClockApp() {
     this->weather_app->setup_weather_url();
     this->brightness_app->set_display_brightness(this->state_app->brightness_level);
 
-    gui_app->settings->set_display(display);
     lv_msg_subscribe(MSG_WIFI_RECONNECT, reconnect_to_wifi_cb, NULL);
 }
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
