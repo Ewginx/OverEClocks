@@ -29,6 +29,8 @@ class StateApp {
     String weekends_time;
     String oneOff_time;
 
+    void init_state();
+
     void save_alarm_switches_enabled(bool weekdays_enabled, bool weekends_enabled,
                                      bool oneOff_enabled);
     void save_alarm_time(const char *weekdays_time, const char *weekends_time,

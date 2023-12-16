@@ -37,19 +37,13 @@ OEClockApp::OEClockApp() {
     server_app = new ServerApp();
     brightness_app = new BrightnessApp(this->display, this->gui_app->settings);
     microclimate_app = new MicroclimateApp(this->gui_app->dock_panel);
-
-    this->weather_app->setup_weather_url();
-    this->brightness_app->set_display_brightness(this->state_app->brightness_level);
-
     lv_msg_subscribe(MSG_WIFI_RECONNECT, reconnect_to_wifi_cb, NULL);
 }
 
 void OEClockApp::setup() {
     Serial.begin(115200);
-    Wire.begin();
-    Wire.setClock(400000);
-    brightness_app->begin();
-    microclimate_app->begin();
+    lv_log_register_print_cb(serial_print);
+    this->init_i2c_apps();
     lv_port_sd_fs_init();
     TaskHandle_t update_display_task;
     this->gui_app->create_loading_screen();
@@ -60,6 +54,9 @@ void OEClockApp::setup() {
                             0,                     /* Priority of the task */
                             &update_display_task,  /* Task handle. */
                             0);
+    this->state_app->init_state();
+    this->weather_app->setup_weather_url();
+    this->brightness_app->set_display_brightness(this->state_app->brightness_level);
     this->init_gui();
     weather_app->create_weather_task();
     this->connect_to_wifi();
@@ -76,7 +73,13 @@ void OEClockApp::setup() {
     vTaskDelete(update_display_task);
     WiFi.onEvent(WiFiStationDisconnected,
                  WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
-    lv_log_register_print_cb(serial_print);
+}
+
+void OEClockApp::init_i2c_apps() {
+    Wire.begin();
+    Wire.setClock(400000);
+    this->brightness_app->begin();
+    this->microclimate_app->begin();
 }
 
 void OEClockApp::init_gui() {

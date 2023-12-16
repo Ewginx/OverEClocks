@@ -2,8 +2,15 @@
 
 static StateApp *instance = NULL;
 
-StateApp::StateApp() {
-    instance = this;
+StateApp::StateApp() { instance = this; }
+
+void StateApp::save_dark_theme_enabled(bool enabled) {
+    this->dark_theme_enabled = enabled;
+    this->_preferences.begin(NAMESPACE);
+    this->_preferences.putBool("dark_theme", enabled);
+    this->_preferences.end();
+}
+void StateApp::init_state() {
     _preferences.begin(NAMESPACE);
     this->ssid = _preferences.getString("ssid", "");
     this->password = _preferences.getString("password", "");
@@ -20,13 +27,6 @@ StateApp::StateApp() {
     this->weekends_time = _preferences.getString("weekends_time", "09:15");
     this->oneOff_time = _preferences.getString("oneOff_time", "13:23");
     _preferences.end();
-}
-
-void StateApp::save_dark_theme_enabled(bool enabled) {
-    this->dark_theme_enabled = enabled;
-    this->_preferences.begin(NAMESPACE);
-    this->_preferences.putBool("dark_theme", enabled);
-    this->_preferences.end();
 }
 void StateApp::save_alarm_switches_enabled(bool weekdays_enabled, bool weekends_enabled,
                                            bool oneOff_enabled) {
