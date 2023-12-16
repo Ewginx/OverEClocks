@@ -40,7 +40,11 @@ void StateApp::save_auto_brightness_enabled(bool enabled) {
     _preferences.putBool("auto_bright", enabled);
     _preferences.end();
 }
-void StateApp::save_weather_enabled(bool enabled) {}
+void StateApp::save_weather_enabled(bool enabled) {
+    _preferences.begin(NAMESPACE);
+    _preferences.putBool("weather_enab", enabled);
+    _preferences.end();
+}
 void StateApp::save_brightness_level(unsigned int brightness_level) {
     _preferences.begin(NAMESPACE);
     _preferences.putUInt("brightness", brightness_level);
