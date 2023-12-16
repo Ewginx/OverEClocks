@@ -43,9 +43,11 @@ class GuiApp {
     void create_loading_screen();
     void delete_loading_screen();
     void set_screens_to_default_values();
-    // void settings_textarea_event_cb(lv_event_t *e);
 
-    void init_gui();
+    void setup_gui();
+
+    void load_default_screen();
+
     GuiApp(StateApp *state_app);
     ~GuiApp();
 };

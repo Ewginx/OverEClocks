@@ -37,7 +37,7 @@ OEClockApp::OEClockApp() {
     server_app = new ServerApp();
     brightness_app = new BrightnessApp(this->display, this->gui_app->settings);
     microclimate_app = new MicroclimateApp(this->gui_app->dock_panel);
-    
+
     this->weather_app->setup_weather_url();
     this->brightness_app->set_display_brightness(this->state_app->brightness_level);
 
@@ -60,7 +60,7 @@ void OEClockApp::setup() {
                             0,                     /* Priority of the task */
                             &update_display_task,  /* Task handle. */
                             0);
-    this->init_app();
+    this->init_gui();
     weather_app->create_weather_task();
     this->connect_to_wifi();
     if (this->state_app->wifi_connected) {
@@ -69,7 +69,7 @@ void OEClockApp::setup() {
     this->server_app->setup();
 
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-        this->gui_app->init_gui();
+        this->gui_app->load_default_screen();
         this->gui_app->delete_loading_screen();
         xSemaphoreGive(mutex);
     }
@@ -79,26 +79,10 @@ void OEClockApp::setup() {
     lv_log_register_print_cb(serial_print);
 }
 
-void OEClockApp::init_app() {
+void OEClockApp::init_gui() {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-        this->gui_app->switch_theme(this->state_app->dark_theme_enabled);
+        this->gui_app->setup_gui();
         this->brightness_app->set_auto_brightness_timer(this->state_app->auto_brightness);
-        this->gui_app->alarm_clock->set_alarm_switches(
-            this->state_app->weekdays_switch_enabled,
-            this->state_app->weekends_switch_enabled,
-            this->state_app->oneOff_switch_enabled);
-        this->gui_app->alarm_clock->set_alarm_buttons(
-            this->state_app->weekdays_time.c_str(),
-            this->state_app->weekends_time.c_str(), this->state_app->oneOff_time.c_str());
-        this->gui_app->settings->set_wifi_settings(this->state_app->ssid.c_str(),
-                                                   this->state_app->password.c_str());
-        this->gui_app->settings->set_weather_settings(this->state_app->city.c_str(),
-                                                      this->state_app->language.c_str());
-        this->gui_app->settings->set_brightness_slider(this->state_app->brightness_level);
-        this->gui_app->settings->set_brightness_checkbox(
-            this->state_app->auto_brightness);
-        this->gui_app->settings->set_theme_switch(this->state_app->dark_theme_enabled);
-
         xSemaphoreGive(mutex);
     } else {
         Serial.println("Can't obtain mutex");

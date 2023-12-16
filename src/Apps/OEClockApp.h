@@ -27,7 +27,7 @@ class OEClockApp {
     GuiApp *gui_app;
     ServerApp *server_app;
 
-    void init_app();
+    void init_gui();
     void connect_to_wifi();
     void handle_wifi_state(bool wifi_connected);
 

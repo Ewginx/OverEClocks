@@ -75,7 +75,24 @@ GuiApp::GuiApp(StateApp *state_app) {
                         LV_EVENT_PRESSING, NULL);
 };
 
-void GuiApp::init_gui() { lv_scr_load(digital_clock->digitalClockScreen); };
+void GuiApp::setup_gui() {
+    this->switch_theme(this->state_app->dark_theme_enabled);
+    this->alarm_clock->set_alarm_switches(this->state_app->weekdays_switch_enabled,
+                                          this->state_app->weekends_switch_enabled,
+                                          this->state_app->oneOff_switch_enabled);
+    this->alarm_clock->set_alarm_buttons(this->state_app->weekdays_time.c_str(),
+                                         this->state_app->weekends_time.c_str(),
+                                         this->state_app->oneOff_time.c_str());
+    this->settings->set_wifi_settings(this->state_app->ssid.c_str(),
+                                      this->state_app->password.c_str());
+    this->settings->set_weather_settings(this->state_app->city.c_str(),
+                                         this->state_app->language.c_str());
+    this->settings->set_brightness_slider(this->state_app->brightness_level);
+    this->settings->set_brightness_checkbox(this->state_app->auto_brightness);
+    this->settings->set_theme_switch(this->state_app->dark_theme_enabled);
+}
+
+void GuiApp::load_default_screen() { lv_scr_load(digital_clock->digitalClockScreen); };
 
 void GuiApp::swipe_screen_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
