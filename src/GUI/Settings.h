@@ -1,4 +1,5 @@
 #pragma once
+#include "Apps/StateApp.h"
 #include "Display/Display.h"
 #include "GUI/DigitalClock.h"
 #include "Preferences.h"
@@ -6,8 +7,7 @@
 
 class Settings {
   private:
-    Display *_display;
-    Preferences _preferences;
+    StateApp *_state_app;
     int _settings_panel_height = 450;
 
   public:
@@ -18,8 +18,8 @@ class Settings {
     lv_obj_t *settingsScreen;
     lv_obj_t *settingsPanel;
 
-    lv_obj_t *darkmodeLabel;
-    lv_obj_t *darkmodeSwitch;
+    lv_obj_t *themeLabel;
+    lv_obj_t *themeSwitch;
 
     lv_obj_t *cityTextArea;
     lv_obj_t *languageTextArea;
@@ -47,22 +47,21 @@ class Settings {
     lv_obj_t *brightnessSlider;
     lv_obj_t *autoBrightnessCheckbox;
 
-    void set_display(Display *display);
-    void set_preferences(Preferences &preferences);
-
     void set_weather_settings(const char *city, const char *language);
     void set_wifi_settings(const char *ssid, const char *password);
-    void set_darktheme_switch(bool dark_theme_enabled);
+    void set_theme_switch(bool dark_theme_enabled);
     void set_brightness_slider(u_int32_t slider_value, bool with_anim = false);
     void set_brightness_checkbox(bool auto_brightness_enabled);
 
     void disable_weather_controls();
     void update_weather_controls_state(bool weather_enabled);
+
     void create_settings_screen();
     void load_settings_screen(lv_obj_t *screen);
+
     void create_keyboard(lv_obj_t *target);
     void delete_keyboard();
-    void save_darkmode_to_nvs();
+    
     void set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3);
 
     void wifi_button_event_cb(lv_event_t *e);
@@ -77,6 +76,6 @@ class Settings {
     void keyboard_event_cb(lv_event_t *e);
     void home_button_event_cb(lv_event_t *e);
 
-    Settings();
+    Settings(StateApp *state_app);
     ~Settings();
 };

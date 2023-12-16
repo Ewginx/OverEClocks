@@ -8,7 +8,6 @@ extern "C" void keyboard_event_cb_wrapper(lv_event_t *e) {
 extern "C" void home_button_event_cb_wrapper(lv_event_t *e) {
     instance->home_button_event_cb(e);
 }
-
 extern "C" void settings_cityTextArea_event_cb_wrapper(lv_event_t *e) {
     instance->settings_cityTextArea_event_cb(e);
 }
@@ -18,11 +17,9 @@ extern "C" void settings_languageTextArea_event_cb_wrapper(lv_event_t *e) {
 extern "C" void settings_SSIDTextArea_event_cb_wrapper(lv_event_t *e) {
     instance->settings_SSIDTextArea_event_cb(e);
 }
-
 extern "C" void settings_passwordTextArea_event_cb_wrapper(lv_event_t *e) {
     instance->settings_passwordTextArea_event_cb(e);
 }
-
 extern "C" void settings_brightnessSlider_event_cb_wrapper(lv_event_t *e) {
     instance->settings_brightnessSlider_event_cb(e);
 }
@@ -38,13 +35,14 @@ extern "C" void wifi_button_event_cb_wrapper(lv_event_t *e) {
 extern "C" void weather_button_event_cb_wrapper(lv_event_t *e) {
     instance->weather_button_event_cb(e);
 }
-Settings::Settings() {
+Settings::Settings(StateApp *state_app) {
     instance = this;
+    this->_state_app = state_app;
     this->create_settings_screen();
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {
-    lv_slider_set_value(this->brightnessSlider, this->_display->get_brightness(),
+    lv_slider_set_value(this->brightnessSlider, this->_state_app->brightness_level,
                         LV_ANIM_OFF);
     this->home_screen = screen;
     lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_NONE, SCREEN_CHANGE_ANIM_TIME,
@@ -77,13 +75,6 @@ void Settings::delete_keyboard() {
     }
 }
 
-void Settings::save_darkmode_to_nvs() {
-    this->_preferences.begin(NAMESPACE);
-    this->_preferences.putBool("dark_theme",
-                               lv_obj_has_state(this->darkmodeSwitch, LV_STATE_CHECKED));
-    this->_preferences.end();
-}
-
 void Settings::set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3) {
     lv_label_set_text_fmt(this->ipAddressLabel, "%s %d.%d.%d.%d",
                           settings_translation[access_point_ip], ip0, ip1, ip2, ip3);
@@ -104,9 +95,7 @@ void Settings::weather_switch_event_cb(lv_event_t *e) {
         } else {
             lv_obj_add_state(this->weatherButton, LV_STATE_DISABLED);
         }
-        this->_preferences.begin(NAMESPACE);
-        this->_preferences.putBool("weather_enab", enabled);
-        this->_preferences.end();
+        this->_state_app->save_weather_enabled(enabled);
         lv_msg_send(MSG_WEATHER_ENABLED, static_cast<const void *>(&enabled));
     }
 }
@@ -131,11 +120,8 @@ void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        _preferences.begin(NAMESPACE);
-        _preferences.putString("city", lv_textarea_get_text(this->cityTextArea));
-        _preferences.end();
-        lv_msg_send(MSG_WEATHER_CITY_CHANGED,
-                    static_cast<const void *>(lv_textarea_get_text(this->cityTextArea)));
+        this->_state_app->save_city(lv_textarea_get_text(this->cityTextArea));
+        lv_msg_send(MSG_WEATHER_CITY_CHANGED, NULL);
     }
 }
 void Settings::settings_languageTextArea_event_cb(lv_event_t *e) {
@@ -150,12 +136,8 @@ void Settings::settings_languageTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        _preferences.begin(NAMESPACE);
-        _preferences.putString("language", lv_textarea_get_text(this->languageTextArea));
-        _preferences.end();
-        lv_msg_send(
-            MSG_WEATHER_LANGUAGE_CHANGED,
-            static_cast<const void *>(lv_textarea_get_text(this->languageTextArea)));
+        this->_state_app->save_language(lv_textarea_get_text(this->languageTextArea));
+        lv_msg_send(MSG_WEATHER_LANGUAGE_CHANGED, NULL);
     }
 }
 void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
@@ -170,9 +152,7 @@ void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        _preferences.begin(NAMESPACE);
-        _preferences.putString("ssid", lv_textarea_get_text(SSIDTextArea));
-        _preferences.end();
+        this->_state_app->save_ssid(lv_textarea_get_text(SSIDTextArea));
     }
 }
 
@@ -188,18 +168,15 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        _preferences.begin(NAMESPACE);
-        _preferences.putString("password", lv_textarea_get_text(passwordTextArea));
-        _preferences.end();
+        this->_state_app->save_password(lv_textarea_get_text(passwordTextArea));
     }
 }
 void Settings::settings_brightnessSlider_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
-    this->_display->set_brightness((uint8_t)lv_slider_get_value(this->brightnessSlider));
-    _preferences.begin(NAMESPACE);
-    _preferences.putUInt("brightness", lv_slider_get_value(this->brightnessSlider));
-    _preferences.end();
+    unsigned int brightness_level = lv_slider_get_value(this->brightnessSlider);
+    this->_state_app->save_brightness_level(brightness_level);
+    lv_msg_send(MSG_BRIGHTNESS_CHANGED, static_cast<const void *>(&brightness_level));
 }
 void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
@@ -210,13 +187,9 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     } else {
         lv_obj_clear_state(this->brightnessSlider, LV_STATE_DISABLED);
     }
-    _preferences.begin(NAMESPACE);
-    _preferences.putBool("auto_bright", checked);
-    _preferences.end();
+    this->_state_app->save_auto_brightness_enabled(checked);
     lv_msg_send(MSG_AUTO_BRIGHTNESS, static_cast<const void *>(&checked));
 }
-void Settings::set_display(Display *display) { _display = display; }
-void Settings::set_preferences(Preferences &preferences) { _preferences = preferences; }
 void Settings::set_weather_settings(const char *city, const char *language) {
     lv_textarea_add_text(this->cityTextArea, city);
     lv_textarea_add_text(this->languageTextArea, language);
@@ -225,8 +198,8 @@ void Settings::set_wifi_settings(const char *ssid, const char *password) {
     lv_textarea_add_text(this->SSIDTextArea, ssid);
     lv_textarea_add_text(this->passwordTextArea, password);
 }
-void Settings::set_darktheme_switch(bool dark_theme_enabled) {
-    lv_obj_add_state(this->darkmodeSwitch,
+void Settings::set_theme_switch(bool dark_theme_enabled) {
+    lv_obj_add_state(this->themeSwitch,
                      dark_theme_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
 }
 void Settings::set_brightness_slider(u_int32_t slider_value, bool with_anim) {
@@ -266,20 +239,20 @@ void Settings::create_settings_screen() {
     lv_obj_clear_flag(this->settingsPanel, LV_OBJ_FLAG_SCROLL_ELASTIC);
     lv_obj_add_flag(this->settingsPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
-    this->darkmodeLabel = lv_label_create(this->settingsPanel);
-    lv_obj_set_pos(this->darkmodeLabel, 35, 15);
-    lv_obj_set_align(this->darkmodeLabel, LV_ALIGN_TOP_LEFT);
-    lv_label_set_text(this->darkmodeLabel, settings_translation[theme]);
-    lv_obj_set_style_text_font(this->darkmodeLabel, &font_18, LV_PART_MAIN);
+    this->themeLabel = lv_label_create(this->settingsPanel);
+    lv_obj_set_pos(this->themeLabel, 35, 15);
+    lv_obj_set_align(this->themeLabel, LV_ALIGN_TOP_LEFT);
+    lv_label_set_text(this->themeLabel, settings_translation[theme]);
+    lv_obj_set_style_text_font(this->themeLabel, &font_18, LV_PART_MAIN);
 
-    this->darkmodeSwitch = lv_switch_create(this->settingsPanel);
-    lv_obj_set_size(this->darkmodeSwitch, 50, 25);
-    lv_obj_set_pos(this->darkmodeSwitch, 175, 15);
-    lv_obj_set_align(this->darkmodeSwitch, LV_ALIGN_TOP_LEFT);
-    lv_obj_add_flag(this->darkmodeSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
+    this->themeSwitch = lv_switch_create(this->settingsPanel);
+    lv_obj_set_size(this->themeSwitch, 50, 25);
+    lv_obj_set_pos(this->themeSwitch, 175, 15);
+    lv_obj_set_align(this->themeSwitch, LV_ALIGN_TOP_LEFT);
+    lv_obj_add_flag(this->themeSwitch, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->brightnessSlider = lv_slider_create(this->settingsPanel);
-    lv_obj_align_to(this->brightnessSlider, this->darkmodeLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
+    lv_obj_align_to(this->brightnessSlider, this->themeLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
                     10, 30);
     lv_slider_set_range(this->brightnessSlider, 5, 255);
     lv_obj_add_flag(this->brightnessSlider, LV_OBJ_FLAG_EVENT_BUBBLE);
@@ -447,8 +420,8 @@ Settings::~Settings() {
     //     lv_obj_remove_event_cb(this->homeButton,
     //     home_button_event_cb_wrapper); this->settingsScreen = NULL;
     //     this->settingsPanel = NULL;
-    //     this->darkmodeLabel = NULL;
-    //     this->darkmodeSwitch = NULL;
+    //     this->themeLabel = NULL;
+    //     this->themeSwitch = NULL;
     //     this->cityTextArea = NULL;
     //     this->cityLabel = NULL;
     //     this->SSIDTextArea = NULL;

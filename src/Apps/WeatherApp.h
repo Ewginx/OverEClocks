@@ -1,35 +1,25 @@
 #pragma once
-#include "Arduino.h"
 #include "Config/Config.h"
 #include "GUI/Weather.h"
+#include "StateApp.h"
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include <HttpClient.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
 
-
 class WeatherApp {
   private:
-    short int port = 80;
-    String _city;
-    String _language;
+    short int _port = 80;
     String _api_url = "/v1/forecast.json";
     String _weather_url;
     Weather *weather;
     TaskHandle_t _weather_task;
-    bool url_is_ready = false;
-    bool _weather_api_enabled = false;
-  public:
-    WiFiClient wifi;
-    HttpClient client = HttpClient(wifi, "api.weatherapi.com", port);
+    StateApp *_state_app;
+    bool _weather_running = false;
 
-    void update_weather();
-    void set_city_string(const char* city);
-    void set_language_string(const char* language);
-    String url_encode(const char *str);
-    void setup_weather_url();
-    void enable_weather(bool enable=true);
     void deserialize_json_response(String &response);
+
     void set_temperature(int temperature);
     void set_feels_like(double temperature);
     void set_weather_condition(const char *conditions);
@@ -46,9 +36,23 @@ class WeatherApp {
     void set_city_and_country_code(const char *city, const char *country_code);
     // void set_hour_forecast();
     void set_weather_img(const char *link);
+
+  public:
+    WiFiClient wifi;
+    HttpClient client = HttpClient(wifi, "api.weatherapi.com", _port);
+
     void create_weather_task();
+
+    void update_weather();
+
+    void encode_city();
+    String url_encode(const char *str);
+    void setup_weather_url();
+
+    void enable_weather(bool enable = true);
+
     static void send_weather_request(void *parameter);
 
-    WeatherApp(Weather *weather);
+    WeatherApp(Weather *weather, StateApp *state_app);
     ~WeatherApp();
 };

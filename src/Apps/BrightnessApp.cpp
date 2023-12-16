@@ -6,6 +6,10 @@ extern "C" void auto_brightness_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
     instance->set_auto_brightness_timer(*payload);
 }
+extern "C" void brightness_changed_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    const unsigned int *payload = static_cast<const unsigned int *>(lv_msg_get_payload(msg));
+    instance->set_display_brightness(*payload);
+}
 extern "C" void light_sensor_timer_cb_wrapper(lv_timer_t *timer) {
     instance->light_sensor_timer_cb();
 }
@@ -66,6 +70,7 @@ BrightnessApp::BrightnessApp(Display *display, Settings *settings) {
     _display = display;
     _settings = settings;
     lv_anim_init(&_brightness_anim);
+    lv_msg_subscribe(MSG_BRIGHTNESS_CHANGED, brightness_changed_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_AUTO_BRIGHTNESS, auto_brightness_cb_wrapper, NULL);
 }
 
