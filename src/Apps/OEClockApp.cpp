@@ -9,7 +9,13 @@ void serial_print(const char *buf) { Serial.println(buf); }
 extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
 }
-
+void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+    Serial.print("Disconnected from WiFi access point. Reason: ");
+    Serial.println(info.wifi_sta_disconnected.reason);
+    instance->handle_wifi_state(false);
+    // Serial.println("Trying to Reconnect");
+    // WiFi.reconnect();
+}
 void update_display(void *parameter) {
     for (;;) {
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
@@ -25,26 +31,17 @@ OEClockApp::OEClockApp() {
     display = new Display();
     state_app = new StateApp();
     gui_app = new GuiApp(this->state_app);
-    weather_app = new WeatherApp(gui_app->weather);
+    weather_app = new WeatherApp(this->gui_app->weather, this->state_app);
     time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock,
                            this->gui_app->alarm_clock);
     server_app = new ServerApp();
     brightness_app = new BrightnessApp(this->display, this->gui_app->settings);
     microclimate_app = new MicroclimateApp(this->gui_app->dock_panel);
-
-    this->weather_app->set_city_string(this->state_app->city.c_str());
-    this->weather_app->set_language_string(this->state_app->language.c_str());
+    
     this->weather_app->setup_weather_url();
     this->brightness_app->set_display_brightness(this->state_app->brightness_level);
 
     lv_msg_subscribe(MSG_WIFI_RECONNECT, reconnect_to_wifi_cb, NULL);
-}
-void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-    Serial.print("Disconnected from WiFi access point. Reason: ");
-    Serial.println(info.wifi_sta_disconnected.reason);
-    instance->handle_wifi_state(false);
-    // Serial.println("Trying to Reconnect");
-    // WiFi.reconnect();
 }
 
 void OEClockApp::setup() {
@@ -100,8 +97,7 @@ void OEClockApp::init_app() {
         this->gui_app->settings->set_brightness_slider(this->state_app->brightness_level);
         this->gui_app->settings->set_brightness_checkbox(
             this->state_app->auto_brightness);
-        this->gui_app->settings->set_theme_switch(
-            this->state_app->dark_theme_enabled);
+        this->gui_app->settings->set_theme_switch(this->state_app->dark_theme_enabled);
 
         xSemaphoreGive(mutex);
     } else {

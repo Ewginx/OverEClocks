@@ -13,6 +13,7 @@ class StateApp {
     String password;
 
     String city;
+    String city_encoded;
     String language;
     bool weather_enabled;
 

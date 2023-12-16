@@ -120,9 +120,8 @@ void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->save_language(lv_textarea_get_text(this->cityTextArea));
-        lv_msg_send(MSG_WEATHER_CITY_CHANGED,
-                    static_cast<const void *>(lv_textarea_get_text(this->cityTextArea)));
+        this->_state_app->save_city(lv_textarea_get_text(this->cityTextArea));
+        lv_msg_send(MSG_WEATHER_CITY_CHANGED, NULL);
     }
 }
 void Settings::settings_languageTextArea_event_cb(lv_event_t *e) {
@@ -138,9 +137,7 @@ void Settings::settings_languageTextArea_event_cb(lv_event_t *e) {
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
         this->_state_app->save_language(lv_textarea_get_text(this->languageTextArea));
-        lv_msg_send(
-            MSG_WEATHER_LANGUAGE_CHANGED,
-            static_cast<const void *>(lv_textarea_get_text(this->languageTextArea)));
+        lv_msg_send(MSG_WEATHER_LANGUAGE_CHANGED, NULL);
     }
 }
 void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {

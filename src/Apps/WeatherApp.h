@@ -1,34 +1,33 @@
 #pragma once
-#include "Arduino.h"
 #include "Config/Config.h"
 #include "GUI/Weather.h"
+#include "StateApp.h"
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include <HttpClient.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
 
-
 class WeatherApp {
   private:
     short int port = 80;
-    String _city;
-    String _language;
     String _api_url = "/v1/forecast.json";
     String _weather_url;
     Weather *weather;
     TaskHandle_t _weather_task;
+    StateApp *_state_app;
     bool url_is_ready = false;
-    bool _weather_api_enabled = false;
+    bool _weather_running = false;
+
   public:
     WiFiClient wifi;
     HttpClient client = HttpClient(wifi, "api.weatherapi.com", port);
 
     void update_weather();
-    void set_city_string(const char* city);
-    void set_language_string(const char* language);
+    void encode_city();
     String url_encode(const char *str);
     void setup_weather_url();
-    void enable_weather(bool enable=true);
+    void enable_weather(bool enable = true);
     void deserialize_json_response(String &response);
     void set_temperature(int temperature);
     void set_feels_like(double temperature);
@@ -49,6 +48,6 @@ class WeatherApp {
     void create_weather_task();
     static void send_weather_request(void *parameter);
 
-    WeatherApp(Weather *weather);
+    WeatherApp(Weather *weather, StateApp *state_app);
     ~WeatherApp();
 };
