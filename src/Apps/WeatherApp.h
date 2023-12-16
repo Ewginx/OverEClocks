@@ -10,25 +10,18 @@
 
 class WeatherApp {
   private:
-    short int port = 80;
+    short int _port = 80;
     String _api_url = "/v1/forecast.json";
     String _weather_url;
     Weather *weather;
     TaskHandle_t _weather_task;
     StateApp *_state_app;
-    bool url_is_ready = false;
     bool _weather_running = false;
 
-  public:
-    WiFiClient wifi;
-    HttpClient client = HttpClient(wifi, "api.weatherapi.com", port);
+    void create_weather_task();
 
-    void update_weather();
-    void encode_city();
-    String url_encode(const char *str);
-    void setup_weather_url();
-    void enable_weather(bool enable = true);
     void deserialize_json_response(String &response);
+
     void set_temperature(int temperature);
     void set_feels_like(double temperature);
     void set_weather_condition(const char *conditions);
@@ -45,7 +38,19 @@ class WeatherApp {
     void set_city_and_country_code(const char *city, const char *country_code);
     // void set_hour_forecast();
     void set_weather_img(const char *link);
-    void create_weather_task();
+
+  public:
+    WiFiClient wifi;
+    HttpClient client = HttpClient(wifi, "api.weatherapi.com", _port);
+
+    void update_weather();
+
+    void encode_city();
+    String url_encode(const char *str);
+    void setup_weather_url();
+
+    void enable_weather(bool enable = true);
+
     static void send_weather_request(void *parameter);
 
     WeatherApp(Weather *weather, StateApp *state_app);

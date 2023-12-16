@@ -22,8 +22,7 @@ WeatherApp::WeatherApp(Weather *weather, StateApp *state_app) {
 void WeatherApp::send_weather_request(void *parameter) {
     WeatherApp *l_pThis = (WeatherApp *)parameter;
     for (;;) {
-        if (WiFi.status() == WL_CONNECTED & l_pThis->url_is_ready &
-            l_pThis->_weather_running) {
+        if (WiFi.status() == WL_CONNECTED & l_pThis->_weather_running) {
             l_pThis->client.get(l_pThis->_weather_url.c_str());
             int statusCode = l_pThis->client.responseStatusCode();
             Serial.print("Status code: ");
@@ -52,7 +51,6 @@ void WeatherApp::setup_weather_url() {
     this->_weather_url += "&aqi=no";
     this->_weather_url += "&lang=";
     this->_weather_url += this->_state_app->language;
-    this->url_is_ready = true;
 }
 void WeatherApp::encode_city() {
     this->_state_app->city_encoded = this->url_encode(this->_state_app->city.c_str());
@@ -225,7 +223,7 @@ void WeatherApp::set_weather_img(const char *link) {
 }
 void WeatherApp::update_weather() {
     if (this->_weather_running) {
-        Serial.println("Weather must be updated");
+        Serial.println("Update weather");
         vTaskSuspend(this->_weather_task);
         vTaskResume(this->_weather_task);
     }
