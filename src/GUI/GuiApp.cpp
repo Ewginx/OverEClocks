@@ -24,13 +24,14 @@ extern "C" void dock_panel_timer_cb_wrapper(lv_timer_t *timer) {
 extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
     instance->user_activity_event_cb(e);
 }
-GuiApp::GuiApp(/* args */) {
+GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
-    alarm_clock = new AlarmClock();
+    this->state_app = state_app;
+    alarm_clock = new AlarmClock(this->state_app);
     digital_clock = new DigitalClock();
     analog_clock = new AnalogClock();
     weather = new Weather();
-    settings = new Settings();
+    settings = new Settings(this->state_app);
     _screen_timer = NULL;
     _dock_panel_timer =
         lv_timer_create(dock_panel_timer_cb_wrapper, DOCK_PANEL_HIDE_PERIOD, NULL);
@@ -191,12 +192,9 @@ void GuiApp::darkmode_switch_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
     lv_disp_t *disp = lv_disp_get_default();
     if (event_code == LV_EVENT_VALUE_CHANGED) {
-        if (lv_obj_has_state(target, LV_STATE_CHECKED)) {
-            this->set_dark_theme(disp);
-        } else {
-            this->set_light_theme(disp);
-        }
-        this->settings->save_darkmode_to_nvs();
+        this->switch_darktheme(lv_obj_has_state(target, LV_STATE_CHECKED));
+        this->state_app->save_dark_theme_enabled(
+            lv_obj_has_state(target, LV_STATE_CHECKED));
     }
 }
 void GuiApp::set_light_theme(lv_disp_t *display) {

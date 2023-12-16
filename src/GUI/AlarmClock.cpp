@@ -17,10 +17,11 @@ extern "C" void event_alarmButtons_cb_wrapper(lv_event_t *e) {
 extern "C" void event_alarmSwitch_cb_wrapper(lv_event_t *e) {
     instance->event_alarmSwitch_cb(e);
 }
-AlarmClock::AlarmClock(/* args */) {
+AlarmClock::AlarmClock(StateApp *state_app) {
     instance = this;
-    alarmModalPanel = NULL;
+    this->_state_app = state_app;
 
+    alarmModalPanel = NULL;
     this->create_roller_data();
 
     alarmScreen = lv_obj_create(NULL);
@@ -517,13 +518,9 @@ void AlarmClock::event_alarmModalOkButton_cb(lv_event_t *e) {
                               lv_roller_get_selected(hourRoller),
                               lv_roller_get_selected(minuteRoller));
         this->delete_roller_modal_panel();
-        _preferences.begin(NAMESPACE);
-        _preferences.putString("weekdays_time",
-                               lv_label_get_text(this->weekdaysButtonLabel));
-        _preferences.putString("weekends_time",
-                               lv_label_get_text(this->weekendsButtonLabel));
-        _preferences.putString("oneOff_time", lv_label_get_text(this->oneOffButtonLabel));
-        _preferences.end();
+        this->_state_app->save_alarm_time(lv_label_get_text(this->weekdaysButtonLabel),
+                                          lv_label_get_text(this->weekendsButtonLabel),
+                                          lv_label_get_text(this->oneOffButtonLabel));
     }
 }
 
@@ -549,14 +546,10 @@ void AlarmClock::event_alarmButtons_cb(lv_event_t *e) {
 }
 
 void AlarmClock::event_alarmSwitch_cb(lv_event_t *e) {
-    _preferences.begin(NAMESPACE);
-    _preferences.putBool("weekdays_sw",
-                         lv_obj_has_state(this->weekdaysSwitch, LV_STATE_CHECKED));
-    _preferences.putBool("weekends_sw",
-                         lv_obj_has_state(this->weekendsSwitch, LV_STATE_CHECKED));
-    _preferences.putBool("oneOff_sw",
-                         lv_obj_has_state(this->oneOffSwitch, LV_STATE_CHECKED));
-    _preferences.end();
+    this->_state_app->save_alarm_switches_enabled(
+        lv_obj_has_state(this->weekdaysSwitch, LV_STATE_CHECKED),
+        lv_obj_has_state(this->weekendsSwitch, LV_STATE_CHECKED),
+        lv_obj_has_state(this->oneOffSwitch, LV_STATE_CHECKED));
 }
 
 int AlarmClock::parse_alarm_label(char *string, bool hour) {
@@ -570,7 +563,6 @@ int AlarmClock::parse_alarm_label(char *string, bool hour) {
     }
     return atoi(alarm_buff);
 }
-void AlarmClock::set_preferences(Preferences &preferences) { _preferences = preferences; }
 void AlarmClock::copy_timeinfo_struct(tm &new_tm, tm &old_tm) {
     new_tm.tm_hour = old_tm.tm_hour;
     new_tm.tm_min = old_tm.tm_min;

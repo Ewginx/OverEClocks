@@ -1,4 +1,5 @@
 #pragma once
+#include "Apps/StateApp.h"
 #include "Config/Config.h"
 #include "Preferences.h"
 #include "Translation/Translation.h"
@@ -14,7 +15,7 @@ class AlarmClock {
     char _hour_count[HOUR_COUNT * 3] = {0};
     char _minute_count[MINUTE_COUNT * 3] = {0};
 
-    Preferences _preferences;
+    StateApp *_state_app;
 
     int parse_alarm_label(char *string, bool hour = true);
     void set_roller_time(const lv_obj_t *label);
@@ -90,8 +91,7 @@ class AlarmClock {
     void set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw);
     void set_alarm_buttons(const char *weekdays_time, const char *weekends_time,
                            const char *oneOff_time);
-    void set_preferences(Preferences &preferences);
 
-    AlarmClock(/* args */);
+    AlarmClock(StateApp *state_app);
     ~AlarmClock();
 };

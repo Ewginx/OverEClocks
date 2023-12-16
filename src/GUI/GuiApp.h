@@ -6,6 +6,7 @@
 #include "GUI/DockPanel.h"
 #include "GUI/Settings.h"
 #include "GUI/Weather.h"
+#include "Apps/StateApp.h"
 
 class GuiApp {
   private:
@@ -19,7 +20,7 @@ class GuiApp {
     Weather *weather;
     Settings *settings;
     DockPanel *dock_panel;
-
+    StateApp *state_app;
     lv_obj_t *loading_screen;
     lv_obj_t *loading_spinner;
 
@@ -45,6 +46,6 @@ class GuiApp {
     // void settings_textarea_event_cb(lv_event_t *e);
 
     void init_gui();
-    GuiApp(/* args */);
+    GuiApp(StateApp *state_app);
     ~GuiApp();
 };
