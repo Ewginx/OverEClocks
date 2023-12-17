@@ -49,9 +49,13 @@ class WeatherApp {
     String url_encode(const char *str);
     void setup_weather_url();
 
-    void enable_weather(bool enable = true);
+    int send_weather_request();
 
-    static void send_weather_request(void *parameter);
+    void update_weather_task_state(bool enable = true);
+
+    void suspend_task_on_error();
+
+    static void get_weather(void *parameter);
 
     WeatherApp(Weather *weather, StateApp *state_app);
     ~WeatherApp();

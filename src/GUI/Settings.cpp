@@ -35,10 +35,16 @@ extern "C" void wifi_button_event_cb_wrapper(lv_event_t *e) {
 extern "C" void weather_button_event_cb_wrapper(lv_event_t *e) {
     instance->weather_button_event_cb(e);
 }
+extern "C" void update_weather_controls_state_cb_wrapper(void *subscriber,
+                                                         lv_msg_t *msg) {
+    instance->update_weather_controls_state();
+}
 Settings::Settings(StateApp *state_app) {
     instance = this;
     this->_state_app = state_app;
     this->create_settings_screen();
+    lv_msg_subscribe(MSG_UPDATE_WEATHER_CONTROLS,
+                     update_weather_controls_state_cb_wrapper, NULL);
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {
@@ -220,10 +226,14 @@ void Settings::disable_weather_controls() {
     lv_obj_add_state(this->weatherSwitch, LV_STATE_DISABLED);
     lv_obj_add_state(this->weatherButton, LV_STATE_DISABLED);
 }
-void Settings::update_weather_controls_state(bool weather_enabled) {
-    lv_obj_add_state(this->weatherSwitch,
-                     weather_enabled ? LV_STATE_CHECKED : LV_STATE_DEFAULT);
-    lv_obj_clear_state(this->weatherButton, LV_STATE_DISABLED);
+void Settings::update_weather_controls_state() {
+    if (this->_state_app->weather_enabled) {
+        lv_obj_add_state(this->weatherSwitch, LV_STATE_CHECKED);
+        lv_obj_clear_state(this->weatherButton, LV_STATE_DISABLED);
+    } else {
+        lv_obj_clear_state(this->weatherSwitch, LV_STATE_CHECKED);
+        lv_obj_add_state(this->weatherButton, LV_STATE_DISABLED);
+    }
 }
 void Settings::create_settings_screen() {
     this->keyboard = NULL;

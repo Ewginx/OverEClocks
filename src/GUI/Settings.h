@@ -54,7 +54,7 @@ class Settings {
     void set_brightness_checkbox(bool auto_brightness_enabled);
 
     void disable_weather_controls();
-    void update_weather_controls_state(bool weather_enabled);
+    void update_weather_controls_state();
 
     void create_settings_screen();
     void load_settings_screen(lv_obj_t *screen);
