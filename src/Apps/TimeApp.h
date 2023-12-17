@@ -14,6 +14,9 @@ class TimeApp {
     AnalogClock *analog_clock;
     AlarmClock *alarm_clock;
 
+    bool weekdays_already_fired = false;
+    bool weekends_already_fired = false;
+
     struct tm timeinfo;
 
     const long gmtOffset_sec = SECONDS_IN_ONE_HOUR * GMT_OFFSET;
@@ -25,9 +28,25 @@ class TimeApp {
     char fullDate[12];
     unsigned long time_now = 0;
 
+    static void copy_timeinfo_struct(struct tm &new_tm, struct tm &old_tm);
+    static bool is_weekends(int week_day);
+    
+    void check_weekends_alarm_clock(tm &timeinfo);
+    void check_weekdays_alarm_clock(tm &timeinfo);
+    void check_oneOff_alarm_clock(tm &timeinfo);
+
+    void calculate_oneOff_remaining_time(int hour, int minute, struct tm &timeinfo);
+    void calculate_weekends_remaining_time(int hour, int minute, struct tm &timeinfo);
+    void calculate_weekdays_remaining_time(int hour, int minute, struct tm &timeinfo);
+
+    void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
+
+
   public:
+    void check_alarm_clocks(tm &timeinfo);
     void notifyAboutTime();
     void config_time();
-    TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock, AlarmClock *alarm_clock);
+    TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
+            AlarmClock *alarm_clock);
     ~TimeApp();
 };

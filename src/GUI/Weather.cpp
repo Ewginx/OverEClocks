@@ -124,5 +124,8 @@ void Weather::set_no_data_values() {
     lv_label_set_text(weatherSecondTempLabel, "  -°C");
     lv_label_set_text(weatherThirdTempLabel, "  -°C");
     lv_label_set_text(weatherFourthTempLabel, "  -°C");
+    
+    lv_obj_set_style_text_font(weatherImage, &weather_font_18, LV_PART_MAIN);
+    lv_img_set_src(weatherImage, NO_DATA_SYMBOL);
 }
 Weather::~Weather(){};

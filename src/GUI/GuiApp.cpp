@@ -12,8 +12,8 @@ extern "C" void screen_load_event_cb_wrapper(lv_event_t *e) {
 extern "C" void settings_button_event_cb_wrapper(lv_event_t *e) {
     instance->settings_button_event_cb(e);
 }
-extern "C" void darkmode_switch_event_cb_wrapper(lv_event_t *e) {
-    instance->darkmode_switch_event_cb(e);
+extern "C" void theme_switch_event_cb_wrapper(lv_event_t *e) {
+    instance->theme_switch_event_cb(e);
 }
 extern "C" void screen_timer_cb_wrapper(lv_timer_t *timer) {
     instance->screen_timer_cb(timer);
@@ -24,13 +24,14 @@ extern "C" void dock_panel_timer_cb_wrapper(lv_timer_t *timer) {
 extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
     instance->user_activity_event_cb(e);
 }
-GuiApp::GuiApp(/* args */) {
+GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
-    alarm_clock = new AlarmClock();
+    this->state_app = state_app;
+    alarm_clock = new AlarmClock(this->state_app);
     digital_clock = new DigitalClock();
     analog_clock = new AnalogClock();
     weather = new Weather();
-    settings = new Settings();
+    settings = new Settings(this->state_app);
     _screen_timer = NULL;
     _dock_panel_timer =
         lv_timer_create(dock_panel_timer_cb_wrapper, DOCK_PANEL_HIDE_PERIOD, NULL);
@@ -59,7 +60,7 @@ GuiApp::GuiApp(/* args */) {
 
     lv_obj_add_event_cb(dock_panel->settingsButton, settings_button_event_cb_wrapper,
                         LV_EVENT_CLICKED, NULL);
-    lv_obj_add_event_cb(settings->darkmodeSwitch, darkmode_switch_event_cb_wrapper,
+    lv_obj_add_event_cb(settings->themeSwitch, theme_switch_event_cb_wrapper,
                         LV_EVENT_VALUE_CHANGED, NULL);
 
     lv_obj_add_event_cb(alarm_clock->alarmScreen, user_activity_event_cb_wrapper,
@@ -74,7 +75,24 @@ GuiApp::GuiApp(/* args */) {
                         LV_EVENT_PRESSING, NULL);
 };
 
-void GuiApp::init_gui() { lv_scr_load(digital_clock->digitalClockScreen); };
+void GuiApp::setup_gui() {
+    this->switch_theme(this->state_app->dark_theme_enabled);
+    this->alarm_clock->set_alarm_switches(this->state_app->weekdays_switch_enabled,
+                                          this->state_app->weekends_switch_enabled,
+                                          this->state_app->oneOff_switch_enabled);
+    this->alarm_clock->set_alarm_buttons(this->state_app->weekdays_time.c_str(),
+                                         this->state_app->weekends_time.c_str(),
+                                         this->state_app->oneOff_time.c_str());
+    this->settings->set_wifi_settings(this->state_app->ssid.c_str(),
+                                      this->state_app->password.c_str());
+    this->settings->set_weather_settings(this->state_app->city.c_str(),
+                                         this->state_app->language.c_str());
+    this->settings->set_brightness_slider(this->state_app->brightness_level);
+    this->settings->set_brightness_checkbox(this->state_app->auto_brightness);
+    this->settings->set_theme_switch(this->state_app->dark_theme_enabled);
+}
+
+void GuiApp::load_default_screen() { lv_scr_load(digital_clock->digitalClockScreen); };
 
 void GuiApp::swipe_screen_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
@@ -120,6 +138,15 @@ void GuiApp::swipe_alarm_screen() {
         lv_scr_load_anim(this->analog_clock->analogClockScreen,
                          LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
         this->alarm_clock->delete_roller_modal_panel();
+    }
+}
+
+void GuiApp::switch_theme(bool darktheme_enabled) {
+    lv_disp_t *disp = lv_disp_get_default();
+    if (darktheme_enabled) {
+        this->set_dark_theme(disp);
+    } else {
+        this->set_light_theme(disp);
     }
 }
 
@@ -177,17 +204,14 @@ void GuiApp::settings_button_event_cb(lv_event_t *e) {
     settings->load_settings_screen(lv_scr_act());
 }
 
-void GuiApp::darkmode_switch_event_cb(lv_event_t *e) {
+void GuiApp::theme_switch_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     lv_disp_t *disp = lv_disp_get_default();
     if (event_code == LV_EVENT_VALUE_CHANGED) {
-        if (lv_obj_has_state(target, LV_STATE_CHECKED)) {
-            this->set_dark_theme(disp);
-        } else {
-            this->set_light_theme(disp);
-        }
-        this->settings->save_darkmode_to_nvs();
+        this->switch_theme(lv_obj_has_state(target, LV_STATE_CHECKED));
+        this->state_app->save_dark_theme_enabled(
+            lv_obj_has_state(target, LV_STATE_CHECKED));
     }
 }
 void GuiApp::set_light_theme(lv_disp_t *display) {
