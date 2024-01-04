@@ -18,7 +18,7 @@ extern "C" void anim_brightness_change_cb(void *var, int32_t v) {
 }
 
 void BrightnessApp::light_sensor_timer_cb() {
-    int light_level = static_cast<int>(this->_light_sensor.readLightLevel());
+    int light_level = this->get_light_level();
     int old_brightness = this->_display->get_brightness();
     int new_brightness = this->map_light_level(light_level);
     this->change_brightness_smoothly(new_brightness, old_brightness);
@@ -67,8 +67,8 @@ int BrightnessApp::map_light_level(int light_level) {
 }
 BrightnessApp::BrightnessApp(Display *display, Settings *settings) {
     instance = this;
-    _display = display;
-    _settings = settings;
+    this->_display = display;
+    this->_settings = settings;
     lv_anim_init(&_brightness_anim);
     lv_msg_subscribe(MSG_BRIGHTNESS_CHANGED, brightness_changed_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_AUTO_BRIGHTNESS, auto_brightness_cb_wrapper, NULL);
