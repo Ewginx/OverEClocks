@@ -2,9 +2,17 @@
 static MicroclimateApp *instance = NULL;
 extern "C" void bme_timer_cb_wrapper(lv_timer_t *timer) { instance->bme_timer_cb(timer); }
 
+float MicroclimateApp::get_temperature() {
+    return this->_bme_sensor.readTemperature() - 1;
+}
+
+int MicroclimateApp::get_humidity() {
+    return static_cast<int>(this->_bme_sensor.readHumidity());
+}
+
 void MicroclimateApp::bme_timer_cb(lv_timer_t *timer) {
-    this->_dock_panel->set_temperature(this->_bme_sensor.readTemperature() - 1);
-    this->_dock_panel->set_humidity(static_cast<int>(this->_bme_sensor.readHumidity()));
+    this->_dock_panel->set_temperature(this->get_temperature());
+    this->_dock_panel->set_humidity(this->get_humidity());
 }
 bool MicroclimateApp::begin() {
     if (!_bme_sensor.begin(0x76)) {
