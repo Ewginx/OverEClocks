@@ -1,7 +1,21 @@
 #include "ServerApp.h"
 
-ServerApp::ServerApp(StateApp *state_app) : server(port) {
+static ServerApp *instance = NULL;
+
+extern "C" void websocket_timer_cb_wrapper(lv_timer_t *timer) {
+    instance->websocket_timer_cb(timer);
+}
+
+void onEventWrapper(AsyncWebSocket *server, AsyncWebSocketClient *client,
+                    AwsEventType type, void *arg, uint8_t *data, size_t len) {
+    instance->onEvent(server, client, type, arg, data, len);
+}
+
+ServerApp::ServerApp(StateApp *state_app, BrightnessApp *brightness_app, MicroclimateApp *microclimate_app) : server(port), websocket("/ws") {
+    instance = this;
     this->_state_app = state_app;
+    this->_brightness_app = brightness_app;
+    this->_microclimate_app = microclimate_app;
     if (!SPIFFS.begin(true)) {
         Serial.println("An Error has occurred while mounting SPIFFS");
         return;
@@ -38,10 +52,51 @@ void ServerApp::setup() {
 
     server.on("/settings", HTTP_GET,
               std::bind(&ServerApp::get_settings, this, std::placeholders::_1));
+
+    websocket.onEvent(onEventWrapper);
+
+    server.addHandler(&websocket);
     server.begin();
     ElegantOTA.begin(&server);
 }
+void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
+                        AwsEventType type, void *arg, uint8_t *data, size_t len) {
+    switch (type) {
+    case WS_EVT_CONNECT:
+        Serial.printf("WebSocket client #%u connected from %s\n", client->id(),
+                      client->remoteIP().toString().c_str());
+        if (this->_websocket_notify_timer == NULL) {
+            this->_websocket_notify_timer =
+                lv_timer_create(websocket_timer_cb_wrapper, 600, NULL);
+        }
+        break;
+    case WS_EVT_DISCONNECT:
+        Serial.printf("WebSocket client #%u disconnected\n", client->id());
+        if (this->_websocket_notify_timer != NULL & this->websocket.count() == 0) {
+            lv_timer_del(this->_websocket_notify_timer);
+            this->_websocket_notify_timer = NULL;
+        }
+        break;
+    case WS_EVT_DATA:
+    case WS_EVT_PONG:
+    case WS_EVT_ERROR:
+        break;
+    }
+}
 
+void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
+    this->websocket.textAll(this->getSensorReadings());
+}
+String ServerApp::getSensorReadings() {
+    String sensors_readings;
+    StaticJsonDocument<64> doc;
+    doc["temperature"] = this->_microclimate_app->get_temperature();
+    doc["humidity"] = this->_microclimate_app->get_humidity();
+    doc["lx"] = this->_brightness_app->get_light_level();
+    doc["battery_level"] = 84;
+    serializeJson(doc, sensors_readings);
+    return sensors_readings;
+}
 void ServerApp::get_settings(AsyncWebServerRequest *request) {
     Serial.println("Request on settings");
     AsyncResponseStream *response = request->beginResponseStream("application/json");
