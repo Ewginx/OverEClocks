@@ -30,6 +30,8 @@ class ServerApp {
     void save_brightness_settings(JsonVariant &json);
     void save_wifi_settings(JsonVariant &json);
 
+    void set_time(JsonVariant &json);
+
     void setup();
     void run();
     void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,

@@ -92,6 +92,13 @@ void ServerApp::setup() {
         });
     server.addHandler(wifi_settings_handler);
 
+    AsyncCallbackJsonWebHandler *set_time_handler = new AsyncCallbackJsonWebHandler(
+        "/time", [this](AsyncWebServerRequest *request, JsonVariant &json) {
+            this->set_time(json);
+            request->send(200);
+        });
+    server.addHandler(set_time_handler);
+
     server.serveStatic("/", SPIFFS, "/").setCacheControl("max-age=604800");
 
     websocket.onEvent(onEventWrapper);
@@ -123,6 +130,25 @@ void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
     case WS_EVT_ERROR:
         break;
     }
+}
+
+void ServerApp::set_time(JsonVariant &json) {
+    JsonObject &&time_json = json.as<JsonObject>();
+    struct timeval tv;
+    // tv.tv_sec = time_json["time"].as<unsigned long>();
+    // settimeofday(&tv, NULL);
+    Serial.println(time_json["time"].as<unsigned long>());
+    // struct tm timeinfo;
+    // time_t now;
+    // time(&now);
+    // localtime_r(&now, &timeinfo);
+    // char s[51];
+    // strftime(s, 6,
+    //          "%H"
+    //          ":"
+    //          "%M",
+    //          &timeinfo);
+    // Serial.println(s);
 }
 
 void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
