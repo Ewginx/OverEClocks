@@ -92,7 +92,13 @@ void GuiApp::setup_gui() {
     this->settings->set_theme_switch(this->state_app->dark_theme_enabled);
 }
 
-void GuiApp::load_default_screen() { lv_scr_load(digital_clock->digitalClockScreen); };
+void GuiApp::load_default_screen() {
+    if (this->state_app->digital_main_screen) {
+        lv_scr_load(digital_clock->digitalClockScreen);
+    } else {
+        lv_scr_load(analog_clock->analogClockScreen);
+    }
+};
 
 void GuiApp::swipe_screen_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
@@ -167,7 +173,6 @@ void GuiApp::screen_load_event_cb(lv_event_t *e) {
 }
 
 void GuiApp::user_activity_event_cb(lv_event_t *e) {
-    Serial.println("Timer was reset");
     if (this->_screen_timer != NULL) {
         lv_timer_reset(this->_screen_timer);
     }
@@ -183,13 +188,17 @@ void GuiApp::user_activity_event_cb(lv_event_t *e) {
 }
 
 void GuiApp::screen_timer_cb(lv_timer_t *timer) {
-    Serial.println("Screen timer callback fired");
     this->_screen_timer = NULL;
     if (lv_scr_act() != this->analog_clock->analogClockScreen &
         lv_scr_act() != this->digital_clock->digitalClockScreen) {
-        Serial.println("Screen was swapped to DigitalClock");
-        lv_scr_load_anim(this->digital_clock->digitalClockScreen,
-                         LV_SCR_LOAD_ANIM_FADE_IN, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        Serial.println("Screen was swapped to main clock screen");
+        if (this->state_app->digital_main_screen) {
+            lv_scr_load_anim(this->digital_clock->digitalClockScreen,
+                             LV_SCR_LOAD_ANIM_FADE_IN, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        } else {
+            lv_scr_load_anim(this->analog_clock->analogClockScreen,
+                             LV_SCR_LOAD_ANIM_FADE_IN, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        }
     }
 }
 
