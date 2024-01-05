@@ -20,8 +20,9 @@ void StateApp::init_state() {
     this->weather_enabled = _preferences.getBool("weather_enab", false);
     this->city = _preferences.getString("city", "");
     this->language = _preferences.getString("language", "");
-    this->api_key = _preferences.getString("api_key", "");
-    this->request_period = _preferences.getInt("request_period", 180000);
+    this->api_key = _preferences.getString("api_key", API_KEY);
+    this->request_period =
+        _preferences.getInt("request_period", WEATHER_API_POLLING_INTERVAL_MILLISECONDS);
 
     this->auto_brightness = _preferences.getBool("auto_bright", false);
     this->auto_theme_change = _preferences.getBool("auto_theme", false);

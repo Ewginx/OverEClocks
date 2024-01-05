@@ -33,9 +33,9 @@ void WeatherApp::get_weather(void *parameter) {
                     l_pThis->deserialize_json_response(response);
                     // Serial.print("Response: ");
                     // Serial.println(response);
-                    // Serial.printf("Waiting %i minutes for the next request",
-                    //               WEATHER_API_POLLING_INTERVAL_MINUTES);
-                    // Serial.println();
+                    Serial.printf("Waiting %i minutes for the next request",
+                                  l_pThis->_state_app->request_period/60000);
+                    Serial.println();
                     break;
                 } else {
                     Serial.printf("Try %d of 3 \n", i + 1);
@@ -47,14 +47,15 @@ void WeatherApp::get_weather(void *parameter) {
                 l_pThis->suspend_task_on_error();
             }
         }
-        vTaskDelay(WEATHER_API_POLLING_INTERVAL_MILLISECONDS / portTICK_PERIOD_MS);
+        vTaskDelay(l_pThis->_state_app->request_period / portTICK_PERIOD_MS);
     }
 }
 void WeatherApp::setup_weather_url() {
     this->encode_city();
     this->_weather_url.clear();
     this->_weather_url += this->_api_url;
-    this->_weather_url += API_KEY;
+    this->_weather_url += "?key=";
+    this->_weather_url += this->_state_app->api_key;
     this->_weather_url += "&q=";
     this->_weather_url += this->_state_app->city_encoded;
     this->_weather_url += "&aqi=no";
@@ -245,6 +246,7 @@ void WeatherApp::set_weather_img(const char *link) {
 }
 void WeatherApp::update_weather() {
     if (this->_weather_running) {
+        this->setup_weather_url();
         Serial.println("Update weather");
         vTaskSuspend(this->_weather_task);
         vTaskResume(this->_weather_task);
