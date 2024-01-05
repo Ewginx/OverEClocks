@@ -34,7 +34,7 @@ OEClockApp::OEClockApp() {
     weather_app = new WeatherApp(this->gui_app->weather, this->state_app);
     time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock,
                            this->gui_app->alarm_clock);
-    brightness_app = new BrightnessApp(this->display, this->gui_app->settings);
+    brightness_app = new BrightnessApp(this->display, this->gui_app->settings, this->state_app);
     microclimate_app = new MicroclimateApp(this->gui_app->dock_panel);
     server_app = new ServerApp(state_app, brightness_app, microclimate_app);
 

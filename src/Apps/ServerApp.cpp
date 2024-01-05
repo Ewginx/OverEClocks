@@ -200,6 +200,8 @@ void ServerApp::save_brightness_settings(JsonVariant &json) {
     this->_state_app->save_brightness_threshold(brightness_json["threshold"].as<int>());
     this->_state_app->save_brightness_level(
         brightness_json["brightness_level"].as<int>());
+    lv_msg_send(MSG_BRIGHTNESS_CHANGED, NULL);
+    lv_msg_send(MSG_AUTO_BRIGHTNESS, NULL);
 }
 void ServerApp::save_wifi_settings(JsonVariant &json) {
     JsonObject &&wifi_json = json.as<JsonObject>();
