@@ -23,6 +23,13 @@ class ServerApp {
     StateApp *_state_app;
 
     void get_settings(AsyncWebServerRequest *request);
+
+    void save_time_settings(JsonVariant &json);
+    void save_weather_settings(JsonVariant &json);
+    void save_theme_settings(JsonVariant &json);
+    void save_brightness_settings(JsonVariant &json);
+    void save_wifi_settings(JsonVariant &json);
+
     void setup();
     void run();
     void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,
