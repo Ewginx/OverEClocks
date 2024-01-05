@@ -19,6 +19,15 @@ void BrightnessApp::light_sensor_timer_cb() {
     int light_level = this->get_light_level();
     int old_brightness = this->_display->get_brightness();
     int new_brightness = this->map_light_level(light_level);
+    bool dark_theme = false;
+    if (new_brightness < CHANGE_THEME_THRESHOLD & this->_state_app->auto_theme_change) {
+        dark_theme = true;
+        lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
+    } else if(this->_state_app->auto_theme_change){
+        dark_theme = this->_state_app->dark_theme_enabled ? true : false;
+        lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
+    }
+
     this->change_brightness_smoothly(new_brightness, old_brightness);
     this->update_settings_slider(new_brightness);
 }
@@ -61,7 +70,8 @@ int BrightnessApp::map_light_level(int light_level) {
     if (light_level > this->_state_app->threshold) {
         return 255;
     }
-    int output = static_cast<int>(5 + (250 / (this->_state_app->threshold)) * (light_level));
+    int output =
+        static_cast<int>(5 + (250 / (this->_state_app->threshold)) * (light_level));
     return output;
 }
 BrightnessApp::BrightnessApp(Display *display, Settings *settings, StateApp *state_app) {

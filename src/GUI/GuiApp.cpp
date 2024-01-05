@@ -24,6 +24,10 @@ extern "C" void dock_panel_timer_cb_wrapper(lv_timer_t *timer) {
 extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
     instance->user_activity_event_cb(e);
 }
+extern "C" void change_theme_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
+    instance->switch_theme(*payload);
+}
 GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
     this->state_app = state_app;
@@ -73,6 +77,7 @@ GuiApp::GuiApp(StateApp *state_app) {
                         LV_EVENT_PRESSING, NULL);
     lv_obj_add_event_cb(digital_clock->digitalClockScreen, user_activity_event_cb_wrapper,
                         LV_EVENT_PRESSING, NULL);
+    lv_msg_subscribe(MSG_CHANGE_THEME, change_theme_cb_wrapper, NULL);
 };
 
 void GuiApp::setup_gui() {
