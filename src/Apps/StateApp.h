@@ -11,8 +11,8 @@ class StateApp {
     bool wifi_connected = false;
     String ssid;
     String password;
-    String sta_login;
-    String sta_password;
+    String ap_login;
+    String ap_password;
 
     String city;
     String city_encoded;
@@ -60,8 +60,8 @@ class StateApp {
     void save_ssid(const char *ssid);
     void save_password(const char *password);
     void save_city(const char *city);
-    void save_sta_login(const char *login);
-    void save_sta_password(const char *password);
+    void save_ap_login(const char *login);
+    void save_ap_password(const char *password);
 
     void save_language(const char *language);
     void save_api_key(const char *api_key);

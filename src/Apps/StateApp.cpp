@@ -14,8 +14,8 @@ void StateApp::init_state() {
     _preferences.begin(NAMESPACE);
     this->ssid = _preferences.getString("ssid", "");
     this->password = _preferences.getString("password", "");
-    this->sta_login = _preferences.getString("sta_login", "");
-    this->sta_password = _preferences.getString("sta_password", "");
+    this->ap_login = _preferences.getString("sta_login", "");
+    this->ap_password = _preferences.getString("sta_password", "");
 
     this->weather_enabled = _preferences.getBool("weather_enab", false);
     this->city = _preferences.getString("city", "");
@@ -113,16 +113,16 @@ void StateApp::save_city(const char *city) {
     _preferences.putString("city", city);
     _preferences.end();
 }
-void StateApp::save_sta_login(const char *login) {
-    this->sta_login = login;
+void StateApp::save_ap_login(const char *login) {
+    this->ap_login = login;
     _preferences.begin(NAMESPACE);
-    _preferences.putString("sta_login", login);
+    _preferences.putString("ap_login", login);
     _preferences.end();
 }
-void StateApp::save_sta_password(const char *password) {
-    this->sta_password = password;
+void StateApp::save_ap_password(const char *password) {
+    this->ap_password = password;
     _preferences.begin(NAMESPACE);
-    _preferences.putString("sta_password", password);
+    _preferences.putString("ap_password", password);
     _preferences.end();
 }
 void StateApp::save_language(const char *language) {

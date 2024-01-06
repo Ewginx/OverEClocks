@@ -12,7 +12,11 @@ extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
     Serial.print("Disconnected from WiFi access point. Reason: ");
     Serial.println(info.wifi_sta_disconnected.reason);
+    WiFi.disconnect();
     instance->handle_wifi_state(false);
+    WiFi.mode(WIFI_AP);
+    Serial.print("No internet, put mask on and go dark.");
+    WiFi.softAP(instance->state_app->ap_login, instance->state_app->ap_password);
     // Serial.println("Trying to Reconnect");
     // WiFi.reconnect();
 }
@@ -34,7 +38,8 @@ OEClockApp::OEClockApp() {
     weather_app = new WeatherApp(this->gui_app->weather, this->state_app);
     time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock,
                            this->gui_app->alarm_clock, this->state_app);
-    brightness_app = new BrightnessApp(this->display, this->gui_app->settings, this->state_app);
+    brightness_app =
+        new BrightnessApp(this->display, this->gui_app->settings, this->state_app);
     microclimate_app = new MicroclimateApp(this->gui_app->dock_panel);
     server_app = new ServerApp(state_app, brightness_app, microclimate_app);
 
@@ -95,10 +100,9 @@ void OEClockApp::init_gui() {
 }
 
 void OEClockApp::connect_to_wifi() {
-    WiFi.mode(WIFI_AP_STA);
     Serial.print("Will try to connect to WiFI");
     WiFi.begin(this->state_app->ssid.c_str(), this->state_app->password.c_str());
-    WiFi.softAP("OEClock", "admin1234");
+    // WiFi.softAP("OEClock", "admin1234");
     int attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < 20) {
         delay(500);
