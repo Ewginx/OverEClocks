@@ -192,6 +192,9 @@ void ServerApp::save_theme_settings(JsonVariant &json) {
     this->_state_app->save_dark_colors(
         theme_json["dark_background_color"].as<const char *>(),
         theme_json["dark_second_color"].as<const char *>());
+    lv_msg_send(MSG_CHANGE_THEME,
+                static_cast<const void *>(&this->_state_app->dark_theme_enabled));
+    //implement recolor for themes
 }
 void ServerApp::save_brightness_settings(JsonVariant &json) {
     JsonObject &&brightness_json = json.as<JsonObject>();
