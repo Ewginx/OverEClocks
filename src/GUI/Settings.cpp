@@ -244,8 +244,6 @@ void Settings::create_settings_screen() {
 
     this->settingsPanel = lv_obj_create(this->settingsScreen);
     lv_obj_set_size(this->settingsPanel, lv_pct(100), this->_settings_panel_height);
-    lv_obj_set_style_bg_color(this->settingsPanel, lv_color_hex(0xFFFFFF), 0);
-    lv_obj_set_style_bg_opa(this->settingsPanel, 0, 0);
     lv_obj_clear_flag(this->settingsPanel, LV_OBJ_FLAG_SCROLL_ELASTIC);
     lv_obj_add_flag(this->settingsPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 

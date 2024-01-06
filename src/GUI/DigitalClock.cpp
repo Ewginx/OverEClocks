@@ -20,8 +20,6 @@ DigitalClock::DigitalClock() {
 
     digitalClockPanel = lv_obj_create(digitalClockScreen);
     lv_obj_set_size(digitalClockPanel, lv_pct(100), lv_pct(100));
-    lv_obj_set_style_bg_color(digitalClockPanel, lv_color_hex(0xFFFFFF), 0);
-    lv_obj_set_style_bg_opa(digitalClockPanel, 0, 0);
     lv_obj_set_align(digitalClockPanel, LV_ALIGN_TOP_LEFT);
     lv_obj_clear_flag(digitalClockPanel, LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_obj_add_flag(digitalClockPanel, LV_OBJ_FLAG_EVENT_BUBBLE);

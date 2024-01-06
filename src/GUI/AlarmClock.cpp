@@ -34,8 +34,6 @@ AlarmClock::AlarmClock(StateApp *state_app) {
     lv_obj_set_align(alarmPanel, LV_ALIGN_CENTER);
     lv_obj_clear_flag(alarmPanel,
                       LV_OBJ_FLAG_SCROLLABLE); /// Flags
-    lv_obj_set_style_bg_color(alarmPanel, lv_color_hex(0xFFFFFF), 0);
-    lv_obj_set_style_bg_opa(alarmPanel, 0, 0);
     lv_obj_add_flag(alarmPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weekdaysLabel = lv_label_create(alarmPanel);
