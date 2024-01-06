@@ -187,11 +187,11 @@ void ServerApp::save_theme_settings(JsonVariant &json) {
     this->_state_app->save_dark_theme_enabled(
         theme_json["dark_theme_enabled"].as<bool>());
     this->_state_app->save_light_colors(
-        theme_json["light_background_color"].as<const char *>(),
-        theme_json["light_second_color"].as<const char *>());
+        theme_json["light_background_color"].as<int>(),
+        theme_json["light_second_color"].as<int>());
     this->_state_app->save_dark_colors(
-        theme_json["dark_background_color"].as<const char *>(),
-        theme_json["dark_second_color"].as<const char *>());
+        theme_json["dark_background_color"].as<int>(),
+        theme_json["dark_second_color"].as<int>());
     lv_msg_send(MSG_CHANGE_THEME,
                 static_cast<const void *>(&this->_state_app->dark_theme_enabled));
     //implement recolor for themes
@@ -240,7 +240,7 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["language"] = this->_state_app->language;
     doc["request_period"] = this->_state_app->request_period;
     doc["dark_theme_enabled"] = this->_state_app->dark_theme_enabled;
-    doc["light_background_color"] = this->_state_app->light_background_color;
+    doc["light_background_color"] = this->_state_app->light_primary_color;
     doc["light_second_color"] = this->_state_app->light_second_color;
     doc["dark_background_color"] = this->_state_app->dark_background_color;
     doc["dark_second_color"] = this->_state_app->dark_second_color;

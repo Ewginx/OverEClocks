@@ -29,10 +29,10 @@ class StateApp {
 
     bool digital_main_screen;
 
-    String light_background_color;
-    String light_second_color;
-    String dark_background_color;
-    String dark_second_color;
+    int light_primary_color;
+    int light_second_color;
+    int dark_background_color;
+    int dark_second_color;
 
     String timezone_posix;
 
@@ -71,8 +71,8 @@ class StateApp {
     void save_auto_theme_change(bool change);
     void save_digital_main_screen(bool digital_main_screen);
 
-    void save_light_colors(const char *light_background_color, const char *light_second_color);
-    void save_dark_colors(const char *dark_background_color, const char *dark_second_color);
+    void save_light_colors(int light_primary_color, int light_second_color);
+    void save_dark_colors(int dark_background_color, int dark_second_color);
 
     void save_timezone(const char *timezone_posix);
 

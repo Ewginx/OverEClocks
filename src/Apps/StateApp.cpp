@@ -32,10 +32,10 @@ void StateApp::init_state() {
     this->digital_main_screen = _preferences.getBool("dig_main_screen", true);
 
     this->dark_theme_enabled = _preferences.getBool("dark_theme", false);
-    this->light_background_color = _preferences.getString("light_back", "#1861d6");
-    this->light_second_color = _preferences.getString("light_second", "#1861d6");
-    this->dark_background_color = _preferences.getString("dark_back", "#1861d6");
-    this->dark_second_color = _preferences.getString("dark_second", "#1861d6");
+    this->light_primary_color = _preferences.getInt("light_back",0);
+    this->light_second_color = _preferences.getInt("light_second", 0);
+    this->dark_background_color = _preferences.getInt("dark_back", 0);
+    this->dark_second_color = _preferences.getInt("dark_second", 0);
 
     this->timezone_posix = _preferences.getString("timezone", "<+10>-10");
 
@@ -154,22 +154,20 @@ void StateApp::save_alarm_time(const char *weekdays_time, const char *weekends_t
     _preferences.putString("oneOff_time", oneOff_time);
     _preferences.end();
 }
-void StateApp::save_light_colors(const char *light_background_color,
-                                 const char *light_second_color) {
-    this->light_background_color = light_background_color;
+void StateApp::save_light_colors(int light_primary_color, int light_second_color) {
+    this->light_primary_color = light_primary_color;
     this->light_second_color = light_second_color;
     _preferences.begin(NAMESPACE);
-    _preferences.putString("light_back", light_background_color);
-    _preferences.putString("light_second", light_second_color);
+    _preferences.putInt("light_back", light_primary_color);
+    _preferences.putInt("light_second", light_second_color);
     _preferences.end();
 }
-void StateApp::save_dark_colors(const char *dark_background_color,
-                                const char *dark_second_color) {
+void StateApp::save_dark_colors(int dark_background_color, int dark_second_color) {
     this->dark_background_color = dark_background_color;
     this->dark_second_color = dark_second_color;
     _preferences.begin(NAMESPACE);
-    _preferences.putString("dark_back", dark_background_color);
-    _preferences.putString("dark_second", dark_second_color);
+    _preferences.putInt("dark_back", dark_background_color);
+    _preferences.putInt("dark_second", dark_second_color);
     _preferences.end();
 }
 void StateApp::save_timezone(const char *timezone_posix) {
