@@ -170,6 +170,7 @@ void ServerApp::save_time_settings(JsonVariant &json) {
     this->_state_app->save_timezone(time_json["timezone_posix"].as<const char *>());
     this->_state_app->save_digital_main_screen(
         time_json["digital_main_screen"].as<bool>());
+    lv_msg_send(MSG_UPDATE_TZ, NULL);
 }
 
 void ServerApp::save_weather_settings(JsonVariant &json) {
@@ -186,15 +187,13 @@ void ServerApp::save_theme_settings(JsonVariant &json) {
     JsonObject &&theme_json = json.as<JsonObject>();
     this->_state_app->save_dark_theme_enabled(
         theme_json["dark_theme_enabled"].as<bool>());
-    this->_state_app->save_light_colors(
-        theme_json["light_background_color"].as<int>(),
-        theme_json["light_second_color"].as<int>());
-    this->_state_app->save_dark_colors(
-        theme_json["dark_background_color"].as<int>(),
-        theme_json["dark_second_color"].as<int>());
+    this->_state_app->save_light_colors(theme_json["light_background_color"].as<int>(),
+                                        theme_json["light_second_color"].as<int>());
+    this->_state_app->save_dark_colors(theme_json["dark_background_color"].as<int>(),
+                                       theme_json["dark_second_color"].as<int>());
     lv_msg_send(MSG_CHANGE_THEME,
                 static_cast<const void *>(&this->_state_app->dark_theme_enabled));
-    //implement recolor for themes
+    // implement recolor for themes
 }
 void ServerApp::save_brightness_settings(JsonVariant &json) {
     JsonObject &&brightness_json = json.as<JsonObject>();

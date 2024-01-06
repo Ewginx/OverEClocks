@@ -1,10 +1,20 @@
 #include "Apps/TimeApp.h"
+#include "TimeApp.h"
+
+static TimeApp *instance = NULL;
+
+extern "C" void update_tz_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    instance->set_timezone();
+}
 
 TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
-                 AlarmClock *alarm_clock) {
+                 AlarmClock *alarm_clock, StateApp *state_app) {
+    instance = this;
+    this->_state_app = state_app;
     this->alarm_clock = alarm_clock;
     this->analog_clock = analog_clock;
     this->digital_clock = digital_clock;
+    lv_msg_subscribe(MSG_UPDATE_TZ, update_tz_cb_wrapper, NULL);
 }
 
 void TimeApp::notifyAboutTime() {
@@ -207,7 +217,12 @@ void TimeApp::copy_timeinfo_struct(tm &new_tm, tm &old_tm) {
     new_tm.tm_isdst = old_tm.tm_isdst;
 }
 void TimeApp::config_time() {
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+    configTime(0, 0, "pool.ntp.org");
+    this->set_timezone();
     getLocalTime(&timeinfo);
+}
+void TimeApp::set_timezone() {
+    setenv("TZ", this->_state_app->timezone_posix.c_str(), 1);
+    tzset();
 }
 TimeApp::~TimeApp() {}
