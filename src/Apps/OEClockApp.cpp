@@ -17,7 +17,6 @@ void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
     WiFi.mode(WIFI_AP);
     Serial.print("No internet, put mask on and go dark.");
     WiFi.softAP(instance->state_app->ap_login, instance->state_app->ap_password);
-    // Serial.println("Trying to Reconnect");
     // WiFi.reconnect();
 }
 void update_display(void *parameter) {
@@ -102,7 +101,6 @@ void OEClockApp::init_gui() {
 void OEClockApp::connect_to_wifi() {
     Serial.print("Will try to connect to WiFI");
     WiFi.begin(this->state_app->ssid.c_str(), this->state_app->password.c_str());
-    // WiFi.softAP("OEClock", "admin1234");
     int attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < 20) {
         delay(500);

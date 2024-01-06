@@ -213,9 +213,10 @@ void ServerApp::save_wifi_settings(JsonVariant &json) {
     this->_state_app->save_password(wifi_json["password"].as<const char *>());
     Serial.println(wifi_json["ip_address"].as<const char *>());
     Serial.println(wifi_json["gateway"].as<const char *>());
+    Serial.println(wifi_json["ap_login"].as<const char *>());
+    Serial.println(wifi_json["ap_password"].as<const char *>());
     this->_state_app->save_ap_login(wifi_json["ap_login"].as<const char *>());
     this->_state_app->save_ap_password(wifi_json["ap_password"].as<const char *>());
-    lv_msg_send(MSG_WIFI_RECONNECT, NULL);
 }
 
 void ServerApp::get_settings(AsyncWebServerRequest *request) {
@@ -226,8 +227,8 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["password"] = this->_state_app->password;
     doc["ip_address"] = WiFi.localIP();
     doc["gateway"] = WiFi.gatewayIP();
-    doc["sta_login"] = this->_state_app->ap_login;
-    doc["sta_password"] = this->_state_app->ap_password;
+    doc["ap_login"] = this->_state_app->ap_login;
+    doc["ap_password"] = this->_state_app->ap_password;
     doc["auto_brightness"] = this->_state_app->auto_brightness;
     doc["auto_theme_change"] = false;
     doc["threshold"] = this->_state_app->threshold;

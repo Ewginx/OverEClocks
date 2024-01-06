@@ -14,8 +14,8 @@ void StateApp::init_state() {
     _preferences.begin(NAMESPACE);
     this->ssid = _preferences.getString("ssid", "");
     this->password = _preferences.getString("password", "");
-    this->ap_login = _preferences.getString("sta_login", "");
-    this->ap_password = _preferences.getString("sta_password", "");
+    this->ap_login = _preferences.getString("ap_login", "");
+    this->ap_password = _preferences.getString("ap_password", "");
 
     this->weather_enabled = _preferences.getBool("weather_enab", false);
     this->city = _preferences.getString("city", "");
