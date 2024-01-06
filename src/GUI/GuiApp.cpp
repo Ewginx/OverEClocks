@@ -153,11 +153,10 @@ void GuiApp::swipe_alarm_screen() {
 }
 
 void GuiApp::switch_theme(bool darktheme_enabled) {
-    lv_disp_t *disp = lv_disp_get_default();
     if (darktheme_enabled) {
-        this->set_dark_theme(disp);
+        this->set_dark_theme();
     } else {
-        this->set_light_theme(disp);
+        this->set_light_theme();
     }
 }
 
@@ -228,11 +227,11 @@ void GuiApp::theme_switch_event_cb(lv_event_t *e) {
             lv_obj_has_state(target, LV_STATE_CHECKED));
     }
 }
-void GuiApp::set_light_theme(lv_disp_t *display) {
+void GuiApp::set_light_theme() {
     lv_theme_t *theme =
-        lv_theme_default_init(display, lv_palette_main(LV_PALETTE_CYAN),
+        lv_theme_default_init(NULL, lv_palette_main(LV_PALETTE_CYAN),
                               lv_palette_main(LV_PALETTE_CYAN), false, LV_FONT_DEFAULT);
-    lv_disp_set_theme(display, theme);
+    lv_disp_set_theme(NULL, theme);
 
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_black(), 0);
     lv_obj_set_style_shadow_opa(dock_panel->settingsButton, 0, 0);
@@ -243,11 +242,11 @@ void GuiApp::set_light_theme(lv_disp_t *display) {
     lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_black(), 0);
     lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_black(), 0);
 }
-void GuiApp::set_dark_theme(lv_disp_t *display) {
+void GuiApp::set_dark_theme() {
     lv_theme_t *theme =
-        lv_theme_default_init(display, lv_palette_main(LV_PALETTE_TEAL),
+        lv_theme_default_init(NULL, lv_palette_main(LV_PALETTE_TEAL),
                               lv_palette_main(LV_PALETTE_TEAL), true, LV_FONT_DEFAULT);
-    lv_disp_set_theme(display, theme);
+    lv_disp_set_theme(NULL, theme);
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_white(), 0);
     lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_white(), 0);
     lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_white(), 0);

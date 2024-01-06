@@ -37,8 +37,8 @@ class GuiApp {
     void dock_panel_timer_cb(lv_timer_t *timer);
     void settings_button_event_cb(lv_event_t *e);
     void theme_switch_event_cb(lv_event_t *e);
-    void set_light_theme(lv_disp_t *display);
-    void set_dark_theme(lv_disp_t *display);
+    void set_light_theme();
+    void set_dark_theme();
 
     void create_loading_screen();
     void delete_loading_screen();
