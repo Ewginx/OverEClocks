@@ -228,9 +228,12 @@ void GuiApp::theme_switch_event_cb(lv_event_t *e) {
     }
 }
 void GuiApp::set_light_theme() {
+    lv_color_t primary_color = lv_color_hex(this->state_app->light_primary_color);
+    lv_color_t second_color = lv_color_hex(this->state_app->light_second_color);
+
     lv_theme_t *theme =
-        lv_theme_default_init(NULL, lv_palette_main(LV_PALETTE_CYAN),
-                              lv_palette_main(LV_PALETTE_CYAN), false, LV_FONT_DEFAULT);
+        lv_theme_default_init(NULL, primary_color,
+                              second_color, false, LV_FONT_DEFAULT);
     lv_disp_set_theme(NULL, theme);
 
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_black(), 0);
@@ -243,10 +246,12 @@ void GuiApp::set_light_theme() {
     lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_black(), 0);
 }
 void GuiApp::set_dark_theme() {
+    lv_color_t primary_color = lv_color_hex(this->state_app->dark_background_color);
+    lv_color_t second_color = lv_color_hex(this->state_app->dark_second_color);
     lv_theme_t *theme =
-        lv_theme_default_init(NULL, lv_palette_main(LV_PALETTE_TEAL),
-                              lv_palette_main(LV_PALETTE_TEAL), true, LV_FONT_DEFAULT);
+        lv_theme_default_init(NULL, primary_color, second_color, true, LV_FONT_DEFAULT);
     lv_disp_set_theme(NULL, theme);
+
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_white(), 0);
     lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_white(), 0);
     lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_white(), 0);
