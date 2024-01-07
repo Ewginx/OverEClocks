@@ -8,6 +8,7 @@
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
+#include <Update.h>
 #include <ElegantOTA.h>
 
 class ServerApp {
