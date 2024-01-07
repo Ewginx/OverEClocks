@@ -151,8 +151,8 @@ void ServerApp::setup_ota_update_handler() {
             this->espShouldReboot = !Update.hasError();
             AsyncResponseStream *response =
                 request->beginResponseStream("application/json");
-            AsyncWebServerResponse *response = request->beginResponseStream(
-                this->espShouldReboot ? "{'update' : true}" : "{'update' : false}");
+            response->print(this->espShouldReboot ? "{\"update\" : true}"
+                                                  : "{\"update\" : false}");
             request->send(response);
         },
         [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data,
