@@ -22,12 +22,11 @@ ServerApp::ServerApp(StateApp *state_app, BrightnessApp *brightness_app,
         Serial.println("An Error has occurred while mounting SPIFFS");
         return;
     }
-    // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-    //           { request->send(200, "text/plain", "Hi! Welcome to OEClock."); });
 }
 void ServerApp::setup() {
     const char *http_username = "admin";
     const char *http_password = "admin";
+
     server.on("/", HTTP_GET,
               [http_username, http_password](AsyncWebServerRequest *request) {
                   if (!request->authenticate(http_username, http_password))
@@ -37,22 +36,48 @@ void ServerApp::setup() {
                   response->addHeader("Content-Encoding", "gzip");
                   request->send(response);
               });
-    server.on("/wifi", HTTP_GET,
-              [](AsyncWebServerRequest *request) { request->redirect("/"); });
-    server.on("/weather", HTTP_GET,
-              [](AsyncWebServerRequest *request) { request->redirect("/"); });
-    server.on("/brightness", HTTP_GET,
-              [](AsyncWebServerRequest *request) { request->redirect("/"); });
-    server.on("/theme", HTTP_GET,
-              [](AsyncWebServerRequest *request) { request->redirect("/"); });
-    server.on("/time", HTTP_GET,
-              [](AsyncWebServerRequest *request) { request->redirect("/"); });
-    server.on("/debug", HTTP_GET,
-              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+
+    this->setup_redirect_handlers();
 
     server.on("/settings", HTTP_GET,
               std::bind(&ServerApp::get_settings, this, std::placeholders::_1));
 
+    this->setup_settings_handlers();
+
+    this->setup_set_time_handler();
+    server.serveStatic("/", SPIFFS, "/").setCacheControl("max-age=604800");
+
+    websocket.onEvent(onEventWrapper);
+
+    server.addHandler(&websocket);
+    server.begin();
+    ElegantOTA.begin(&server);
+}
+void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
+                        AwsEventType type, void *arg, uint8_t *data, size_t len) {
+    switch (type) {
+    case WS_EVT_CONNECT:
+        Serial.printf("WebSocket client #%u connected from %s\n", client->id(),
+                      client->remoteIP().toString().c_str());
+        if (this->_websocket_notify_timer == NULL) {
+            this->_websocket_notify_timer =
+                lv_timer_create(websocket_timer_cb_wrapper, 600, NULL);
+        }
+        break;
+    case WS_EVT_DISCONNECT:
+        Serial.printf("WebSocket client #%u disconnected\n", client->id());
+        if (this->_websocket_notify_timer != NULL & this->websocket.count() == 0) {
+            lv_timer_del(this->_websocket_notify_timer);
+            this->_websocket_notify_timer = NULL;
+        }
+        break;
+    case WS_EVT_DATA:
+    case WS_EVT_PONG:
+    case WS_EVT_ERROR:
+        break;
+    }
+}
+void ServerApp::setup_settings_handlers() {
     AsyncCallbackJsonWebHandler *time_settings_handler = new AsyncCallbackJsonWebHandler(
         "/settings/time", [this](AsyncWebServerRequest *request, JsonVariant &json) {
             this->save_time_settings(json);
@@ -91,13 +116,32 @@ void ServerApp::setup() {
             request->send(200);
         });
     server.addHandler(wifi_settings_handler);
+}
 
+void ServerApp::setup_redirect_handlers() {
+    server.on("/wifi", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/weather", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/brightness", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/theme", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/time", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/debug", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+}
+
+void ServerApp::setup_set_time_handler() {
     AsyncCallbackJsonWebHandler *set_time_handler = new AsyncCallbackJsonWebHandler(
         "/time", [this](AsyncWebServerRequest *request, JsonVariant &json) {
             this->set_time(json);
             request->send(200);
         });
     server.addHandler(set_time_handler);
+}
+
 
     server.serveStatic("/", SPIFFS, "/").setCacheControl("max-age=604800");
 
@@ -149,6 +193,7 @@ void ServerApp::set_time(JsonVariant &json) {
 void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
     this->websocket.textAll(this->getSensorReadings());
 }
+
 String ServerApp::getSensorReadings() {
     String sensors_readings;
     StaticJsonDocument<64> doc;
@@ -247,7 +292,6 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     request->send(response);
 }
 void ServerApp::run() {
-    ElegantOTA.loop();
     this->websocket.cleanupClients();
 }
 ServerApp::~ServerApp() {}

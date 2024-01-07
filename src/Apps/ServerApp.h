@@ -32,6 +32,10 @@ class ServerApp {
 
     void set_time(JsonVariant &json);
 
+    void setup_settings_handlers();
+    void setup_redirect_handlers();
+    void setup_set_time_handler();
+
     void setup();
     void run();
     void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,
@@ -39,6 +43,7 @@ class ServerApp {
     void websocket_timer_cb(lv_timer_t *timer);
     String getSensorReadings();
 
-    ServerApp(StateApp *state_app, BrightnessApp *brightness_app, MicroclimateApp *microclimate_app);
+    ServerApp(StateApp *state_app, BrightnessApp *brightness_app,
+              MicroclimateApp *microclimate_app);
     ~ServerApp();
 };
