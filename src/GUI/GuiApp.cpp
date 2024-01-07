@@ -31,6 +31,10 @@ extern "C" void change_theme_cb_wrapper(void *subscriber, lv_msg_t *msg) {
 GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
     this->state_app = state_app;
+    lv_theme_t *theme =
+        lv_theme_default_init(NULL, lv_palette_main(LV_PALETTE_CYAN),
+                              lv_palette_main(LV_PALETTE_CYAN), false, LV_FONT_DEFAULT);
+    lv_disp_set_theme(NULL, theme);
     alarm_clock = new AlarmClock(this->state_app);
     digital_clock = new DigitalClock();
     analog_clock = new AnalogClock();
@@ -232,8 +236,7 @@ void GuiApp::set_light_theme() {
     lv_color_t second_color = lv_color_hex(this->state_app->light_second_color);
 
     lv_theme_t *theme =
-        lv_theme_default_init(NULL, primary_color,
-                              second_color, false, LV_FONT_DEFAULT);
+        lv_theme_default_init(NULL, primary_color, second_color, false, LV_FONT_DEFAULT);
     lv_disp_set_theme(NULL, theme);
 
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_black(), 0);
