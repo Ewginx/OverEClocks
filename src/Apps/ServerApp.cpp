@@ -133,7 +133,7 @@ void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
 }
 
 void ServerApp::set_time(JsonVariant &json) {
-    if(this->_state_app->wifi_connected){
+    if (this->_state_app->wifi_connected) {
         return;
     }
     JsonObject &&time_json = json.as<JsonObject>();
@@ -242,5 +242,8 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     serializeJson(doc, *response);
     request->send(response);
 }
-void ServerApp::run() { ElegantOTA.loop(); }
+void ServerApp::run() {
+    ElegantOTA.loop();
+    this->websocket.cleanupClients();
+}
 ServerApp::~ServerApp() {}
