@@ -10,17 +10,11 @@ extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
 }
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-    IPAddress local_ip;
-    local_ip.fromString(instance->state_app->ip_address);
-    IPAddress subnet(255, 255, 255, 0);
     Serial.print("Disconnected from WiFi access point. Reason: ");
     Serial.println(info.wifi_sta_disconnected.reason);
-    WiFi.disconnect();
-    instance->handle_wifi_state(false);
-    WiFi.mode(WIFI_AP);
-    WiFi.softAPConfig(local_ip, local_ip, subnet);
-    Serial.println("No internet, put mask on and go dark.");
-    WiFi.softAP(instance->state_app->ap_login, instance->state_app->ap_password);
+    if (instance->state_app->wifi_connected) {
+        instance->handle_wifi_state(false);
+    }
     // WiFi.reconnect();
 }
 void update_display(void *parameter) {
@@ -127,20 +121,25 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
     this->state_app->wifi_connected = wifi_connected;
     if (wifi_connected) {
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-            gui_app->settings->set_ipAddressLabel(WiFi.localIP()[0], WiFi.localIP()[1],
-                                                  WiFi.localIP()[2], WiFi.localIP()[3]);
+            gui_app->settings->set_ipAddressLabel(WiFi.localIP().toString().c_str());
             xSemaphoreGive(mutex);
         }
         Serial.print("Connected to WiFi network with IP Address: ");
         Serial.println(WiFi.localIP());
     } else {
+        IPAddress local_ip;
+        local_ip.fromString(instance->state_app->ip_address);
+        IPAddress subnet(255, 255, 255, 0);
+        WiFi.disconnect();
+        WiFi.mode(WIFI_AP);
+        WiFi.softAPConfig(local_ip, local_ip, subnet);
+        WiFi.softAP(instance->state_app->ap_login, instance->state_app->ap_password);
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-            gui_app->settings->set_ipAddressLabel(WiFi.softAPIP()[0], WiFi.softAPIP()[1],
-                                                  WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
+            gui_app->settings->set_ipAddressLabel(WiFi.softAPIP().toString().c_str());
+            this->gui_app->set_screens_to_default_values();
             xSemaphoreGive(mutex);
         }
-        this->gui_app->set_screens_to_default_values();
-        Serial.println("Unable to connect to WiFi network");
+        Serial.println("Unable to connect to WiFi network. Initiate AP mode.");
     }
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->settings->update_weather_gui_state();

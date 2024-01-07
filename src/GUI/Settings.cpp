@@ -79,9 +79,9 @@ void Settings::delete_keyboard() {
     }
 }
 
-void Settings::set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3) {
-    lv_label_set_text_fmt(this->ipAddressLabel, "%s %d.%d.%d.%d",
-                          settings_translation[access_point_ip], ip0, ip1, ip2, ip3);
+void Settings::set_ipAddressLabel(const char *ip_address) {
+    lv_label_set_text_fmt(this->ipAddressLabel, "%s %s",
+                          settings_translation[access_point_ip], ip_address);
 }
 void Settings::wifi_button_event_cb(lv_event_t *e) {
     lv_msg_send(MSG_WIFI_RECONNECT, NULL);
