@@ -165,7 +165,8 @@ static lv_color_t grey_filter_cb(const lv_color_filter_dsc_t *f, lv_color_t colo
         return lv_color_mix(lv_palette_lighten(LV_PALETTE_GREY, 2), color, opa);
 }
 
-static void style_init(void) {
+static void style_init(lv_color_t color_screen, lv_color_t color_card,
+                       lv_color_t color_text, lv_color_t color_grey) {
     static const lv_style_prop_t trans_props[] = {LV_STYLE_BG_OPA,
                                                   LV_STYLE_BG_COLOR,
                                                   LV_STYLE_TRANSFORM_WIDTH,
@@ -178,10 +179,10 @@ static void style_init(void) {
                                                   LV_STYLE_COLOR_FILTER_DSC,
                                                   0};
 
-    color_scr = theme.flags & MODE_DARK ? DARK_COLOR_SCR : LIGHT_COLOR_SCR;
-    color_text = theme.flags & MODE_DARK ? DARK_COLOR_TEXT : LIGHT_COLOR_TEXT;
-    color_card = theme.flags & MODE_DARK ? DARK_COLOR_CARD : LIGHT_COLOR_CARD;
-    color_grey = theme.flags & MODE_DARK ? DARK_COLOR_GREY : LIGHT_COLOR_GREY;
+    color_scr = color_screen;
+    color_text = color_text;
+    color_card = color_card;
+    color_grey = color_grey;
 
     style_init_reset(&styles->transition_delayed);
     style_init_reset(&styles->transition_normal);
@@ -620,12 +621,11 @@ static void style_init(void) {
  *   GLOBAL FUNCTIONS
  **********************/
 
-lv_theme_t *lv_theme_default_init(lv_disp_t *disp, lv_color_t color_primary,
-                                  lv_color_t color_secondary, bool dark,
-                                  const lv_font_t *font) {
+lv_theme_t *theme_custom_init(lv_disp_t *disp, lv_color_t color_primary,
+                              lv_color_t color_secondary, lv_color_t color_screen,
+                              lv_color_t color_card, lv_color_t color_text,
+                              lv_color_t color_grey, bool dark, const lv_font_t *font) {
 
-    /*In a general case styles could be in simple `static lv_style_t my_style...`
-     * variables*/
     if (!inited) {
         styles = (my_theme_styles_t *)lv_mem_alloc(sizeof(my_theme_styles_t));
     }
@@ -645,7 +645,7 @@ lv_theme_t *lv_theme_default_init(lv_disp_t *disp, lv_color_t color_primary,
     theme.apply_cb = theme_apply;
     theme.flags = dark ? MODE_DARK : 0;
 
-    style_init();
+    style_init(color_screen, color_card, color_text, color_grey);
 
     if (disp == NULL || lv_disp_get_theme(disp) == &theme)
         lv_obj_report_style_change(NULL);
@@ -655,19 +655,15 @@ lv_theme_t *lv_theme_default_init(lv_disp_t *disp, lv_color_t color_primary,
     return (lv_theme_t *)&theme;
 }
 
-lv_theme_t * lv_theme_default_get(void)
-{
-    if(!lv_theme_default_is_inited()) {
+lv_theme_t *theme_custom_get(void) {
+    if (!theme_custom_is_inited()) {
         return NULL;
     }
 
     return (lv_theme_t *)&theme;
 }
 
-bool lv_theme_default_is_inited(void)
-{
-    return inited;
-}
+bool theme_custom_is_inited(void) { return inited; }
 
 static void theme_apply(lv_theme_t *th, lv_obj_t *obj) {
     LV_UNUSED(th);

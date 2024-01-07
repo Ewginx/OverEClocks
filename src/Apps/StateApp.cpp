@@ -34,10 +34,20 @@ void StateApp::init_state() {
     this->digital_main_screen = _preferences.getBool("dig_main_screen", true);
 
     this->dark_theme_enabled = _preferences.getBool("dark_theme", false);
-    this->light_primary_color = _preferences.getInt("light_back", 0);
-    this->light_second_color = _preferences.getInt("light_second", 0);
-    this->dark_background_color = _preferences.getInt("dark_back", 0);
-    this->dark_second_color = _preferences.getInt("dark_second", 0);
+
+    this->light_primary_color = _preferences.getInt("light_primary", 48340);
+    this->light_second_color = _preferences.getInt("light_second", 48340);
+    this->light_screen_color = _preferences.getInt("light_screen", 16448250);
+    this->light_card_color = _preferences.getInt("light_card", 16777215);
+    this->light_text_color = _preferences.getInt("light_text", 2171169);
+    this->light_grey_color = _preferences.getInt("light_grey", 15658734);
+
+    this->dark_primary_color = _preferences.getInt("dark_primary", 38535);
+    this->dark_second_color = _preferences.getInt("dark_second", 38535);
+    this->dark_screen_color = _preferences.getInt("dark_screen", 1382170);
+    this->dark_card_color = _preferences.getInt("dark_card", 2632496);
+    this->dark_text_color = _preferences.getInt("dark_text", 16448250);
+    this->dark_grey_color = _preferences.getInt("dark_grey", 3093047);
 
     this->timezone_posix = _preferences.getString("timezone", "<+10>-10");
 
@@ -165,20 +175,42 @@ void StateApp::save_alarm_time(const char *weekdays_time, const char *weekends_t
     _preferences.putString("oneOff_time", oneOff_time);
     _preferences.end();
 }
-void StateApp::save_light_colors(int light_primary_color, int light_second_color) {
+void StateApp::save_light_colors(int light_primary_color, int light_second_color,
+                                 int light_screen_color, int light_card_color,
+                                 int light_text_color, int light_grey_color) {
     this->light_primary_color = light_primary_color;
     this->light_second_color = light_second_color;
+    this->light_screen_color = light_screen_color;
+    this->light_card_color = light_card_color;
+    this->light_text_color = light_text_color;
+    this->light_grey_color = light_grey_color;
+
     _preferences.begin(NAMESPACE);
-    _preferences.putInt("light_back", light_primary_color);
+    _preferences.putInt("light_primary", light_primary_color);
     _preferences.putInt("light_second", light_second_color);
+    _preferences.putInt("light_screen", light_screen_color);
+    _preferences.putInt("light_card", light_card_color);
+    _preferences.putInt("light_text", light_text_color);
+    _preferences.putInt("light_grey", light_grey_color);
     _preferences.end();
 }
-void StateApp::save_dark_colors(int dark_background_color, int dark_second_color) {
-    this->dark_background_color = dark_background_color;
+void StateApp::save_dark_colors(int dark_primary_color, int dark_second_color,
+                                int dark_screen_color, int dark_card_color,
+                                int dark_text_color, int dark_grey_color) {
+    this->dark_primary_color = dark_primary_color;
     this->dark_second_color = dark_second_color;
+    this->dark_screen_color = dark_screen_color;
+    this->dark_card_color = dark_card_color;
+    this->dark_text_color = dark_text_color;
+    this->dark_grey_color = dark_grey_color;
+
     _preferences.begin(NAMESPACE);
-    _preferences.putInt("dark_back", dark_background_color);
+    _preferences.putInt("dark_primary", dark_primary_color);
     _preferences.putInt("dark_second", dark_second_color);
+    _preferences.putInt("dark_screen", dark_screen_color);
+    _preferences.putInt("dark_card", dark_card_color);
+    _preferences.putInt("dark_text", dark_text_color);
+    _preferences.putInt("dark_grey", dark_grey_color);
     _preferences.end();
 }
 void StateApp::save_timezone(const char *timezone_posix) {

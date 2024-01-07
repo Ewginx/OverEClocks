@@ -31,9 +31,16 @@ extern "C" void change_theme_cb_wrapper(void *subscriber, lv_msg_t *msg) {
 GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
     this->state_app = state_app;
+    lv_color_t primary_color = lv_color_hex(this->state_app->light_primary_color);
+    lv_color_t second_color = lv_color_hex(this->state_app->light_second_color);
+    lv_color_t color_screen = lv_color_hex(this->state_app->light_screen_color);
+    lv_color_t color_card = lv_color_hex(this->state_app->light_card_color);
+    lv_color_t color_text = lv_color_hex(this->state_app->light_text_color);
+    lv_color_t color_grey = lv_color_hex(this->state_app->light_grey_color);
+
     lv_theme_t *theme =
-        lv_theme_default_init(NULL, lv_palette_main(LV_PALETTE_CYAN),
-                              lv_palette_main(LV_PALETTE_CYAN), false, LV_FONT_DEFAULT);
+        theme_custom_init(NULL, primary_color, second_color, color_screen, color_card,
+                          color_text, color_grey, true, LV_FONT_DEFAULT);
     lv_disp_set_theme(NULL, theme);
     alarm_clock = new AlarmClock(this->state_app);
     digital_clock = new DigitalClock();
@@ -234,9 +241,14 @@ void GuiApp::theme_switch_event_cb(lv_event_t *e) {
 void GuiApp::set_light_theme() {
     lv_color_t primary_color = lv_color_hex(this->state_app->light_primary_color);
     lv_color_t second_color = lv_color_hex(this->state_app->light_second_color);
+    lv_color_t color_screen = lv_color_hex(this->state_app->light_screen_color);
+    lv_color_t color_card = lv_color_hex(this->state_app->light_card_color);
+    lv_color_t color_text = lv_color_hex(this->state_app->light_text_color);
+    lv_color_t color_grey = lv_color_hex(this->state_app->light_grey_color);
 
     lv_theme_t *theme =
-        lv_theme_default_init(NULL, primary_color, second_color, false, LV_FONT_DEFAULT);
+        theme_custom_init(NULL, primary_color, second_color, color_screen, color_card,
+                          color_text, color_grey, true, LV_FONT_DEFAULT);
     lv_disp_set_theme(NULL, theme);
 
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_black(), 0);
@@ -249,10 +261,16 @@ void GuiApp::set_light_theme() {
     lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_black(), 0);
 }
 void GuiApp::set_dark_theme() {
-    lv_color_t primary_color = lv_color_hex(this->state_app->dark_background_color);
+    lv_color_t primary_color = lv_color_hex(this->state_app->dark_primary_color);
     lv_color_t second_color = lv_color_hex(this->state_app->dark_second_color);
+    lv_color_t color_screen = lv_color_hex(this->state_app->dark_screen_color);
+    lv_color_t color_card = lv_color_hex(this->state_app->dark_card_color);
+    lv_color_t color_text = lv_color_hex(this->state_app->dark_text_color);
+    lv_color_t color_grey = lv_color_hex(this->state_app->dark_grey_color);
+
     lv_theme_t *theme =
-        lv_theme_default_init(NULL, primary_color, second_color, true, LV_FONT_DEFAULT);
+        theme_custom_init(NULL, primary_color, second_color, color_screen, color_card,
+                          color_text, color_grey, true, LV_FONT_DEFAULT);
     lv_disp_set_theme(NULL, theme);
 
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_white(), 0);
