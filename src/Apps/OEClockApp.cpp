@@ -105,7 +105,9 @@ void OEClockApp::connect_to_wifi() {
     IPAddress subnet(255, 255, 0, 0);
     local_ip.fromString(instance->state_app->ip_address);
     gateway_ip.fromString(instance->state_app->gateway_address);
-
+    if(WiFi.isConnected()){
+        WiFi.disconnect();
+    }
     WiFi.config(local_ip, gateway_ip, subnet, primaryDNS, secondaryDNS);
     WiFi.begin(this->state_app->ssid, this->state_app->password);
     int attempt = 0;
