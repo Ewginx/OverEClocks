@@ -16,6 +16,8 @@ void StateApp::init_state() {
     this->password = _preferences.getString("password", "");
     this->ap_login = _preferences.getString("ap_login", "");
     this->ap_password = _preferences.getString("ap_password", "");
+    this->ip_address = _preferences.getString("ip_address", "192.168.3.50");
+    this->gateway_address = _preferences.getString("gateway_address", "192.168.3.1");
 
     this->weather_enabled = _preferences.getBool("weather_enab", false);
     this->city = _preferences.getString("city", "");
@@ -32,7 +34,7 @@ void StateApp::init_state() {
     this->digital_main_screen = _preferences.getBool("dig_main_screen", true);
 
     this->dark_theme_enabled = _preferences.getBool("dark_theme", false);
-    this->light_primary_color = _preferences.getInt("light_back",0);
+    this->light_primary_color = _preferences.getInt("light_back", 0);
     this->light_second_color = _preferences.getInt("light_second", 0);
     this->dark_background_color = _preferences.getInt("dark_back", 0);
     this->dark_second_color = _preferences.getInt("dark_second", 0);
@@ -123,6 +125,15 @@ void StateApp::save_ap_password(const char *password) {
     this->ap_password = password;
     _preferences.begin(NAMESPACE);
     _preferences.putString("ap_password", password);
+    _preferences.end();
+}
+void StateApp::save_ip_and_gateway_addresses(const char *ip_address,
+                                             const char *gateway_address) {
+    this->ip_address = ip_address;
+    this->gateway_address = gateway_address;
+    _preferences.begin(NAMESPACE);
+    _preferences.putString("ip_address", ip_address);
+    _preferences.putString("gateway_address", gateway_address);
     _preferences.end();
 }
 void StateApp::save_language(const char *language) {

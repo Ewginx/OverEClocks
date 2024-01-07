@@ -13,6 +13,8 @@ class StateApp {
     String password;
     String ap_login;
     String ap_password;
+    String ip_address;
+    String gateway_address;
 
     String city;
     String city_encoded;
@@ -62,6 +64,7 @@ class StateApp {
     void save_city(const char *city);
     void save_ap_login(const char *login);
     void save_ap_password(const char *password);
+    void save_ip_and_gateway_addresses(const char * ip_address, const char * gateway_address);
 
     void save_language(const char *language);
     void save_api_key(const char *api_key);

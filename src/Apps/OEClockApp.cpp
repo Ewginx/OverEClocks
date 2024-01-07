@@ -10,12 +10,16 @@ extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
     instance->connect_to_wifi();
 }
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
+    IPAddress local_ip;
+    local_ip.fromString(instance->state_app->ip_address);
+    IPAddress subnet(255, 255, 255, 0);
     Serial.print("Disconnected from WiFi access point. Reason: ");
     Serial.println(info.wifi_sta_disconnected.reason);
     WiFi.disconnect();
     instance->handle_wifi_state(false);
     WiFi.mode(WIFI_AP);
-    Serial.print("No internet, put mask on and go dark.");
+    WiFi.softAPConfig(local_ip, local_ip, subnet);
+    Serial.println("No internet, put mask on and go dark.");
     WiFi.softAP(instance->state_app->ap_login, instance->state_app->ap_password);
     // WiFi.reconnect();
 }
@@ -100,7 +104,16 @@ void OEClockApp::init_gui() {
 
 void OEClockApp::connect_to_wifi() {
     Serial.print("Will try to connect to WiFI");
-    WiFi.begin(this->state_app->ssid.c_str(), this->state_app->password.c_str());
+    IPAddress local_ip;
+    IPAddress gateway_ip;
+    IPAddress primaryDNS(8, 8, 8, 8);
+    IPAddress secondaryDNS(8, 8, 4, 4);
+    IPAddress subnet(255, 255, 0, 0);
+    local_ip.fromString(instance->state_app->ip_address);
+    gateway_ip.fromString(instance->state_app->gateway_address);
+
+    WiFi.config(local_ip, gateway_ip, subnet, primaryDNS, secondaryDNS);
+    WiFi.begin(this->state_app->ssid, this->state_app->password);
     int attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < 20) {
         delay(500);
