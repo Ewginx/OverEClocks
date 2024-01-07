@@ -53,8 +53,7 @@ class Settings {
     void set_brightness_slider(u_int32_t slider_value, bool with_anim = false);
     void set_brightness_checkbox(bool auto_brightness_enabled);
 
-    void disable_weather_controls();
-    void update_weather_controls_state();
+    void update_weather_gui_state();
 
     void create_settings_screen();
     void load_settings_screen(lv_obj_t *screen);

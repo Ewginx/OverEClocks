@@ -175,8 +175,12 @@ void ServerApp::save_weather_settings(JsonVariant &json) {
     this->_state_app->save_city(weather_json["city"].as<const char *>());
     this->_state_app->save_language(weather_json["language"].as<const char *>());
     this->_state_app->save_request_period(weather_json["request_period"].as<int>());
+    lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
     lv_msg_send(MSG_WEATHER_ENABLED,
                 static_cast<const void *>(&this->_state_app->weather_enabled));
+    if (this->_state_app->weather_enabled) {
+        lv_msg_send(MSG_WEATHER_UPDATE, NULL);
+    }
 }
 void ServerApp::save_theme_settings(JsonVariant &json) {
     JsonObject &&theme_json = json.as<JsonObject>();

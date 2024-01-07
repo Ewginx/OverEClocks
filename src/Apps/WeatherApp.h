@@ -51,7 +51,7 @@ class WeatherApp {
 
     int send_weather_request();
 
-    void update_weather_task_state(bool enable = true);
+    void update_weather_task_state();
 
     void suspend_task_on_error();
 

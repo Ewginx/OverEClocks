@@ -126,19 +126,15 @@ void OEClockApp::connect_to_wifi() {
 void OEClockApp::handle_wifi_state(bool wifi_connected) {
     this->state_app->wifi_connected = wifi_connected;
     if (wifi_connected) {
-        this->weather_app->update_weather_task_state(this->state_app->weather_enabled);
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
             gui_app->settings->set_ipAddressLabel(WiFi.localIP()[0], WiFi.localIP()[1],
                                                   WiFi.localIP()[2], WiFi.localIP()[3]);
-            this->gui_app->settings->update_weather_controls_state();
             xSemaphoreGive(mutex);
         }
         Serial.print("Connected to WiFi network with IP Address: ");
         Serial.println(WiFi.localIP());
     } else {
-        this->weather_app->update_weather_task_state(false);
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-            this->gui_app->settings->disable_weather_controls();
             gui_app->settings->set_ipAddressLabel(WiFi.softAPIP()[0], WiFi.softAPIP()[1],
                                                   WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
             xSemaphoreGive(mutex);
@@ -147,6 +143,8 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
         Serial.println("Unable to connect to WiFi network");
     }
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->gui_app->settings->update_weather_gui_state();
+        this->weather_app->update_weather_task_state();
         this->gui_app->dock_panel->show_wifi_connection(this->state_app->wifi_connected);
         xSemaphoreGive(mutex);
     }

@@ -2,8 +2,9 @@
 
 static WeatherApp *instance = NULL;
 void weather_enabled_cb(void *subscriber, lv_msg_t *msg) {
-    const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
-    instance->update_weather_task_state(*payload);
+    // const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
+    // instance->update_weather_task_state(*payload);
+    instance->update_weather_task_state();
 }
 void weather_url_update_cb(void *subscriber, lv_msg_t *msg) {
     instance->setup_weather_url();
@@ -34,7 +35,7 @@ void WeatherApp::get_weather(void *parameter) {
                     // Serial.print("Response: ");
                     // Serial.println(response);
                     Serial.printf("Waiting %i minutes for the next request",
-                                  l_pThis->_state_app->request_period/60000);
+                                  l_pThis->_state_app->request_period / 60000);
                     Serial.println();
                     break;
                 } else {
@@ -70,9 +71,9 @@ int WeatherApp::send_weather_request() {
 void WeatherApp::encode_city() {
     this->_state_app->city_encoded = this->url_encode(this->_state_app->city.c_str());
 }
-void WeatherApp::update_weather_task_state(bool enable) {
+void WeatherApp::update_weather_task_state() {
 
-    if (enable) {
+    if (this->_state_app->weather_enabled & this->_state_app->wifi_connected) {
         if (!this->_weather_running) {
             vTaskResume(this->_weather_task);
         } else {
@@ -86,15 +87,14 @@ void WeatherApp::update_weather_task_state(bool enable) {
             Serial.println("Task already suspended!");
         }
     }
-    this->_weather_running = enable;
+    this->_weather_running = this->_state_app->wifi_connected ? this->_state_app->weather_enabled : false;
 }
 void WeatherApp::suspend_task_on_error() {
-    this->_weather_running = false;
     this->_state_app->weather_enabled = false;
-    this->weather->set_no_data_values();
-    lv_msg_send(MSG_UPDATE_WEATHER_CONTROLS, NULL);
-    vTaskSuspend(this->_weather_task);
+    this->update_weather_task_state();
+    lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
 }
+
 void WeatherApp::deserialize_json_response(String &response) {
     DynamicJsonDocument doc(4096);
 
