@@ -45,6 +45,7 @@ void ServerApp::setup() {
     this->setup_settings_handlers();
 
     this->setup_set_time_handler();
+    this->setup_ota_update_handler();
     server.serveStatic("/", SPIFFS, "/").setCacheControl("max-age=604800");
 
     websocket.onEvent(onEventWrapper);
@@ -53,6 +54,7 @@ void ServerApp::setup() {
     server.begin();
     ElegantOTA.begin(&server);
 }
+
 void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
                         AwsEventType type, void *arg, uint8_t *data, size_t len) {
     switch (type) {
@@ -142,38 +144,38 @@ void ServerApp::setup_set_time_handler() {
     server.addHandler(set_time_handler);
 }
 
-
-    server.serveStatic("/", SPIFFS, "/").setCacheControl("max-age=604800");
-
-    websocket.onEvent(onEventWrapper);
-
-    server.addHandler(&websocket);
-    server.begin();
-    ElegantOTA.begin(&server);
-}
-void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
-                        AwsEventType type, void *arg, uint8_t *data, size_t len) {
-    switch (type) {
-    case WS_EVT_CONNECT:
-        Serial.printf("WebSocket client #%u connected from %s\n", client->id(),
-                      client->remoteIP().toString().c_str());
-        if (this->_websocket_notify_timer == NULL) {
-            this->_websocket_notify_timer =
-                lv_timer_create(websocket_timer_cb_wrapper, 600, NULL);
-        }
-        break;
-    case WS_EVT_DISCONNECT:
-        Serial.printf("WebSocket client #%u disconnected\n", client->id());
-        if (this->_websocket_notify_timer != NULL & this->websocket.count() == 0) {
-            lv_timer_del(this->_websocket_notify_timer);
-            this->_websocket_notify_timer = NULL;
-        }
-        break;
-    case WS_EVT_DATA:
-    case WS_EVT_PONG:
-    case WS_EVT_ERROR:
-        break;
-    }
+void ServerApp::setup_ota_update_handler() {
+    server.on(
+        "/ota_update", HTTP_POST,
+        [this](AsyncWebServerRequest *request) {
+            this->espShouldReboot = !Update.hasError();
+            AsyncResponseStream *response =
+                request->beginResponseStream("application/json");
+            AsyncWebServerResponse *response = request->beginResponseStream(
+                this->espShouldReboot ? "{'update' : true}" : "{'update' : false}");
+            request->send(response);
+        },
+        [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data,
+           size_t len, bool final) {
+            if (!index) {
+                Serial.printf("Update Start: %s\n", filename.c_str());
+                if (!Update.begin((ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000)) {
+                    Update.printError(Serial);
+                }
+            }
+            if (!Update.hasError()) {
+                if (Update.write(data, len) != len) {
+                    Update.printError(Serial);
+                }
+            }
+            if (final) {
+                if (Update.end(true)) {
+                    Serial.printf("Update Success: %uB\n", index + len);
+                } else {
+                    Update.printError(Serial);
+                }
+            }
+        });
 }
 
 void ServerApp::set_time(JsonVariant &json) {
@@ -293,5 +295,11 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
 }
 void ServerApp::run() {
     this->websocket.cleanupClients();
+    // ElegantOTA.loop();
+    if (espShouldReboot) {
+        Serial.println("ESP32 reboot ...");
+        delay(100);
+        ESP.restart();
+    }
 }
 ServerApp::~ServerApp() {}

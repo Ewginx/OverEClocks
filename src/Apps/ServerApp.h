@@ -18,7 +18,8 @@ class ServerApp {
     lv_timer_t *_websocket_notify_timer = NULL;
     BrightnessApp *_brightness_app;
     MicroclimateApp *_microclimate_app;
-    
+    bool espShouldReboot = false;
+
   public:
     StateApp *_state_app;
 
@@ -35,6 +36,7 @@ class ServerApp {
     void setup_settings_handlers();
     void setup_redirect_handlers();
     void setup_set_time_handler();
+    void setup_ota_update_handler();
 
     void setup();
     void run();
