@@ -37,6 +37,7 @@ class StateApp {
     int dark_second_color;
 
     String timezone_posix;
+    bool offline_time_set = false;
 
     int threshold;
 

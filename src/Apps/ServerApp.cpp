@@ -133,22 +133,17 @@ void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
 }
 
 void ServerApp::set_time(JsonVariant &json) {
+    if(this->_state_app->wifi_connected){
+        return;
+    }
     JsonObject &&time_json = json.as<JsonObject>();
     struct timeval tv;
-    // tv.tv_sec = time_json["time"].as<unsigned long>();
-    // settimeofday(&tv, NULL);
+    tv.tv_sec = time_json["time"].as<unsigned long>();
+    tv.tv_usec = 0;
     Serial.println(time_json["time"].as<unsigned long>());
-    // struct tm timeinfo;
-    // time_t now;
-    // time(&now);
-    // localtime_r(&now, &timeinfo);
-    // char s[51];
-    // strftime(s, 6,
-    //          "%H"
-    //          ":"
-    //          "%M",
-    //          &timeinfo);
-    // Serial.println(s);
+    settimeofday(&tv, NULL);
+    lv_msg_send(MSG_UPDATE_TZ, NULL);
+    this->_state_app->offline_time_set = true;
 }
 
 void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
@@ -211,7 +206,9 @@ void ServerApp::save_wifi_settings(JsonVariant &json) {
     JsonObject &&wifi_json = json.as<JsonObject>();
     this->_state_app->save_ssid(wifi_json["ssid"].as<const char *>());
     this->_state_app->save_password(wifi_json["password"].as<const char *>());
-    this->_state_app->save_ip_and_gateway_addresses(wifi_json["ip_address"].as<const char *>(), wifi_json["gateway"].as<const char *>());
+    this->_state_app->save_ip_and_gateway_addresses(
+        wifi_json["ip_address"].as<const char *>(),
+        wifi_json["gateway"].as<const char *>());
     this->_state_app->save_ap_login(wifi_json["ap_login"].as<const char *>());
     this->_state_app->save_ap_password(wifi_json["ap_password"].as<const char *>());
 }

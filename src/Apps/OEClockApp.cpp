@@ -154,9 +154,9 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
 
 void OEClockApp::loop() {
     lv_timer_handler_run_in_period(5);
-    if (this->state_app->wifi_connected) {
+    server_app->run();
+    if (this->state_app->wifi_connected || this->state_app->offline_time_set) {
         time_app->notifyAboutTime();
-        server_app->run();
         // Serial.println(ESP.getFreeHeap());
     }
 }
