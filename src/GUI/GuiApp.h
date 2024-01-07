@@ -1,4 +1,5 @@
 #pragma once
+#include "Apps/StateApp.h"
 #include "Config/Config.h"
 #include "GUI/AlarmClock.h"
 #include "GUI/AnalogClock.h"
@@ -6,7 +7,8 @@
 #include "GUI/DockPanel.h"
 #include "GUI/Settings.h"
 #include "GUI/Weather.h"
-#include "Apps/StateApp.h"
+#include "Theme/Theme.h"
+
 
 class GuiApp {
   private:
