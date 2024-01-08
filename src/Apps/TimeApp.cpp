@@ -99,6 +99,7 @@ void TimeApp::check_oneOff_alarm_clock(tm &timeinfo) {
         if (timeinfo.tm_hour == hour_from_label & timeinfo.tm_min == minute_from_label) {
             this->alarm_clock->fire_alarm(this->alarm_clock->oneOffButtonLabel);
             lv_obj_clear_state(this->alarm_clock->oneOffSwitch, LV_STATE_CHECKED);
+            this->alarm_clock->event_alarmSwitch_cb();
         } else {
             this->calculate_oneOff_remaining_time(hour_from_label, minute_from_label,
                                                   timeinfo);

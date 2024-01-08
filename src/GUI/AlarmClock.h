@@ -67,7 +67,7 @@ class AlarmClock {
     void event_alarmModalOkButton_cb(lv_event_t *e);
     void event_offAlarmButton_cb(lv_event_t *e);
     void event_alarmButtons_cb(lv_event_t *e);
-    void event_alarmSwitch_cb(lv_event_t *e);
+    void event_alarmSwitch_cb();
 
     void set_default_values();
 

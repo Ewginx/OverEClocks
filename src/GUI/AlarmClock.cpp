@@ -15,7 +15,7 @@ extern "C" void event_alarmButtons_cb_wrapper(lv_event_t *e) {
     instance->event_alarmButtons_cb(e);
 }
 extern "C" void event_alarmSwitch_cb_wrapper(lv_event_t *e) {
-    instance->event_alarmSwitch_cb(e);
+    instance->event_alarmSwitch_cb();
 }
 extern "C" void update_alarm_gui_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     instance->set_alarm_clock_gui();
@@ -390,7 +390,7 @@ void AlarmClock::event_alarmButtons_cb(lv_event_t *e) {
     this->create_roller_modal_panel(target_label);
 }
 
-void AlarmClock::event_alarmSwitch_cb(lv_event_t *e) {
+void AlarmClock::event_alarmSwitch_cb() {
     this->_state_app->save_alarm_switches_enabled(
         lv_obj_has_state(this->weekdaysSwitch, LV_STATE_CHECKED),
         lv_obj_has_state(this->weekendsSwitch, LV_STATE_CHECKED),
