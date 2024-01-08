@@ -138,7 +138,6 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
         WiFi.softAP(instance->state_app->ap_login, instance->state_app->ap_password);
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
             gui_app->settings->set_ipAddressLabel(WiFi.softAPIP().toString().c_str());
-            this->gui_app->set_screens_to_default_values();
             xSemaphoreGive(mutex);
         }
         Serial.println("Unable to connect to WiFi network. Initiate AP mode.");
@@ -154,7 +153,7 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
 void OEClockApp::loop() {
     lv_timer_handler_run_in_period(5);
     server_app->run();
-    if (this->state_app->wifi_connected || this->state_app->offline_time_set) {
+    if (this->state_app->wifi_connected || this->state_app->time_is_set) {
         time_app->notifyAboutTime();
         // Serial.println(ESP.getFreeHeap());
     }

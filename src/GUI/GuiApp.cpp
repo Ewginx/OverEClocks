@@ -31,6 +31,8 @@ extern "C" void change_theme_cb_wrapper(void *subscriber, lv_msg_t *msg) {
 GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
     this->state_app = state_app;
+    this->state_app->dark_theme_enabled ? this->init_dark_theme()
+                                        : this->init_light_theme();
     alarm_clock = new AlarmClock(this->state_app);
     digital_clock = new DigitalClock();
     analog_clock = new AnalogClock();
@@ -41,7 +43,6 @@ GuiApp::GuiApp(StateApp *state_app) {
         lv_timer_create(dock_panel_timer_cb_wrapper, DOCK_PANEL_HIDE_PERIOD, NULL);
     lv_timer_set_repeat_count(this->_dock_panel_timer, 1);
     dock_panel = new DockPanel(digital_clock->digitalClockPanel);
-
     lv_obj_add_event_cb(digital_clock->digitalClockScreen, swipe_screen_event_cb_wrapper,
                         LV_EVENT_GESTURE, NULL);
     lv_obj_add_event_cb(weather->weatherScreen, swipe_screen_event_cb_wrapper,
@@ -82,12 +83,7 @@ GuiApp::GuiApp(StateApp *state_app) {
 
 void GuiApp::setup_gui() {
     this->switch_theme(this->state_app->dark_theme_enabled);
-    this->alarm_clock->set_alarm_switches(this->state_app->weekdays_switch_enabled,
-                                          this->state_app->weekends_switch_enabled,
-                                          this->state_app->oneOff_switch_enabled);
-    this->alarm_clock->set_alarm_buttons(this->state_app->weekdays_time.c_str(),
-                                         this->state_app->weekends_time.c_str(),
-                                         this->state_app->oneOff_time.c_str());
+    this->alarm_clock->set_alarm_clock_gui();
     this->settings->set_wifi_settings(this->state_app->ssid.c_str(),
                                       this->state_app->password.c_str());
     this->settings->set_weather_settings(this->state_app->city.c_str(),
@@ -154,9 +150,9 @@ void GuiApp::swipe_alarm_screen() {
 
 void GuiApp::switch_theme(bool darktheme_enabled) {
     if (darktheme_enabled) {
-        this->set_dark_theme();
+        this->switch_to_dark_theme();
     } else {
-        this->set_light_theme();
+        this->switch_to_light_theme();
     }
 }
 
@@ -227,14 +223,8 @@ void GuiApp::theme_switch_event_cb(lv_event_t *e) {
             lv_obj_has_state(target, LV_STATE_CHECKED));
     }
 }
-void GuiApp::set_light_theme() {
-    lv_color_t primary_color = lv_color_hex(this->state_app->light_primary_color);
-    lv_color_t second_color = lv_color_hex(this->state_app->light_second_color);
-
-    lv_theme_t *theme =
-        lv_theme_default_init(NULL, primary_color,
-                              second_color, false, LV_FONT_DEFAULT);
-    lv_disp_set_theme(NULL, theme);
+void GuiApp::switch_to_light_theme() {
+    this->init_light_theme();
 
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_black(), 0);
     lv_obj_set_style_shadow_opa(dock_panel->settingsButton, 0, 0);
@@ -245,17 +235,39 @@ void GuiApp::set_light_theme() {
     lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_black(), 0);
     lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_black(), 0);
 }
-void GuiApp::set_dark_theme() {
-    lv_color_t primary_color = lv_color_hex(this->state_app->dark_background_color);
-    lv_color_t second_color = lv_color_hex(this->state_app->dark_second_color);
-    lv_theme_t *theme =
-        lv_theme_default_init(NULL, primary_color, second_color, true, LV_FONT_DEFAULT);
-    lv_disp_set_theme(NULL, theme);
+void GuiApp::switch_to_dark_theme() {
+    this->init_dark_theme();
 
     lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_white(), 0);
     lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_white(), 0);
     lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_white(), 0);
     lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_white(), 0);
+}
+void GuiApp::init_light_theme() {
+    lv_color_t primary_color = lv_color_hex(this->state_app->light_primary_color);
+    lv_color_t second_color = lv_color_hex(this->state_app->light_second_color);
+    lv_color_t color_screen = lv_color_hex(this->state_app->light_screen_color);
+    lv_color_t color_card = lv_color_hex(this->state_app->light_card_color);
+    lv_color_t color_text = lv_color_hex(this->state_app->light_text_color);
+    lv_color_t color_grey = lv_color_hex(this->state_app->light_grey_color);
+
+    lv_theme_t *theme =
+        theme_custom_init(NULL, primary_color, second_color, color_screen, color_card,
+                          color_text, color_grey, true, LV_FONT_DEFAULT);
+    lv_disp_set_theme(NULL, theme);
+}
+void GuiApp::init_dark_theme() {
+    lv_color_t primary_color = lv_color_hex(this->state_app->dark_primary_color);
+    lv_color_t second_color = lv_color_hex(this->state_app->dark_second_color);
+    lv_color_t color_screen = lv_color_hex(this->state_app->dark_screen_color);
+    lv_color_t color_card = lv_color_hex(this->state_app->dark_card_color);
+    lv_color_t color_text = lv_color_hex(this->state_app->dark_text_color);
+    lv_color_t color_grey = lv_color_hex(this->state_app->dark_grey_color);
+
+    lv_theme_t *theme =
+        theme_custom_init(NULL, primary_color, second_color, color_screen, color_card,
+                          color_text, color_grey, true, LV_FONT_DEFAULT);
+    lv_disp_set_theme(NULL, theme);
 }
 void GuiApp::create_loading_screen() {
     loading_screen = lv_obj_create(NULL);
@@ -265,9 +277,4 @@ void GuiApp::create_loading_screen() {
     lv_scr_load(loading_screen);
 }
 void GuiApp::delete_loading_screen() { lv_obj_del(loading_screen); }
-void GuiApp::set_screens_to_default_values() {
-    this->digital_clock->set_default_values();
-    this->analog_clock->set_default_values();
-    this->weather->set_no_data_values();
-}
 GuiApp::~GuiApp() {}

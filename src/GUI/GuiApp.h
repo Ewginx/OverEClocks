@@ -1,4 +1,5 @@
 #pragma once
+#include "Apps/StateApp.h"
 #include "Config/Config.h"
 #include "GUI/AlarmClock.h"
 #include "GUI/AnalogClock.h"
@@ -6,7 +7,8 @@
 #include "GUI/DockPanel.h"
 #include "GUI/Settings.h"
 #include "GUI/Weather.h"
-#include "Apps/StateApp.h"
+#include "Theme/Theme.h"
+
 
 class GuiApp {
   private:
@@ -37,12 +39,15 @@ class GuiApp {
     void dock_panel_timer_cb(lv_timer_t *timer);
     void settings_button_event_cb(lv_event_t *e);
     void theme_switch_event_cb(lv_event_t *e);
-    void set_light_theme();
-    void set_dark_theme();
+    void switch_to_light_theme();
+    void switch_to_dark_theme();
+    
+    void init_light_theme();
+    void init_dark_theme();
+
 
     void create_loading_screen();
     void delete_loading_screen();
-    void set_screens_to_default_values();
 
     void setup_gui();
 

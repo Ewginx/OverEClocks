@@ -8,6 +8,7 @@
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
+#include <Update.h>
 #include <ElegantOTA.h>
 
 class ServerApp {
@@ -30,6 +31,7 @@ class ServerApp {
     void save_theme_settings(JsonVariant &json);
     void save_brightness_settings(JsonVariant &json);
     void save_wifi_settings(JsonVariant &json);
+    void save_alarm_clock_settings(JsonVariant &json);
 
     void set_time(JsonVariant &json);
 

@@ -118,6 +118,14 @@ void ServerApp::setup_settings_handlers() {
             request->send(200);
         });
     server.addHandler(wifi_settings_handler);
+
+    AsyncCallbackJsonWebHandler *alarm_clock_settings_handler = new AsyncCallbackJsonWebHandler(
+        "/settings/alarm_clock",
+        [this](AsyncWebServerRequest *request, JsonVariant &json) {
+            this->save_alarm_clock_settings(json);
+            request->send(200);
+        });
+    server.addHandler(alarm_clock_settings_handler);
 }
 
 void ServerApp::setup_redirect_handlers() {
@@ -132,6 +140,8 @@ void ServerApp::setup_redirect_handlers() {
     server.on("/time", HTTP_GET,
               [](AsyncWebServerRequest *request) { request->redirect("/"); });
     server.on("/debug", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/alarm_clock", HTTP_GET,
               [](AsyncWebServerRequest *request) { request->redirect("/"); });
 }
 
@@ -189,7 +199,7 @@ void ServerApp::set_time(JsonVariant &json) {
     Serial.println(time_json["time"].as<unsigned long>());
     settimeofday(&tv, NULL);
     lv_msg_send(MSG_UPDATE_TZ, NULL);
-    this->_state_app->offline_time_set = true;
+    this->_state_app->time_is_set = true;
 }
 
 void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
@@ -233,10 +243,19 @@ void ServerApp::save_theme_settings(JsonVariant &json) {
     JsonObject &&theme_json = json.as<JsonObject>();
     this->_state_app->save_dark_theme_enabled(
         theme_json["dark_theme_enabled"].as<bool>());
-    this->_state_app->save_light_colors(theme_json["light_background_color"].as<int>(),
-                                        theme_json["light_second_color"].as<int>());
-    this->_state_app->save_dark_colors(theme_json["dark_background_color"].as<int>(),
-                                       theme_json["dark_second_color"].as<int>());
+    this->_state_app->save_light_colors(theme_json["light_primary_color"].as<int>(),
+                                        theme_json["light_second_color"].as<int>(),
+                                        theme_json["light_screen_color"].as<int>(),
+                                        theme_json["light_card_color"].as<int>(),
+                                        theme_json["light_text_color"].as<int>(),
+                                        theme_json["light_grey_color"].as<int>());
+
+    this->_state_app->save_dark_colors(theme_json["dark_primary_color"].as<int>(),
+                                       theme_json["dark_second_color"].as<int>(),
+                                       theme_json["dark_screen_color"].as<int>(),
+                                       theme_json["dark_card_color"].as<int>(),
+                                       theme_json["dark_text_color"].as<int>(),
+                                       theme_json["dark_grey_color"].as<int>());
     lv_msg_send(MSG_CHANGE_THEME,
                 static_cast<const void *>(&this->_state_app->dark_theme_enabled));
     // implement recolor for themes
@@ -264,10 +283,23 @@ void ServerApp::save_wifi_settings(JsonVariant &json) {
     this->_state_app->save_ap_password(wifi_json["ap_password"].as<const char *>());
 }
 
+void ServerApp::save_alarm_clock_settings(JsonVariant &json) {
+    JsonObject &&alarm_clock_json = json.as<JsonObject>();
+    this->_state_app->save_alarm_time(
+        alarm_clock_json["weekdays_time"].as<const char *>(),
+        alarm_clock_json["weekends_time"].as<const char *>(),
+        alarm_clock_json["one_off_time"].as<const char *>());
+    this->_state_app->save_alarm_switches_enabled(
+        alarm_clock_json["weekdays_enabled"].as<bool>(),
+        alarm_clock_json["weekends_enabled"].as<bool>(),
+        alarm_clock_json["one_off_enabled"].as<bool>());
+    lv_msg_send(MSG_UPDATE_ALARM_GUI, NULL);
+}
+
 void ServerApp::get_settings(AsyncWebServerRequest *request) {
     Serial.println("Request on settings");
     AsyncResponseStream *response = request->beginResponseStream("application/json");
-    StaticJsonDocument<512> doc;
+    StaticJsonDocument<768> doc;
     doc["ssid"] = this->_state_app->ssid;
     doc["password"] = this->_state_app->password;
     doc["ip_address"] = this->_state_app->ip_address;
@@ -286,10 +318,28 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["language"] = this->_state_app->language;
     doc["request_period"] = this->_state_app->request_period;
     doc["dark_theme_enabled"] = this->_state_app->dark_theme_enabled;
-    doc["light_background_color"] = this->_state_app->light_primary_color;
+
+    doc["light_primary_color"] = this->_state_app->light_primary_color;
     doc["light_second_color"] = this->_state_app->light_second_color;
-    doc["dark_background_color"] = this->_state_app->dark_background_color;
+    doc["light_screen_color"] = this->_state_app->light_screen_color;
+    doc["light_card_color"] = this->_state_app->light_card_color;
+    doc["light_text_color"] = this->_state_app->light_text_color;
+    doc["light_grey_color"] = this->_state_app->light_grey_color;
+
+    doc["dark_primary_color"] = this->_state_app->dark_primary_color;
     doc["dark_second_color"] = this->_state_app->dark_second_color;
+    doc["dark_screen_color"] = this->_state_app->dark_screen_color;
+    doc["dark_card_color"] = this->_state_app->dark_card_color;
+    doc["dark_text_color"] = this->_state_app->dark_text_color;
+    doc["dark_grey_color"] = this->_state_app->dark_grey_color;
+
+    doc["weekdays_time"] = this->_state_app->weekdays_time;
+    doc["weekends_time"] = this->_state_app->weekends_time;
+    doc["one_off_time"] = this->_state_app->oneOff_time;
+    doc["weekdays_enabled"] = this->_state_app->weekdays_switch_enabled;
+    doc["weekends_enabled"] = this->_state_app->weekends_switch_enabled;
+    doc["one_off_enabled"] = this->_state_app->oneOff_switch_enabled;
+
     serializeJson(doc, *response);
     request->send(response);
 }

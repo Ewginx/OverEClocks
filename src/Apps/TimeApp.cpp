@@ -99,6 +99,7 @@ void TimeApp::check_oneOff_alarm_clock(tm &timeinfo) {
         if (timeinfo.tm_hour == hour_from_label & timeinfo.tm_min == minute_from_label) {
             this->alarm_clock->fire_alarm(this->alarm_clock->oneOffButtonLabel);
             lv_obj_clear_state(this->alarm_clock->oneOffSwitch, LV_STATE_CHECKED);
+            this->alarm_clock->event_alarmSwitch_cb();
         } else {
             this->calculate_oneOff_remaining_time(hour_from_label, minute_from_label,
                                                   timeinfo);
@@ -112,7 +113,7 @@ void TimeApp::calculate_oneOff_remaining_time(int hour, int minute, struct tm &t
     struct tm timeinfo_local;
     this->copy_timeinfo_struct(timeinfo_local, timeinfo);
     time_t now = mktime(&timeinfo_local);
-    if (timeinfo_local.tm_hour >= hour) {
+    if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
         timeinfo_local.tm_mday += 1;
     }
     timeinfo_local.tm_hour = hour;
@@ -219,7 +220,9 @@ void TimeApp::copy_timeinfo_struct(tm &new_tm, tm &old_tm) {
 void TimeApp::config_time() {
     configTime(0, 0, "pool.ntp.org");
     this->set_timezone();
-    getLocalTime(&timeinfo);
+    if(getLocalTime(&timeinfo)){
+        this->_state_app->time_is_set = true;
+    }
 }
 void TimeApp::set_timezone() {
     setenv("TZ", this->_state_app->timezone_posix.c_str(), 1);
