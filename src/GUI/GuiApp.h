@@ -48,7 +48,6 @@ class GuiApp {
 
     void create_loading_screen();
     void delete_loading_screen();
-    void set_screens_to_default_values();
 
     void setup_gui();
 

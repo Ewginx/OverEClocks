@@ -282,9 +282,4 @@ void GuiApp::create_loading_screen() {
     lv_scr_load(loading_screen);
 }
 void GuiApp::delete_loading_screen() { lv_obj_del(loading_screen); }
-void GuiApp::set_screens_to_default_values() {
-    this->digital_clock->set_default_values();
-    this->analog_clock->set_default_values();
-    this->weather->set_no_data_values();
-}
 GuiApp::~GuiApp() {}

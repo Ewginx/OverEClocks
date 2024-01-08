@@ -219,7 +219,9 @@ void TimeApp::copy_timeinfo_struct(tm &new_tm, tm &old_tm) {
 void TimeApp::config_time() {
     configTime(0, 0, "pool.ntp.org");
     this->set_timezone();
-    getLocalTime(&timeinfo);
+    if(getLocalTime(&timeinfo)){
+        this->_state_app->time_is_set = true;
+    }
 }
 void TimeApp::set_timezone() {
     setenv("TZ", this->_state_app->timezone_posix.c_str(), 1);
