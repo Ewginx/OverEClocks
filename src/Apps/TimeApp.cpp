@@ -113,7 +113,7 @@ void TimeApp::calculate_oneOff_remaining_time(int hour, int minute, struct tm &t
     struct tm timeinfo_local;
     this->copy_timeinfo_struct(timeinfo_local, timeinfo);
     time_t now = mktime(&timeinfo_local);
-    if (timeinfo_local.tm_hour >= hour) {
+    if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
         timeinfo_local.tm_mday += 1;
     }
     timeinfo_local.tm_hour = hour;
