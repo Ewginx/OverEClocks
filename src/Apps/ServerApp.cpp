@@ -118,6 +118,14 @@ void ServerApp::setup_settings_handlers() {
             request->send(200);
         });
     server.addHandler(wifi_settings_handler);
+
+    AsyncCallbackJsonWebHandler *alarm_clock_settings_handler = new AsyncCallbackJsonWebHandler(
+        "/settings/alarm_clock",
+        [this](AsyncWebServerRequest *request, JsonVariant &json) {
+            this->save_alarm_clock_settings(json);
+            request->send(200);
+        });
+    server.addHandler(alarm_clock_settings_handler);
 }
 
 void ServerApp::setup_redirect_handlers() {
@@ -132,6 +140,8 @@ void ServerApp::setup_redirect_handlers() {
     server.on("/time", HTTP_GET,
               [](AsyncWebServerRequest *request) { request->redirect("/"); });
     server.on("/debug", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/alarm_clock", HTTP_GET,
               [](AsyncWebServerRequest *request) { request->redirect("/"); });
 }
 
@@ -273,6 +283,19 @@ void ServerApp::save_wifi_settings(JsonVariant &json) {
     this->_state_app->save_ap_password(wifi_json["ap_password"].as<const char *>());
 }
 
+void ServerApp::save_alarm_clock_settings(JsonVariant &json) {
+    JsonObject &&alarm_clock_json = json.as<JsonObject>();
+    this->_state_app->save_alarm_time(
+        alarm_clock_json["weekdays_time"].as<const char *>(),
+        alarm_clock_json["weekends_time"].as<const char *>(),
+        alarm_clock_json["one_off_time"].as<const char *>());
+    this->_state_app->save_alarm_switches_enabled(
+        alarm_clock_json["weekdays_enabled"].as<bool>(),
+        alarm_clock_json["weekends_enabled"].as<bool>(),
+        alarm_clock_json["one_off_enabled"].as<bool>());
+    lv_msg_send(MSG_UPDATE_ALARM_GUI, NULL);
+}
+
 void ServerApp::get_settings(AsyncWebServerRequest *request) {
     Serial.println("Request on settings");
     AsyncResponseStream *response = request->beginResponseStream("application/json");
@@ -309,6 +332,13 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["dark_card_color"] = this->_state_app->dark_card_color;
     doc["dark_text_color"] = this->_state_app->dark_text_color;
     doc["dark_grey_color"] = this->_state_app->dark_grey_color;
+
+    doc["weekdays_time"] = this->_state_app->weekdays_time;
+    doc["weekends_time"] = this->_state_app->weekends_time;
+    doc["one_off_time"] = this->_state_app->oneOff_time;
+    doc["weekdays_enabled"] = this->_state_app->weekdays_switch_enabled;
+    doc["weekends_enabled"] = this->_state_app->weekends_switch_enabled;
+    doc["one_off_enabled"] = this->_state_app->oneOff_switch_enabled;
 
     serializeJson(doc, *response);
     request->send(response);

@@ -71,6 +71,8 @@ class AlarmClock {
 
     void set_default_values();
 
+    void set_alarm_clock_gui();
+
     void set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw);
     void set_alarm_buttons(const char *weekdays_time, const char *weekends_time,
                            const char *oneOff_time);
