@@ -6,8 +6,8 @@ void fs_init_littlefs(void) {
         Serial.println("An Error has occurred while mounting LittleFS");
     }
 
-    Serial.printf("Total space: %lluKb\n", LittleFS.totalBytes() / 1024);
-    Serial.printf("Used space: %lluKb\n",  LittleFS.usedBytes() / 1024);
+    Serial.printf("Total space: %d Kb\n", ((unsigned int)LittleFS.totalBytes()) / 1024);
+    Serial.printf("Used space: %d Kb\n",  ((unsigned int)LittleFS.usedBytes()) / 1024);
 }
 
 void *littlefs_fs_open(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode) {
