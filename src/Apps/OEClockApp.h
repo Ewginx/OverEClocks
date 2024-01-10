@@ -2,7 +2,7 @@
 #include "BrightnessApp.h"
 #include "Config/Config.h"
 #include "Display/Display.h"
-#include "Filesystem.h"
+#include "Filesystem/lv_fs_sdcard.h"
 #include "GUI/GuiApp.h"
 #include "MicroclimateApp.h"
 #include "ServerApp.h"

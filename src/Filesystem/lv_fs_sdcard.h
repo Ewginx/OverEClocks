@@ -3,7 +3,9 @@
 #include <SD.h>
 #include <lvgl.h>
 
-void fs_init(void);
+ //https://github.com/100askTeam/esp-arduino-learn/blob/master/examples/08_integrated/01_lcd_sd_card_fc_joypad_fs_lv_lib_100ask/01_lcd_sd_card_fc_joypad_fs_lv_lib_100ask.ino
+
+void fs_init_sdcard(void);
 void *sd_fs_open(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode);
 lv_fs_res_t sd_fs_close(lv_fs_drv_t *drv, void *file_p);
 lv_fs_res_t sd_fs_read(lv_fs_drv_t *drv, void *file_p, void *fileBuf, uint32_t btr,

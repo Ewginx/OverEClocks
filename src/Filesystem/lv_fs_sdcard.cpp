@@ -1,8 +1,8 @@
-#include "Filesystem.h"
+#include "lv_fs_sdcard.h"
 
 SPIClass SPISD;
 
-void fs_init(void) {
+void fs_init_sdcard(void) {
     SPISD.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
 
     if (!SD.begin(SD_CS, SPISD)) {
@@ -183,7 +183,7 @@ void lv_port_sd_fs_init(void) {
     /*----------------------------------------------------
      * Initialize your storage device and File System
      * -------------------------------------------------*/
-    fs_init();
+    fs_init_sdcard();
 
     /*---------------------------------------------------
      * Register the file system interface in LVGL
