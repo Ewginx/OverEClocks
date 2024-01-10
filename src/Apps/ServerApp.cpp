@@ -18,10 +18,6 @@ ServerApp::ServerApp(StateApp *state_app, BrightnessApp *brightness_app,
     this->_state_app = state_app;
     this->_brightness_app = brightness_app;
     this->_microclimate_app = microclimate_app;
-    if (!SPIFFS.begin(true)) {
-        Serial.println("An Error has occurred while mounting SPIFFS");
-        return;
-    }
 }
 void ServerApp::setup() {
     const char *http_username = "admin";
@@ -32,7 +28,7 @@ void ServerApp::setup() {
                   if (!request->authenticate(http_username, http_password))
                       return request->requestAuthentication();
                   AsyncWebServerResponse *response =
-                      request->beginResponse(SPIFFS, "/index.html.gz", "text/html");
+                      request->beginResponse(LittleFS, "/index.html.gz", "text/html");
                   response->addHeader("Content-Encoding", "gzip");
                   request->send(response);
               });
@@ -46,7 +42,7 @@ void ServerApp::setup() {
 
     this->setup_set_time_handler();
     this->setup_ota_update_handler();
-    server.serveStatic("/", SPIFFS, "/").setCacheControl("max-age=604800");
+    server.serveStatic("/", LittleFS, "/").setCacheControl("max-age=604800");
 
     websocket.onEvent(onEventWrapper);
     Update.onProgress([](size_t current, size_t final) {

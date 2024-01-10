@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include <Preferences.h>
 #include <WiFi.h>
-
+#include <LittleFS.h>
 
 class OEClockApp {
   private:
