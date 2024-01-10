@@ -45,12 +45,13 @@ OEClockApp::OEClockApp() {
 
 void OEClockApp::setup() {
     Serial.begin(115200);
-    if (!LittleFS.begin(true)) {
-        Serial.println("An Error has occurred while mounting LittleFS");
-    }
+    // if (!LittleFS.begin(true)) {
+    //     Serial.println("An Error has occurred while mounting LittleFS");
+    // }
     lv_log_register_print_cb(serial_print);
     this->init_i2c_apps();
-    lv_port_sd_fs_init();
+    // lv_port_sd_fs_init();
+    lv_port_littlefs_fs_init();
     TaskHandle_t update_display_task;
     this->gui_app->create_loading_screen();
     xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
