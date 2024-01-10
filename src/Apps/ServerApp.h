@@ -2,12 +2,12 @@
 #include "BrightnessApp.h"
 #include "Config/Config.h"
 #include "MicroclimateApp.h"
-#include "SPIFFS.h"
 #include "StateApp.h"
 #include "lvgl.h"
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
+#include <LittleFS.h>
 #include <Update.h>
 
 class ServerApp {

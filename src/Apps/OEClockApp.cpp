@@ -45,6 +45,9 @@ OEClockApp::OEClockApp() {
 
 void OEClockApp::setup() {
     Serial.begin(115200);
+    if (!LittleFS.begin(true)) {
+        Serial.println("An Error has occurred while mounting LittleFS");
+    }
     lv_log_register_print_cb(serial_print);
     this->init_i2c_apps();
     lv_port_sd_fs_init();
@@ -105,7 +108,7 @@ void OEClockApp::connect_to_wifi() {
     IPAddress subnet(255, 255, 0, 0);
     local_ip.fromString(instance->state_app->ip_address);
     gateway_ip.fromString(instance->state_app->gateway_address);
-    if(WiFi.isConnected()){
+    if (WiFi.isConnected()) {
         WiFi.disconnect();
     }
     WiFi.config(local_ip, gateway_ip, subnet, primaryDNS, secondaryDNS);
