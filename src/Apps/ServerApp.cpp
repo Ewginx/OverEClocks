@@ -49,10 +49,11 @@ void ServerApp::setup() {
     server.serveStatic("/", SPIFFS, "/").setCacheControl("max-age=604800");
 
     websocket.onEvent(onEventWrapper);
-
+    Update.onProgress([](size_t current, size_t final) {
+        Serial.printf("Progress: %u%%\n", (current * 100) / final);
+    });
     server.addHandler(&websocket);
     server.begin();
-    ElegantOTA.begin(&server);
 }
 
 void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
@@ -119,12 +120,13 @@ void ServerApp::setup_settings_handlers() {
         });
     server.addHandler(wifi_settings_handler);
 
-    AsyncCallbackJsonWebHandler *alarm_clock_settings_handler = new AsyncCallbackJsonWebHandler(
-        "/settings/alarm_clock",
-        [this](AsyncWebServerRequest *request, JsonVariant &json) {
-            this->save_alarm_clock_settings(json);
-            request->send(200);
-        });
+    AsyncCallbackJsonWebHandler *alarm_clock_settings_handler =
+        new AsyncCallbackJsonWebHandler(
+            "/settings/alarm_clock",
+            [this](AsyncWebServerRequest *request, JsonVariant &json) {
+                this->save_alarm_clock_settings(json);
+                request->send(200);
+            });
     server.addHandler(alarm_clock_settings_handler);
 }
 
@@ -142,6 +144,8 @@ void ServerApp::setup_redirect_handlers() {
     server.on("/debug", HTTP_GET,
               [](AsyncWebServerRequest *request) { request->redirect("/"); });
     server.on("/alarm_clock", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/ota", HTTP_GET,
               [](AsyncWebServerRequest *request) { request->redirect("/"); });
 }
 
@@ -169,7 +173,7 @@ void ServerApp::setup_ota_update_handler() {
            size_t len, bool final) {
             if (!index) {
                 Serial.printf("Update Start: %s\n", filename.c_str());
-                if (!Update.begin((ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000)) {
+                if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) {
                     Update.printError(Serial);
                 }
             }
@@ -258,7 +262,6 @@ void ServerApp::save_theme_settings(JsonVariant &json) {
                                        theme_json["dark_grey_color"].as<int>());
     lv_msg_send(MSG_CHANGE_THEME,
                 static_cast<const void *>(&this->_state_app->dark_theme_enabled));
-    // implement recolor for themes
 }
 void ServerApp::save_brightness_settings(JsonVariant &json) {
     JsonObject &&brightness_json = json.as<JsonObject>();
@@ -345,7 +348,6 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
 }
 void ServerApp::run() {
     this->websocket.cleanupClients();
-    // ElegantOTA.loop();
     if (espShouldReboot) {
         Serial.println("ESP32 reboot ...");
         delay(100);
