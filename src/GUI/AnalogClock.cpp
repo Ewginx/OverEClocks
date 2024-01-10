@@ -23,8 +23,6 @@ AnalogClock::AnalogClock() {
     lv_obj_set_size(analogClockPanel, lv_pct(100), lv_pct(100));
     lv_obj_set_align(analogClockPanel, LV_ALIGN_TOP_LEFT);
     lv_obj_clear_flag(analogClockPanel, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-    lv_obj_set_style_bg_color(analogClockPanel, lv_color_hex(0xFFFFFF), 0);
-    lv_obj_set_style_bg_opa(analogClockPanel, 0, 0);
     lv_obj_add_flag(analogClockPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     watchface = lv_img_create(analogClockScreen);

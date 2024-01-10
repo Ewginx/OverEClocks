@@ -9,8 +9,6 @@ Weather::Weather() {
     lv_obj_set_pos(weatherPanel, 0, 0);
     lv_obj_set_align(weatherPanel, LV_ALIGN_CENTER);
     lv_obj_clear_flag(weatherPanel, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-    lv_obj_set_style_bg_color(weatherPanel, lv_color_hex(0xFFFFFF), 0);
-    lv_obj_set_style_bg_opa(weatherPanel, 0, 0);
     lv_obj_add_flag(weatherPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weatherImage = lv_img_create(weatherPanel);

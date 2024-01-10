@@ -26,6 +26,7 @@ class OEClockApp {
     Display *display;
     GuiApp *gui_app;
     ServerApp *server_app;
+
     void init_i2c_apps();
     void init_gui();
     void connect_to_wifi();

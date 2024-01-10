@@ -53,8 +53,7 @@ class Settings {
     void set_brightness_slider(u_int32_t slider_value, bool with_anim = false);
     void set_brightness_checkbox(bool auto_brightness_enabled);
 
-    void disable_weather_controls();
-    void update_weather_controls_state();
+    void update_weather_gui_state();
 
     void create_settings_screen();
     void load_settings_screen(lv_obj_t *screen);
@@ -62,7 +61,7 @@ class Settings {
     void create_keyboard(lv_obj_t *target);
     void delete_keyboard();
     
-    void set_ipAddressLabel(int ip0, int ip1, int ip2, int ip3);
+    void set_ipAddressLabel(const char* ip_address);
 
     void wifi_button_event_cb(lv_event_t *e);
     void weather_button_event_cb(lv_event_t *e);

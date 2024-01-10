@@ -57,11 +57,8 @@ void DockPanel::change_dock_parent(lv_obj_t *new_parent) {
     lv_obj_set_parent(this->humidityLabel, lv_obj_get_child(new_parent, 0));
 }
 void DockPanel::show_wifi_connection(bool wifi_enabled) {
-    if (!wifi_enabled) {
-        lv_label_set_text(WiFiLabel, WIFI_DISCONNECTED_SYMBOL);
-    } else {
-        lv_label_set_text(WiFiLabel, WIFI_CONNECTED_SYMBOL);
-    }
+    lv_label_set_text(WiFiLabel,
+                      wifi_enabled ? WIFI_CONNECTED_SYMBOL : WIFI_DISCONNECTED_SYMBOL);
 }
 void DockPanel::set_battery_charge(int charge) {}
 void DockPanel::set_temperature(float temperature) {

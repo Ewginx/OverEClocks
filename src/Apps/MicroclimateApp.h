@@ -11,6 +11,8 @@ class MicroclimateApp {
     DockPanel *_dock_panel;
 
   public:
+    float get_temperature();
+    int get_humidity();
     void bme_timer_cb(lv_timer_t *timer);
     bool begin();
     MicroclimateApp(DockPanel *dock_panel);

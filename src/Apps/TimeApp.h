@@ -5,11 +5,14 @@
 #include "GUI/DigitalClock.h"
 #include <Arduino.h>
 #include <time.h>
+#include "StateApp.h"
 
 class TimeApp {
 
   public:
   private:
+    StateApp *_state_app;
+
     DigitalClock *digital_clock;
     AnalogClock *analog_clock;
     AlarmClock *alarm_clock;
@@ -46,7 +49,8 @@ class TimeApp {
     void check_alarm_clocks(tm &timeinfo);
     void notifyAboutTime();
     void config_time();
+    void set_timezone();
     TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
-            AlarmClock *alarm_clock);
+            AlarmClock *alarm_clock, StateApp *state_app);
     ~TimeApp();
 };

@@ -67,9 +67,11 @@ class AlarmClock {
     void event_alarmModalOkButton_cb(lv_event_t *e);
     void event_offAlarmButton_cb(lv_event_t *e);
     void event_alarmButtons_cb(lv_event_t *e);
-    void event_alarmSwitch_cb(lv_event_t *e);
+    void event_alarmSwitch_cb();
 
     void set_default_values();
+
+    void set_alarm_clock_gui();
 
     void set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw);
     void set_alarm_buttons(const char *weekdays_time, const char *weekends_time,

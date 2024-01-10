@@ -12,8 +12,9 @@ extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
     Serial.print("Disconnected from WiFi access point. Reason: ");
     Serial.println(info.wifi_sta_disconnected.reason);
-    instance->handle_wifi_state(false);
-    // Serial.println("Trying to Reconnect");
+    if (instance->state_app->wifi_connected) {
+        instance->handle_wifi_state(false);
+    }
     // WiFi.reconnect();
 }
 void update_display(void *parameter) {
@@ -33,10 +34,12 @@ OEClockApp::OEClockApp() {
     gui_app = new GuiApp(this->state_app);
     weather_app = new WeatherApp(this->gui_app->weather, this->state_app);
     time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock,
-                           this->gui_app->alarm_clock);
-    server_app = new ServerApp();
-    brightness_app = new BrightnessApp(this->display, this->gui_app->settings);
+                           this->gui_app->alarm_clock, this->state_app);
+    brightness_app =
+        new BrightnessApp(this->display, this->gui_app->settings, this->state_app);
     microclimate_app = new MicroclimateApp(this->gui_app->dock_panel);
+    server_app = new ServerApp(state_app, brightness_app, microclimate_app);
+
     lv_msg_subscribe(MSG_WIFI_RECONNECT, reconnect_to_wifi_cb, NULL);
 }
 
@@ -94,10 +97,19 @@ void OEClockApp::init_gui() {
 }
 
 void OEClockApp::connect_to_wifi() {
-    WiFi.mode(WIFI_AP_STA);
     Serial.print("Will try to connect to WiFI");
-    WiFi.begin(this->state_app->ssid.c_str(), this->state_app->password.c_str());
-    WiFi.softAP("OEClock", "admin1234");
+    IPAddress local_ip;
+    IPAddress gateway_ip;
+    IPAddress primaryDNS(8, 8, 8, 8);
+    IPAddress secondaryDNS(8, 8, 4, 4);
+    IPAddress subnet(255, 255, 0, 0);
+    local_ip.fromString(instance->state_app->ip_address);
+    gateway_ip.fromString(instance->state_app->gateway_address);
+    if(WiFi.isConnected()){
+        WiFi.disconnect();
+    }
+    WiFi.config(local_ip, gateway_ip, subnet, primaryDNS, secondaryDNS);
+    WiFi.begin(this->state_app->ssid, this->state_app->password);
     int attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < 20) {
         delay(500);
@@ -110,27 +122,29 @@ void OEClockApp::connect_to_wifi() {
 void OEClockApp::handle_wifi_state(bool wifi_connected) {
     this->state_app->wifi_connected = wifi_connected;
     if (wifi_connected) {
-        this->weather_app->update_weather_task_state(this->state_app->weather_enabled);
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-            gui_app->settings->set_ipAddressLabel(WiFi.localIP()[0], WiFi.localIP()[1],
-                                                  WiFi.localIP()[2], WiFi.localIP()[3]);
-            this->gui_app->settings->update_weather_controls_state();
+            gui_app->settings->set_ipAddressLabel(WiFi.localIP().toString().c_str());
             xSemaphoreGive(mutex);
         }
         Serial.print("Connected to WiFi network with IP Address: ");
         Serial.println(WiFi.localIP());
     } else {
-        this->weather_app->update_weather_task_state(false);
+        IPAddress local_ip;
+        local_ip.fromString(instance->state_app->ip_address);
+        IPAddress subnet(255, 255, 255, 0);
+        WiFi.disconnect();
+        WiFi.mode(WIFI_AP);
+        WiFi.softAPConfig(local_ip, local_ip, subnet);
+        WiFi.softAP(instance->state_app->ap_login, instance->state_app->ap_password);
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-            this->gui_app->settings->disable_weather_controls();
-            gui_app->settings->set_ipAddressLabel(WiFi.softAPIP()[0], WiFi.softAPIP()[1],
-                                                  WiFi.softAPIP()[2], WiFi.softAPIP()[3]);
+            gui_app->settings->set_ipAddressLabel(WiFi.softAPIP().toString().c_str());
             xSemaphoreGive(mutex);
         }
-        this->gui_app->set_screens_to_default_values();
-        Serial.println("Unable to connect to WiFi network");
+        Serial.println("Unable to connect to WiFi network. Initiate AP mode.");
     }
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->gui_app->settings->update_weather_gui_state();
+        this->weather_app->update_weather_task_state();
         this->gui_app->dock_panel->show_wifi_connection(this->state_app->wifi_connected);
         xSemaphoreGive(mutex);
     }
@@ -138,9 +152,9 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
 
 void OEClockApp::loop() {
     lv_timer_handler_run_in_period(5);
-    if (this->state_app->wifi_connected) {
+    server_app->run();
+    if (this->state_app->wifi_connected || this->state_app->time_is_set) {
         time_app->notifyAboutTime();
-        server_app->run();
         // Serial.println(ESP.getFreeHeap());
     }
 }
