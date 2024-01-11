@@ -20,12 +20,9 @@ ServerApp::ServerApp(StateApp *state_app, BrightnessApp *brightness_app,
     this->_microclimate_app = microclimate_app;
 }
 void ServerApp::setup() {
-    const char *http_username = "admin";
-    const char *http_password = "admin";
-
     server.on("/", HTTP_GET,
-              [http_username, http_password](AsyncWebServerRequest *request) {
-                  if (!request->authenticate(http_username, http_password))
+              [this](AsyncWebServerRequest *request) {
+                  if (!request->authenticate(this->_state_app->ap_login.c_str(), this->_state_app->ap_password.c_str()))
                       return request->requestAuthentication();
                   AsyncWebServerResponse *response =
                       request->beginResponse(LittleFS, "/index.html.gz", "text/html");
