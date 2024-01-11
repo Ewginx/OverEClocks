@@ -20,15 +20,15 @@ ServerApp::ServerApp(StateApp *state_app, BrightnessApp *brightness_app,
     this->_microclimate_app = microclimate_app;
 }
 void ServerApp::setup() {
-    server.on("/", HTTP_GET,
-              [this](AsyncWebServerRequest *request) {
-                  if (!request->authenticate(this->_state_app->ap_login.c_str(), this->_state_app->ap_password.c_str()))
-                      return request->requestAuthentication();
-                  AsyncWebServerResponse *response =
-                      request->beginResponse(LittleFS, "/index.html.gz", "text/html");
-                  response->addHeader("Content-Encoding", "gzip");
-                  request->send(response);
-              });
+    server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
+        if (!request->authenticate(this->_state_app->ap_login.c_str(),
+                                   this->_state_app->ap_password.c_str()))
+            return request->requestAuthentication();
+        AsyncWebServerResponse *response =
+            request->beginResponse(LittleFS, "/index.html.gz", "text/html");
+        response->addHeader("Content-Encoding", "gzip");
+        request->send(response);
+    });
 
     this->setup_redirect_handlers();
 
@@ -38,7 +38,9 @@ void ServerApp::setup() {
     this->setup_settings_handlers();
 
     this->setup_set_time_handler();
-    this->setup_ota_update_handler();
+    this->setup_fw_update_handler();
+    this->setup_fs_update_handler();
+
     server.serveStatic("/", LittleFS, "/").setCacheControl("max-age=604800");
 
     websocket.onEvent(onEventWrapper);
@@ -151,9 +153,9 @@ void ServerApp::setup_set_time_handler() {
     server.addHandler(set_time_handler);
 }
 
-void ServerApp::setup_ota_update_handler() {
+void ServerApp::setup_fw_update_handler() {
     server.on(
-        "/ota_update", HTTP_POST,
+        "/update_fw", HTTP_POST,
         [this](AsyncWebServerRequest *request) {
             this->espShouldReboot = !Update.hasError();
             AsyncResponseStream *response =
@@ -167,6 +169,40 @@ void ServerApp::setup_ota_update_handler() {
             if (!index) {
                 Serial.printf("Update Start: %s\n", filename.c_str());
                 if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) {
+                    Update.printError(Serial);
+                }
+            }
+            if (!Update.hasError()) {
+                if (Update.write(data, len) != len) {
+                    Update.printError(Serial);
+                }
+            }
+            if (final) {
+                if (Update.end(true)) {
+                    Serial.printf("Update Success: %uB\n", index + len);
+                } else {
+                    Update.printError(Serial);
+                }
+            }
+        });
+}
+
+void ServerApp::setup_fs_update_handler() {
+    server.on(
+        "/update_fs", HTTP_POST,
+        [this](AsyncWebServerRequest *request) {
+            this->espShouldReboot = !Update.hasError();
+            AsyncResponseStream *response =
+                request->beginResponseStream("application/json");
+            response->print(this->espShouldReboot ? "{\"update\" : true}"
+                                                  : "{\"update\" : false}");
+            request->send(response);
+        },
+        [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data,
+           size_t len, bool final) {
+            if (!index) {
+                Serial.printf("Update Start: %s\n", filename.c_str());
+                if (!Update.begin(LittleFS.totalBytes(), U_SPIFFS)) {
                     Update.printError(Serial);
                 }
             }
