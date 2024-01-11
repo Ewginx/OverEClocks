@@ -35,7 +35,9 @@ class WeatherApp {
     // void set_uv(char *uv);
     void set_city_and_country_code(const char *city, const char *country_code);
     // void set_hour_forecast();
-    void set_weather_img(const char *link);
+    void set_weather_img(const char *url);
+
+    int get_mapped_image_code(int code);
 
   public:
     WiFiClient wifi;
