@@ -155,7 +155,9 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
 }
 
 void OEClockApp::loop() {
-    lv_timer_handler_run_in_period(5);
+    // lv_timer_handler_run_in_period(100);
+    lv_task_handler();
+    delay(5);
     server_app->run();
     if (this->state_app->wifi_connected || this->state_app->time_is_set) {
         time_app->notifyAboutTime();
