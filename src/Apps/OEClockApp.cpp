@@ -155,7 +155,8 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
 }
 
 void OEClockApp::loop() {
-    // lv_timer_handler_run_in_period(100);
+    // red line artifacts on screen, when use this timer handler, need proper investigation
+    // lv_timer_handler_run_in_period(5); 
     lv_task_handler();
     delay(5);
     server_app->run();
