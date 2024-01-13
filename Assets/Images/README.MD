@@ -5,7 +5,7 @@
 - the icons are 128x128
 - since flash memory is limited duplicates have been removed from the icons (icons with the same image are counted as one icon)
 - icons have been converted to .bin format on the [LVGL website](https://lvgl.io/tools/imageconverter)
-- color format CF_ALPHA_4_BIT
+- color format CF_INDEXED_4_BIT
 
 The currently used icons are in the `icons_bin_duplicate_free` folder.
 To load them into ESP32, you need to add them to the `data` folder (create one if it doesn't exist) in the root of the project.
