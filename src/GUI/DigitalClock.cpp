@@ -1,13 +1,13 @@
 #include "DigitalClock.h"
 
-void DigitalClock::set_time(char *fullTime, char *seconds) {
-    lv_label_set_text(this->clockLabel, fullTime);
-    lv_label_set_text(this->secondsLabel, seconds);
+void DigitalClock::set_time(int hours, int minutes, int seconds) {
+    lv_label_set_text_fmt(this->clockLabel, "%02d:%02d", hours, minutes);
+    lv_label_set_text_fmt(this->secondsLabel, "%02d", seconds);
 }
 
-void DigitalClock::set_date(char *date, int day) {
-    lv_label_set_text_fmt(this->dateLabel, "%s, %s", date,
-                          digital_clock_translation[day]);
+void DigitalClock::set_date(int month_day, int month, int year, int day) {
+    lv_label_set_text_fmt(this->dateLabel, "%02d.%02d.%d, %s", month_day, month + 1,
+                          year + 1900, digital_clock_translation[day]);
 }
 void DigitalClock::set_default_values() {
     lv_label_set_text(this->clockLabel, "--:--");
