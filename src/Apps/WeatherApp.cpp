@@ -274,7 +274,7 @@ int WeatherApp::get_mapped_image_code(int code) {
     if (code == 227 || code == 230) {
         return 227;
     }
-    if (code == 263 || code == 281 || code == 284) {
+    if (code == 263 || code == 284) {
         return 263;
     }
     if (code == 293 || code == 299) {
@@ -300,9 +300,6 @@ int WeatherApp::get_mapped_image_code(int code) {
     }
     if (code == 359 || code == 386) {
         return 359;
-    }
-    if (code == 362 || code == 365) {
-        return 362;
     }
     if (code == 374 || code == 377) {
         return 374;
