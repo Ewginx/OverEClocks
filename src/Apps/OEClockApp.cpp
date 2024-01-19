@@ -80,6 +80,7 @@ void OEClockApp::setup() {
     vTaskDelete(update_display_task);
     WiFi.onEvent(WiFiStationDisconnected,
                  WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+    this->gui_app->analog_clock->set_watchface_img_src();
 }
 
 void OEClockApp::init_i2c_apps() {
