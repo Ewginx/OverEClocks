@@ -7,24 +7,93 @@
 #define DEVICE_NAME "OEClock"
 
 
-/*hours (need to check cases when its negative)*/
-#define GMT_OFFSET 10
-/*pass the interval according to your weather api plan*/
-#define WEATHER_API_POLLING_INTERVAL_MINUTES 20
-#define API_KEY "api_key" // WeatherAPI  api key
+// Posix Timezone String https://www.veron.nl/wp-content/uploads/2022/12/Posix-Timezone-Strings.pdf
+#define TIMEZONE "GMT"
+
 /* 
 "0" - english
 "1" - русский
 */
 #define LANGUAGE 1
 
-#define NAMESPACE "OEClock"
+ // Weather settings
+#define API_KEY "api_key"
+#define WEATHER_CITY ""
+/*
+Arabic	ar
+Bengali	bn
+Bulgarian	bg
+Chinese Simplified	zh
+Chinese Traditional	zh_tw
+Czech	cs
+Danish	da
+Dutch	nl
+English en
+Finnish	fi
+French	fr
+German	de
+Greek	el
+Hindi	hi
+Hungarian	hu
+Italian	it
+Japanese	ja
+Javanese	jv
+Korean	ko
+Mandarin	zh_cmn
+Marathi	mr
+Polish	pl
+Portuguese	pt
+Punjabi	pa
+Romanian	ro
+Russian	ru
+Serbian	sr
+Sinhalese	si
+Slovak	sk
+Spanish	es
+Swedish	sv
+Tamil	ta
+Telugu	te
+Turkish	tr
+Ukrainian	uk
+Urdu	ur
+Vietnamese	vi
+Wu (Shanghainese)	zh_wuu
+Xiang	zh_hsn
+Yue (Cantonese)	zh_yue
+Zulu	zu
+*/
+#define WEATHER_LANGUAGE "en"
+
+// WiFi credentials
+#define SSID ""
+#define WIFI_PASSWORD ""
+
+#define ACCESS_POINT_LOGIN "OEClock"
+#define ACCESS_POINT_PASSWORD "admin"
+
+#define IP_ADDRESS ""
+#define GATEWAY_ADDRESS ""
+
+// Set false if you want to set Analog Clock as the main screen
+#define DIGITAL_CLOCK_MAIN_SCREEN true
+
+// Pass the interval according to your weather api plan
+#define WEATHER_API_POLLING_INTERVAL_MINUTES 20
+
+
+// Time check period, ms
+#define TIME_UPDATE_INTERVAL 400
+
+
 
 #define BAT_MAX_VOLT 4.2
 #define BAT_PIN 34
 #define BAT_CONV_FACTOR 1.725
 #define BAT_READS 24
 
+
+// Preferences namespace
+#define NAMESPACE "OEClock"
 
 #define MILLISECONDS 1000
 
@@ -50,7 +119,7 @@
 #define HOUR_LABEL 0
 #define MINUTE_LABEL 3
 
-#define TIME_UPDATE_INTERVAL 400
+
 
 
 

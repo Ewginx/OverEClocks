@@ -12,15 +12,15 @@ void StateApp::save_dark_theme_enabled(bool enabled) {
 }
 void StateApp::init_state() {
     _preferences.begin(NAMESPACE);
-    this->ssid = _preferences.getString("ssid", "");
-    this->password = _preferences.getString("password", "");
-    this->ap_login = _preferences.getString("ap_login", "");
-    this->ap_password = _preferences.getString("ap_password", "");
+    this->ssid = _preferences.getString("ssid", SSID);
+    this->password = _preferences.getString("password", WIFI_PASSWORD);
+    this->ap_login = _preferences.getString("ap_login", ACCESS_POINT_LOGIN);
+    this->ap_password = _preferences.getString("ap_password", ACCESS_POINT_PASSWORD);
     this->ip_address = _preferences.getString("ip_address", "192.168.3.50");
     this->gateway_address = _preferences.getString("gateway_address", "192.168.3.1");
 
     this->weather_enabled = _preferences.getBool("weather_enab", false);
-    this->city = _preferences.getString("city", "");
+    this->city = _preferences.getString("city", WEATHER_CITY);
     this->language = _preferences.getString("language", "");
     this->api_key = _preferences.getString("api_key", API_KEY);
     this->request_period =
@@ -31,7 +31,7 @@ void StateApp::init_state() {
     this->brightness_level = _preferences.getUInt("brightness", 255);
     this->threshold = _preferences.getInt("threshold", 120);
 
-    this->digital_main_screen = _preferences.getBool("dig_main_screen", true);
+    this->digital_main_screen = _preferences.getBool("dig_main_screen", DIGITAL_CLOCK_MAIN_SCREEN);
 
     this->dark_theme_enabled = _preferences.getBool("dark_theme", false);
 
@@ -49,7 +49,7 @@ void StateApp::init_state() {
     this->dark_text_color = _preferences.getInt("dark_text", 16448250);
     this->dark_grey_color = _preferences.getInt("dark_grey", 3093047);
 
-    this->timezone_posix = _preferences.getString("timezone", "<+10>-10");
+    this->timezone_posix = _preferences.getString("timezone", TIMEZONE);
 
     this->weekdays_switch_enabled = _preferences.getBool("weekdays_sw", false);
     this->weekends_switch_enabled = _preferences.getBool("weekends_sw", false);
