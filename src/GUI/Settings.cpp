@@ -156,7 +156,7 @@ void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->save_ssid(lv_textarea_get_text(SSIDTextArea));
+        this->_state_app->wifi_state->save_ssid(lv_textarea_get_text(SSIDTextArea));
     }
 }
 
@@ -172,7 +172,7 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->save_password(lv_textarea_get_text(passwordTextArea));
+        this->_state_app->wifi_state->save_password(lv_textarea_get_text(passwordTextArea));
     }
 }
 void Settings::settings_brightnessSlider_event_cb(lv_event_t *e) {
@@ -223,7 +223,7 @@ void Settings::set_brightness_checkbox(bool auto_brightness_enabled) {
 void Settings::update_weather_gui_state() {
     lv_textarea_set_text(this->cityTextArea, this->_state_app->city.c_str());
     lv_textarea_set_text(this->languageTextArea, this->_state_app->language.c_str());
-    if (!this->_state_app->wifi_connected) {
+    if (!this->_state_app->wifi_state->wifi_connected) {
         lv_obj_clear_state(this->weatherSwitch, LV_STATE_CHECKED);
         lv_obj_add_state(this->weatherSwitch, LV_STATE_DISABLED);
         lv_obj_add_state(this->weatherButton, LV_STATE_DISABLED);

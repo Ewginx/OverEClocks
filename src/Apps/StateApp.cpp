@@ -2,7 +2,10 @@
 
 static StateApp *instance = NULL;
 
-StateApp::StateApp() { instance = this; }
+StateApp::StateApp() {
+    instance = this;
+    wifi_state = new WiFiState(_preferences);
+}
 
 void StateApp::save_dark_theme_enabled(bool enabled) {
     this->dark_theme_enabled = enabled;
@@ -12,12 +15,6 @@ void StateApp::save_dark_theme_enabled(bool enabled) {
 }
 void StateApp::init_state() {
     _preferences.begin(NAMESPACE);
-    this->ssid = _preferences.getString("ssid", SSID);
-    this->password = _preferences.getString("password", WIFI_PASSWORD);
-    this->ap_login = _preferences.getString("ap_login", ACCESS_POINT_LOGIN);
-    this->ap_password = _preferences.getString("ap_password", ACCESS_POINT_PASSWORD);
-    this->ip_address = _preferences.getString("ip_address", "192.168.3.50");
-    this->gateway_address = _preferences.getString("gateway_address", "192.168.3.1");
 
     this->weather_enabled = _preferences.getBool("weather_enab", false);
     this->city = _preferences.getString("city", WEATHER_CITY);
@@ -31,7 +28,8 @@ void StateApp::init_state() {
     this->brightness_level = _preferences.getUInt("brightness", 255);
     this->threshold = _preferences.getInt("threshold", 120);
 
-    this->digital_main_screen = _preferences.getBool("dig_main_screen", DIGITAL_CLOCK_MAIN_SCREEN);
+    this->digital_main_screen =
+        _preferences.getBool("dig_main_screen", DIGITAL_CLOCK_MAIN_SCREEN);
 
     this->dark_theme_enabled = _preferences.getBool("dark_theme", false);
 
@@ -101,18 +99,7 @@ void StateApp::save_brightness_level(unsigned int brightness_level) {
     _preferences.putUInt("brightness", brightness_level);
     _preferences.end();
 }
-void StateApp::save_ssid(const char *ssid) {
-    this->ssid = ssid;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("ssid", ssid);
-    _preferences.end();
-}
-void StateApp::save_password(const char *password) {
-    this->password = password;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("password", password);
-    _preferences.end();
-}
+
 void StateApp::save_brightness_threshold(int threshold) {
     this->threshold = threshold;
     _preferences.begin(NAMESPACE);
@@ -123,27 +110,6 @@ void StateApp::save_city(const char *city) {
     this->city = city;
     _preferences.begin(NAMESPACE);
     _preferences.putString("city", city);
-    _preferences.end();
-}
-void StateApp::save_ap_login(const char *login) {
-    this->ap_login = login;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("ap_login", login);
-    _preferences.end();
-}
-void StateApp::save_ap_password(const char *password) {
-    this->ap_password = password;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("ap_password", password);
-    _preferences.end();
-}
-void StateApp::save_ip_and_gateway_addresses(const char *ip_address,
-                                             const char *gateway_address) {
-    this->ip_address = ip_address;
-    this->gateway_address = gateway_address;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("ip_address", ip_address);
-    _preferences.putString("gateway_address", gateway_address);
     _preferences.end();
 }
 void StateApp::save_language(const char *language) {
@@ -215,8 +181,56 @@ void StateApp::save_dark_colors(int dark_primary_color, int dark_second_color,
 }
 void StateApp::save_timezone(const char *timezone_posix) {
     this->timezone_posix = timezone_posix;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("timezone", timezone_posix);
-    _preferences.end();
+    this->_preferences.begin(NAMESPACE);
+    this->_preferences.putString("timezone", timezone_posix);
+    this->_preferences.end();
 }
 StateApp::~StateApp() {}
+
+
+
+void WiFiState::save_ssid(const char *ssid) {
+    this->ssid = ssid;
+    this->_preferences.begin(NAMESPACE);
+    this->_preferences.putString("ssid", ssid);
+    this->_preferences.end();
+}
+void WiFiState::save_password(const char *password) {
+    this->password = password;
+    this->_preferences.begin(NAMESPACE);
+    this->_preferences.putString("password", password);
+    this->_preferences.end();
+}
+void WiFiState::save_ip_and_gateway_addresses(const char *ip_address,
+                                              const char *gateway_address) {
+    this->ip_address = ip_address;
+    this->gateway_address = gateway_address;
+    this->_preferences.begin(NAMESPACE);
+    this->_preferences.putString("ip_address", ip_address);
+    this->_preferences.putString("gateway_address", gateway_address);
+    this->_preferences.end();
+}
+void WiFiState::save_ap_login(const char *login) {
+    this->ap_login = login;
+    this->_preferences.begin(NAMESPACE);
+    this->_preferences.putString("ap_login", login);
+    this->_preferences.end();
+}
+void WiFiState::save_ap_password(const char *password) {
+    this->ap_password = password;
+    this->_preferences.begin(NAMESPACE);
+    this->_preferences.putString("ap_password", password);
+    this->_preferences.end();
+}
+WiFiState::WiFiState(Preferences &preferences) {
+    this->_preferences = preferences;
+    this->_preferences.begin(NAMESPACE);
+    this->ssid = this->_preferences.getString("ssid", WIFI_SSID);
+    this->password = this->_preferences.getString("password", WIFI_PASSWORD);
+    this->ap_login = this->_preferences.getString("ap_login", ACCESS_POINT_LOGIN);
+    this->ap_password = this->_preferences.getString("ap_password", ACCESS_POINT_PASSWORD);
+    this->ip_address = this->_preferences.getString("ip_address", "192.168.3.50");
+    this->gateway_address = this->_preferences.getString("gateway_address", "192.168.3.1");
+    this->_preferences.end();
+}
+WiFiState::~WiFiState() {}

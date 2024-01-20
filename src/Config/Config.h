@@ -65,7 +65,7 @@ Zulu	zu
 #define WEATHER_LANGUAGE "en"
 
 // WiFi credentials
-#define SSID ""
+#define WIFI_SSID ""
 #define WIFI_PASSWORD ""
 
 #define ACCESS_POINT_LOGIN "OEClock"

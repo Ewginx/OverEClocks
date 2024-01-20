@@ -12,7 +12,7 @@ extern "C" void reconnect_to_wifi_cb(void *subscriber, lv_msg_t *msg) {
 void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
     Serial.print("Disconnected from WiFi access point. Reason: ");
     Serial.println(info.wifi_sta_disconnected.reason);
-    if (instance->state_app->wifi_connected) {
+    if (instance->state_app->wifi_state->wifi_connected) {
         instance->handle_wifi_state(false);
     }
     // WiFi.reconnect();
@@ -67,7 +67,7 @@ void OEClockApp::setup() {
     this->init_gui();
     weather_app->create_weather_task();
     this->connect_to_wifi();
-    if (this->state_app->wifi_connected) {
+    if (this->state_app->wifi_state->wifi_connected) {
         time_app->config_time();
     }
     this->server_app->setup();
@@ -81,6 +81,9 @@ void OEClockApp::setup() {
     WiFi.onEvent(WiFiStationDisconnected,
                  WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
     this->gui_app->analog_clock->set_watchface_img_src();
+    Serial.printf("Full heap: %d KB \n", ESP.getHeapSize() / 1024);
+    Serial.printf("Max free heap chunk: %d KB \n", ESP.getMaxAllocHeap() / 1024);
+    Serial.printf("Free heap: %d KB \n", ESP.getFreeHeap() / 1024);
 }
 
 void OEClockApp::init_i2c_apps() {
@@ -108,13 +111,13 @@ void OEClockApp::connect_to_wifi() {
     IPAddress primaryDNS(8, 8, 8, 8);
     IPAddress secondaryDNS(8, 8, 4, 4);
     IPAddress subnet(255, 255, 0, 0);
-    local_ip.fromString(instance->state_app->ip_address);
-    gateway_ip.fromString(instance->state_app->gateway_address);
+    local_ip.fromString(instance->state_app->wifi_state->ip_address);
+    gateway_ip.fromString(instance->state_app->wifi_state->gateway_address);
     if (WiFi.isConnected()) {
         WiFi.disconnect();
     }
     WiFi.config(local_ip, gateway_ip, subnet, primaryDNS, secondaryDNS);
-    WiFi.begin(this->state_app->ssid, this->state_app->password);
+    WiFi.begin(this->state_app->wifi_state->ssid, this->state_app->wifi_state->password);
     int attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < 20) {
         delay(500);
@@ -125,7 +128,7 @@ void OEClockApp::connect_to_wifi() {
 }
 
 void OEClockApp::handle_wifi_state(bool wifi_connected) {
-    this->state_app->wifi_connected = wifi_connected;
+    this->state_app->wifi_state->wifi_connected = wifi_connected;
     if (wifi_connected) {
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
             gui_app->settings->set_ipAddressLabel(WiFi.localIP().toString().c_str());
@@ -135,12 +138,12 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
         Serial.println(WiFi.localIP());
     } else {
         IPAddress local_ip;
-        local_ip.fromString(instance->state_app->ip_address);
+        local_ip.fromString(instance->state_app->wifi_state->ip_address);
         IPAddress subnet(255, 255, 255, 0);
         WiFi.disconnect();
         WiFi.mode(WIFI_AP);
         WiFi.softAPConfig(local_ip, local_ip, subnet);
-        WiFi.softAP(instance->state_app->ap_login, instance->state_app->ap_password);
+        WiFi.softAP(instance->state_app->wifi_state->ap_login, instance->state_app->wifi_state->ap_password);
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
             gui_app->settings->set_ipAddressLabel(WiFi.softAPIP().toString().c_str());
             xSemaphoreGive(mutex);
@@ -150,18 +153,18 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->settings->update_weather_gui_state();
         this->weather_app->update_weather_task_state();
-        this->gui_app->dock_panel->show_wifi_connection(this->state_app->wifi_connected);
+        this->gui_app->dock_panel->show_wifi_connection(this->state_app->wifi_state->wifi_connected);
         xSemaphoreGive(mutex);
     }
 }
 
 void OEClockApp::loop() {
-    // red line artifacts on screen, when use this timer handler, need proper investigation
-    // lv_timer_handler_run_in_period(5); 
+    // red line artifacts on screen, when use this timer handler, need proper
+    // investigation lv_timer_handler_run_in_period(5);
     lv_task_handler();
     delay(5);
     server_app->run();
-    if (this->state_app->wifi_connected || this->state_app->time_is_set) {
+    if (this->state_app->wifi_state->wifi_connected || this->state_app->time_is_set) {
         time_app->notifyAboutTime();
         // Serial.println(ESP.getFreeHeap());
     }

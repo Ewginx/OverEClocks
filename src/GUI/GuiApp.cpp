@@ -89,8 +89,8 @@ GuiApp::GuiApp(StateApp *state_app) {
 void GuiApp::setup_gui() {
     this->switch_theme(this->state_app->dark_theme_enabled);
     this->alarm_clock->set_alarm_clock_gui();
-    this->settings->set_wifi_settings(this->state_app->ssid.c_str(),
-                                      this->state_app->password.c_str());
+    this->settings->set_wifi_settings(this->state_app->wifi_state->ssid.c_str(),
+                                      this->state_app->wifi_state->password.c_str());
     this->settings->set_weather_settings(this->state_app->city.c_str(),
                                          this->state_app->language.c_str());
     this->settings->set_brightness_slider(this->state_app->brightness_level);

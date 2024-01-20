@@ -73,7 +73,7 @@ void WeatherApp::encode_city() {
 }
 void WeatherApp::update_weather_task_state() {
 
-    if (this->_state_app->weather_enabled & this->_state_app->wifi_connected) {
+    if (this->_state_app->weather_enabled & this->_state_app->wifi_state->wifi_connected) {
         if (!this->_weather_running) {
             vTaskResume(this->_weather_task);
         } else {
@@ -88,7 +88,7 @@ void WeatherApp::update_weather_task_state() {
         }
     }
     this->_weather_running =
-        this->_state_app->wifi_connected ? this->_state_app->weather_enabled : false;
+        this->_state_app->wifi_state->wifi_connected ? this->_state_app->weather_enabled : false;
 }
 void WeatherApp::suspend_task_on_error() {
     this->_state_app->weather_enabled = false;

@@ -21,8 +21,8 @@ ServerApp::ServerApp(StateApp *state_app, BrightnessApp *brightness_app,
 }
 void ServerApp::setup() {
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        if (!request->authenticate(this->_state_app->ap_login.c_str(),
-                                   this->_state_app->ap_password.c_str()))
+        if (!request->authenticate(this->_state_app->wifi_state->ap_login.c_str(),
+                                   this->_state_app->wifi_state->ap_password.c_str()))
             return request->requestAuthentication();
         AsyncWebServerResponse *response =
             request->beginResponse(LittleFS, "/index.html.gz", "text/html");
@@ -222,7 +222,7 @@ void ServerApp::setup_fs_update_handler() {
 }
 
 void ServerApp::set_time(JsonVariant &json) {
-    if (this->_state_app->wifi_connected) {
+    if (this->_state_app->wifi_state->wifi_connected) {
         return;
     }
     JsonObject &&time_json = json.as<JsonObject>();
@@ -306,13 +306,13 @@ void ServerApp::save_brightness_settings(JsonVariant &json) {
 }
 void ServerApp::save_wifi_settings(JsonVariant &json) {
     JsonObject &&wifi_json = json.as<JsonObject>();
-    this->_state_app->save_ssid(wifi_json["ssid"].as<const char *>());
-    this->_state_app->save_password(wifi_json["password"].as<const char *>());
-    this->_state_app->save_ip_and_gateway_addresses(
+    this->_state_app->wifi_state->save_ssid(wifi_json["ssid"].as<const char *>());
+    this->_state_app->wifi_state->save_password(wifi_json["password"].as<const char *>());
+    this->_state_app->wifi_state->save_ip_and_gateway_addresses(
         wifi_json["ip_address"].as<const char *>(),
         wifi_json["gateway"].as<const char *>());
-    this->_state_app->save_ap_login(wifi_json["ap_login"].as<const char *>());
-    this->_state_app->save_ap_password(wifi_json["ap_password"].as<const char *>());
+    this->_state_app->wifi_state->save_ap_login(wifi_json["ap_login"].as<const char *>());
+    this->_state_app->wifi_state->save_ap_password(wifi_json["ap_password"].as<const char *>());
 }
 
 void ServerApp::save_alarm_clock_settings(JsonVariant &json) {
@@ -332,12 +332,12 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     Serial.println("Request on settings");
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     StaticJsonDocument<768> doc;
-    doc["ssid"] = this->_state_app->ssid;
-    doc["password"] = this->_state_app->password;
-    doc["ip_address"] = this->_state_app->ip_address;
-    doc["gateway"] = this->_state_app->gateway_address;
-    doc["ap_login"] = this->_state_app->ap_login;
-    doc["ap_password"] = this->_state_app->ap_password;
+    doc["ssid"] = this->_state_app->wifi_state->ssid;
+    doc["password"] = this->_state_app->wifi_state->password;
+    doc["ip_address"] = this->_state_app->wifi_state->ip_address;
+    doc["gateway"] = this->_state_app->wifi_state->gateway_address;
+    doc["ap_login"] = this->_state_app->wifi_state->ap_login;
+    doc["ap_password"] = this->_state_app->wifi_state->ap_password;
     doc["auto_brightness"] = this->_state_app->auto_brightness;
     doc["auto_theme_change"] = false;
     doc["threshold"] = this->_state_app->threshold;
