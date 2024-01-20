@@ -72,6 +72,16 @@ class AlarmState {
     ~AlarmState();
 };
 
+struct ThemeStruct
+{
+  int primary_color;
+  int second_color;
+  int screen_color;
+  int card_color;
+  int text_color;
+  int grey_color;
+};
+
 
 class ThemeState {
   private:
@@ -95,12 +105,8 @@ class ThemeState {
     int dark_grey_color;
 
     void save_dark_theme_enabled(bool enabled);
-    void save_light_colors(int light_primary_color, int light_second_color,
-                           int light_screen_color, int light_card_color,
-                           int light_text_color, int light_grey_color);
-    void save_dark_colors(int dark_primary_color, int dark_second_color,
-                          int dark_screen_color, int dark_card_color, int dark_text_color,
-                          int dark_grey_color);
+    void save_light_colors(ThemeStruct light_theme);
+    void save_dark_colors(ThemeStruct dark_theme);
 
     ThemeState(Preferences &preferences);
     ~ThemeState();
@@ -155,7 +161,7 @@ class StateApp {
     ThemeState *theme_state;
     DisplayState *display_state;
     TimeState *time_state;
-    
+
     StateApp(/* args */);
     ~StateApp();
 };

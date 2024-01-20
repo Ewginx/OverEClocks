@@ -252,7 +252,8 @@ String ServerApp::getSensorReadings() {
 
 void ServerApp::save_time_settings(JsonVariant &json) {
     JsonObject &&time_json = json.as<JsonObject>();
-    this->_state_app->time_state->save_timezone(time_json["timezone_posix"].as<const char *>());
+    this->_state_app->time_state->save_timezone(
+        time_json["timezone_posix"].as<const char *>());
     this->_state_app->display_state->save_digital_main_screen(
         time_json["digital_main_screen"].as<bool>());
     lv_msg_send(MSG_UPDATE_TZ, NULL);
@@ -260,14 +261,19 @@ void ServerApp::save_time_settings(JsonVariant &json) {
 
 void ServerApp::save_weather_settings(JsonVariant &json) {
     JsonObject &&weather_json = json.as<JsonObject>();
-    this->_state_app->weather_state->save_weather_enabled(weather_json["weather_enabled"].as<bool>());
-    this->_state_app->weather_state->save_api_key(weather_json["api_key"].as<const char *>());
+    this->_state_app->weather_state->save_weather_enabled(
+        weather_json["weather_enabled"].as<bool>());
+    this->_state_app->weather_state->save_api_key(
+        weather_json["api_key"].as<const char *>());
     this->_state_app->weather_state->save_city(weather_json["city"].as<const char *>());
-    this->_state_app->weather_state->save_language(weather_json["language"].as<const char *>());
-    this->_state_app->weather_state->save_request_period(weather_json["request_period"].as<int>());
+    this->_state_app->weather_state->save_language(
+        weather_json["language"].as<const char *>());
+    this->_state_app->weather_state->save_request_period(
+        weather_json["request_period"].as<int>());
     lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
-    lv_msg_send(MSG_WEATHER_ENABLED,
-                static_cast<const void *>(&this->_state_app->weather_state->weather_enabled));
+    lv_msg_send(
+        MSG_WEATHER_ENABLED,
+        static_cast<const void *>(&this->_state_app->weather_state->weather_enabled));
     if (this->_state_app->weather_state->weather_enabled) {
         lv_msg_send(MSG_WEATHER_UPDATE, NULL);
     }
@@ -276,21 +282,26 @@ void ServerApp::save_theme_settings(JsonVariant &json) {
     JsonObject &&theme_json = json.as<JsonObject>();
     this->_state_app->theme_state->save_dark_theme_enabled(
         theme_json["dark_theme_enabled"].as<bool>());
-    this->_state_app->theme_state->save_light_colors(theme_json["light_primary_color"].as<int>(),
-                                        theme_json["light_second_color"].as<int>(),
-                                        theme_json["light_screen_color"].as<int>(),
-                                        theme_json["light_card_color"].as<int>(),
-                                        theme_json["light_text_color"].as<int>(),
-                                        theme_json["light_grey_color"].as<int>());
+    ThemeStruct light_theme;
+    light_theme.primary_color = theme_json["light_primary_color"].as<int>();
+    light_theme.second_color = theme_json["light_second_color"].as<int>();
+    light_theme.screen_color = theme_json["light_screen_color"].as<int>();
+    light_theme.text_color = theme_json["light_text_color"].as<int>();
+    light_theme.card_color = theme_json["light_card_color"].as<int>();
+    light_theme.grey_color = theme_json["light_grey_color"].as<int>();
+    this->_state_app->theme_state->save_light_colors(light_theme);
 
-    this->_state_app->theme_state->save_dark_colors(theme_json["dark_primary_color"].as<int>(),
-                                       theme_json["dark_second_color"].as<int>(),
-                                       theme_json["dark_screen_color"].as<int>(),
-                                       theme_json["dark_card_color"].as<int>(),
-                                       theme_json["dark_text_color"].as<int>(),
-                                       theme_json["dark_grey_color"].as<int>());
-    lv_msg_send(MSG_CHANGE_THEME,
-                static_cast<const void *>(&this->_state_app->theme_state->dark_theme_enabled));
+    ThemeStruct dark_theme;
+    dark_theme.primary_color = theme_json["dark_primary_color"].as<int>();
+    dark_theme.second_color = theme_json["dark_second_color"].as<int>();
+    dark_theme.screen_color = theme_json["dark_screen_color"].as<int>();
+    dark_theme.text_color = theme_json["dark_text_color"].as<int>();
+    dark_theme.card_color = theme_json["dark_card_color"].as<int>();
+    dark_theme.grey_color = theme_json["dark_grey_color"].as<int>();
+    this->_state_app->theme_state->save_dark_colors(dark_theme);
+    lv_msg_send(
+        MSG_CHANGE_THEME,
+        static_cast<const void *>(&this->_state_app->theme_state->dark_theme_enabled));
 }
 void ServerApp::save_brightness_settings(JsonVariant &json) {
     JsonObject &&brightness_json = json.as<JsonObject>();
@@ -298,7 +309,8 @@ void ServerApp::save_brightness_settings(JsonVariant &json) {
         brightness_json["auto_brightness"].as<bool>());
     this->_state_app->display_state->save_auto_theme_change(
         brightness_json["auto_theme_change"].as<bool>());
-    this->_state_app->display_state->save_brightness_threshold(brightness_json["threshold"].as<int>());
+    this->_state_app->display_state->save_brightness_threshold(
+        brightness_json["threshold"].as<int>());
     this->_state_app->display_state->save_brightness_level(
         brightness_json["brightness_level"].as<int>());
     lv_msg_send(MSG_BRIGHTNESS_CHANGED, NULL);
@@ -312,7 +324,8 @@ void ServerApp::save_wifi_settings(JsonVariant &json) {
         wifi_json["ip_address"].as<const char *>(),
         wifi_json["gateway"].as<const char *>());
     this->_state_app->wifi_state->save_ap_login(wifi_json["ap_login"].as<const char *>());
-    this->_state_app->wifi_state->save_ap_password(wifi_json["ap_password"].as<const char *>());
+    this->_state_app->wifi_state->save_ap_password(
+        wifi_json["ap_password"].as<const char *>());
 }
 
 void ServerApp::save_alarm_clock_settings(JsonVariant &json) {

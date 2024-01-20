@@ -167,42 +167,38 @@ void ThemeState::save_dark_theme_enabled(bool enabled) {
     this->_preferences.putBool("dark_theme", enabled);
     this->_preferences.end();
 }
-void ThemeState::save_light_colors(int light_primary_color, int light_second_color,
-                                   int light_screen_color, int light_card_color,
-                                   int light_text_color, int light_grey_color) {
-    this->light_primary_color = light_primary_color;
-    this->light_second_color = light_second_color;
-    this->light_screen_color = light_screen_color;
-    this->light_card_color = light_card_color;
-    this->light_text_color = light_text_color;
-    this->light_grey_color = light_grey_color;
+void ThemeState::save_light_colors(ThemeStruct light_theme) {
+    this->light_primary_color = light_theme.primary_color;
+    this->light_second_color = light_theme.second_color;
+    this->light_screen_color = light_theme.screen_color;
+    this->light_card_color = light_theme.card_color;
+    this->light_text_color = light_theme.text_color;
+    this->light_grey_color = light_theme.grey_color;
 
     _preferences.begin(NAMESPACE);
-    _preferences.putInt("light_primary", light_primary_color);
-    _preferences.putInt("light_second", light_second_color);
-    _preferences.putInt("light_screen", light_screen_color);
-    _preferences.putInt("light_card", light_card_color);
-    _preferences.putInt("light_text", light_text_color);
-    _preferences.putInt("light_grey", light_grey_color);
+    _preferences.putInt("light_primary", light_theme.primary_color);
+    _preferences.putInt("light_second", light_theme.second_color);
+    _preferences.putInt("light_screen", light_theme.screen_color);
+    _preferences.putInt("light_card", light_theme.card_color);
+    _preferences.putInt("light_text", light_theme.text_color);
+    _preferences.putInt("light_grey", light_theme.grey_color);
     _preferences.end();
 }
-void ThemeState::save_dark_colors(int dark_primary_color, int dark_second_color,
-                                  int dark_screen_color, int dark_card_color,
-                                  int dark_text_color, int dark_grey_color) {
-    this->dark_primary_color = dark_primary_color;
-    this->dark_second_color = dark_second_color;
-    this->dark_screen_color = dark_screen_color;
-    this->dark_card_color = dark_card_color;
-    this->dark_text_color = dark_text_color;
-    this->dark_grey_color = dark_grey_color;
+void ThemeState::save_dark_colors(ThemeStruct dark_theme) {
+    this->dark_primary_color = dark_theme.primary_color;
+    this->dark_second_color = dark_theme.second_color;
+    this->dark_screen_color = dark_theme.screen_color;
+    this->dark_card_color = dark_theme.card_color;
+    this->dark_text_color = dark_theme.text_color;
+    this->dark_grey_color = dark_theme.grey_color;
 
     _preferences.begin(NAMESPACE);
-    _preferences.putInt("dark_primary", dark_primary_color);
-    _preferences.putInt("dark_second", dark_second_color);
-    _preferences.putInt("dark_screen", dark_screen_color);
-    _preferences.putInt("dark_card", dark_card_color);
-    _preferences.putInt("dark_text", dark_text_color);
-    _preferences.putInt("dark_grey", dark_grey_color);
+    _preferences.putInt("dark_primary", dark_theme.primary_color);
+    _preferences.putInt("dark_second", dark_theme.second_color);
+    _preferences.putInt("dark_screen", dark_theme.screen_color);
+    _preferences.putInt("dark_card", dark_theme.card_color);
+    _preferences.putInt("dark_text", dark_theme.text_color);
+    _preferences.putInt("dark_grey", dark_theme.grey_color);
     _preferences.end();
 }
 ThemeState::~ThemeState() {}
