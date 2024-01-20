@@ -232,7 +232,7 @@ void ServerApp::set_time(JsonVariant &json) {
     Serial.println(time_json["time"].as<unsigned long>());
     settimeofday(&tv, NULL);
     lv_msg_send(MSG_UPDATE_TZ, NULL);
-    this->_state_app->time_is_set = true;
+    this->_state_app->time_state->time_is_set = true;
 }
 
 void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
@@ -252,7 +252,7 @@ String ServerApp::getSensorReadings() {
 
 void ServerApp::save_time_settings(JsonVariant &json) {
     JsonObject &&time_json = json.as<JsonObject>();
-    this->_state_app->save_timezone(time_json["timezone_posix"].as<const char *>());
+    this->_state_app->time_state->save_timezone(time_json["timezone_posix"].as<const char *>());
     this->_state_app->display_state->save_digital_main_screen(
         time_json["digital_main_screen"].as<bool>());
     lv_msg_send(MSG_UPDATE_TZ, NULL);
@@ -342,7 +342,7 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["auto_theme_change"] = false;
     doc["threshold"] = this->_state_app->display_state->threshold;
     doc["brightness_level"] = this->_state_app->display_state->brightness_level;
-    doc["timezone_posix"] = this->_state_app->timezone_posix;
+    doc["timezone_posix"] = this->_state_app->time_state->timezone_posix;
     doc["digital_main_screen"] = this->_state_app->display_state->digital_main_screen;
     doc["weather_enabled"] = this->_state_app->weather_state->weather_enabled;
     doc["api_key"] = this->_state_app->weather_state->api_key;

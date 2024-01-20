@@ -164,7 +164,7 @@ void OEClockApp::loop() {
     lv_task_handler();
     delay(5);
     server_app->run();
-    if (this->state_app->wifi_state->wifi_connected || this->state_app->time_is_set) {
+    if (this->state_app->wifi_state->wifi_connected || this->state_app->time_state->time_is_set) {
         time_app->notifyAboutTime();
         // Serial.println(ESP.getFreeHeap());
     }

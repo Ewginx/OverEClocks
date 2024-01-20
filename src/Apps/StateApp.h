@@ -129,6 +129,21 @@ class DisplayState {
     ~DisplayState();
 };
 
+class TimeState {
+  private:
+    Preferences _preferences;
+
+  public:
+    String timezone_posix;
+
+    bool time_is_set = false;
+
+    void save_timezone(const char *timezone_posix);
+
+    TimeState(Preferences &preferences);
+    ~TimeState();
+};
+
 class StateApp {
   private:
     Preferences _preferences;
@@ -139,22 +154,10 @@ class StateApp {
     AlarmState *alarm_state;
     ThemeState *theme_state;
     DisplayState *display_state;
-
-
-
-
-
-    String timezone_posix;
-    bool time_is_set = false;
+    TimeState *time_state;
 
     void init_state();
 
-
-
-
-
-
-    void save_timezone(const char *timezone_posix);
 
     StateApp(/* args */);
     ~StateApp();

@@ -9,21 +9,9 @@ StateApp::StateApp() {
     alarm_state = new AlarmState(_preferences);
     theme_state = new ThemeState(_preferences);
     display_state = new DisplayState(_preferences);
+    time_state = new TimeState(_preferences);
 }
-
-void StateApp::init_state() {
-    _preferences.begin(NAMESPACE);
-    this->timezone_posix = _preferences.getString("timezone", TIMEZONE);
-
-    _preferences.end();
-}
-
-void StateApp::save_timezone(const char *timezone_posix) {
-    this->timezone_posix = timezone_posix;
-    this->_preferences.begin(NAMESPACE);
-    this->_preferences.putString("timezone", timezone_posix);
-    this->_preferences.end();
-}
+void StateApp::init_state() {}
 StateApp::~StateApp() {}
 
 void WiFiState::save_ssid(const char *ssid) {
@@ -265,3 +253,17 @@ void DisplayState::save_brightness_threshold(int threshold) {
     _preferences.end();
 }
 DisplayState::~DisplayState() {}
+
+TimeState::TimeState(Preferences &preferences) {
+    this->_preferences = preferences;
+    this->_preferences.begin(NAMESPACE);
+    this->timezone_posix = _preferences.getString("timezone", TIMEZONE);
+    this->_preferences.end();
+}
+void TimeState::save_timezone(const char *timezone_posix) {
+    this->timezone_posix = timezone_posix;
+    this->_preferences.begin(NAMESPACE);
+    this->_preferences.putString("timezone", timezone_posix);
+    this->_preferences.end();
+}
+TimeState::~TimeState() {}
