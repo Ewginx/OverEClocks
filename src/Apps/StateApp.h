@@ -106,6 +106,29 @@ class ThemeState {
     ~ThemeState();
 };
 
+class DisplayState {
+  private:
+    Preferences _preferences;
+
+  public:
+    bool auto_brightness;
+    unsigned int brightness_level;
+    bool auto_theme_change;
+    int threshold;
+
+    bool digital_main_screen;
+
+    void save_auto_brightness_enabled(bool enabled);
+    void save_brightness_level(unsigned int brightness_level);
+    void save_brightness_threshold(int threshold);
+
+    void save_auto_theme_change(bool change);
+    void save_digital_main_screen(bool digital_main_screen);
+
+    DisplayState(Preferences &preferences);
+    ~DisplayState();
+};
+
 class StateApp {
   private:
     Preferences _preferences;
@@ -115,12 +138,9 @@ class StateApp {
     WeatherState *weather_state;
     AlarmState *alarm_state;
     ThemeState *theme_state;
+    DisplayState *display_state;
 
-    bool auto_brightness;
-    unsigned int brightness_level;
-    bool auto_theme_change;
-    int threshold;
-    bool digital_main_screen;
+
 
 
 
@@ -130,12 +150,7 @@ class StateApp {
     void init_state();
 
 
-    void save_auto_brightness_enabled(bool enabled);
-    void save_brightness_level(unsigned int brightness_level);
-    void save_brightness_threshold(int threshold);
 
-    void save_auto_theme_change(bool change);
-    void save_digital_main_screen(bool digital_main_screen);
 
 
 

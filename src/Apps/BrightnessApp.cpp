@@ -3,10 +3,10 @@
 static BrightnessApp *instance = NULL;
 
 extern "C" void auto_brightness_cb_wrapper(void *subscriber, lv_msg_t *msg) {
-    instance->set_auto_brightness_timer(instance->_state_app->auto_brightness);
+    instance->set_auto_brightness_timer(instance->_state_app->display_state->auto_brightness);
 }
 extern "C" void brightness_changed_cb_wrapper(void *subscriber, lv_msg_t *msg) {
-    instance->set_display_brightness(instance->_state_app->brightness_level);
+    instance->set_display_brightness(instance->_state_app->display_state->brightness_level);
 }
 extern "C" void light_sensor_timer_cb_wrapper(lv_timer_t *timer) {
     instance->light_sensor_timer_cb();
@@ -20,10 +20,10 @@ void BrightnessApp::light_sensor_timer_cb() {
     int old_brightness = this->_display->get_brightness();
     int new_brightness = this->map_light_level(light_level);
     bool dark_theme = false;
-    if (new_brightness < CHANGE_THEME_THRESHOLD & this->_state_app->auto_theme_change) {
+    if (new_brightness < CHANGE_THEME_THRESHOLD & this->_state_app->display_state->auto_theme_change) {
         dark_theme = true;
         lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
-    } else if(this->_state_app->auto_theme_change){
+    } else if(this->_state_app->display_state->auto_theme_change){
         dark_theme = this->_state_app->theme_state->dark_theme_enabled ? true : false;
         lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
     }
@@ -67,11 +67,11 @@ bool BrightnessApp::begin() {
     }
 }
 int BrightnessApp::map_light_level(int light_level) {
-    if (light_level > this->_state_app->threshold) {
+    if (light_level > this->_state_app->display_state->threshold) {
         return 255;
     }
     int output =
-        static_cast<int>(5 + (250 / (this->_state_app->threshold)) * (light_level));
+        static_cast<int>(5 + (250 / (this->_state_app->display_state->threshold)) * (light_level));
     return output;
 }
 BrightnessApp::BrightnessApp(Display *display, Settings *settings, StateApp *state_app) {

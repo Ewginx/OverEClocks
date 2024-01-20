@@ -63,7 +63,7 @@ void OEClockApp::setup() {
                             0);
     this->state_app->init_state();
     this->weather_app->setup_weather_url();
-    this->brightness_app->set_display_brightness(this->state_app->brightness_level);
+    this->brightness_app->set_display_brightness(this->state_app->display_state->brightness_level);
     this->init_gui();
     weather_app->create_weather_task();
     this->connect_to_wifi();
@@ -96,7 +96,7 @@ void OEClockApp::init_i2c_apps() {
 void OEClockApp::init_gui() {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->setup_gui();
-        this->brightness_app->set_auto_brightness_timer(this->state_app->auto_brightness);
+        this->brightness_app->set_auto_brightness_timer(this->state_app->display_state->auto_brightness);
         xSemaphoreGive(mutex);
     } else {
         Serial.println("Can't obtain mutex");

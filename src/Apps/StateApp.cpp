@@ -12,48 +12,8 @@ StateApp::StateApp() {
 
 void StateApp::init_state() {
     _preferences.begin(NAMESPACE);
-
-    this->auto_brightness = _preferences.getBool("auto_bright", false);
-    this->auto_theme_change = _preferences.getBool("auto_theme", false);
-    this->brightness_level = _preferences.getUInt("brightness", 255);
-    this->threshold = _preferences.getInt("threshold", 120);
-
-    this->digital_main_screen =
-        _preferences.getBool("dig_main_screen", DIGITAL_CLOCK_MAIN_SCREEN);
     this->timezone_posix = _preferences.getString("timezone", TIMEZONE);
 
-    _preferences.end();
-}
-void StateApp::save_auto_brightness_enabled(bool enabled) {
-    this->auto_brightness = enabled;
-    _preferences.begin(NAMESPACE);
-    _preferences.putBool("auto_bright", enabled);
-    _preferences.end();
-}
-
-void StateApp::save_auto_theme_change(bool change) {
-    this->auto_theme_change = change;
-    _preferences.begin(NAMESPACE);
-    _preferences.putBool("auto_theme", change);
-    _preferences.end();
-}
-void StateApp::save_digital_main_screen(bool digital_main_screen) {
-    this->digital_main_screen = digital_main_screen;
-    _preferences.begin(NAMESPACE);
-    _preferences.putBool("dig_main_screen", digital_main_screen);
-    _preferences.end();
-}
-void StateApp::save_brightness_level(unsigned int brightness_level) {
-    this->brightness_level = brightness_level;
-    _preferences.begin(NAMESPACE);
-    _preferences.putUInt("brightness", brightness_level);
-    _preferences.end();
-}
-
-void StateApp::save_brightness_threshold(int threshold) {
-    this->threshold = threshold;
-    _preferences.begin(NAMESPACE);
-    _preferences.putInt("threshold", threshold);
     _preferences.end();
 }
 
@@ -258,3 +218,49 @@ void ThemeState::save_dark_colors(int dark_primary_color, int dark_second_color,
     _preferences.end();
 }
 ThemeState::~ThemeState() {}
+
+DisplayState::DisplayState(Preferences &preferences) {
+    this->_preferences = preferences;
+    this->_preferences.begin(NAMESPACE);
+    this->auto_brightness = _preferences.getBool("auto_bright", false);
+    this->auto_theme_change = _preferences.getBool("auto_theme", false);
+    this->brightness_level = _preferences.getUInt("brightness", 255);
+    this->threshold = _preferences.getInt("threshold", 120);
+
+    this->digital_main_screen =
+        _preferences.getBool("dig_main_screen", DIGITAL_CLOCK_MAIN_SCREEN);
+    this->_preferences.end();
+}
+void DisplayState::save_auto_brightness_enabled(bool enabled) {
+    this->auto_brightness = enabled;
+    _preferences.begin(NAMESPACE);
+    _preferences.putBool("auto_bright", enabled);
+    _preferences.end();
+}
+
+void DisplayState::save_auto_theme_change(bool change) {
+    this->auto_theme_change = change;
+    _preferences.begin(NAMESPACE);
+    _preferences.putBool("auto_theme", change);
+    _preferences.end();
+}
+void DisplayState::save_digital_main_screen(bool digital_main_screen) {
+    this->digital_main_screen = digital_main_screen;
+    _preferences.begin(NAMESPACE);
+    _preferences.putBool("dig_main_screen", digital_main_screen);
+    _preferences.end();
+}
+void DisplayState::save_brightness_level(unsigned int brightness_level) {
+    this->brightness_level = brightness_level;
+    _preferences.begin(NAMESPACE);
+    _preferences.putUInt("brightness", brightness_level);
+    _preferences.end();
+}
+
+void DisplayState::save_brightness_threshold(int threshold) {
+    this->threshold = threshold;
+    _preferences.begin(NAMESPACE);
+    _preferences.putInt("threshold", threshold);
+    _preferences.end();
+}
+DisplayState::~DisplayState() {}

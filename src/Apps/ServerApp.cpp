@@ -253,7 +253,7 @@ String ServerApp::getSensorReadings() {
 void ServerApp::save_time_settings(JsonVariant &json) {
     JsonObject &&time_json = json.as<JsonObject>();
     this->_state_app->save_timezone(time_json["timezone_posix"].as<const char *>());
-    this->_state_app->save_digital_main_screen(
+    this->_state_app->display_state->save_digital_main_screen(
         time_json["digital_main_screen"].as<bool>());
     lv_msg_send(MSG_UPDATE_TZ, NULL);
 }
@@ -294,12 +294,12 @@ void ServerApp::save_theme_settings(JsonVariant &json) {
 }
 void ServerApp::save_brightness_settings(JsonVariant &json) {
     JsonObject &&brightness_json = json.as<JsonObject>();
-    this->_state_app->save_auto_brightness_enabled(
+    this->_state_app->display_state->save_auto_brightness_enabled(
         brightness_json["auto_brightness"].as<bool>());
-    this->_state_app->save_auto_theme_change(
+    this->_state_app->display_state->save_auto_theme_change(
         brightness_json["auto_theme_change"].as<bool>());
-    this->_state_app->save_brightness_threshold(brightness_json["threshold"].as<int>());
-    this->_state_app->save_brightness_level(
+    this->_state_app->display_state->save_brightness_threshold(brightness_json["threshold"].as<int>());
+    this->_state_app->display_state->save_brightness_level(
         brightness_json["brightness_level"].as<int>());
     lv_msg_send(MSG_BRIGHTNESS_CHANGED, NULL);
     lv_msg_send(MSG_AUTO_BRIGHTNESS, NULL);
@@ -338,12 +338,12 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["gateway"] = this->_state_app->wifi_state->gateway_address;
     doc["ap_login"] = this->_state_app->wifi_state->ap_login;
     doc["ap_password"] = this->_state_app->wifi_state->ap_password;
-    doc["auto_brightness"] = this->_state_app->auto_brightness;
+    doc["auto_brightness"] = this->_state_app->display_state->auto_brightness;
     doc["auto_theme_change"] = false;
-    doc["threshold"] = this->_state_app->threshold;
-    doc["brightness_level"] = this->_state_app->brightness_level;
+    doc["threshold"] = this->_state_app->display_state->threshold;
+    doc["brightness_level"] = this->_state_app->display_state->brightness_level;
     doc["timezone_posix"] = this->_state_app->timezone_posix;
-    doc["digital_main_screen"] = this->_state_app->digital_main_screen;
+    doc["digital_main_screen"] = this->_state_app->display_state->digital_main_screen;
     doc["weather_enabled"] = this->_state_app->weather_state->weather_enabled;
     doc["api_key"] = this->_state_app->weather_state->api_key;
     doc["city"] = this->_state_app->weather_state->city;

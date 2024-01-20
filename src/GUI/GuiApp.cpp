@@ -93,13 +93,13 @@ void GuiApp::setup_gui() {
                                       this->state_app->wifi_state->password.c_str());
     this->settings->set_weather_settings(this->state_app->weather_state->city.c_str(),
                                          this->state_app->weather_state->language.c_str());
-    this->settings->set_brightness_slider(this->state_app->brightness_level);
-    this->settings->set_brightness_checkbox(this->state_app->auto_brightness);
+    this->settings->set_brightness_slider(this->state_app->display_state->brightness_level);
+    this->settings->set_brightness_checkbox(this->state_app->display_state->auto_brightness);
     this->settings->set_theme_switch(this->state_app->theme_state->dark_theme_enabled);
 }
 
 void GuiApp::load_default_screen() {
-    if (this->state_app->digital_main_screen) {
+    if (this->state_app->display_state->digital_main_screen) {
         lv_scr_load(digital_clock->digitalClockScreen);
     } else {
         lv_scr_load(analog_clock->analogClockScreen);
@@ -187,7 +187,7 @@ void GuiApp::screen_timer_cb(lv_timer_t *timer) {
     if (lv_scr_act() != this->analog_clock->analogClockScreen &
         lv_scr_act() != this->digital_clock->digitalClockScreen) {
         Serial.println("Screen was swapped to main clock screen");
-        if (this->state_app->digital_main_screen) {
+        if (this->state_app->display_state->digital_main_screen) {
             lv_scr_load_anim(this->digital_clock->digitalClockScreen,
                              LV_SCR_LOAD_ANIM_FADE_IN, SCREEN_CHANGE_ANIM_TIME, 0, false);
         } else {
