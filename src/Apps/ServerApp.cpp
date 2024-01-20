@@ -260,15 +260,15 @@ void ServerApp::save_time_settings(JsonVariant &json) {
 
 void ServerApp::save_weather_settings(JsonVariant &json) {
     JsonObject &&weather_json = json.as<JsonObject>();
-    this->_state_app->save_weather_enabled(weather_json["weather_enabled"].as<bool>());
-    this->_state_app->save_api_key(weather_json["api_key"].as<const char *>());
-    this->_state_app->save_city(weather_json["city"].as<const char *>());
-    this->_state_app->save_language(weather_json["language"].as<const char *>());
-    this->_state_app->save_request_period(weather_json["request_period"].as<int>());
+    this->_state_app->weather_state->save_weather_enabled(weather_json["weather_enabled"].as<bool>());
+    this->_state_app->weather_state->save_api_key(weather_json["api_key"].as<const char *>());
+    this->_state_app->weather_state->save_city(weather_json["city"].as<const char *>());
+    this->_state_app->weather_state->save_language(weather_json["language"].as<const char *>());
+    this->_state_app->weather_state->save_request_period(weather_json["request_period"].as<int>());
     lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
     lv_msg_send(MSG_WEATHER_ENABLED,
-                static_cast<const void *>(&this->_state_app->weather_enabled));
-    if (this->_state_app->weather_enabled) {
+                static_cast<const void *>(&this->_state_app->weather_state->weather_enabled));
+    if (this->_state_app->weather_state->weather_enabled) {
         lv_msg_send(MSG_WEATHER_UPDATE, NULL);
     }
 }
@@ -344,11 +344,11 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["brightness_level"] = this->_state_app->brightness_level;
     doc["timezone_posix"] = this->_state_app->timezone_posix;
     doc["digital_main_screen"] = this->_state_app->digital_main_screen;
-    doc["weather_enabled"] = this->_state_app->weather_enabled;
-    doc["api_key"] = this->_state_app->api_key;
-    doc["city"] = this->_state_app->city;
-    doc["language"] = this->_state_app->language;
-    doc["request_period"] = this->_state_app->request_period;
+    doc["weather_enabled"] = this->_state_app->weather_state->weather_enabled;
+    doc["api_key"] = this->_state_app->weather_state->api_key;
+    doc["city"] = this->_state_app->weather_state->city;
+    doc["language"] = this->_state_app->weather_state->language;
+    doc["request_period"] = this->_state_app->weather_state->request_period;
     doc["dark_theme_enabled"] = this->_state_app->dark_theme_enabled;
 
     doc["light_primary_color"] = this->_state_app->light_primary_color;

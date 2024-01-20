@@ -91,8 +91,8 @@ void GuiApp::setup_gui() {
     this->alarm_clock->set_alarm_clock_gui();
     this->settings->set_wifi_settings(this->state_app->wifi_state->ssid.c_str(),
                                       this->state_app->wifi_state->password.c_str());
-    this->settings->set_weather_settings(this->state_app->city.c_str(),
-                                         this->state_app->language.c_str());
+    this->settings->set_weather_settings(this->state_app->weather_state->city.c_str(),
+                                         this->state_app->weather_state->language.c_str());
     this->settings->set_brightness_slider(this->state_app->brightness_level);
     this->settings->set_brightness_checkbox(this->state_app->auto_brightness);
     this->settings->set_theme_switch(this->state_app->dark_theme_enabled);

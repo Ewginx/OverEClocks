@@ -5,6 +5,7 @@ static StateApp *instance = NULL;
 StateApp::StateApp() {
     instance = this;
     wifi_state = new WiFiState(_preferences);
+    weather_state = new WeatherState(_preferences);
 }
 
 void StateApp::save_dark_theme_enabled(bool enabled) {
@@ -15,13 +16,6 @@ void StateApp::save_dark_theme_enabled(bool enabled) {
 }
 void StateApp::init_state() {
     _preferences.begin(NAMESPACE);
-
-    this->weather_enabled = _preferences.getBool("weather_enab", false);
-    this->city = _preferences.getString("city", WEATHER_CITY);
-    this->language = _preferences.getString("language", "");
-    this->api_key = _preferences.getString("api_key", API_KEY);
-    this->request_period =
-        _preferences.getInt("request_period", WEATHER_API_POLLING_INTERVAL_MILLISECONDS);
 
     this->auto_brightness = _preferences.getBool("auto_bright", false);
     this->auto_theme_change = _preferences.getBool("auto_theme", false);
@@ -75,12 +69,7 @@ void StateApp::save_auto_brightness_enabled(bool enabled) {
     _preferences.putBool("auto_bright", enabled);
     _preferences.end();
 }
-void StateApp::save_weather_enabled(bool enabled) {
-    this->weather_enabled = enabled;
-    _preferences.begin(NAMESPACE);
-    _preferences.putBool("weather_enab", enabled);
-    _preferences.end();
-}
+
 void StateApp::save_auto_theme_change(bool change) {
     this->auto_theme_change = change;
     _preferences.begin(NAMESPACE);
@@ -104,30 +93,6 @@ void StateApp::save_brightness_threshold(int threshold) {
     this->threshold = threshold;
     _preferences.begin(NAMESPACE);
     _preferences.putInt("threshold", threshold);
-    _preferences.end();
-}
-void StateApp::save_city(const char *city) {
-    this->city = city;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("city", city);
-    _preferences.end();
-}
-void StateApp::save_language(const char *language) {
-    this->language = language;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("language", language);
-    _preferences.end();
-}
-void StateApp::save_api_key(const char *api_key) {
-    this->api_key = api_key;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("api_key", api_key);
-    _preferences.end();
-}
-void StateApp::save_request_period(int request_period) {
-    this->request_period = request_period;
-    _preferences.begin(NAMESPACE);
-    _preferences.putInt("request_period", request_period);
     _preferences.end();
 }
 void StateApp::save_alarm_time(const char *weekdays_time, const char *weekends_time,
@@ -228,9 +193,57 @@ WiFiState::WiFiState(Preferences &preferences) {
     this->ssid = this->_preferences.getString("ssid", WIFI_SSID);
     this->password = this->_preferences.getString("password", WIFI_PASSWORD);
     this->ap_login = this->_preferences.getString("ap_login", ACCESS_POINT_LOGIN);
-    this->ap_password = this->_preferences.getString("ap_password", ACCESS_POINT_PASSWORD);
+    this->ap_password =
+        this->_preferences.getString("ap_password", ACCESS_POINT_PASSWORD);
     this->ip_address = this->_preferences.getString("ip_address", "192.168.3.50");
-    this->gateway_address = this->_preferences.getString("gateway_address", "192.168.3.1");
+    this->gateway_address =
+        this->_preferences.getString("gateway_address", "192.168.3.1");
     this->_preferences.end();
 }
 WiFiState::~WiFiState() {}
+
+
+
+WeatherState::WeatherState(Preferences &preferences) {
+    this->_preferences = preferences;
+    this->_preferences.begin(NAMESPACE);
+    this->weather_enabled = _preferences.getBool("weather_enab", false);
+    this->city = _preferences.getString("city", WEATHER_CITY);
+    this->language = _preferences.getString("language", "");
+    this->api_key = _preferences.getString("api_key", API_KEY);
+    this->request_period =
+        _preferences.getInt("request_period", WEATHER_API_POLLING_INTERVAL_MILLISECONDS);
+    this->_preferences.end();
+}
+void WeatherState::save_weather_enabled(bool enabled) {
+    this->weather_enabled = enabled;
+    _preferences.begin(NAMESPACE);
+    _preferences.putBool("weather_enab", enabled);
+    _preferences.end();
+}
+void WeatherState::save_city(const char *city) {
+    this->city = city;
+    _preferences.begin(NAMESPACE);
+    _preferences.putString("city", city);
+    _preferences.end();
+}
+void WeatherState::save_language(const char *language) {
+    this->language = language;
+    _preferences.begin(NAMESPACE);
+    _preferences.putString("language", language);
+    _preferences.end();
+}
+void WeatherState::save_api_key(const char *api_key) {
+    this->api_key = api_key;
+    _preferences.begin(NAMESPACE);
+    _preferences.putString("api_key", api_key);
+    _preferences.end();
+}
+void WeatherState::save_request_period(int request_period) {
+    this->request_period = request_period;
+    _preferences.begin(NAMESPACE);
+    _preferences.putInt("request_period", request_period);
+    _preferences.end();
+}
+
+WeatherState::~WeatherState() {}
