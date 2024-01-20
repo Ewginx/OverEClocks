@@ -8,6 +8,7 @@ StateApp::StateApp() {
     weather_state = new WeatherState(_preferences);
     alarm_state = new AlarmState(_preferences);
     theme_state = new ThemeState(_preferences);
+    display_state = new DisplayState(_preferences);
 }
 
 void StateApp::init_state() {
