@@ -11,7 +11,6 @@ StateApp::StateApp() {
     display_state = new DisplayState(_preferences);
     time_state = new TimeState(_preferences);
 }
-void StateApp::init_state() {}
 StateApp::~StateApp() {}
 
 void WiFiState::save_ssid(const char *ssid) {

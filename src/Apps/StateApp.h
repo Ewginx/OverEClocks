@@ -155,10 +155,7 @@ class StateApp {
     ThemeState *theme_state;
     DisplayState *display_state;
     TimeState *time_state;
-
-    void init_state();
-
-
+    
     StateApp(/* args */);
     ~StateApp();
 };

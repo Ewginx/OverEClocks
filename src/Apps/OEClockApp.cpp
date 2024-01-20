@@ -61,7 +61,6 @@ void OEClockApp::setup() {
                             0,                     /* Priority of the task */
                             &update_display_task,  /* Task handle. */
                             0);
-    this->state_app->init_state();
     this->weather_app->setup_weather_url();
     this->brightness_app->set_display_brightness(this->state_app->display_state->brightness_level);
     this->init_gui();
