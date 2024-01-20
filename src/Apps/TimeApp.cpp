@@ -215,11 +215,11 @@ void TimeApp::config_time() {
     configTime(0, 0, "pool.ntp.org");
     this->set_timezone();
     if (getLocalTime(&timeinfo)) {
-        this->_state_app->time_is_set = true;
+        this->_state_app->time_state->time_is_set = true;
     }
 }
 void TimeApp::set_timezone() {
-    setenv("TZ", this->_state_app->timezone_posix.c_str(), 1);
+    setenv("TZ", this->_state_app->time_state->timezone_posix.c_str(), 1);
     tzset();
 }
 TimeApp::~TimeApp() {}
