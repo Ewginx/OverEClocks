@@ -72,21 +72,13 @@ class AlarmState {
     ~AlarmState();
 };
 
-class StateApp {
+
+class ThemeState {
   private:
     Preferences _preferences;
 
   public:
-    WiFiState *wifi_state;
-    WeatherState *weather_state;
-    AlarmState *alarm_state;
-
-    bool auto_brightness;
-    unsigned int brightness_level;
-    bool auto_theme_change;
     bool dark_theme_enabled;
-    int threshold;
-    bool digital_main_screen;
 
     int light_primary_color;
     int light_second_color;
@@ -102,12 +94,42 @@ class StateApp {
     int dark_text_color;
     int dark_grey_color;
 
+    void save_dark_theme_enabled(bool enabled);
+    void save_light_colors(int light_primary_color, int light_second_color,
+                           int light_screen_color, int light_card_color,
+                           int light_text_color, int light_grey_color);
+    void save_dark_colors(int dark_primary_color, int dark_second_color,
+                          int dark_screen_color, int dark_card_color, int dark_text_color,
+                          int dark_grey_color);
+
+    ThemeState(Preferences &preferences);
+    ~ThemeState();
+};
+
+class StateApp {
+  private:
+    Preferences _preferences;
+
+  public:
+    WiFiState *wifi_state;
+    WeatherState *weather_state;
+    AlarmState *alarm_state;
+    ThemeState *theme_state;
+
+    bool auto_brightness;
+    unsigned int brightness_level;
+    bool auto_theme_change;
+    int threshold;
+    bool digital_main_screen;
+
+
+
     String timezone_posix;
     bool time_is_set = false;
 
     void init_state();
 
-    void save_dark_theme_enabled(bool enabled);
+
     void save_auto_brightness_enabled(bool enabled);
     void save_brightness_level(unsigned int brightness_level);
     void save_brightness_threshold(int threshold);
@@ -115,12 +137,7 @@ class StateApp {
     void save_auto_theme_change(bool change);
     void save_digital_main_screen(bool digital_main_screen);
 
-    void save_light_colors(int light_primary_color, int light_second_color,
-                           int light_screen_color, int light_card_color,
-                           int light_text_color, int light_grey_color);
-    void save_dark_colors(int dark_primary_color, int dark_second_color,
-                          int dark_screen_color, int dark_card_color, int dark_text_color,
-                          int dark_grey_color);
+
 
     void save_timezone(const char *timezone_posix);
 

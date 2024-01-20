@@ -31,7 +31,7 @@ extern "C" void change_theme_cb_wrapper(void *subscriber, lv_msg_t *msg) {
 GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
     this->state_app = state_app;
-    this->state_app->dark_theme_enabled ? this->init_dark_theme()
+    this->state_app->theme_state->dark_theme_enabled ? this->init_dark_theme()
                                         : this->init_light_theme();
     alarm_clock = new AlarmClock(this->state_app);
     digital_clock = new DigitalClock();
@@ -87,7 +87,7 @@ GuiApp::GuiApp(StateApp *state_app) {
 };
 
 void GuiApp::setup_gui() {
-    this->switch_theme(this->state_app->dark_theme_enabled);
+    this->switch_theme(this->state_app->theme_state->dark_theme_enabled);
     this->alarm_clock->set_alarm_clock_gui();
     this->settings->set_wifi_settings(this->state_app->wifi_state->ssid.c_str(),
                                       this->state_app->wifi_state->password.c_str());
@@ -95,7 +95,7 @@ void GuiApp::setup_gui() {
                                          this->state_app->weather_state->language.c_str());
     this->settings->set_brightness_slider(this->state_app->brightness_level);
     this->settings->set_brightness_checkbox(this->state_app->auto_brightness);
-    this->settings->set_theme_switch(this->state_app->dark_theme_enabled);
+    this->settings->set_theme_switch(this->state_app->theme_state->dark_theme_enabled);
 }
 
 void GuiApp::load_default_screen() {
@@ -214,7 +214,7 @@ void GuiApp::theme_switch_event_cb(lv_event_t *e) {
     lv_disp_t *disp = lv_disp_get_default();
     if (event_code == LV_EVENT_VALUE_CHANGED) {
         this->switch_theme(lv_obj_has_state(target, LV_STATE_CHECKED));
-        this->state_app->save_dark_theme_enabled(
+        this->state_app->theme_state->save_dark_theme_enabled(
             lv_obj_has_state(target, LV_STATE_CHECKED));
     }
 }
@@ -239,12 +239,12 @@ void GuiApp::switch_to_dark_theme() {
     lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_white(), 0);
 }
 void GuiApp::init_light_theme() {
-    lv_color_t primary_color = lv_color_hex(this->state_app->light_primary_color);
-    lv_color_t second_color = lv_color_hex(this->state_app->light_second_color);
-    lv_color_t color_screen = lv_color_hex(this->state_app->light_screen_color);
-    lv_color_t color_card = lv_color_hex(this->state_app->light_card_color);
-    lv_color_t color_text = lv_color_hex(this->state_app->light_text_color);
-    lv_color_t color_grey = lv_color_hex(this->state_app->light_grey_color);
+    lv_color_t primary_color = lv_color_hex(this->state_app->theme_state->light_primary_color);
+    lv_color_t second_color = lv_color_hex(this->state_app->theme_state->light_second_color);
+    lv_color_t color_screen = lv_color_hex(this->state_app->theme_state->light_screen_color);
+    lv_color_t color_card = lv_color_hex(this->state_app->theme_state->light_card_color);
+    lv_color_t color_text = lv_color_hex(this->state_app->theme_state->light_text_color);
+    lv_color_t color_grey = lv_color_hex(this->state_app->theme_state->light_grey_color);
 
     lv_theme_t *theme =
         theme_custom_init(NULL, primary_color, second_color, color_screen, color_card,
@@ -252,12 +252,12 @@ void GuiApp::init_light_theme() {
     lv_disp_set_theme(NULL, theme);
 }
 void GuiApp::init_dark_theme() {
-    lv_color_t primary_color = lv_color_hex(this->state_app->dark_primary_color);
-    lv_color_t second_color = lv_color_hex(this->state_app->dark_second_color);
-    lv_color_t color_screen = lv_color_hex(this->state_app->dark_screen_color);
-    lv_color_t color_card = lv_color_hex(this->state_app->dark_card_color);
-    lv_color_t color_text = lv_color_hex(this->state_app->dark_text_color);
-    lv_color_t color_grey = lv_color_hex(this->state_app->dark_grey_color);
+    lv_color_t primary_color = lv_color_hex(this->state_app->theme_state->dark_primary_color);
+    lv_color_t second_color = lv_color_hex(this->state_app->theme_state->dark_second_color);
+    lv_color_t color_screen = lv_color_hex(this->state_app->theme_state->dark_screen_color);
+    lv_color_t color_card = lv_color_hex(this->state_app->theme_state->dark_card_color);
+    lv_color_t color_text = lv_color_hex(this->state_app->theme_state->dark_text_color);
+    lv_color_t color_grey = lv_color_hex(this->state_app->theme_state->dark_grey_color);
 
     lv_theme_t *theme =
         theme_custom_init(NULL, primary_color, second_color, color_screen, color_card,

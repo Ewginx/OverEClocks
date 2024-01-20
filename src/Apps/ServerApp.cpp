@@ -274,23 +274,23 @@ void ServerApp::save_weather_settings(JsonVariant &json) {
 }
 void ServerApp::save_theme_settings(JsonVariant &json) {
     JsonObject &&theme_json = json.as<JsonObject>();
-    this->_state_app->save_dark_theme_enabled(
+    this->_state_app->theme_state->save_dark_theme_enabled(
         theme_json["dark_theme_enabled"].as<bool>());
-    this->_state_app->save_light_colors(theme_json["light_primary_color"].as<int>(),
+    this->_state_app->theme_state->save_light_colors(theme_json["light_primary_color"].as<int>(),
                                         theme_json["light_second_color"].as<int>(),
                                         theme_json["light_screen_color"].as<int>(),
                                         theme_json["light_card_color"].as<int>(),
                                         theme_json["light_text_color"].as<int>(),
                                         theme_json["light_grey_color"].as<int>());
 
-    this->_state_app->save_dark_colors(theme_json["dark_primary_color"].as<int>(),
+    this->_state_app->theme_state->save_dark_colors(theme_json["dark_primary_color"].as<int>(),
                                        theme_json["dark_second_color"].as<int>(),
                                        theme_json["dark_screen_color"].as<int>(),
                                        theme_json["dark_card_color"].as<int>(),
                                        theme_json["dark_text_color"].as<int>(),
                                        theme_json["dark_grey_color"].as<int>());
     lv_msg_send(MSG_CHANGE_THEME,
-                static_cast<const void *>(&this->_state_app->dark_theme_enabled));
+                static_cast<const void *>(&this->_state_app->theme_state->dark_theme_enabled));
 }
 void ServerApp::save_brightness_settings(JsonVariant &json) {
     JsonObject &&brightness_json = json.as<JsonObject>();
@@ -349,21 +349,21 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["city"] = this->_state_app->weather_state->city;
     doc["language"] = this->_state_app->weather_state->language;
     doc["request_period"] = this->_state_app->weather_state->request_period;
-    doc["dark_theme_enabled"] = this->_state_app->dark_theme_enabled;
+    doc["dark_theme_enabled"] = this->_state_app->theme_state->dark_theme_enabled;
 
-    doc["light_primary_color"] = this->_state_app->light_primary_color;
-    doc["light_second_color"] = this->_state_app->light_second_color;
-    doc["light_screen_color"] = this->_state_app->light_screen_color;
-    doc["light_card_color"] = this->_state_app->light_card_color;
-    doc["light_text_color"] = this->_state_app->light_text_color;
-    doc["light_grey_color"] = this->_state_app->light_grey_color;
+    doc["light_primary_color"] = this->_state_app->theme_state->light_primary_color;
+    doc["light_second_color"] = this->_state_app->theme_state->light_second_color;
+    doc["light_screen_color"] = this->_state_app->theme_state->light_screen_color;
+    doc["light_card_color"] = this->_state_app->theme_state->light_card_color;
+    doc["light_text_color"] = this->_state_app->theme_state->light_text_color;
+    doc["light_grey_color"] = this->_state_app->theme_state->light_grey_color;
 
-    doc["dark_primary_color"] = this->_state_app->dark_primary_color;
-    doc["dark_second_color"] = this->_state_app->dark_second_color;
-    doc["dark_screen_color"] = this->_state_app->dark_screen_color;
-    doc["dark_card_color"] = this->_state_app->dark_card_color;
-    doc["dark_text_color"] = this->_state_app->dark_text_color;
-    doc["dark_grey_color"] = this->_state_app->dark_grey_color;
+    doc["dark_primary_color"] = this->_state_app->theme_state->dark_primary_color;
+    doc["dark_second_color"] = this->_state_app->theme_state->dark_second_color;
+    doc["dark_screen_color"] = this->_state_app->theme_state->dark_screen_color;
+    doc["dark_card_color"] = this->_state_app->theme_state->dark_card_color;
+    doc["dark_text_color"] = this->_state_app->theme_state->dark_text_color;
+    doc["dark_grey_color"] = this->_state_app->theme_state->dark_grey_color;
 
     doc["weekdays_time"] = this->_state_app->alarm_state->weekdays_time;
     doc["weekends_time"] = this->_state_app->alarm_state->weekends_time;

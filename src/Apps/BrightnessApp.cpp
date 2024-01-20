@@ -24,7 +24,7 @@ void BrightnessApp::light_sensor_timer_cb() {
         dark_theme = true;
         lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
     } else if(this->_state_app->auto_theme_change){
-        dark_theme = this->_state_app->dark_theme_enabled ? true : false;
+        dark_theme = this->_state_app->theme_state->dark_theme_enabled ? true : false;
         lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
     }
 
