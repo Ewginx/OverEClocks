@@ -317,11 +317,11 @@ void ServerApp::save_wifi_settings(JsonVariant &json) {
 
 void ServerApp::save_alarm_clock_settings(JsonVariant &json) {
     JsonObject &&alarm_clock_json = json.as<JsonObject>();
-    this->_state_app->save_alarm_time(
+    this->_state_app->alarm_state->save_alarm_time(
         alarm_clock_json["weekdays_time"].as<const char *>(),
         alarm_clock_json["weekends_time"].as<const char *>(),
         alarm_clock_json["one_off_time"].as<const char *>());
-    this->_state_app->save_alarm_switches_enabled(
+    this->_state_app->alarm_state->save_alarm_switches_enabled(
         alarm_clock_json["weekdays_enabled"].as<bool>(),
         alarm_clock_json["weekends_enabled"].as<bool>(),
         alarm_clock_json["one_off_enabled"].as<bool>());
@@ -365,12 +365,12 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["dark_text_color"] = this->_state_app->dark_text_color;
     doc["dark_grey_color"] = this->_state_app->dark_grey_color;
 
-    doc["weekdays_time"] = this->_state_app->weekdays_time;
-    doc["weekends_time"] = this->_state_app->weekends_time;
-    doc["one_off_time"] = this->_state_app->oneOff_time;
-    doc["weekdays_enabled"] = this->_state_app->weekdays_switch_enabled;
-    doc["weekends_enabled"] = this->_state_app->weekends_switch_enabled;
-    doc["one_off_enabled"] = this->_state_app->oneOff_switch_enabled;
+    doc["weekdays_time"] = this->_state_app->alarm_state->weekdays_time;
+    doc["weekends_time"] = this->_state_app->alarm_state->weekends_time;
+    doc["one_off_time"] = this->_state_app->alarm_state->oneOff_time;
+    doc["weekdays_enabled"] = this->_state_app->alarm_state->weekdays_switch_enabled;
+    doc["weekends_enabled"] = this->_state_app->alarm_state->weekends_switch_enabled;
+    doc["one_off_enabled"] = this->_state_app->alarm_state->oneOff_switch_enabled;
 
     serializeJson(doc, *response);
     request->send(response);

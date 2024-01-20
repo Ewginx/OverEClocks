@@ -50,6 +50,28 @@ class WeatherState {
     ~WeatherState();
 };
 
+class AlarmState {
+  private:
+    Preferences _preferences;
+
+  public:
+    bool weekdays_switch_enabled;
+    bool weekends_switch_enabled;
+    bool oneOff_switch_enabled;
+
+    String weekdays_time;
+    String weekends_time;
+    String oneOff_time;
+
+    void save_alarm_switches_enabled(bool weekdays_enabled, bool weekends_enabled,
+                                     bool oneOff_enabled);
+    void save_alarm_time(const char *weekdays_time, const char *weekends_time,
+                         const char *oneOff_time);
+
+    AlarmState(Preferences &preferences);
+    ~AlarmState();
+};
+
 class StateApp {
   private:
     Preferences _preferences;
@@ -57,12 +79,13 @@ class StateApp {
   public:
     WiFiState *wifi_state;
     WeatherState *weather_state;
+    AlarmState *alarm_state;
 
     bool auto_brightness;
     unsigned int brightness_level;
     bool auto_theme_change;
     bool dark_theme_enabled;
-
+    int threshold;
     bool digital_main_screen;
 
     int light_primary_color;
@@ -82,27 +105,12 @@ class StateApp {
     String timezone_posix;
     bool time_is_set = false;
 
-    int threshold;
-
-    bool weekdays_switch_enabled;
-    bool weekends_switch_enabled;
-    bool oneOff_switch_enabled;
-    String weekdays_time;
-    String weekends_time;
-    String oneOff_time;
-
     void init_state();
-
-    void save_alarm_switches_enabled(bool weekdays_enabled, bool weekends_enabled,
-                                     bool oneOff_enabled);
-    void save_alarm_time(const char *weekdays_time, const char *weekends_time,
-                         const char *oneOff_time);
 
     void save_dark_theme_enabled(bool enabled);
     void save_auto_brightness_enabled(bool enabled);
     void save_brightness_level(unsigned int brightness_level);
     void save_brightness_threshold(int threshold);
-
 
     void save_auto_theme_change(bool change);
     void save_digital_main_screen(bool digital_main_screen);

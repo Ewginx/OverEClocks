@@ -6,6 +6,7 @@ StateApp::StateApp() {
     instance = this;
     wifi_state = new WiFiState(_preferences);
     weather_state = new WeatherState(_preferences);
+    alarm_state = new AlarmState(_preferences);
 }
 
 void StateApp::save_dark_theme_enabled(bool enabled) {
@@ -43,24 +44,6 @@ void StateApp::init_state() {
 
     this->timezone_posix = _preferences.getString("timezone", TIMEZONE);
 
-    this->weekdays_switch_enabled = _preferences.getBool("weekdays_sw", false);
-    this->weekends_switch_enabled = _preferences.getBool("weekends_sw", false);
-    this->oneOff_switch_enabled = _preferences.getBool("oneOff_sw", false);
-    this->weekdays_time = _preferences.getString("weekdays_time", "08:00");
-    this->weekends_time = _preferences.getString("weekends_time", "09:15");
-    this->oneOff_time = _preferences.getString("oneOff_time", "13:23");
-
-    _preferences.end();
-}
-void StateApp::save_alarm_switches_enabled(bool weekdays_enabled, bool weekends_enabled,
-                                           bool oneOff_enabled) {
-    this->weekdays_switch_enabled = weekdays_enabled;
-    this->weekends_switch_enabled = weekends_enabled;
-    this->oneOff_switch_enabled = oneOff_enabled;
-    _preferences.begin(NAMESPACE);
-    _preferences.putBool("weekdays_sw", weekdays_enabled);
-    _preferences.putBool("weekends_sw", weekends_enabled);
-    _preferences.putBool("oneOff_sw", oneOff_enabled);
     _preferences.end();
 }
 void StateApp::save_auto_brightness_enabled(bool enabled) {
@@ -95,17 +78,7 @@ void StateApp::save_brightness_threshold(int threshold) {
     _preferences.putInt("threshold", threshold);
     _preferences.end();
 }
-void StateApp::save_alarm_time(const char *weekdays_time, const char *weekends_time,
-                               const char *oneOff_time) {
-    this->weekdays_time = weekdays_time;
-    this->weekends_time = weekends_time;
-    this->oneOff_time = oneOff_time;
-    _preferences.begin(NAMESPACE);
-    _preferences.putString("weekdays_time", weekdays_time);
-    _preferences.putString("weekends_time", weekends_time);
-    _preferences.putString("oneOff_time", oneOff_time);
-    _preferences.end();
-}
+
 void StateApp::save_light_colors(int light_primary_color, int light_second_color,
                                  int light_screen_color, int light_card_color,
                                  int light_text_color, int light_grey_color) {
@@ -151,8 +124,6 @@ void StateApp::save_timezone(const char *timezone_posix) {
     this->_preferences.end();
 }
 StateApp::~StateApp() {}
-
-
 
 void WiFiState::save_ssid(const char *ssid) {
     this->ssid = ssid;
@@ -202,8 +173,6 @@ WiFiState::WiFiState(Preferences &preferences) {
 }
 WiFiState::~WiFiState() {}
 
-
-
 WeatherState::WeatherState(Preferences &preferences) {
     this->_preferences = preferences;
     this->_preferences.begin(NAMESPACE);
@@ -247,3 +216,39 @@ void WeatherState::save_request_period(int request_period) {
 }
 
 WeatherState::~WeatherState() {}
+
+AlarmState::AlarmState(Preferences &preferences) {
+    this->_preferences = preferences;
+    this->_preferences.begin(NAMESPACE);
+    this->weekdays_switch_enabled = _preferences.getBool("weekdays_sw", false);
+    this->weekends_switch_enabled = _preferences.getBool("weekends_sw", false);
+    this->oneOff_switch_enabled = _preferences.getBool("oneOff_sw", false);
+    this->weekdays_time = _preferences.getString("weekdays_time", "08:00");
+    this->weekends_time = _preferences.getString("weekends_time", "09:15");
+    this->oneOff_time = _preferences.getString("oneOff_time", "13:23");
+    this->_preferences.end();
+}
+
+void AlarmState::save_alarm_switches_enabled(bool weekdays_enabled, bool weekends_enabled,
+                                             bool oneOff_enabled) {
+    this->weekdays_switch_enabled = weekdays_enabled;
+    this->weekends_switch_enabled = weekends_enabled;
+    this->oneOff_switch_enabled = oneOff_enabled;
+    _preferences.begin(NAMESPACE);
+    _preferences.putBool("weekdays_sw", weekdays_enabled);
+    _preferences.putBool("weekends_sw", weekends_enabled);
+    _preferences.putBool("oneOff_sw", oneOff_enabled);
+    _preferences.end();
+}
+void AlarmState::save_alarm_time(const char *weekdays_time, const char *weekends_time,
+                                 const char *oneOff_time) {
+    this->weekdays_time = weekdays_time;
+    this->weekends_time = weekends_time;
+    this->oneOff_time = oneOff_time;
+    _preferences.begin(NAMESPACE);
+    _preferences.putString("weekdays_time", weekdays_time);
+    _preferences.putString("weekends_time", weekends_time);
+    _preferences.putString("oneOff_time", oneOff_time);
+    _preferences.end();
+}
+AlarmState::~AlarmState() {}
