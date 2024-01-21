@@ -39,7 +39,8 @@ class ServerApp {
     void setup_set_time_handler();
     void setup_fw_update_handler();
     void setup_fs_update_handler();
-
+    void handle_upload(AsyncWebServerRequest *request, String filename, size_t index,
+                       uint8_t *data, size_t len, bool final, const char * path);
     void setup();
     void run();
     void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,

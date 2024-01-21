@@ -41,6 +41,26 @@ void ServerApp::setup() {
     this->setup_fw_update_handler();
     this->setup_fs_update_handler();
 
+    server.on(
+        "/weather_images_day", HTTP_POST,
+        [this](AsyncWebServerRequest *request) {
+            Serial.println("Get file upload request");
+        },
+        [this](AsyncWebServerRequest *request, String filename, size_t index,
+               uint8_t *data, size_t len, bool final) {
+            this->handle_upload(request, filename, index, data, len, final, "/icons/day/");
+        });
+
+    server.on(
+        "/weather_images_night", HTTP_POST,
+        [this](AsyncWebServerRequest *request) {
+            Serial.println("Get file upload request");
+        },
+        [this](AsyncWebServerRequest *request, String filename, size_t index,
+               uint8_t *data, size_t len, bool final) {
+            this->handle_upload(request, filename, index, data, len, final, "/icons/night/");
+        });
+
     server.serveStatic("/", LittleFS, "/").setCacheControl("max-age=604800");
 
     websocket.onEvent(onEventWrapper);
@@ -50,7 +70,19 @@ void ServerApp::setup() {
     server.addHandler(&websocket);
     server.begin();
 }
-
+void ServerApp::handle_upload(AsyncWebServerRequest *request, String filename,
+                              size_t index, uint8_t *data, size_t len, bool final, const char * path) {
+    if (!index) {
+        Serial.printf("UploadStart: %s\n", filename.c_str());
+        request->_tempFile = LittleFS.open(path + filename, "w");
+    }
+    if(len){
+        request->_tempFile.write(data, len);
+    }
+    if (final) {
+        Serial.printf("UploadEnd: %s, %u B\n", filename.c_str(), index + len);
+    }
+}
 void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
                         AwsEventType type, void *arg, uint8_t *data, size_t len) {
     switch (type) {
