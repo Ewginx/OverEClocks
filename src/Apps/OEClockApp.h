@@ -2,7 +2,7 @@
 #include "BrightnessApp.h"
 #include "Config/Config.h"
 #include "Display/Display.h"
-#include "Filesystem.h"
+#include "Filesystem/lv_fs_littlefs.h"
 #include "GUI/GuiApp.h"
 #include "MicroclimateApp.h"
 #include "ServerApp.h"
@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include <Preferences.h>
 #include <WiFi.h>
-
+#include <LittleFS.h>
 
 class OEClockApp {
   private:

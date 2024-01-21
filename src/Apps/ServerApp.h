@@ -2,12 +2,12 @@
 #include "BrightnessApp.h"
 #include "Config/Config.h"
 #include "MicroclimateApp.h"
-#include "SPIFFS.h"
 #include "StateApp.h"
 #include "lvgl.h"
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
+#include <LittleFS.h>
 #include <Update.h>
 
 class ServerApp {
@@ -37,7 +37,8 @@ class ServerApp {
     void setup_settings_handlers();
     void setup_redirect_handlers();
     void setup_set_time_handler();
-    void setup_ota_update_handler();
+    void setup_fw_update_handler();
+    void setup_fs_update_handler();
 
     void setup();
     void run();

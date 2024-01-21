@@ -2,23 +2,14 @@
 
 DockPanel::DockPanel(lv_obj_t *parent_panel) {
     lv_obj_t *panel = parent_panel;
-    batteryLabel = lv_label_create(panel);
-    lv_obj_set_pos(batteryLabel, 5, 0);
-    lv_obj_set_align(batteryLabel, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_style_text_font(batteryLabel, &dock_panel_font_20, 0);
-
-    WiFiLabel = lv_label_create(panel);
-    lv_obj_align_to(WiFiLabel, batteryLabel, LV_ALIGN_OUT_RIGHT_TOP, 5, 3);
-    lv_obj_set_style_text_font(WiFiLabel, &wifi_symbols_20, 0);
 
     temperatureLabel = lv_label_create(panel);
-    lv_obj_align_to(temperatureLabel, WiFiLabel, LV_ALIGN_OUT_RIGHT_TOP, -2, -3);
-    // lv_obj_set_size(temperatureLabel, 60, 30);
+    lv_obj_set_pos(temperatureLabel, 5, 0);
+    lv_obj_set_align(temperatureLabel, LV_ALIGN_TOP_LEFT);
     lv_obj_set_style_text_font(temperatureLabel, &dock_panel_font_20, 0);
 
     humidityLabel = lv_label_create(panel);
     lv_obj_align_to(humidityLabel, temperatureLabel, LV_ALIGN_OUT_RIGHT_TOP, 25, -1);
-    // lv_obj_set_size(humidityLabel, 60, 30);
     lv_obj_set_style_text_font(humidityLabel, &dock_panel_font_20, 0);
 
     settingsButton = lv_btn_create(panel);
@@ -33,18 +24,24 @@ DockPanel::DockPanel(lv_obj_t *parent_panel) {
     lv_obj_set_style_text_align(settingsButtonLabel, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_style_text_font(settingsButtonLabel, &dock_panel_font_20, 0);
 
+    batteryLabel = lv_label_create(panel);
+    lv_obj_align_to(batteryLabel, settingsButton, LV_ALIGN_OUT_LEFT_TOP, -25, 5);
+    lv_obj_set_style_text_font(batteryLabel, &dock_panel_font_20, 0);
+
+    WiFiLabel = lv_label_create(panel);
+    lv_obj_align_to(WiFiLabel, batteryLabel, LV_ALIGN_OUT_LEFT_TOP, -3, 1);
+    lv_obj_set_style_text_font(WiFiLabel, &wifi_symbols_20, 0);
+
+
+
     this->set_default_values();
 }
 void DockPanel::hide() {
-    lv_obj_set_pos(temperatureLabel, 5, 0);
-    lv_obj_align_to(humidityLabel, temperatureLabel, LV_ALIGN_OUT_RIGHT_MID, 10, 0);
     lv_obj_add_flag(this->settingsButton, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(this->batteryLabel, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(this->WiFiLabel, LV_OBJ_FLAG_HIDDEN);
 }
 void DockPanel::show() {
-    lv_obj_align_to(temperatureLabel, WiFiLabel, LV_ALIGN_OUT_RIGHT_TOP, 10, -3);
-    lv_obj_align_to(humidityLabel, temperatureLabel, LV_ALIGN_OUT_RIGHT_MID, 10, 0);
     lv_obj_clear_flag(this->settingsButton, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(this->batteryLabel, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(this->WiFiLabel, LV_OBJ_FLAG_HIDDEN);

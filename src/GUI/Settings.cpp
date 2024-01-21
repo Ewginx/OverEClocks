@@ -46,7 +46,7 @@ Settings::Settings(StateApp *state_app) {
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {
-    lv_slider_set_value(this->brightnessSlider, this->_state_app->brightness_level,
+    lv_slider_set_value(this->brightnessSlider, this->_state_app->display_state->brightness_level,
                         LV_ANIM_OFF);
     this->home_screen = screen;
     lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_NONE, SCREEN_CHANGE_ANIM_TIME,
@@ -99,7 +99,7 @@ void Settings::weather_switch_event_cb(lv_event_t *e) {
         } else {
             lv_obj_add_state(this->weatherButton, LV_STATE_DISABLED);
         }
-        this->_state_app->save_weather_enabled(enabled);
+        this->_state_app->weather_state->save_weather_enabled(enabled);
         lv_msg_send(MSG_WEATHER_ENABLED, static_cast<const void *>(&enabled));
     }
 }
@@ -124,7 +124,7 @@ void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->save_city(lv_textarea_get_text(this->cityTextArea));
+        this->_state_app->weather_state->save_city(lv_textarea_get_text(this->cityTextArea));
         lv_msg_send(MSG_WEATHER_CITY_CHANGED, NULL);
     }
 }
@@ -140,7 +140,7 @@ void Settings::settings_languageTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->save_language(lv_textarea_get_text(this->languageTextArea));
+        this->_state_app->weather_state->save_language(lv_textarea_get_text(this->languageTextArea));
         lv_msg_send(MSG_WEATHER_LANGUAGE_CHANGED, NULL);
     }
 }
@@ -156,7 +156,7 @@ void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->save_ssid(lv_textarea_get_text(SSIDTextArea));
+        this->_state_app->wifi_state->save_ssid(lv_textarea_get_text(SSIDTextArea));
     }
 }
 
@@ -172,13 +172,13 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->save_password(lv_textarea_get_text(passwordTextArea));
+        this->_state_app->wifi_state->save_password(lv_textarea_get_text(passwordTextArea));
     }
 }
 void Settings::settings_brightnessSlider_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
-    this->_state_app->save_brightness_level(lv_slider_get_value(this->brightnessSlider));
+    this->_state_app->display_state->save_brightness_level(lv_slider_get_value(this->brightnessSlider));
     lv_msg_send(MSG_BRIGHTNESS_CHANGED, NULL);
 }
 void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
@@ -190,7 +190,7 @@ void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
     } else {
         lv_obj_clear_state(this->brightnessSlider, LV_STATE_DISABLED);
     }
-    this->_state_app->save_auto_brightness_enabled(checked);
+    this->_state_app->display_state->save_auto_brightness_enabled(checked);
     lv_msg_send(MSG_AUTO_BRIGHTNESS, NULL);
 }
 void Settings::set_weather_settings(const char *city, const char *language) {
@@ -221,14 +221,14 @@ void Settings::set_brightness_checkbox(bool auto_brightness_enabled) {
 }
 
 void Settings::update_weather_gui_state() {
-    lv_textarea_set_text(this->cityTextArea, this->_state_app->city.c_str());
-    lv_textarea_set_text(this->languageTextArea, this->_state_app->language.c_str());
-    if (!this->_state_app->wifi_connected) {
+    lv_textarea_set_text(this->cityTextArea, this->_state_app->weather_state->city.c_str());
+    lv_textarea_set_text(this->languageTextArea, this->_state_app->weather_state->language.c_str());
+    if (!this->_state_app->wifi_state->wifi_connected) {
         lv_obj_clear_state(this->weatherSwitch, LV_STATE_CHECKED);
         lv_obj_add_state(this->weatherSwitch, LV_STATE_DISABLED);
         lv_obj_add_state(this->weatherButton, LV_STATE_DISABLED);
     } else {
-        if (this->_state_app->weather_enabled) {
+        if (this->_state_app->weather_state->weather_enabled) {
             lv_obj_add_state(this->weatherSwitch, LV_STATE_CHECKED);
             lv_obj_clear_state(this->weatherButton, LV_STATE_DISABLED);
             lv_obj_clear_state(this->weatherSwitch, LV_STATE_DISABLED);

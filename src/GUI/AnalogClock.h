@@ -12,6 +12,7 @@ public:
     lv_obj_t *imageArmSecond;
     void set_time(int hour, int minute, int second);
     void set_default_values();
+    void set_watchface_img_src();
     AnalogClock();
     ~AnalogClock();
 

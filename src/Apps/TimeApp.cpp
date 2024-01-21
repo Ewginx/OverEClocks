@@ -22,15 +22,9 @@ void TimeApp::notifyAboutTime() {
         time_now = millis();
         getLocalTime(&timeinfo);
         analog_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-        strftime(fullTime, 6,
-                 "%H"
-                 ":"
-                 "%M",
-                 &timeinfo);
-        strftime(timeSecond, 3, "%S", &timeinfo);
-        digital_clock->set_time(fullTime, timeSecond);
-        strftime(fullDate, 12, "%d.%m.%Y", &timeinfo);
-        digital_clock->set_date(fullDate, timeinfo.tm_wday);
+        digital_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+        digital_clock->set_date(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
+                                timeinfo.tm_wday);
         this->check_alarm_clocks(timeinfo);
     }
 }
@@ -220,12 +214,12 @@ void TimeApp::copy_timeinfo_struct(tm &new_tm, tm &old_tm) {
 void TimeApp::config_time() {
     configTime(0, 0, "pool.ntp.org");
     this->set_timezone();
-    if(getLocalTime(&timeinfo)){
-        this->_state_app->time_is_set = true;
+    if (getLocalTime(&timeinfo)) {
+        this->_state_app->time_state->time_is_set = true;
     }
 }
 void TimeApp::set_timezone() {
-    setenv("TZ", this->_state_app->timezone_posix.c_str(), 1);
+    setenv("TZ", this->_state_app->time_state->timezone_posix.c_str(), 1);
     tzset();
 }
 TimeApp::~TimeApp() {}

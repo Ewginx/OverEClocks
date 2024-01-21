@@ -22,13 +22,8 @@ class TimeApp {
 
     struct tm timeinfo;
 
-    const long gmtOffset_sec = SECONDS_IN_ONE_HOUR * GMT_OFFSET;
-    const int daylightOffset_sec = 0;
     const char *ntpServer = "pool.ntp.org";
-
-    char timeSecond[3];
-    char fullTime[8];
-    char fullDate[12];
+    
     unsigned long time_now = 0;
 
     static void copy_timeinfo_struct(struct tm &new_tm, struct tm &old_tm);

@@ -35,7 +35,7 @@ void WeatherApp::get_weather(void *parameter) {
                     // Serial.print("Response: ");
                     // Serial.println(response);
                     Serial.printf("Waiting %i minutes for the next request",
-                                  l_pThis->_state_app->request_period / 60000);
+                                  l_pThis->_state_app->weather_state->request_period / 60000);
                     Serial.println();
                     break;
                 } else {
@@ -48,7 +48,7 @@ void WeatherApp::get_weather(void *parameter) {
                 l_pThis->suspend_task_on_error();
             }
         }
-        vTaskDelay(l_pThis->_state_app->request_period / portTICK_PERIOD_MS);
+        vTaskDelay(l_pThis->_state_app->weather_state->request_period / portTICK_PERIOD_MS);
     }
 }
 void WeatherApp::setup_weather_url() {
@@ -56,12 +56,12 @@ void WeatherApp::setup_weather_url() {
     this->_weather_url.clear();
     this->_weather_url += this->_api_url;
     this->_weather_url += "?key=";
-    this->_weather_url += this->_state_app->api_key;
+    this->_weather_url += this->_state_app->weather_state->api_key;
     this->_weather_url += "&q=";
-    this->_weather_url += this->_state_app->city_encoded;
+    this->_weather_url += this->_state_app->weather_state->city_encoded;
     this->_weather_url += "&aqi=no";
     this->_weather_url += "&lang=";
-    this->_weather_url += this->_state_app->language;
+    this->_weather_url += this->_state_app->weather_state->language;
 }
 
 int WeatherApp::send_weather_request() {
@@ -69,11 +69,11 @@ int WeatherApp::send_weather_request() {
     return this->client.responseStatusCode();
 }
 void WeatherApp::encode_city() {
-    this->_state_app->city_encoded = this->url_encode(this->_state_app->city.c_str());
+    this->_state_app->weather_state->city_encoded = this->url_encode(this->_state_app->weather_state->city.c_str());
 }
 void WeatherApp::update_weather_task_state() {
 
-    if (this->_state_app->weather_enabled & this->_state_app->wifi_connected) {
+    if (this->_state_app->weather_state->weather_enabled & this->_state_app->wifi_state->wifi_connected) {
         if (!this->_weather_running) {
             vTaskResume(this->_weather_task);
         } else {
@@ -87,10 +87,11 @@ void WeatherApp::update_weather_task_state() {
             Serial.println("Task already suspended!");
         }
     }
-    this->_weather_running = this->_state_app->wifi_connected ? this->_state_app->weather_enabled : false;
+    this->_weather_running =
+        this->_state_app->wifi_state->wifi_connected ? this->_state_app->weather_state->weather_enabled : false;
 }
 void WeatherApp::suspend_task_on_error() {
-    this->_state_app->weather_enabled = false;
+    this->_state_app->weather_state->weather_enabled = false;
     this->update_weather_task_state();
     lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
 }
@@ -220,29 +221,93 @@ void WeatherApp::set_pressure(int pressure) {
     lv_label_set_text_fmt(weather->weatherPressureLabel, PRESSURE_SYMBOL " %d %s",
                           pressure, weather_translation[pressure_uom]);
 }
-void WeatherApp::set_weather_img(const char *link) {
-    char code_buf[23];
-    if (link[35] == 'n') {
+void WeatherApp::set_weather_img(const char *url) {
+    char path[24];
+    if (url[35] == 'n') {
         char code[4];
-        code[0] = link[41];
-        code[1] = link[42];
-        code[2] = link[43];
+        code[0] = url[41];
+        code[1] = url[42];
+        code[2] = url[43];
         code[3] = '\0';
+        int image_code = this->get_mapped_image_code(atoi(code));
         char folder[] = "night";
-        sprintf(code_buf, "S:/icons/%s/%s.bin", folder, code);
+        sprintf(path, "F:/icons/%s/%d.bin", folder, image_code);
 
     } else {
         char code[4];
-        code[0] = link[39];
-        code[1] = link[40];
-        code[2] = link[41];
+        code[0] = url[39];
+        code[1] = url[40];
+        code[2] = url[41];
         code[3] = '\0';
+        int image_code = this->get_mapped_image_code(atoi(code));
         char folder[] = "day";
-        sprintf(code_buf, "S:/icons/%s/%s.bin", folder, code);
+        sprintf(path, "F:/icons/%s/%d.bin", folder, image_code);
     }
-    lv_img_set_src(this->weather->weatherImage, code_buf);
-    // //cdn.weatherapi.com/weather/64x64/day/368.png
-    // //cdn.weatherapi.com/weather/64x64/night/368.png
+    lv_img_set_src(this->weather->weatherImage, path);
+    // cdn.weatherapi.com/weather/64x64/day/368.png
+    // cdn.weatherapi.com/weather/64x64/night/368.png
+    // S:/icons/night/113.bin
+}
+int WeatherApp::get_mapped_image_code(int code) {
+    if (code == 113 || code == 119 || code == 116 || code == 122) {
+        return code;
+    }
+    if (code == 176 || code == 266) {
+        return 176;
+    }
+    if (code == 143 || code == 248 || code == 260) {
+        return 143;
+    }
+    if (code == 182 || code == 362 || code == 365) {
+        return 182;
+    }
+    if (code == 185 || code == 317 || code == 320) {
+        return 185;
+    }
+    if (code == 179 || code == 323 || code == 329 || code == 335 || code == 368 ||
+        code == 371) {
+        return 179;
+    }
+    if (code == 200 || code == 392) {
+        return 200;
+    }
+    if (code == 227 || code == 230) {
+        return 227;
+    }
+    if (code == 263 || code == 284) {
+        return 263;
+    }
+    if (code == 293 || code == 299) {
+        return 293;
+    }
+    if (code == 296 || code == 302) {
+        return 296;
+    }
+    if (code == 305 || code == 356) {
+        return 305;
+    }
+    if (code == 308 || code == 311 || code == 314) {
+        return 308;
+    }
+    if (code == 326 || code == 332 || code == 338) {
+        return 326;
+    }
+    if (code == 350) {
+        return 350;
+    }
+    if (code == 353) {
+        return 353;
+    }
+    if (code == 359 || code == 386) {
+        return 359;
+    }
+    if (code == 374 || code == 377) {
+        return 374;
+    }
+    if (code == 389 || code == 395) {
+        return 389;
+    }
+    return code;
 }
 void WeatherApp::update_weather() {
     if (this->_weather_running) {
