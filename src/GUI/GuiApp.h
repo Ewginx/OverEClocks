@@ -26,6 +26,8 @@ class GuiApp {
     lv_obj_t *loading_screen;
     lv_obj_t *loading_spinner;
 
+    lv_obj_t *gif_image;
+
     void swipe_screen_event_cb(lv_event_t *e);
     void swipe_digital_clock_screen();
     void swipe_analog_clock_screen();
@@ -50,6 +52,9 @@ class GuiApp {
     void delete_loading_screen();
 
     void setup_gui();
+
+    void create_gif_img();
+    void set_gif_parent();
 
     void load_default_screen();
 
