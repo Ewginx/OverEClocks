@@ -9,7 +9,7 @@ void AnalogClock::set_time(int hour, int minute, int second) {
     angle = hour * 300 + (int)minute / 2 * 10;
     lv_img_set_angle(this->imageArmHour, angle);
 }
-void AnalogClock::set_watchface_img_src() { lv_img_set_src(this->watchface, "F:/icons/watchface/watchface.bin"); }
+void AnalogClock::set_watchface_img_src() { lv_img_set_src(this->watchface, "F:/analog_clock/watchface.bin"); }
 void AnalogClock::set_default_values() { this->set_time(0, 0, 0); }
 AnalogClock::AnalogClock() {
     LV_IMG_DECLARE(img_armhour_png);
