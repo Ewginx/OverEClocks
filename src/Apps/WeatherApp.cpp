@@ -222,7 +222,7 @@ void WeatherApp::set_pressure(int pressure) {
                           pressure, weather_translation[pressure_uom]);
 }
 void WeatherApp::set_weather_img(const char *url) {
-    char path[24];
+    char path[26];
     if (url[35] == 'n') {
         char code[4];
         code[0] = url[41];
@@ -231,7 +231,7 @@ void WeatherApp::set_weather_img(const char *url) {
         code[3] = '\0';
         int image_code = this->get_mapped_image_code(atoi(code));
         char folder[] = "night";
-        sprintf(path, "F:/icons/%s/%d.bin", folder, image_code);
+        sprintf(path, "F:/weather/%s/%d.bin", folder, image_code);
 
     } else {
         char code[4];
@@ -241,12 +241,12 @@ void WeatherApp::set_weather_img(const char *url) {
         code[3] = '\0';
         int image_code = this->get_mapped_image_code(atoi(code));
         char folder[] = "day";
-        sprintf(path, "F:/icons/%s/%d.bin", folder, image_code);
+        sprintf(path, "F:/weather/%s/%d.bin", folder, image_code);
     }
     lv_img_set_src(this->weather->weatherImage, path);
     // cdn.weatherapi.com/weather/64x64/day/368.png
     // cdn.weatherapi.com/weather/64x64/night/368.png
-    // S:/icons/night/113.bin
+    // F:/weather/night/113.bin
 }
 int WeatherApp::get_mapped_image_code(int code) {
     if (code == 113 || code == 119 || code == 116 || code == 122) {
