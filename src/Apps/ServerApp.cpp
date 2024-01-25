@@ -41,25 +41,10 @@ void ServerApp::setup() {
     this->setup_fw_update_handler();
     this->setup_fs_update_handler();
 
-    server.on(
-        "/weather_images_day", HTTP_POST,
-        [this](AsyncWebServerRequest *request) {
-            Serial.println("Get file upload request");
-        },
-        [this](AsyncWebServerRequest *request, String filename, size_t index,
-               uint8_t *data, size_t len, bool final) {
-            this->handle_upload(request, filename, index, data, len, final, "/icons/day/");
-        });
-
-    server.on(
-        "/weather_images_night", HTTP_POST,
-        [this](AsyncWebServerRequest *request) {
-            Serial.println("Get file upload request");
-        },
-        [this](AsyncWebServerRequest *request, String filename, size_t index,
-               uint8_t *data, size_t len, bool final) {
-            this->handle_upload(request, filename, index, data, len, final, "/icons/night/");
-        });
+    this->setup_weather_images_upload_handlers();
+    this->setup_gif_upload_handler();
+    this->setup_webui_upload_handler();
+    this->setup_analog_clock_images_upload_handler();
 
     server.serveStatic("/", LittleFS, "/").setCacheControl("max-age=604800");
 
@@ -71,12 +56,13 @@ void ServerApp::setup() {
     server.begin();
 }
 void ServerApp::handle_upload(AsyncWebServerRequest *request, String filename,
-                              size_t index, uint8_t *data, size_t len, bool final, const char * path) {
+                              size_t index, uint8_t *data, size_t len, bool final,
+                              const char *path) {
     if (!index) {
         Serial.printf("UploadStart: %s\n", filename.c_str());
         request->_tempFile = LittleFS.open(path + filename, "w");
     }
-    if(len){
+    if (len) {
         request->_tempFile.write(data, len);
     }
     if (final) {
@@ -250,6 +236,64 @@ void ServerApp::setup_fs_update_handler() {
                     Update.printError(Serial);
                 }
             }
+        });
+}
+
+void ServerApp::setup_weather_images_upload_handlers() {
+    server.on(
+        "/weather_images_day", HTTP_POST,
+        [this](AsyncWebServerRequest *request) {
+            Serial.println("Get weather images for day");
+        },
+        [this](AsyncWebServerRequest *request, String filename, size_t index,
+               uint8_t *data, size_t len, bool final) {
+            this->handle_upload(request, filename, index, data, len, final,
+                                "/weather/day/");
+        });
+
+    server.on(
+        "/weather_images_night", HTTP_POST,
+        [this](AsyncWebServerRequest *request) {
+            Serial.println("Get weather images for night");
+        },
+        [this](AsyncWebServerRequest *request, String filename, size_t index,
+               uint8_t *data, size_t len, bool final) {
+            this->handle_upload(request, filename, index, data, len, final,
+                                "/weather/night/");
+        });
+}
+
+void ServerApp::setup_gif_upload_handler() {
+    server.on(
+        "/gif", HTTP_POST,
+        [this](AsyncWebServerRequest *request) { Serial.println("Get GIF file"); },
+        [this](AsyncWebServerRequest *request, String filename, size_t index,
+               uint8_t *data, size_t len, bool final) {
+            this->handle_upload(request, filename, index, data, len, final, "/gif/");
+        });
+}
+
+void ServerApp::setup_webui_upload_handler() {
+    server.on(
+        "/frontend", HTTP_POST,
+        [this](AsyncWebServerRequest *request) {
+            Serial.println("Get index.html.gz file");
+        },
+        [this](AsyncWebServerRequest *request, String filename, size_t index,
+               uint8_t *data, size_t len, bool final) {
+            this->handle_upload(request, filename, index, data, len, final, "/");
+        });
+}
+
+void ServerApp::setup_analog_clock_images_upload_handler() {
+    server.on(
+        "/clock_images", HTTP_POST,
+        [this](AsyncWebServerRequest *request) {
+            Serial.println("Get analog clock images files");
+        },
+        [this](AsyncWebServerRequest *request, String filename, size_t index,
+               uint8_t *data, size_t len, bool final) {
+            this->handle_upload(request, filename, index, data, len, final, "/analog_clock/");
         });
 }
 
