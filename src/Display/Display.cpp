@@ -60,10 +60,10 @@ void Display::disp_flush(lv_disp_drv_t *disp, const lv_area_t *area,
     // tft->setAddrWindow(area->x1, area->y1, w, h);
     // tft->writePixels((lgfx::rgb565_t *)&color_p->full, w * h);
     // tft->endWrite();
-    tft->startWrite();
+    // tft->startWrite();
     tft->pushImageDMA(area->x1, area->y1, area->x2 - area->x1 + 1,
                       area->y2 - area->y1 + 1, (lgfx::rgb565_t *)&color_p->full);
-    tft->endWrite();
+    // tft->endWrite();
     lv_disp_flush_ready(disp);
 }
 
