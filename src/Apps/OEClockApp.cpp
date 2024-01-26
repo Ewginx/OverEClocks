@@ -62,7 +62,8 @@ void OEClockApp::setup() {
                             &update_display_task,  /* Task handle. */
                             0);
     this->weather_app->setup_weather_url();
-    this->brightness_app->set_display_brightness(this->state_app->display_state->brightness_level);
+    this->brightness_app->set_display_brightness(
+        this->state_app->display_state->brightness_level);
     this->init_gui();
     weather_app->create_weather_task();
     this->connect_to_wifi();
@@ -79,7 +80,6 @@ void OEClockApp::setup() {
     vTaskDelete(update_display_task);
     WiFi.onEvent(WiFiStationDisconnected,
                  WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
-    this->gui_app->analog_clock->set_watchface_img_src();
     Serial.printf("Full heap: %d KB \n", ESP.getHeapSize() / 1024);
     Serial.printf("Max free heap chunk: %d KB \n", ESP.getMaxAllocHeap() / 1024);
     Serial.printf("Free heap: %d KB \n", ESP.getFreeHeap() / 1024);
@@ -94,8 +94,10 @@ void OEClockApp::init_i2c_apps() {
 
 void OEClockApp::init_gui() {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->gui_app->analog_clock->set_analog_clock_img_src();
         this->gui_app->setup_gui();
-        this->brightness_app->set_auto_brightness_timer(this->state_app->display_state->auto_brightness);
+        this->brightness_app->set_auto_brightness_timer(
+            this->state_app->display_state->auto_brightness);
         xSemaphoreGive(mutex);
     } else {
         Serial.println("Can't obtain mutex");
@@ -142,7 +144,8 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
         WiFi.disconnect();
         WiFi.mode(WIFI_AP);
         WiFi.softAPConfig(local_ip, local_ip, subnet);
-        WiFi.softAP(instance->state_app->wifi_state->ap_login, instance->state_app->wifi_state->ap_password);
+        WiFi.softAP(instance->state_app->wifi_state->ap_login,
+                    instance->state_app->wifi_state->ap_password);
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
             gui_app->settings->set_ipAddressLabel(WiFi.softAPIP().toString().c_str());
             xSemaphoreGive(mutex);
@@ -152,7 +155,8 @@ void OEClockApp::handle_wifi_state(bool wifi_connected) {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->settings->update_weather_gui_state();
         this->weather_app->update_weather_task_state();
-        this->gui_app->dock_panel->show_wifi_connection(this->state_app->wifi_state->wifi_connected);
+        this->gui_app->dock_panel->show_wifi_connection(
+            this->state_app->wifi_state->wifi_connected);
         xSemaphoreGive(mutex);
     }
 }
@@ -163,7 +167,8 @@ void OEClockApp::loop() {
     lv_task_handler();
     delay(5);
     server_app->run();
-    if (this->state_app->wifi_state->wifi_connected || this->state_app->time_state->time_is_set) {
+    if (this->state_app->wifi_state->wifi_connected ||
+        this->state_app->time_state->time_is_set) {
         time_app->notifyAboutTime();
         // Serial.println(ESP.getFreeHeap());
     }
