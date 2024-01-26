@@ -5,7 +5,7 @@
 
 class WiFiState {
   private:
-    Preferences _preferences;
+    Preferences &_preferences;
 
   public:
     bool wifi_connected = false;
@@ -29,7 +29,7 @@ class WiFiState {
 
 class WeatherState {
   private:
-    Preferences _preferences;
+    Preferences &_preferences;
 
   public:
     bool weather_enabled;
@@ -52,7 +52,7 @@ class WeatherState {
 
 class AlarmState {
   private:
-    Preferences _preferences;
+    Preferences &_preferences;
 
   public:
     bool weekdays_switch_enabled;
@@ -85,7 +85,7 @@ struct ThemeStruct
 
 class ThemeState {
   private:
-    Preferences _preferences;
+    Preferences &_preferences;
 
   public:
     bool dark_theme_enabled;
@@ -114,7 +114,7 @@ class ThemeState {
 
 class DisplayState {
   private:
-    Preferences _preferences;
+    Preferences &_preferences;
 
   public:
     bool auto_brightness;
@@ -137,7 +137,7 @@ class DisplayState {
 
 class TimeState {
   private:
-    Preferences _preferences;
+    Preferences &_preferences;
 
   public:
     String timezone_posix;
