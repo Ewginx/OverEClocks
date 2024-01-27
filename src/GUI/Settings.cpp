@@ -38,11 +38,15 @@ extern "C" void weather_button_event_cb_wrapper(lv_event_t *e) {
 extern "C" void update_weather_gui_state_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     instance->update_weather_gui_state();
 }
+extern "C" void update_ip_address_label_cb(void *subscriber, lv_msg_t *msg) {
+    instance->set_ipAddressLabel(instance->_state_app->wifi_state->current_ip_address.c_str());
+}
 Settings::Settings(StateApp *state_app) {
     instance = this;
     this->_state_app = state_app;
     this->create_settings_screen();
     lv_msg_subscribe(MSG_UPDATE_WEATHER_GUI, update_weather_gui_state_cb_wrapper, NULL);
+    lv_msg_subscribe(MSG_UPDATE_IP_ADDRESS, update_ip_address_label_cb, NULL);
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {

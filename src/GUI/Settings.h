@@ -7,10 +7,12 @@
 
 class Settings {
   private:
-    StateApp *_state_app;
+
     int _settings_panel_height = 450;
 
   public:
+    StateApp *_state_app;
+
     lv_obj_t *keyboard;
 
     lv_obj_t *home_screen;
