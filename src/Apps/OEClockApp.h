@@ -9,10 +9,12 @@
 #include "StateApp.h"
 #include "TimeApp.h"
 #include "WeatherApp.h"
+#include "WiFiApp.h"
 #include <Arduino.h>
+#include <LittleFS.h>
 #include <Preferences.h>
 #include <WiFi.h>
-#include <LittleFS.h>
+
 
 class OEClockApp {
   private:
@@ -26,11 +28,10 @@ class OEClockApp {
     Display *display;
     GuiApp *gui_app;
     ServerApp *server_app;
+    WiFiApp *wifi_app;
 
     void init_i2c_apps();
     void init_gui();
-    void connect_to_wifi();
-    void handle_wifi_state(bool wifi_connected);
 
     void setup();
     void loop();
