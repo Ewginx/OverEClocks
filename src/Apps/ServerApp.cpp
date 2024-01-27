@@ -294,6 +294,7 @@ void ServerApp::setup_analog_clock_images_upload_handler() {
         "/clock_images", HTTP_POST,
         [this](AsyncWebServerRequest *request) {
             Serial.println("Get analog clock images files");
+            lv_msg_send(MSG_UPDATE_CLOCK_IMG_SRC, NULL);
         },
         [this](AsyncWebServerRequest *request, String filename, size_t index,
                uint8_t *data, size_t len, bool final) {

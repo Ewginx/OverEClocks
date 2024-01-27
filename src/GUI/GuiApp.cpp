@@ -34,6 +34,12 @@ extern "C" void async_update_gif_src_cb(void *data) {
 extern "C" void update_gif_src_cb(void *subscriber, lv_msg_t *msg) {
     lv_async_call(async_update_gif_src_cb, NULL);
 }
+extern "C" void async_update_clock_img_src_cb(void *data) {
+    instance->update_clock_img_src();
+}
+extern "C" void update_clock_img_src_cb(void *subscriber, lv_msg_t *msg) {
+    lv_async_call(async_update_clock_img_src_cb, NULL);
+}
 
 GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
@@ -91,6 +97,7 @@ GuiApp::GuiApp(StateApp *state_app) {
                         LV_EVENT_PRESSING, NULL);
     lv_msg_subscribe(MSG_CHANGE_THEME, change_theme_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_UPDATE_GIF_SRC, update_gif_src_cb, NULL);
+    lv_msg_subscribe(MSG_UPDATE_CLOCK_IMG_SRC, update_clock_img_src_cb, NULL);
 
     this->dock_panel->show();
 };
@@ -131,6 +138,10 @@ void GuiApp::set_gif_parent() {
 void GuiApp::update_gif_img_src() {
     lv_gif_set_src(this->gif_image, "F:/gif/gif.gif");
     lv_gif_restart(this->gif_image);
+}
+
+void GuiApp::update_clock_img_src() {
+    this->analog_clock->set_analog_clock_img_src();
 }
 
 void GuiApp::load_default_screen() {
