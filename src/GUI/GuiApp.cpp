@@ -126,7 +126,7 @@ void GuiApp::create_gif_img() {
     lv_obj_set_width(this->gif_image, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(this->gif_image, LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(this->gif_image, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_pos(this->gif_image, 10, 200);
+    lv_obj_set_pos(this->gif_image, 20, 210);
 }
 
 void GuiApp::set_gif_parent() {
