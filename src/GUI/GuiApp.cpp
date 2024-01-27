@@ -232,7 +232,6 @@ void GuiApp::user_activity_event_cb(lv_event_t *e) {
 void GuiApp::screen_timer_cb(lv_timer_t *timer) {
     if (lv_scr_act() != this->analog_clock->analogClockScreen &
         lv_scr_act() != this->digital_clock->digitalClockScreen) {
-        Serial.println("Screen was swapped to main clock screen");
         if (this->state_app->display_state->digital_main_screen) {
             lv_scr_load_anim(this->digital_clock->digitalClockScreen,
                              LV_SCR_LOAD_ANIM_FADE_IN, SCREEN_CHANGE_ANIM_TIME, 0, false);
@@ -244,7 +243,6 @@ void GuiApp::screen_timer_cb(lv_timer_t *timer) {
 }
 
 void GuiApp::dock_panel_timer_cb(lv_timer_t *timer) {
-    Serial.println("Dock panel timer callback fired");
     lv_timer_reset(this->_dock_panel_timer);
     lv_timer_pause(this->_dock_panel_timer);
     this->dock_panel->hide();

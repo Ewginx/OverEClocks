@@ -100,7 +100,6 @@ void WeatherApp::deserialize_json_response(String &response) {
     DynamicJsonDocument doc(4096);
 
     DeserializationError error = deserializeJson(doc, response);
-    Serial.println("Starting to deserialize");
 
     if (error) {
         Serial.print("deserializeJson() failed: ");
@@ -108,6 +107,8 @@ void WeatherApp::deserialize_json_response(String &response) {
         return;
     }
 
+    Serial.println("Updating weather");
+    
     JsonObject location = doc["location"];
     this->set_city_and_country_code(location["name"].as<const char *>(),
                                     location["country"].as<const char *>());

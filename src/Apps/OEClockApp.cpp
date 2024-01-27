@@ -45,9 +45,6 @@ OEClockApp::OEClockApp() {
 
 void OEClockApp::setup() {
     Serial.begin(115200);
-    // if (!LittleFS.begin(true)) {
-    //     Serial.println("An Error has occurred while mounting LittleFS");
-    // }
     lv_log_register_print_cb(serial_print);
     this->init_i2c_apps();
     // lv_port_sd_fs_init();
@@ -99,14 +96,12 @@ void OEClockApp::init_gui() {
         this->brightness_app->set_auto_brightness_timer(
             this->state_app->display_state->auto_brightness);
         xSemaphoreGive(mutex);
-    } else {
-        Serial.println("Can't obtain mutex");
     }
-    Serial.println("Settings initialized");
+    Serial.println("GUI initialized");
 }
 
 void OEClockApp::connect_to_wifi() {
-    Serial.print("Will try to connect to WiFI");
+    Serial.print("Trying to connect to WiFi");
     IPAddress local_ip;
     IPAddress gateway_ip;
     IPAddress primaryDNS(8, 8, 8, 8);
