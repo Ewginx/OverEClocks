@@ -55,6 +55,7 @@ class GuiApp {
 
     void create_gif_img();
     void set_gif_parent();
+    void update_gif_img_src();
 
     void load_default_screen();
 
