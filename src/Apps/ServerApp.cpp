@@ -354,7 +354,7 @@ void ServerApp::save_weather_settings(JsonVariant &json) {
         weather_json["request_period"].as<int>());
     lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
     lv_msg_send(
-        MSG_WEATHER_ENABLED,
+        MSG_UPDATE_WEATHER_TASK,
         static_cast<const void *>(&this->_state_app->weather_state->weather_enabled));
     if (this->_state_app->weather_state->weather_enabled) {
         lv_msg_send(MSG_WEATHER_UPDATE, NULL);

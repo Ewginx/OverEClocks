@@ -1,12 +1,12 @@
 #include "WeatherApp.h"
 
 static WeatherApp *instance = NULL;
-void weather_enabled_cb(void *subscriber, lv_msg_t *msg) {
+void update_weather_task_cb(void *subscriber, lv_msg_t *msg) {
     // const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
     // instance->update_weather_task_state(*payload);
     instance->update_weather_task_state();
 }
-void weather_url_update_cb(void *subscriber, lv_msg_t *msg) {
+void update_weather_url_cb(void *subscriber, lv_msg_t *msg) {
     instance->setup_weather_url();
 }
 void weather_update_cb(void *subscriber, lv_msg_t *msg) { instance->update_weather(); }
@@ -15,9 +15,9 @@ WeatherApp::WeatherApp(Weather *weather, StateApp *state_app) {
     this->_state_app = state_app;
     this->weather = weather;
     lv_msg_subscribe(MSG_WEATHER_UPDATE, weather_update_cb, NULL);
-    lv_msg_subscribe(MSG_WEATHER_ENABLED, weather_enabled_cb, NULL);
-    lv_msg_subscribe(MSG_WEATHER_CITY_CHANGED, weather_url_update_cb, NULL);
-    lv_msg_subscribe(MSG_WEATHER_LANGUAGE_CHANGED, weather_url_update_cb, NULL);
+    lv_msg_subscribe(MSG_UPDATE_WEATHER_TASK, update_weather_task_cb, NULL);
+    lv_msg_subscribe(MSG_WEATHER_CITY_CHANGED, update_weather_url_cb, NULL);
+    lv_msg_subscribe(MSG_WEATHER_LANGUAGE_CHANGED, update_weather_url_cb, NULL);
 }
 
 void WeatherApp::get_weather(void *parameter) {
@@ -35,7 +35,8 @@ void WeatherApp::get_weather(void *parameter) {
                     // Serial.print("Response: ");
                     // Serial.println(response);
                     Serial.printf("Waiting %i minutes for the next request",
-                                  l_pThis->_state_app->weather_state->request_period / 60000);
+                                  l_pThis->_state_app->weather_state->request_period /
+                                      60000);
                     Serial.println();
                     break;
                 } else {
@@ -48,7 +49,8 @@ void WeatherApp::get_weather(void *parameter) {
                 l_pThis->suspend_task_on_error();
             }
         }
-        vTaskDelay(l_pThis->_state_app->weather_state->request_period / portTICK_PERIOD_MS);
+        vTaskDelay(l_pThis->_state_app->weather_state->request_period /
+                   portTICK_PERIOD_MS);
     }
 }
 void WeatherApp::setup_weather_url() {
@@ -69,11 +71,13 @@ int WeatherApp::send_weather_request() {
     return this->client.responseStatusCode();
 }
 void WeatherApp::encode_city() {
-    this->_state_app->weather_state->city_encoded = this->url_encode(this->_state_app->weather_state->city.c_str());
+    this->_state_app->weather_state->city_encoded =
+        this->url_encode(this->_state_app->weather_state->city.c_str());
 }
 void WeatherApp::update_weather_task_state() {
 
-    if (this->_state_app->weather_state->weather_enabled & this->_state_app->wifi_state->wifi_connected) {
+    if (this->_state_app->weather_state->weather_enabled &
+        this->_state_app->wifi_state->wifi_connected) {
         if (!this->_weather_running) {
             vTaskResume(this->_weather_task);
         } else {
@@ -87,8 +91,9 @@ void WeatherApp::update_weather_task_state() {
             Serial.println("Task already suspended!");
         }
     }
-    this->_weather_running =
-        this->_state_app->wifi_state->wifi_connected ? this->_state_app->weather_state->weather_enabled : false;
+    this->_weather_running = this->_state_app->wifi_state->wifi_connected
+                                 ? this->_state_app->weather_state->weather_enabled
+                                 : false;
 }
 void WeatherApp::suspend_task_on_error() {
     this->_state_app->weather_state->weather_enabled = false;
@@ -108,7 +113,7 @@ void WeatherApp::deserialize_json_response(String &response) {
     }
 
     Serial.println("Updating weather");
-    
+
     JsonObject location = doc["location"];
     this->set_city_and_country_code(location["name"].as<const char *>(),
                                     location["country"].as<const char *>());

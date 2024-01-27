@@ -5,7 +5,6 @@ static GuiApp *instance = NULL;
 extern "C" void swipe_screen_event_cb_wrapper(lv_event_t *e) {
     instance->swipe_screen_event_cb(e);
 }
-
 extern "C" void screen_load_event_cb_wrapper(lv_event_t *e) {
     instance->screen_load_event_cb(e);
 }
@@ -21,6 +20,10 @@ extern "C" void screen_timer_cb_wrapper(lv_timer_t *timer) {
 extern "C" void dock_panel_timer_cb_wrapper(lv_timer_t *timer) {
     instance->dock_panel_timer_cb(timer);
 }
+extern "C" void dock_update_wifi_icon_cb(void *subscriber, lv_msg_t *msg) {
+    instance->dock_panel->show_wifi_connection(
+        instance->state_app->wifi_state->wifi_connected);
+}
 extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
     instance->user_activity_event_cb(e);
 }
@@ -28,9 +31,7 @@ extern "C" void change_theme_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
     instance->switch_theme(*payload);
 }
-extern "C" void async_update_gif_src_cb(void *data) {
-    instance->update_gif_img_src();
-}
+extern "C" void async_update_gif_src_cb(void *data) { instance->update_gif_img_src(); }
 extern "C" void update_gif_src_cb(void *subscriber, lv_msg_t *msg) {
     lv_async_call(async_update_gif_src_cb, NULL);
 }
@@ -98,6 +99,7 @@ GuiApp::GuiApp(StateApp *state_app) {
     lv_msg_subscribe(MSG_CHANGE_THEME, change_theme_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_UPDATE_GIF_SRC, update_gif_src_cb, NULL);
     lv_msg_subscribe(MSG_UPDATE_CLOCK_IMG_SRC, update_clock_img_src_cb, NULL);
+    lv_msg_subscribe(MSG_UPDATE_WIFI_CONNECTION_ICON, dock_update_wifi_icon_cb, NULL);
 
     this->dock_panel->show();
 };
@@ -140,9 +142,7 @@ void GuiApp::update_gif_img_src() {
     lv_gif_restart(this->gif_image);
 }
 
-void GuiApp::update_clock_img_src() {
-    this->analog_clock->set_analog_clock_img_src();
-}
+void GuiApp::update_clock_img_src() { this->analog_clock->set_analog_clock_img_src(); }
 
 void GuiApp::load_default_screen() {
     if (this->state_app->display_state->digital_main_screen) {

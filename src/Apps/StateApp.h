@@ -15,7 +15,8 @@ class WiFiState {
     String ap_password;
     String ip_address;
     String gateway_address;
-
+    String current_ip_address;
+    
     void save_ssid(const char *ssid);
     void save_password(const char *password);
     void save_ap_login(const char *login);

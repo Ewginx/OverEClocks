@@ -100,7 +100,7 @@ void Settings::weather_switch_event_cb(lv_event_t *e) {
             lv_obj_add_state(this->weatherButton, LV_STATE_DISABLED);
         }
         this->_state_app->weather_state->save_weather_enabled(enabled);
-        lv_msg_send(MSG_WEATHER_ENABLED, static_cast<const void *>(&enabled));
+        lv_msg_send(MSG_UPDATE_WEATHER_TASK, static_cast<const void *>(&enabled));
     }
 }
 void Settings::keyboard_event_cb(lv_event_t *e) { this->delete_keyboard(); }
