@@ -41,7 +41,7 @@ void OEClockApp::setup() {
     this->gui_app->create_loading_screen();
     xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
                             "update_display_task", /* Name of the task */
-                            10000,                 /* Stack size in words */
+                            3072,                 /* Stack size in words */ //change from 10000 bytes
                             NULL,                  /* Task input parameter */
                             0,                     /* Priority of the task */
                             &update_display_task,  /* Task handle. */

@@ -343,7 +343,7 @@ String WeatherApp::url_encode(const char *str) {
 void WeatherApp::create_weather_task() {
     xTaskCreatePinnedToCore(this->get_weather,    /* Function to implement the task */
                             "request",            /* Name of the task */
-                            10000,                /* Stack size in words */
+                            4096,                /* Stack size in words */ // change from 10000
                             this,                 /* Task input parameter */
                             0,                    /* Priority of the task */
                             &this->_weather_task, /* Task handle. */
