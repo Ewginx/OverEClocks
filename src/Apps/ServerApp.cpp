@@ -66,6 +66,7 @@ void ServerApp::handle_upload(AsyncWebServerRequest *request, String filename,
         request->_tempFile.write(data, len);
     }
     if (final) {
+        request->_tempFile.close();
         Serial.printf("UploadEnd: %s, %u B\n", filename.c_str(), index + len);
     }
 }
