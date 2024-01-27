@@ -1,9 +1,9 @@
 #pragma once
 #include <lvgl.h>
 
-class AnalogClock{
+class AnalogClock {
 
-public:
+  public:
     lv_obj_t *analogClockScreen;
     lv_obj_t *analogClockPanel;
     lv_obj_t *watchface;
@@ -13,7 +13,7 @@ public:
     void set_time(int hour, int minute, int second);
     void set_default_values();
     void set_analog_clock_img_src();
+
     AnalogClock();
     ~AnalogClock();
-
 };

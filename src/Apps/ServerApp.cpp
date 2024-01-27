@@ -66,6 +66,7 @@ void ServerApp::handle_upload(AsyncWebServerRequest *request, String filename,
         request->_tempFile.write(data, len);
     }
     if (final) {
+        request->_tempFile.close();
         Serial.printf("UploadEnd: %s, %u B\n", filename.c_str(), index + len);
     }
 }
@@ -266,7 +267,10 @@ void ServerApp::setup_weather_images_upload_handlers() {
 void ServerApp::setup_gif_upload_handler() {
     server.on(
         "/gif", HTTP_POST,
-        [this](AsyncWebServerRequest *request) { Serial.println("Get GIF file"); },
+        [this](AsyncWebServerRequest *request) {
+            Serial.println("Get GIF file");
+            lv_msg_send(MSG_UPDATE_GIF_SRC, NULL);
+        },
         [this](AsyncWebServerRequest *request, String filename, size_t index,
                uint8_t *data, size_t len, bool final) {
             this->handle_upload(request, filename, index, data, len, final, "/gif/");
@@ -290,10 +294,12 @@ void ServerApp::setup_analog_clock_images_upload_handler() {
         "/clock_images", HTTP_POST,
         [this](AsyncWebServerRequest *request) {
             Serial.println("Get analog clock images files");
+            lv_msg_send(MSG_UPDATE_CLOCK_IMG_SRC, NULL);
         },
         [this](AsyncWebServerRequest *request, String filename, size_t index,
                uint8_t *data, size_t len, bool final) {
-            this->handle_upload(request, filename, index, data, len, final, "/analog_clock/");
+            this->handle_upload(request, filename, index, data, len, final,
+                                "/analog_clock/");
         });
 }
 

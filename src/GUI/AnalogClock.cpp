@@ -14,12 +14,17 @@ void AnalogClock::set_analog_clock_img_src() {
     lv_img_set_src(imageArmSecond, "F:/analog_clock/armsecond.png");
     lv_img_set_src(imageArmHour, "F:/analog_clock/armhour.png");
     lv_img_set_src(imageArmMinute, "F:/analog_clock/armminute.png");
+    lv_img_cache_invalidate_src("F:/analog_clock/watchface.bin");
+    lv_img_cache_invalidate_src("F:/analog_clock/armsecond.png");
+    lv_img_cache_invalidate_src("F:/analog_clock/armhour.png");
+    lv_img_cache_invalidate_src("F:/analog_clock/armminute.png");
     lv_img_set_pivot(imageArmHour, 9, 77);
     lv_img_set_pivot(imageArmMinute, 9, 105);
     lv_img_set_pivot(imageArmSecond, 5, 115);
 }
+
 void AnalogClock::set_default_values() { this->set_time(0, 0, 0); }
-AnalogClock::AnalogClock() { 
+AnalogClock::AnalogClock() {
     analogClockScreen = lv_obj_create(NULL);
     lv_obj_clear_flag(analogClockScreen, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 

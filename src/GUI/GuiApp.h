@@ -55,9 +55,13 @@ class GuiApp {
 
     void create_gif_img();
     void set_gif_parent();
+    void update_gif_img_src();
+    
+    void update_clock_img_src();
 
     void load_default_screen();
 
     GuiApp(StateApp *state_app);
     ~GuiApp();
 };
+
