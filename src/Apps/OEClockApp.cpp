@@ -52,9 +52,6 @@ void OEClockApp::setup() {
     this->init_gui();
     weather_app->create_weather_task();
     this->wifi_app->connect_to_wifi();
-    if (this->state_app->wifi_state->wifi_connected) {
-        time_app->config_time();
-    }
     this->server_app->setup();
     this->wifi_app->subscribe_to_wifi_disconnected_event();
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
@@ -92,11 +89,6 @@ void OEClockApp::loop() {
     lv_task_handler();
     delay(5);
     server_app->run();
-    if (this->state_app->wifi_state->wifi_connected ||
-        this->state_app->time_state->time_is_set) {
-        time_app->notifyAboutTime();
-        // Serial.println(ESP.getFreeHeap());
-    }
 }
 
 OEClockApp::~OEClockApp() {}

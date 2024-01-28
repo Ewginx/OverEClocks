@@ -82,7 +82,7 @@ Zulu	zu
 
 
 // Time check period, ms
-#define TIME_UPDATE_INTERVAL 400
+#define TIME_UPDATE_INTERVAL 900
 
 
 
