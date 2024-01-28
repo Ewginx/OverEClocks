@@ -313,8 +313,9 @@ void ServerApp::set_time(JsonVariant &json) {
     tv.tv_usec = 0;
     Serial.println(time_json["time"].as<unsigned long>());
     settimeofday(&tv, NULL);
-    lv_msg_send(MSG_UPDATE_TZ, NULL);
     this->_state_app->time_state->time_is_set = true;
+    lv_msg_send(MSG_UPDATE_TZ, NULL);
+    lv_msg_send(MSG_UPDATE_TIME_TIMER, NULL);
 }
 
 void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
