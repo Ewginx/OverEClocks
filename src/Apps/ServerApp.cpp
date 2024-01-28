@@ -318,16 +318,19 @@ void ServerApp::set_time(JsonVariant &json) {
 }
 
 void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
-    this->websocket.textAll(this->getSensorReadings());
+    this->websocket.textAll(this->getInfoForWS());
 }
 
-String ServerApp::getSensorReadings() {
+String ServerApp::getInfoForWS() {
     String sensors_readings;
-    StaticJsonDocument<64> doc;
+    StaticJsonDocument<112> doc;
     doc["temperature"] = this->_microclimate_app->get_temperature();
     doc["humidity"] = this->_microclimate_app->get_humidity();
     doc["lx"] = this->_brightness_app->get_light_level();
     doc["battery_level"] = 84;
+    doc["max_free_block"] = ESP.getMaxAllocHeap() / 1024;
+    doc["free_heap"] = ESP.getFreeHeap() / 1024;
+    doc["used_space"] = ((unsigned int)LittleFS.usedBytes()) / 1024;
     serializeJson(doc, sensors_readings);
     return sensors_readings;
 }
@@ -426,7 +429,7 @@ void ServerApp::save_alarm_clock_settings(JsonVariant &json) {
 void ServerApp::get_settings(AsyncWebServerRequest *request) {
     Serial.println("Request on settings");
     AsyncResponseStream *response = request->beginResponseStream("application/json");
-    StaticJsonDocument<768> doc;
+    StaticJsonDocument<820> doc;
     doc["ssid"] = this->_state_app->wifi_state->ssid;
     doc["password"] = this->_state_app->wifi_state->password;
     doc["ip_address"] = this->_state_app->wifi_state->ip_address;
@@ -466,6 +469,7 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["weekdays_enabled"] = this->_state_app->alarm_state->weekdays_switch_enabled;
     doc["weekends_enabled"] = this->_state_app->alarm_state->weekends_switch_enabled;
     doc["one_off_enabled"] = this->_state_app->alarm_state->oneOff_switch_enabled;
+    doc["fs_space"] = ((unsigned int)LittleFS.totalBytes()) / 1024;
 
     serializeJson(doc, *response);
     request->send(response);
