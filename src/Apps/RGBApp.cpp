@@ -20,9 +20,9 @@ void RGBApp::begin_rgb() {
 }
 
 void RGBApp::show() {
-    if (!rainbow) {
+    if (this->_state_app->rgb_state->effect == 1) {
         this->solid_color_effect();
-    } else if (rainbow) {
+    } else if (this->_state_app->rgb_state->effect == 2) {
         this->rainbow_effect();
     }
 }
