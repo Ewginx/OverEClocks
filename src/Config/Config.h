@@ -119,7 +119,7 @@ Zulu	zu
 #define HOUR_LABEL 0
 #define MINUTE_LABEL 3
 
-
+#define NUMPIXELS 8
 
 
 

@@ -19,3 +19,6 @@
 #define SD_MISO 33
 #define SD_SCK 14
 #define SD_CS 27
+
+//RGB pin
+#define RGB_PIN 6
