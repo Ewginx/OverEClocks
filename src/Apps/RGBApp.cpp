@@ -1,7 +1,17 @@
 #include "RGBApp.h"
+static RGBApp *instance = NULL;
+
+extern "C" void switch_rgb_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    instance->switch_rgb();
+}
+extern "C" void rgb_show_cb_wrapper(lv_timer_t *timer) { instance->show(); }
 
 RGBApp::RGBApp(StateApp *state_app) : pixels(NUMPIXELS, RGB_PIN) {
+    instance = this;
     this->_state_app = state_app;
+    _rgb_show_timer = lv_timer_create(rgb_show_cb_wrapper, 100, NULL);
+    lv_timer_pause(this->_rgb_show_timer);
+    lv_msg_subscribe(MSG_SWITCH_RGB, switch_rgb_cb_wrapper, NULL);
 }
 
 void RGBApp::begin_rgb() {
@@ -14,6 +24,14 @@ void RGBApp::show() {
         this->solid_color_effect();
     } else if (rainbow) {
         this->rainbow_effect();
+    }
+}
+
+void RGBApp::switch_rgb() {
+    if (this->_state_app->rgb_state->enabled) {
+        lv_timer_resume(_rgb_show_timer);
+    } else {
+        lv_timer_pause(_rgb_show_timer);
     }
 }
 

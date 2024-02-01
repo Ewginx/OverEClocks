@@ -15,6 +15,8 @@ class RGBApp {
 
     void show();
 
+    void switch_rgb();
+
     void solid_color_effect();
     void rainbow_effect();
     uint32_t wheel(byte WheelPos);
@@ -23,11 +25,7 @@ class RGBApp {
     ~RGBApp();
 
   private:
-    unsigned long solid_color_effect_previous_millis = 0;
-    unsigned long rainbow_previous_millis = 0;
-
+    lv_timer_t *_rgb_show_timer = NULL;
     bool rainbow = false;
-
-    int pixels_interval = 0;
     int rainbowCycles = 0;
 };
