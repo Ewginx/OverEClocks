@@ -16,7 +16,7 @@ class WiFiState {
     String ip_address;
     String gateway_address;
     String current_ip_address;
-    
+
     void save_ssid(const char *ssid);
     void save_password(const char *password);
     void save_ap_login(const char *login);
@@ -73,16 +73,14 @@ class AlarmState {
     ~AlarmState();
 };
 
-struct ThemeStruct
-{
-  int primary_color;
-  int second_color;
-  int screen_color;
-  int card_color;
-  int text_color;
-  int grey_color;
+struct ThemeStruct {
+    int primary_color;
+    int second_color;
+    int screen_color;
+    int card_color;
+    int text_color;
+    int grey_color;
 };
-
 
 class ThemeState {
   private:
@@ -151,6 +149,26 @@ class TimeState {
     ~TimeState();
 };
 
+class RGBState {
+  private:
+    Preferences &_preferences;
+
+  public:
+    bool enabled;
+    short int effect;
+
+    int first_rgb_color;
+    int second_rgb_color;
+    int third_rgb_color;
+
+    void save_rgb_color(int first_rgb_color, int second_rgb_color, int third_rgb_color);
+    void save_rgb_enabled(bool enabled);
+    void save_rgb_effect(short int effect);
+
+    RGBState(Preferences &preferences);
+    ~RGBState();
+};
+
 class StateApp {
   private:
     Preferences _preferences;
@@ -162,6 +180,7 @@ class StateApp {
     ThemeState *theme_state;
     DisplayState *display_state;
     TimeState *time_state;
+    RGBState *rgb_state;
 
     StateApp(/* args */);
     ~StateApp();

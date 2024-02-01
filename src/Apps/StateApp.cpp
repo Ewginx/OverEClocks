@@ -60,27 +60,22 @@ WeatherState::WeatherState(Preferences &preferences) : _preferences(preferences)
 void WeatherState::save_weather_enabled(bool enabled) {
     this->weather_enabled = enabled;
     _preferences.putBool("weather_enab", enabled);
-    
 }
 void WeatherState::save_city(const char *city) {
     this->city = city;
     _preferences.putString("city", city);
-    
 }
 void WeatherState::save_language(const char *language) {
     this->language = language;
     _preferences.putString("language", language);
-    
 }
 void WeatherState::save_api_key(const char *api_key) {
     this->api_key = api_key;
     _preferences.putString("api_key", api_key);
-    
 }
 void WeatherState::save_request_period(int request_period) {
     this->request_period = request_period;
     _preferences.putInt("request_period", request_period);
-    
 }
 
 WeatherState::~WeatherState() {}
@@ -100,22 +95,20 @@ void AlarmState::save_alarm_switches_enabled(bool weekdays_enabled, bool weekend
     this->weekdays_switch_enabled = weekdays_enabled;
     this->weekends_switch_enabled = weekends_enabled;
     this->oneOff_switch_enabled = oneOff_enabled;
-    
+
     _preferences.putBool("weekdays_sw", weekdays_enabled);
     _preferences.putBool("weekends_sw", weekends_enabled);
     _preferences.putBool("oneOff_sw", oneOff_enabled);
-    
 }
 void AlarmState::save_alarm_time(const char *weekdays_time, const char *weekends_time,
                                  const char *oneOff_time) {
     this->weekdays_time = weekdays_time;
     this->weekends_time = weekends_time;
     this->oneOff_time = oneOff_time;
-    
+
     _preferences.putString("weekdays_time", weekdays_time);
     _preferences.putString("weekends_time", weekends_time);
     _preferences.putString("oneOff_time", oneOff_time);
-    
 }
 AlarmState::~AlarmState() {}
 
@@ -155,7 +148,6 @@ void ThemeState::save_light_colors(ThemeStruct light_theme) {
     _preferences.putInt("light_card", light_theme.card_color);
     _preferences.putInt("light_text", light_theme.text_color);
     _preferences.putInt("light_grey", light_theme.grey_color);
-    
 }
 void ThemeState::save_dark_colors(ThemeStruct dark_theme) {
     this->dark_primary_color = dark_theme.primary_color;
@@ -171,7 +163,6 @@ void ThemeState::save_dark_colors(ThemeStruct dark_theme) {
     _preferences.putInt("dark_card", dark_theme.card_color);
     _preferences.putInt("dark_text", dark_theme.text_color);
     _preferences.putInt("dark_grey", dark_theme.grey_color);
-    
 }
 ThemeState::~ThemeState() {}
 
@@ -187,29 +178,24 @@ DisplayState::DisplayState(Preferences &preferences) : _preferences(preferences)
 void DisplayState::save_auto_brightness_enabled(bool enabled) {
     this->auto_brightness = enabled;
     _preferences.putBool("auto_bright", enabled);
-    
 }
 
 void DisplayState::save_auto_theme_change(bool change) {
     this->auto_theme_change = change;
     _preferences.putBool("auto_theme", change);
-    
 }
 void DisplayState::save_digital_main_screen(bool digital_main_screen) {
     this->digital_main_screen = digital_main_screen;
     _preferences.putBool("dig_main_screen", digital_main_screen);
-    
 }
 void DisplayState::save_brightness_level(unsigned int brightness_level) {
     this->brightness_level = brightness_level;
     _preferences.putUInt("brightness", brightness_level);
-    
 }
 
 void DisplayState::save_brightness_threshold(int threshold) {
     this->threshold = threshold;
     _preferences.putInt("threshold", threshold);
-    
 }
 DisplayState::~DisplayState() {}
 
@@ -221,3 +207,30 @@ void TimeState::save_timezone(const char *timezone_posix) {
     this->_preferences.putString("timezone", timezone_posix);
 }
 TimeState::~TimeState() {}
+
+RGBState::RGBState(Preferences &preferences) : _preferences(preferences) {
+    this->first_rgb_color = _preferences.getInt("first_rgb", 0);
+    this->second_rgb_color = _preferences.getInt("second_rgb", 255);
+    this->third_rgb_color = _preferences.getInt("third_rgb", 0);
+
+    this->enabled = _preferences.getBool("rgb_enabled", false);
+    this->effect = _preferences.getInt("rgb_effect", 1);
+}
+void RGBState::save_rgb_color(int first_rgb_color, int second_rgb_color,
+                              int third_rgb_color) {
+    this->first_rgb_color = first_rgb_color;
+    this->second_rgb_color = second_rgb_color;
+    this->third_rgb_color = third_rgb_color;
+    this->_preferences.putInt("first_rgb", first_rgb_color);
+    this->_preferences.putInt("second_rgb", second_rgb_color);
+    this->_preferences.putInt("third_rgb", third_rgb_color);
+}
+void RGBState::save_rgb_enabled(bool enabled) {
+    this->enabled = enabled;
+    this->_preferences.putBool("rgb_enabled", enabled);
+}
+void RGBState::save_rgb_effect(short int effect) {
+    this->effect = effect;
+    this->_preferences.putInt("rgb_effect", effect);
+}
+RGBState::~RGBState() {}
