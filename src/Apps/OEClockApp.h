@@ -12,7 +12,6 @@
 #include "WiFiApp.h"
 #include <Arduino.h>
 #include <LittleFS.h>
-#include <Preferences.h>
 #include <WiFi.h>
 
 
