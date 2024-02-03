@@ -20,6 +20,7 @@ OEClockApp::OEClockApp() {
     instance = this;
     display = new Display();
     state_app = new StateApp();
+    rgb_app = new RGBApp(this->state_app);
     wifi_app = new WiFiApp(this->state_app, mutex);
     gui_app = new GuiApp(this->state_app);
     weather_app = new WeatherApp(this->gui_app->weather, this->state_app);
@@ -54,6 +55,9 @@ void OEClockApp::setup() {
     this->wifi_app->connect_to_wifi();
     this->server_app->setup();
     this->wifi_app->subscribe_to_wifi_disconnected_event();
+    this->rgb_app->begin_rgb();
+    this->state_app->rgb_state->enabled = true;
+    this->rgb_app->switch_rgb();
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->load_default_screen();
         this->gui_app->delete_loading_screen();
