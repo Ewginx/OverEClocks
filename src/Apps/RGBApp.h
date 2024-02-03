@@ -27,4 +27,5 @@ class RGBApp {
   private:
     lv_timer_t *_rgb_show_timer = NULL;
     int rainbowCycles = 0;
+    bool solid_enabled = false;
 };

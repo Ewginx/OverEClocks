@@ -20,8 +20,14 @@ void RGBApp::begin_rgb() {
 }
 
 void RGBApp::show() {
+    if(this->_state_app->rgb_state->effect != 1){
+        this->solid_enabled = false;
+    }
     if (this->_state_app->rgb_state->effect == 1) {
-        this->solid_color_effect();
+        if (!this->solid_enabled) {
+            this->solid_color_effect();
+            this->solid_enabled = true;
+        }
     } else if (this->_state_app->rgb_state->effect == 2) {
         this->rainbow_effect();
     }
