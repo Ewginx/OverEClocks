@@ -11,7 +11,7 @@ RGBApp::RGBApp(StateApp *state_app) : pixels(NUMPIXELS, RGB_PIN) {
     this->_state_app = state_app;
     _rgb_show_timer = lv_timer_create(rgb_show_cb_wrapper, this->_state_app->rgb_state->delay, NULL);
     lv_timer_pause(this->_rgb_show_timer);
-    lv_msg_subscribe(MSG_SWITCH_RGB, switch_rgb_cb_wrapper, NULL);
+    lv_msg_subscribe(MSG_RGB_STATE_CHANGED, update_rgb_cb_wrapper, NULL);
 }
 
 void RGBApp::begin_rgb() {
