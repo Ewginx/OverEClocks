@@ -21,4 +21,4 @@
 #define SD_CS 27
 
 //RGB pin
-#define RGB_PIN 35
+#define RGB_PIN 16
