@@ -214,9 +214,9 @@ RGBState::RGBState(Preferences &preferences) : _preferences(preferences) {
     this->second_rgb_color = _preferences.getInt("second_rgb", 0);
     this->third_rgb_color = _preferences.getInt("third_rgb", 0);
 
-    this->enabled = _preferences.getBool("rgb_enabled", false);
+    this->enabled = _preferences.getBool("rgb_enabled", true);
     this->delay = _preferences.getInt("rgb_delay", 300);
-    this->effect = _preferences.getInt("rgb_effect", 1);
+    this->effect = _preferences.getInt("rgb_effect", 2);
     this->brightness = this->_preferences.getInt("rgb_bright", 255);
 }
 void RGBState::save_rgb_color(int first_rgb_color, int second_rgb_color,
