@@ -11,6 +11,7 @@ StateApp::StateApp() {
     theme_state = new ThemeState(_preferences);
     display_state = new DisplayState(_preferences);
     time_state = new TimeState(_preferences);
+    rgb_state = new RGBState(_preferences);
 }
 StateApp::~StateApp() {}
 
