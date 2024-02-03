@@ -210,13 +210,14 @@ void TimeState::save_timezone(const char *timezone_posix) {
 TimeState::~TimeState() {}
 
 RGBState::RGBState(Preferences &preferences) : _preferences(preferences) {
-    this->first_rgb_color = _preferences.getInt("first_rgb", 10814460); //16777215 white
+    this->first_rgb_color = _preferences.getInt("first_rgb", 10814460); // 16777215 white
     this->second_rgb_color = _preferences.getInt("second_rgb", 0);
     this->third_rgb_color = _preferences.getInt("third_rgb", 0);
 
     this->enabled = _preferences.getBool("rgb_enabled", false);
     this->delay = _preferences.getInt("rgb_delay", 300);
     this->effect = _preferences.getInt("rgb_effect", 1);
+    this->brightness = this->_preferences.getInt("rgb_bright", 255);
 }
 void RGBState::save_rgb_color(int first_rgb_color, int second_rgb_color,
                               int third_rgb_color) {
@@ -238,5 +239,9 @@ void RGBState::save_rgb_effect(short int effect) {
 void RGBState::save_delay_effect(int delay) {
     this->delay = delay;
     this->_preferences.putInt("rgb_delay", delay);
+}
+void RGBState::save_brightness(int brightness) {
+    this->brightness = brightness;
+    this->_preferences.putInt("rgb_bright", brightness);
 }
 RGBState::~RGBState() {}
