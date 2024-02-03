@@ -9,7 +9,7 @@ extern "C" void rgb_show_cb_wrapper(lv_timer_t *timer) { instance->show(); }
 RGBApp::RGBApp(StateApp *state_app) : pixels(NUMPIXELS, RGB_PIN) {
     instance = this;
     this->_state_app = state_app;
-    _rgb_show_timer = lv_timer_create(rgb_show_cb_wrapper, 100, NULL);
+    _rgb_show_timer = lv_timer_create(rgb_show_cb_wrapper, this->_state_app->rgb_state->delay, NULL);
     lv_timer_pause(this->_rgb_show_timer);
     lv_msg_subscribe(MSG_SWITCH_RGB, switch_rgb_cb_wrapper, NULL);
 }
@@ -44,7 +44,7 @@ void RGBApp::switch_rgb() {
 void RGBApp::solid_color_effect() {
     pixels.clear();
     for (int i = 0; i < NUMPIXELS; i++) {
-        pixels.setPixelColor(i, pixels.Color(0, 255, 0));
+        pixels.setPixelColor(i, this->_state_app->rgb_state->first_rgb_color);
         pixels.show();
     }
 }
