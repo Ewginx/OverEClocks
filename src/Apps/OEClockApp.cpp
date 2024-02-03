@@ -42,22 +42,20 @@ void OEClockApp::setup() {
     this->gui_app->create_loading_screen();
     xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
                             "update_display_task", /* Name of the task */
-                            3072,                 /* Stack size in words */ //change from 10000 bytes
-                            NULL,                  /* Task input parameter */
-                            0,                     /* Priority of the task */
-                            &update_display_task,  /* Task handle. */
+                            3072, /* Stack size in words */ // change from 10000 bytes
+                            NULL,                           /* Task input parameter */
+                            0,                              /* Priority of the task */
+                            &update_display_task,           /* Task handle. */
                             0);
     this->weather_app->setup_weather_url();
     this->brightness_app->set_display_brightness(
         this->state_app->display_state->brightness_level);
     this->init_gui();
-    weather_app->create_weather_task();
+    this->weather_app->create_weather_task();
     this->wifi_app->connect_to_wifi();
     this->server_app->setup();
     this->wifi_app->subscribe_to_wifi_disconnected_event();
     this->rgb_app->begin_rgb();
-    this->state_app->rgb_state->enabled = true;
-    this->rgb_app->switch_rgb();
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->load_default_screen();
         this->gui_app->delete_loading_screen();
