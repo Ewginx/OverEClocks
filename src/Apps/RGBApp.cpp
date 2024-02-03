@@ -38,6 +38,7 @@ void RGBApp::switch_rgb() {
         lv_timer_resume(_rgb_show_timer);
     } else {
         lv_timer_pause(_rgb_show_timer);
+        this->pixels.show();
     }
 }
 
