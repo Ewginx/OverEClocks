@@ -1,15 +1,16 @@
 #include "RGBApp.h"
 static RGBApp *instance = NULL;
 
-extern "C" void switch_rgb_cb_wrapper(void *subscriber, lv_msg_t *msg) {
-    instance->switch_rgb();
+extern "C" void update_rgb_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    instance->update_rgb();
 }
 extern "C" void rgb_show_cb_wrapper(lv_timer_t *timer) { instance->show(); }
 
 RGBApp::RGBApp(StateApp *state_app) : pixels(NUMPIXELS, RGB_PIN) {
     instance = this;
     this->_state_app = state_app;
-    _rgb_show_timer = lv_timer_create(rgb_show_cb_wrapper, this->_state_app->rgb_state->delay, NULL);
+    _rgb_show_timer =
+        lv_timer_create(rgb_show_cb_wrapper, this->_state_app->rgb_state->delay, NULL);
     lv_timer_pause(this->_rgb_show_timer);
     lv_msg_subscribe(MSG_RGB_STATE_CHANGED, update_rgb_cb_wrapper, NULL);
 }
@@ -17,10 +18,11 @@ RGBApp::RGBApp(StateApp *state_app) : pixels(NUMPIXELS, RGB_PIN) {
 void RGBApp::begin_rgb() {
     this->pixels.begin();
     this->pixels.show();
+    this->switch_rgb();
 }
 
 void RGBApp::show() {
-    if(this->_state_app->rgb_state->effect != 1){
+    if (this->_state_app->rgb_state->effect != 1) {
         this->solid_enabled = false;
     }
     if (this->_state_app->rgb_state->effect == 1) {
@@ -58,6 +60,15 @@ void RGBApp::rainbow_effect() {
     if (rainbowCycles >= 256) {
         rainbowCycles = 0;
     }
+}
+void RGBApp::set_brightness() {
+    this->pixels.setBrightness(this->_state_app->rgb_state->brightness);
+    this->solid_enabled = false;
+
+}
+void RGBApp::update_rgb() {
+    this->switch_rgb();
+    this->set_brightness();
 }
 uint32_t RGBApp::wheel(byte WheelPos) {
     WheelPos = 255 - WheelPos;

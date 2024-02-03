@@ -17,9 +17,16 @@ class RGBApp {
 
     void switch_rgb();
 
-    void solid_color_effect();
-    void rainbow_effect();
+    void set_brightness();
+    
+    void update_rgb();
+
     uint32_t wheel(byte WheelPos);
+
+    //RGB effects
+    void solid_color_effect();
+    
+    void rainbow_effect();
 
     RGBApp(StateApp *state_app);
     ~RGBApp();
