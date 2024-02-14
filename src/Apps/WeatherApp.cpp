@@ -21,35 +21,35 @@ WeatherApp::WeatherApp(Weather *weather, StateApp *state_app) {
 }
 
 void WeatherApp::get_weather(void *parameter) {
-    WeatherApp *l_pThis = (WeatherApp *)parameter;
+    // WeatherApp *l_pThis = (WeatherApp *)parameter;
     for (;;) {
-        if (WiFi.status() == WL_CONNECTED & l_pThis->_weather_running) {
+        if (WiFi.status() == WL_CONNECTED & instance->_weather_running) {
             int i = 0;
             for (i; i < 3; i++) {
-                int statusCode = l_pThis->send_weather_request();
+                int statusCode = instance->send_weather_request();
                 Serial.print("Status code: ");
                 Serial.println(statusCode);
                 if (statusCode == 200) {
-                    String response = l_pThis->client.responseBody();
-                    l_pThis->deserialize_json_response(response);
+                    String response = instance->client.responseBody();
+                    instance->deserialize_json_response(response);
                     // Serial.print("Response: ");
                     // Serial.println(response);
                     Serial.printf("Waiting %i minutes for the next request",
-                                  l_pThis->_state_app->weather_state->request_period /
+                                  instance->_state_app->weather_state->request_period /
                                       60000);
                     Serial.println();
                     break;
                 } else {
                     Serial.printf("Try %d of 3 \n", i + 1);
-                    Serial.println(l_pThis->client.responseBody());
+                    Serial.println(instance->client.responseBody());
                     vTaskDelay(300 / portTICK_PERIOD_MS);
                 }
             }
             if (i == 3) {
-                l_pThis->suspend_task_on_error();
+                instance->suspend_task_on_error();
             }
         }
-        vTaskDelay(l_pThis->_state_app->weather_state->request_period /
+        vTaskDelay(instance->_state_app->weather_state->request_period /
                    portTICK_PERIOD_MS);
     }
 }
@@ -102,9 +102,27 @@ void WeatherApp::suspend_task_on_error() {
 }
 
 void WeatherApp::deserialize_json_response(String &response) {
-    DynamicJsonDocument doc(4096);
+    DynamicJsonDocument doc(1536);
+    StaticJsonDocument<368> filter;
+    filter["location"]["name"] = true;
+    filter["location"]["country"] = true;
+    filter["current"]["temp_c"] = true;
+    filter["current"]["wind_kph"] = true;
+    filter["current"]["wind_degree"] = true;
+    filter["current"]["pressure_mb"] = true;
+    filter["current"]["humidity"] = true;
+    filter["current"]["feelslike_c"] = true;
+    filter["current"]["condition"] = true;
+    filter["current"]["condition"]["text"] = true;
+    filter["current"]["condition"]["icon"] = true;
+    filter["forecast"]["forecastday"][0]["day"]["maxtemp_c"] = true;
+    filter["forecast"]["forecastday"][0]["day"]["mintemp_c"] = true;
+    filter["forecast"]["forecastday"][0]["day"]["daily_chance_of_rain"] = true;
+    filter["forecast"]["forecastday"][0]["day"]["daily_chance_of_snow"] = true;
+    filter["forecast"]["forecastday"][0]["hour"][0]["temp_c"] = true;
 
-    DeserializationError error = deserializeJson(doc, response);
+    DeserializationError error =
+        deserializeJson(doc, response, DeserializationOption::Filter(filter));
 
     if (error) {
         Serial.print("deserializeJson() failed: ");
@@ -146,9 +164,8 @@ void WeatherApp::deserialize_json_response(String &response) {
     //  forecastday["totalsnow_cm"]; // 0
     //  forecastday["avghumidity"]; // 84
     //  forecastday["daily_will_it_rain"];
-    //  forecastday["daily_chance_of_rain"];
     //  forecastday["daily_will_it_snow"];
-    //  forecastday["daily_chance_of_snow"];
+
     this->set_precipitation_probability(forecastday["daily_chance_of_rain"].as<int>(),
                                         forecastday["daily_chance_of_snow"].as<int>(),
                                         current_weather["temp_c"].as<int>());
@@ -341,12 +358,12 @@ String WeatherApp::url_encode(const char *str) {
     return encodedMsg;
 }
 void WeatherApp::create_weather_task() {
-    xTaskCreatePinnedToCore(this->get_weather,    /* Function to implement the task */
-                            "request",            /* Name of the task */
-                            4096,                /* Stack size in words */ // change from 10000
-                            this,                 /* Task input parameter */
-                            0,                    /* Priority of the task */
-                            &this->_weather_task, /* Task handle. */
+    xTaskCreatePinnedToCore(this->get_weather, /* Function to implement the task */
+                            "request",         /* Name of the task */
+                            4096, /* Stack size in bytes */ // change from 10000
+                            NULL,                           /* Task input parameter */
+                            0,                              /* Priority of the task */
+                            &this->_weather_task,           /* Task handle. */
                             0);
     vTaskSuspend(this->_weather_task);
 }
