@@ -1,14 +1,16 @@
 #pragma once
 #include "Config/Config.h"
-#include <DFPlayerMini_Fast.h>
+// #include <DFPlayerMini_Fast.h>
 #include "StateApp.h"
 #include "lvgl.h"
 #include <Arduino.h>
-
+#include <DFMiniMp3.h>
+typedef DFMiniMp3<HardwareSerial> DfMp3; 
 
 class SoundApp {
   private:
-    DFPlayerMini_Fast  player;
+    DfMp3 player;
+    // DFPlayerMini_Fast  player;
     lv_timer_t *sound_loop_timer = NULL;
 
   public:

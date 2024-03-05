@@ -19,15 +19,19 @@ void SoundApp::play_alarm_sound() {
         return;
     if (this->sound_loop_timer == NULL) {
         sound_loop_timer = lv_timer_create(loop_alarm_sound_cb_wrapper, 400, NULL);
-        player.playFolder(1, _state_app->sound_state->alarm_track_number);
-        Serial.println(player.numFolders());
+        player.playFolderTrack(1, _state_app->sound_state->alarm_track_number);
+        // Serial.println(player.getFolderTrackCount(1));
+        // Serial.println(player.getTotalFolderCount()); // doesn't work, at least with SD card
+        // Serial.println(player.getTotalTrackCount());
+        // Serial.println(player.getCurrentTrack());
     }
-    player.volume(_state_app->sound_state->volume_level);
+    player.setVolume(_state_app->sound_state->volume_level);
 }
 
 void SoundApp::loop_alarm_sound() {
-    if (!player.isPlaying()) {
-        player.playFolder(1, _state_app->sound_state->alarm_track_number);
+    DfMp3_Status current_status = player.getStatus();
+    if (current_status.state == DfMp3_StatusState_Idle) {
+        player.playFolderTrack(1, _state_app->sound_state->alarm_track_number);
     }
 }
 
@@ -49,16 +53,16 @@ void SoundApp::play_ee() {
 
 // int SoundApp::get_file_counts() { return player.readFileCountsInFolder(1); }
 
-void SoundApp::setup_player() {
-    Serial2.begin(9600);
-    player.begin(Serial2);
-    // player.reset();
-    player.volume(
+void SoundApp::setup_player()  {
+    // Serial2.begin(9600);
+    player.begin();
+    player.reset();
+    player.setVolume(
         _state_app->sound_state->volume_level); // Set volume value. From 0 to 30
     // player.printError();
 }
 
-SoundApp::SoundApp(StateApp *state_app) {
+SoundApp::SoundApp(StateApp *state_app): player(Serial2) {
     instance = this;
     this->_state_app = state_app;
     lv_msg_subscribe(MSG_ALARM_PLAY, alarm_ringing_cb_wrapper, NULL);

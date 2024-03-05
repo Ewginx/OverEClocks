@@ -224,7 +224,7 @@ void TimeState::save_timezone(const char *timezone_posix) {
 TimeState::~TimeState() {}
 
 SoundState::SoundState(Preferences &preferences) : _preferences(preferences) {
-    this->volume_level = _preferences.getInt("volume_level", 10);
+    this->volume_level = _preferences.getInt("volume_level", 15);
     this->alarm_track_number = _preferences.getInt("alarm_track", 1);
     this->ee_track_number = _preferences.getInt("ee_track", 1);
     this->random_alarm_track = _preferences.getBool("random_track", false);
