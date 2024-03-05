@@ -3,6 +3,7 @@
 #include "Config/Config.h"
 #include "Display/Display.h"
 #include "Filesystem/lv_fs_littlefs.h"
+#include "Filesystem/lv_fs_sdcard.h"
 #include "GUI/GuiApp.h"
 #include "MicroclimateApp.h"
 #include "ServerApp.h"
@@ -10,10 +11,10 @@
 #include "TimeApp.h"
 #include "WeatherApp.h"
 #include "WiFiApp.h"
+#include "SoundApp.h"
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <WiFi.h>
-
 
 class OEClockApp {
   private:
@@ -21,6 +22,7 @@ class OEClockApp {
     WeatherApp *weather_app;
     BrightnessApp *brightness_app;
     MicroclimateApp *microclimate_app;
+    SoundApp *sound_app;
 
   public:
     StateApp *state_app;

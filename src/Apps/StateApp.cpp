@@ -11,6 +11,7 @@ StateApp::StateApp() {
     theme_state = new ThemeState(_preferences);
     display_state = new DisplayState(_preferences);
     time_state = new TimeState(_preferences);
+    sound_state = new SoundState(_preferences);
 }
 StateApp::~StateApp() {}
 
@@ -86,7 +87,7 @@ void WeatherState::save_request_period(int request_period) {
 WeatherState::~WeatherState() {}
 
 AlarmState::AlarmState(Preferences &preferences) : _preferences(preferences) {
-
+    this->alarm_ringing = false;
     this->weekdays_switch_enabled = _preferences.getBool("weekdays_sw", false);
     this->weekends_switch_enabled = _preferences.getBool("weekends_sw", false);
     this->oneOff_switch_enabled = _preferences.getBool("oneOff_sw", false);
@@ -221,3 +222,33 @@ void TimeState::save_timezone(const char *timezone_posix) {
     this->_preferences.putString("timezone", timezone_posix);
 }
 TimeState::~TimeState() {}
+
+SoundState::SoundState(Preferences &preferences) : _preferences(preferences) {
+    this->volume_level = _preferences.getInt("volume_level", 10);
+    this->alarm_track_number = _preferences.getInt("alarm_track", 1);
+    this->ee_track_number = _preferences.getInt("ee_track", 1);
+    this->random_alarm_track = _preferences.getBool("random_track", false);
+    this->sound_on = _preferences.getBool("sound_on", true);
+}
+void SoundState::save_volume_level(short int volume_level) {
+    this->volume_level = volume_level;
+    this->_preferences.putInt("volume_level", volume_level);
+}
+void SoundState::save_alarm_track_number(short int alarm_track_number) {
+    this->alarm_track_number = alarm_track_number;
+    this->_preferences.putInt("alarm_track", alarm_track_number);
+}
+void SoundState::save_ee_track_number(short int ee_track_number) {
+    this->ee_track_number = ee_track_number;
+    this->_preferences.putInt("ee_track", ee_track_number);
+}
+void SoundState::save_random_alarm_track(bool random_alarm_track) {
+    this->random_alarm_track = random_alarm_track;
+    this->_preferences.putBool("random_track", random_alarm_track);
+}
+void SoundState::save_sound_on(bool sound_on) {
+    this->sound_on = sound_on;
+    this->_preferences.putBool("sound_on", sound_on);
+}
+SoundState::~SoundState() {}
+
