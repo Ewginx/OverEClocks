@@ -23,12 +23,12 @@ void SoundApp::play_alarm_sound() {
         // Serial.println(player.getFolderTrackCount(1));
         // Serial.println(player.getTotalFolderCount()); // doesn't work, at least with SD
         // card Serial.println(player.getTotalTrackCount());
-        // Serial.println(player.getCurrentTrack());
     }
     player.setVolume(_state_app->sound_state->volume_level);
 }
 
 void SoundApp::loop_alarm_sound() {
+    player.setVolume(_state_app->sound_state->volume_level);
     if (this->is_idling()) {
         player.playFolderTrack(alarm_track_folder,
                                _state_app->sound_state->alarm_track_number);
