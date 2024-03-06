@@ -15,6 +15,7 @@
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <WiFi.h>
+#include "RGBApp.h"
 
 class OEClockApp {
   private:
@@ -23,6 +24,7 @@ class OEClockApp {
     BrightnessApp *brightness_app;
     MicroclimateApp *microclimate_app;
     SoundApp *sound_app;
+    RGBApp *rgb_app;
 
   public:
     StateApp *state_app;

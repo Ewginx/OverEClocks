@@ -19,3 +19,4 @@
 #define MSG_ALARM_PLAY 19
 #define MSG_SOUND_STOP 20
 #define MSG_PLAY_EE 21
+#define MSG_RGB_STATE_CHANGED 22

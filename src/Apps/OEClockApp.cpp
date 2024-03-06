@@ -20,6 +20,7 @@ OEClockApp::OEClockApp() {
     instance = this;
     display = new Display();
     state_app = new StateApp();
+    rgb_app = new RGBApp(this->state_app);
     wifi_app = new WiFiApp(this->state_app, mutex);
     gui_app = new GuiApp(this->state_app);
     weather_app = new WeatherApp(this->gui_app->weather, this->state_app);
@@ -53,10 +54,11 @@ void OEClockApp::setup() {
     this->brightness_app->set_display_brightness(
         this->state_app->display_state->brightness_level);
     this->init_gui();
-    weather_app->create_weather_task();
+    this->weather_app->create_weather_task();
     this->wifi_app->connect_to_wifi();
     this->server_app->setup();
     this->wifi_app->subscribe_to_wifi_disconnected_event();
+    this->rgb_app->begin_rgb();
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->load_default_screen();
         this->gui_app->delete_loading_screen();
