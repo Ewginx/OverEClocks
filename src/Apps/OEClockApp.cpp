@@ -20,6 +20,7 @@ OEClockApp::OEClockApp() {
     instance = this;
     display = new Display();
     state_app = new StateApp();
+    rgb_app = new RGBApp(this->state_app);
     wifi_app = new WiFiApp(this->state_app, mutex);
     gui_app = new GuiApp(this->state_app);
     weather_app = new WeatherApp(this->gui_app->weather, this->state_app);
@@ -29,34 +30,35 @@ OEClockApp::OEClockApp() {
         new BrightnessApp(this->display, this->gui_app->settings, this->state_app);
     microclimate_app = new MicroclimateApp(this->gui_app->dock_panel);
     server_app = new ServerApp(state_app, brightness_app, microclimate_app);
+    sound_app = new SoundApp(state_app);
 }
 
 void OEClockApp::setup() {
     Serial.begin(115200);
     lv_log_register_print_cb(serial_print);
     this->init_i2c_apps();
-    // lv_port_sd_fs_init();
+    this->sound_app->setup_player();
+    lv_port_sd_fs_init();
     lv_port_littlefs_fs_init();
     TaskHandle_t update_display_task;
     this->gui_app->create_loading_screen();
     xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
                             "update_display_task", /* Name of the task */
-                            3072,                 /* Stack size in words */ //change from 10000 bytes
-                            NULL,                  /* Task input parameter */
-                            0,                     /* Priority of the task */
-                            &update_display_task,  /* Task handle. */
+                            3072, /* Stack size in words */ // change from 10000 bytes
+                            NULL,                           /* Task input parameter */
+                            0,                              /* Priority of the task */
+                            &update_display_task,           /* Task handle. */
                             0);
+
     this->weather_app->setup_weather_url();
     this->brightness_app->set_display_brightness(
         this->state_app->display_state->brightness_level);
     this->init_gui();
-    weather_app->create_weather_task();
+    this->weather_app->create_weather_task();
     this->wifi_app->connect_to_wifi();
-    if (this->state_app->wifi_state->wifi_connected) {
-        time_app->config_time();
-    }
     this->server_app->setup();
     this->wifi_app->subscribe_to_wifi_disconnected_event();
+    this->rgb_app->begin_rgb();
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->load_default_screen();
         this->gui_app->delete_loading_screen();
@@ -92,11 +94,7 @@ void OEClockApp::loop() {
     lv_task_handler();
     delay(5);
     server_app->run();
-    if (this->state_app->wifi_state->wifi_connected ||
-        this->state_app->time_state->time_is_set) {
-        time_app->notifyAboutTime();
-        // Serial.println(ESP.getFreeHeap());
-    }
+
 }
 
 OEClockApp::~OEClockApp() {}

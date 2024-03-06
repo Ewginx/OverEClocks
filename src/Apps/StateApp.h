@@ -16,7 +16,7 @@ class WiFiState {
     String ip_address;
     String gateway_address;
     String current_ip_address;
-    
+
     void save_ssid(const char *ssid);
     void save_password(const char *password);
     void save_ap_login(const char *login);
@@ -59,7 +59,7 @@ class AlarmState {
     bool weekdays_switch_enabled;
     bool weekends_switch_enabled;
     bool oneOff_switch_enabled;
-
+    bool alarm_ringing;
     String weekdays_time;
     String weekends_time;
     String oneOff_time;
@@ -73,16 +73,14 @@ class AlarmState {
     ~AlarmState();
 };
 
-struct ThemeStruct
-{
-  int primary_color;
-  int second_color;
-  int screen_color;
-  int card_color;
-  int text_color;
-  int grey_color;
+struct ThemeStruct {
+    int primary_color;
+    int second_color;
+    int screen_color;
+    int card_color;
+    int text_color;
+    int grey_color;
 };
-
 
 class ThemeState {
   private:
@@ -151,6 +149,56 @@ class TimeState {
     ~TimeState();
 };
 
+class SoundState {
+  private:
+    Preferences &_preferences;
+
+  public:
+    bool sound_on;
+
+    short int alarm_track_number;
+
+    short int ee_track_number;
+
+    short int volume_level;
+    bool random_alarm_track;
+
+    void save_volume_level(short int volume_level);
+    void save_alarm_track_number(short int alarm_track_number);
+    void save_ee_track_number(short int ee_track_number);
+    void save_random_alarm_track(bool random_alarm_track);
+    void save_sound_on(bool sound_on);
+
+    SoundState(Preferences &preferences);
+    ~SoundState();
+};
+
+class RGBState {
+  private:
+    Preferences &_preferences;
+
+  public:
+    bool enabled;
+    short int effect;
+
+    int first_rgb_color;
+    int second_rgb_color;
+    int third_rgb_color;
+
+    int brightness;
+
+    int delay;
+
+    void save_rgb_color(int first_rgb_color, int second_rgb_color, int third_rgb_color);
+    void save_rgb_enabled(bool enabled);
+    void save_rgb_effect(short int effect);
+    void save_delay_effect(int delay);
+    void save_brightness(int brightness);
+
+    RGBState(Preferences &preferences);
+    ~RGBState();
+};
+
 class StateApp {
   private:
     Preferences _preferences;
@@ -162,6 +210,8 @@ class StateApp {
     ThemeState *theme_state;
     DisplayState *display_state;
     TimeState *time_state;
+    SoundState *sound_state;
+    RGBState *rgb_state;
 
     StateApp(/* args */);
     ~StateApp();

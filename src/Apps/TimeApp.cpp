@@ -7,6 +7,11 @@ extern "C" void update_tz_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     instance->set_timezone();
 }
 
+extern "C" void update_time_cb_wrapper(lv_timer_t *timer) { instance->notifyAboutTime(); }
+extern "C" void update_time_timer_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    instance->update_time_timer();
+}
+
 TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
                  AlarmClock *alarm_clock, StateApp *state_app) {
     instance = this;
@@ -14,19 +19,31 @@ TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
     this->alarm_clock = alarm_clock;
     this->analog_clock = analog_clock;
     this->digital_clock = digital_clock;
+
+    _time_update_timer =
+        lv_timer_create(update_time_cb_wrapper, TIME_UPDATE_INTERVAL, NULL);
+    lv_timer_pause(this->_time_update_timer);
+
     lv_msg_subscribe(MSG_UPDATE_TZ, update_tz_cb_wrapper, NULL);
+    lv_msg_subscribe(MSG_UPDATE_TIME_TIMER, update_time_timer_cb_wrapper, NULL);
+}
+
+void TimeApp::config_time() {
+    if (this->_state_app->wifi_state->wifi_connected) {
+        configTime(0, 0, "pool.ntp.org");
+        this->set_timezone();
+        if (getLocalTime(&timeinfo)) {
+            this->_state_app->time_state->time_is_set = true;
+        }
+    }
 }
 
 void TimeApp::notifyAboutTime() {
-    if ((unsigned long)millis() - time_now > TIME_UPDATE_INTERVAL) {
-        time_now = millis();
-        getLocalTime(&timeinfo);
-        analog_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-        digital_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-        digital_clock->set_date(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
-                                timeinfo.tm_wday);
-        this->check_alarm_clocks(timeinfo);
-    }
+    getLocalTime(&timeinfo);
+    analog_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+    digital_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+    digital_clock->set_date(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
+                            timeinfo.tm_wday);
 }
 void TimeApp::check_alarm_clocks(struct tm &timeinfo) {
     this->check_weekends_alarm_clock(timeinfo);
@@ -211,15 +228,17 @@ void TimeApp::copy_timeinfo_struct(tm &new_tm, tm &old_tm) {
     new_tm.tm_yday = old_tm.tm_yday;
     new_tm.tm_isdst = old_tm.tm_isdst;
 }
-void TimeApp::config_time() {
-    configTime(0, 0, "pool.ntp.org");
-    this->set_timezone();
-    if (getLocalTime(&timeinfo)) {
-        this->_state_app->time_state->time_is_set = true;
-    }
-}
 void TimeApp::set_timezone() {
     setenv("TZ", this->_state_app->time_state->timezone_posix.c_str(), 1);
     tzset();
+}
+void TimeApp::update_time_timer() {
+    this->config_time();
+    if (this->_state_app->wifi_state->wifi_connected ||
+        this->_state_app->time_state->time_is_set) {
+        lv_timer_resume(this->_time_update_timer);
+    } else {
+        lv_timer_pause(this->_time_update_timer);
+    }
 }
 TimeApp::~TimeApp() {}

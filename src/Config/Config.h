@@ -82,7 +82,7 @@ Zulu	zu
 
 
 // Time check period, ms
-#define TIME_UPDATE_INTERVAL 400
+#define TIME_UPDATE_INTERVAL 900
 
 
 
@@ -119,7 +119,7 @@ Zulu	zu
 #define HOUR_LABEL 0
 #define MINUTE_LABEL 3
 
-
+#define NUMPIXELS 8
 
 
 
