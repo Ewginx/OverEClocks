@@ -59,7 +59,7 @@ class AlarmState {
     bool weekdays_switch_enabled;
     bool weekends_switch_enabled;
     bool oneOff_switch_enabled;
-
+    bool alarm_ringing;
     String weekdays_time;
     String weekends_time;
     String oneOff_time;
@@ -151,6 +151,30 @@ class TimeState {
     ~TimeState();
 };
 
+class SoundState {
+  private:
+    Preferences &_preferences;
+
+  public:
+    bool sound_on;
+
+    short int alarm_track_number;
+
+    short int ee_track_number;
+
+    short int volume_level;
+    bool random_alarm_track;
+
+    void save_volume_level(short int volume_level);
+    void save_alarm_track_number(short int alarm_track_number);
+    void save_ee_track_number(short int ee_track_number);
+    void save_random_alarm_track(bool random_alarm_track);
+    void save_sound_on(bool sound_on);
+
+    SoundState(Preferences &preferences);
+    ~SoundState();
+};
+
 class StateApp {
   private:
     Preferences _preferences;
@@ -162,6 +186,7 @@ class StateApp {
     ThemeState *theme_state;
     DisplayState *display_state;
     TimeState *time_state;
+    SoundState *sound_state;
 
     StateApp(/* args */);
     ~StateApp();
