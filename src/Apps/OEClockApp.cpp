@@ -66,8 +66,6 @@ void OEClockApp::setup() {
     Serial.printf("Full heap: %d KB \n", ESP.getHeapSize() / 1024);
     Serial.printf("Max free heap chunk: %d KB \n", ESP.getMaxAllocHeap() / 1024);
     Serial.printf("Free heap: %d KB \n", ESP.getFreeHeap() / 1024);
-    this->state_app->alarm_state->alarm_ringing = true;
-    this->sound_app->play_alarm_sound();
 }
 
 void OEClockApp::init_i2c_apps() {
