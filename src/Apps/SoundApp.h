@@ -18,7 +18,7 @@ class SoundApp {
     StateApp *_state_app;
     void play_alarm_sound();
     void loop_alarm_sound();
-
+    void set_volume();
     void play_ee();
 
     void play_sound_once(int folder, int track);

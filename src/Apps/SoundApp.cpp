@@ -20,20 +20,20 @@ void SoundApp::play_alarm_sound() {
     if (this->sound_loop_timer == NULL) {
         sound_loop_timer = lv_timer_create(loop_alarm_sound_cb_wrapper, 400, NULL);
         player.playFolderTrack(1, _state_app->sound_state->alarm_track_number);
-        // Serial.println(player.getFolderTrackCount(1));
         // Serial.println(player.getTotalFolderCount()); // doesn't work, at least with SD
-        // card Serial.println(player.getTotalTrackCount());
     }
-    player.setVolume(_state_app->sound_state->volume_level);
+    this->set_volume();
 }
 
 void SoundApp::loop_alarm_sound() {
-    player.setVolume(_state_app->sound_state->volume_level);
+    this->set_volume();
     if (this->is_idling()) {
         player.playFolderTrack(alarm_track_folder,
                                _state_app->sound_state->alarm_track_number);
     }
 }
+
+void SoundApp::set_volume() { player.setVolume(_state_app->sound_state->volume_level); }
 
 void SoundApp::stop_sound() {
     player.stop();
@@ -82,7 +82,7 @@ int SoundApp::get_track_count_in_ee_folder() {
 void SoundApp::setup_player() {
     player.begin();
     player.reset(false);
-    player.setVolume(_state_app->sound_state->volume_level);
+    this->set_volume();
 }
 
 SoundApp::SoundApp(StateApp *state_app) : player(Serial2) {
