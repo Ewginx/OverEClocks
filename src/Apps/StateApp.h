@@ -192,7 +192,7 @@ class RGBState {
     void save_rgb_color(int first_rgb_color, int second_rgb_color, int third_rgb_color);
     void save_rgb_enabled(bool enabled);
     void save_rgb_effect(short int effect);
-    void save_delay_effect(int delay);
+    void save_rgb_delay(int delay);
     void save_brightness(int brightness);
 
     RGBState(Preferences &preferences);

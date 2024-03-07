@@ -268,7 +268,7 @@ void RGBState::save_rgb_effect(short int effect) {
     this->effect = effect;
     this->_preferences.putInt("rgb_effect", effect);
 }
-void RGBState::save_delay_effect(int delay) {
+void RGBState::save_rgb_delay(int delay) {
     this->delay = delay;
     this->_preferences.putInt("rgb_delay", delay);
 }
