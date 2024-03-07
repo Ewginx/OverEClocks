@@ -239,14 +239,13 @@ void SoundState::save_sound_on(bool sound_on) {
 }
 SoundState::~SoundState() {}
 
-
-
 RGBState::RGBState(Preferences &preferences) : _preferences(preferences) {
     this->first_rgb_color = _preferences.getInt("first_rgb", 10814460); // 16777215 white
     this->second_rgb_color = _preferences.getInt("second_rgb", 0);
     this->third_rgb_color = _preferences.getInt("third_rgb", 0);
 
     this->enabled = _preferences.getBool("rgb_enabled", true);
+    this->turn_off_at_night = _preferences.getBool("rgb_night", true);
     this->delay = _preferences.getInt("rgb_delay", 300);
     this->effect = _preferences.getInt("rgb_effect", 2);
     this->brightness = this->_preferences.getInt("rgb_bright", 255);
@@ -263,6 +262,10 @@ void RGBState::save_rgb_color(int first_rgb_color, int second_rgb_color,
 void RGBState::save_rgb_enabled(bool enabled) {
     this->enabled = enabled;
     this->_preferences.putBool("rgb_enabled", enabled);
+}
+void RGBState::save_rgb_night(bool turn_off_at_night) {
+    this->turn_off_at_night = turn_off_at_night;
+    this->_preferences.putBool("rgb_night", turn_off_at_night);
 }
 void RGBState::save_rgb_effect(short int effect) {
     this->effect = effect;
