@@ -68,6 +68,7 @@ void TimeApp::check_weekends_alarm_clock(tm &timeinfo) {
                 timeinfo.tm_min == minute_from_label) {
                 if (!this->weekends_already_fired) {
                     this->alarm_clock->fire_alarm(this->alarm_clock->weekendsButtonLabel);
+                    lv_msg_send(MSG_ALARM_PLAY, NULL);
                     this->weekends_already_fired = true;
                 }
             } else {
