@@ -67,7 +67,6 @@ void WiFiApp::handle_wifi_state(bool wifi_connected) {
         lv_msg_send(MSG_UPDATE_IP_ADDRESS, NULL);
         lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
         lv_msg_send(MSG_UPDATE_WEATHER_TASK, NULL);
-        lv_msg_send(MSG_UPDATE_WEATHER_TASK, NULL);
         lv_msg_send(MSG_UPDATE_WIFI_CONNECTION_ICON, NULL);
         lv_msg_send(MSG_UPDATE_TIME_TIMER, NULL);
         xSemaphoreGive(mutex);
