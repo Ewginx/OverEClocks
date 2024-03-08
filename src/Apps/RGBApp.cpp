@@ -25,6 +25,12 @@ void RGBApp::begin_rgb() {
 }
 
 void RGBApp::show() {
+    if (!this->is_rgb_enabled()) {
+        lv_timer_pause(_rgb_show_timer);
+        this->pixels.clear();
+        pixels.show();
+        return;
+    }
     if (this->_state_app->rgb_state->effect != 1) {
         this->solid_enabled = false;
     }
@@ -76,7 +82,7 @@ void RGBApp::update_rgb() {
 }
 bool RGBApp::is_rgb_enabled() {
     if ((this->_state_app->rgb_state->turn_off_at_night &
-            this->_state_app->time_state->is_night) ||
+         this->_state_app->time_state->is_night) ||
         !this->_state_app->rgb_state->enabled) {
         return false;
     }
