@@ -261,6 +261,7 @@ void AlarmClock::delete_roller_modal_panel() {
 void AlarmClock::fire_alarm(lv_obj_t *target_label) {
     this->delete_roller_modal_panel();
     this->create_alarm_modal_panel(target_label);
+    lv_msg_send(MSG_ALARM_PLAY, NULL);
 }
 void AlarmClock::create_alarm_modal_panel(lv_obj_t *target_label) {
     alarmDummyPanel = lv_obj_create(lv_scr_act());
@@ -373,6 +374,7 @@ void AlarmClock::event_offAlarmButton_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_CLICKED) {
+        lv_msg_send(MSG_SOUND_STOP, NULL);
         this->delete_alarm_modal_panel();
     }
 }
