@@ -140,7 +140,7 @@ class TimeState {
 
   public:
     String timezone_posix;
-
+    bool is_night = false;
     bool time_is_set = false;
 
     void save_timezone(const char *timezone_posix);

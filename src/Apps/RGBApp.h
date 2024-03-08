@@ -11,6 +11,7 @@ class RGBApp {
 
     StateApp *_state_app;
     void setup();
+
     void begin_rgb();
 
     void show();
@@ -20,6 +21,8 @@ class RGBApp {
     void set_brightness();
     
     void update_rgb();
+
+    bool is_rgb_enabled();
 
     uint32_t wheel(byte WheelPos);
 

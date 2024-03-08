@@ -39,7 +39,7 @@ void RGBApp::show() {
 }
 
 void RGBApp::switch_rgb() {
-    if (this->_state_app->rgb_state->enabled) {
+    if (this->is_rgb_enabled()) {
         lv_timer_set_period(this->_rgb_show_timer, this->_state_app->rgb_state->delay);
         lv_timer_resume(_rgb_show_timer);
     } else {
@@ -73,6 +73,14 @@ void RGBApp::set_brightness() {
 void RGBApp::update_rgb() {
     this->switch_rgb();
     this->set_brightness();
+}
+bool RGBApp::is_rgb_enabled() {
+    if ((this->_state_app->rgb_state->turn_off_at_night &
+            this->_state_app->time_state->is_night) ||
+        !this->_state_app->rgb_state->enabled) {
+        return false;
+    }
+    return true;
 }
 uint32_t RGBApp::wheel(byte WheelPos) {
     WheelPos = 255 - WheelPos;

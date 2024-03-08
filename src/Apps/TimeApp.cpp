@@ -40,6 +40,11 @@ void TimeApp::config_time() {
 
 void TimeApp::notifyAboutTime() {
     getLocalTime(&timeinfo);
+    if ((timeinfo.tm_hour <= 9) || (timeinfo.tm_hour >= 22)) {
+        this->_state_app->time_state->is_night = true;
+    } else {
+        this->_state_app->time_state->is_night = false;
+    }
     analog_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     digital_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     digital_clock->set_date(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
