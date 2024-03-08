@@ -9,16 +9,19 @@ extern "C" void rgb_show_cb_wrapper(lv_timer_t *timer) { instance->show(); }
 RGBApp::RGBApp(StateApp *state_app) : pixels(NUMPIXELS, RGB_PIN) {
     instance = this;
     this->_state_app = state_app;
+    lv_msg_subscribe(MSG_RGB_STATE_CHANGED, update_rgb_cb_wrapper, NULL);
+}
+
+void RGBApp::setup() {
+    this->begin_rgb();
     _rgb_show_timer =
         lv_timer_create(rgb_show_cb_wrapper, this->_state_app->rgb_state->delay, NULL);
-    lv_timer_pause(this->_rgb_show_timer);
-    lv_msg_subscribe(MSG_RGB_STATE_CHANGED, update_rgb_cb_wrapper, NULL);
+    this->switch_rgb();
 }
 
 void RGBApp::begin_rgb() {
     this->pixels.begin();
-    this->pixels.show();
-    this->switch_rgb();
+    this->pixels.clear();
 }
 
 void RGBApp::show() {
@@ -30,17 +33,19 @@ void RGBApp::show() {
             this->solid_color_effect();
             this->solid_enabled = true;
         }
-    } else if (this->_state_app->rgb_state->effect == 2) {
+    } else if (this->_state_app->rgb_state->effect == 3) {
         this->rainbow_effect();
     }
 }
 
 void RGBApp::switch_rgb() {
     if (this->_state_app->rgb_state->enabled) {
+        lv_timer_set_period(this->_rgb_show_timer, this->_state_app->rgb_state->delay);
         lv_timer_resume(_rgb_show_timer);
     } else {
+        this->pixels.clear();
+        pixels.show();
         lv_timer_pause(_rgb_show_timer);
-        this->pixels.show();
     }
 }
 
@@ -64,7 +69,6 @@ void RGBApp::rainbow_effect() {
 void RGBApp::set_brightness() {
     this->pixels.setBrightness(this->_state_app->rgb_state->brightness);
     this->solid_enabled = false;
-
 }
 void RGBApp::update_rgb() {
     this->switch_rgb();

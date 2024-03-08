@@ -10,7 +10,7 @@ class RGBApp {
     Adafruit_NeoPixel pixels;
 
     StateApp *_state_app;
-
+    void setup();
     void begin_rgb();
 
     void show();
