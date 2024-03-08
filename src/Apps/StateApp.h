@@ -155,18 +155,21 @@ class SoundState {
 
   public:
     bool sound_on;
+    bool plug_sound_on;
+    bool ee_sound_on;
 
-    short int alarm_track_number;
-
-    short int ee_track_number;
+    short int alarm_track;
+    short int ee_track;
+    short int plug_track;
 
     short int volume_level;
-    bool random_alarm_track;
 
     void save_volume_level(short int volume_level);
-    void save_alarm_track_number(short int alarm_track_number);
-    void save_ee_track_number(short int ee_track_number);
-    void save_random_alarm_track(bool random_alarm_track);
+    void save_alarm_track(short int alarm_track);
+    void save_ee_track(short int ee_track_number);
+    void save_plug_track(int plug_track);
+    void save_plug_sound_enabled(bool plug_sound_on);
+    void save_ee_sound_enabled(bool ee_sound_on);
     void save_sound_on(bool sound_on);
 
     SoundState(Preferences &preferences);

@@ -212,26 +212,36 @@ TimeState::~TimeState() {}
 
 SoundState::SoundState(Preferences &preferences) : _preferences(preferences) {
     this->volume_level = _preferences.getInt("volume_level", 15);
-    this->alarm_track_number = _preferences.getInt("alarm_track", 1);
-    this->ee_track_number = _preferences.getInt("ee_track", 1);
-    this->random_alarm_track = _preferences.getBool("random_track", false);
+    this->alarm_track = _preferences.getInt("alarm_track", 1);
+    this->ee_track = _preferences.getInt("ee_track", 1);
+    this->plug_track = _preferences.getInt("plug_track", 1);
+    this->plug_sound_on = _preferences.getBool("plug_sound_on", true);
+    this->ee_sound_on = _preferences.getBool("ee_sound_on", true);
     this->sound_on = _preferences.getBool("sound_on", true);
 }
 void SoundState::save_volume_level(short int volume_level) {
     this->volume_level = volume_level;
     this->_preferences.putInt("volume_level", volume_level);
 }
-void SoundState::save_alarm_track_number(short int alarm_track_number) {
-    this->alarm_track_number = alarm_track_number;
-    this->_preferences.putInt("alarm_track", alarm_track_number);
+void SoundState::save_alarm_track(short int alarm_track) {
+    this->alarm_track = alarm_track;
+    this->_preferences.putInt("alarm_track", alarm_track);
 }
-void SoundState::save_ee_track_number(short int ee_track_number) {
-    this->ee_track_number = ee_track_number;
-    this->_preferences.putInt("ee_track", ee_track_number);
+void SoundState::save_ee_track(short int ee_track) {
+    this->ee_track = ee_track;
+    this->_preferences.putInt("ee_track", ee_track);
 }
-void SoundState::save_random_alarm_track(bool random_alarm_track) {
-    this->random_alarm_track = random_alarm_track;
-    this->_preferences.putBool("random_track", random_alarm_track);
+void SoundState::save_plug_track(int plug_track) {
+    this->plug_track = plug_track;
+    this->_preferences.putBool("plug_track", plug_track);
+}
+void SoundState::save_plug_sound_enabled(bool plug_sound_on) {
+    this->plug_sound_on = plug_sound_on;
+    this->_preferences.putBool("plug_sound_on", plug_sound_on);
+}
+void SoundState::save_ee_sound_enabled(bool ee_sound_on) {
+    this->ee_sound_on = ee_sound_on;
+    this->_preferences.putBool("ee_sound_on", ee_sound_on);
 }
 void SoundState::save_sound_on(bool sound_on) {
     this->sound_on = sound_on;
