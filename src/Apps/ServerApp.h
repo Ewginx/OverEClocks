@@ -31,6 +31,7 @@ class ServerApp {
     void save_brightness_settings(JsonVariant &json);
     void save_wifi_settings(JsonVariant &json);
     void save_alarm_clock_settings(JsonVariant &json);
+    void save_rgb_settings(JsonVariant &json);
 
     void set_time(JsonVariant &json);
 
