@@ -212,26 +212,36 @@ TimeState::~TimeState() {}
 
 SoundState::SoundState(Preferences &preferences) : _preferences(preferences) {
     this->volume_level = _preferences.getInt("volume_level", 15);
-    this->alarm_track_number = _preferences.getInt("alarm_track", 1);
-    this->ee_track_number = _preferences.getInt("ee_track", 1);
-    this->random_alarm_track = _preferences.getBool("random_track", false);
+    this->alarm_track = _preferences.getInt("alarm_track", 1);
+    this->ee_track = _preferences.getInt("ee_track", 1);
+    this->plug_track = _preferences.getInt("plug_track", 1);
+    this->plug_sound_on = _preferences.getBool("plug_sound_on", true);
+    this->ee_sound_on = _preferences.getBool("ee_sound_on", true);
     this->sound_on = _preferences.getBool("sound_on", true);
 }
 void SoundState::save_volume_level(short int volume_level) {
     this->volume_level = volume_level;
     this->_preferences.putInt("volume_level", volume_level);
 }
-void SoundState::save_alarm_track_number(short int alarm_track_number) {
-    this->alarm_track_number = alarm_track_number;
-    this->_preferences.putInt("alarm_track", alarm_track_number);
+void SoundState::save_alarm_track(short int alarm_track) {
+    this->alarm_track = alarm_track;
+    this->_preferences.putInt("alarm_track", alarm_track);
 }
-void SoundState::save_ee_track_number(short int ee_track_number) {
-    this->ee_track_number = ee_track_number;
-    this->_preferences.putInt("ee_track", ee_track_number);
+void SoundState::save_ee_track(short int ee_track) {
+    this->ee_track = ee_track;
+    this->_preferences.putInt("ee_track", ee_track);
 }
-void SoundState::save_random_alarm_track(bool random_alarm_track) {
-    this->random_alarm_track = random_alarm_track;
-    this->_preferences.putBool("random_track", random_alarm_track);
+void SoundState::save_plug_track(int plug_track) {
+    this->plug_track = plug_track;
+    this->_preferences.putBool("plug_track", plug_track);
+}
+void SoundState::save_plug_sound_enabled(bool plug_sound_on) {
+    this->plug_sound_on = plug_sound_on;
+    this->_preferences.putBool("plug_sound_on", plug_sound_on);
+}
+void SoundState::save_ee_sound_enabled(bool ee_sound_on) {
+    this->ee_sound_on = ee_sound_on;
+    this->_preferences.putBool("ee_sound_on", ee_sound_on);
 }
 void SoundState::save_sound_on(bool sound_on) {
     this->sound_on = sound_on;
@@ -239,14 +249,13 @@ void SoundState::save_sound_on(bool sound_on) {
 }
 SoundState::~SoundState() {}
 
-
-
 RGBState::RGBState(Preferences &preferences) : _preferences(preferences) {
     this->first_rgb_color = _preferences.getInt("first_rgb", 10814460); // 16777215 white
     this->second_rgb_color = _preferences.getInt("second_rgb", 0);
     this->third_rgb_color = _preferences.getInt("third_rgb", 0);
 
     this->enabled = _preferences.getBool("rgb_enabled", true);
+    this->turn_off_at_night = _preferences.getBool("rgb_night", true);
     this->delay = _preferences.getInt("rgb_delay", 300);
     this->effect = _preferences.getInt("rgb_effect", 2);
     this->brightness = this->_preferences.getInt("rgb_bright", 255);
@@ -264,11 +273,15 @@ void RGBState::save_rgb_enabled(bool enabled) {
     this->enabled = enabled;
     this->_preferences.putBool("rgb_enabled", enabled);
 }
+void RGBState::save_rgb_night(bool turn_off_at_night) {
+    this->turn_off_at_night = turn_off_at_night;
+    this->_preferences.putBool("rgb_night", turn_off_at_night);
+}
 void RGBState::save_rgb_effect(short int effect) {
     this->effect = effect;
     this->_preferences.putInt("rgb_effect", effect);
 }
-void RGBState::save_delay_effect(int delay) {
+void RGBState::save_rgb_delay(int delay) {
     this->delay = delay;
     this->_preferences.putInt("rgb_delay", delay);
 }

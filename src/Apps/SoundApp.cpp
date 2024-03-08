@@ -19,7 +19,7 @@ void SoundApp::play_alarm_sound() {
         return;
     if (this->sound_loop_timer == NULL) {
         sound_loop_timer = lv_timer_create(loop_alarm_sound_cb_wrapper, 400, NULL);
-        player.playFolderTrack(1, _state_app->sound_state->alarm_track_number);
+        player.playFolderTrack(1, _state_app->sound_state->alarm_track);
         // Serial.println(player.getTotalFolderCount()); // doesn't work, at least with SD
     }
     this->set_volume();
@@ -28,8 +28,7 @@ void SoundApp::play_alarm_sound() {
 void SoundApp::loop_alarm_sound() {
     this->set_volume();
     if (this->is_idling()) {
-        player.playFolderTrack(alarm_track_folder,
-                               _state_app->sound_state->alarm_track_number);
+        player.playFolderTrack(alarm_track_folder, _state_app->sound_state->alarm_track);
     }
 }
 
@@ -47,8 +46,7 @@ void SoundApp::play_ee() {
     if (!_state_app->sound_state->sound_on || _state_app->alarm_state->alarm_ringing)
         return;
     player.setVolume(_state_app->sound_state->volume_level);
-    player.playFolderTrack(easter_egg_track_folder,
-                           _state_app->sound_state->ee_track_number);
+    player.playFolderTrack(easter_egg_track_folder, _state_app->sound_state->ee_track);
 }
 
 void SoundApp::play_sound_once(int folder, int track) {

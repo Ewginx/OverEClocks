@@ -142,6 +142,22 @@ void ServerApp::setup_settings_handlers() {
                 request->send(200);
             });
     server.addHandler(alarm_clock_settings_handler);
+
+    AsyncCallbackJsonWebHandler *rgb_settings_handler = new AsyncCallbackJsonWebHandler(
+        "/settings/rgb", [this](AsyncWebServerRequest *request, JsonVariant &json) {
+            this->save_rgb_settings(json);
+            lv_msg_send(MSG_RGB_STATE_CHANGED, NULL);
+            request->send(200);
+        });
+    server.addHandler(rgb_settings_handler);
+
+    AsyncCallbackJsonWebHandler *save_sound_settings_handler =
+        new AsyncCallbackJsonWebHandler(
+            "/settings/sound", [this](AsyncWebServerRequest *request, JsonVariant &json) {
+                this->save_sound_settings(json);
+                request->send(200);
+            });
+    server.addHandler(save_sound_settings_handler);
 }
 
 void ServerApp::setup_redirect_handlers() {
@@ -158,6 +174,10 @@ void ServerApp::setup_redirect_handlers() {
     server.on("/debug", HTTP_GET,
               [](AsyncWebServerRequest *request) { request->redirect("/"); });
     server.on("/alarm_clock", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/rgb", HTTP_GET,
+              [](AsyncWebServerRequest *request) { request->redirect("/"); });
+    server.on("/sound", HTTP_GET,
               [](AsyncWebServerRequest *request) { request->redirect("/"); });
     server.on("/ota", HTTP_GET,
               [](AsyncWebServerRequest *request) { request->redirect("/"); });
@@ -427,10 +447,36 @@ void ServerApp::save_alarm_clock_settings(JsonVariant &json) {
     lv_msg_send(MSG_UPDATE_ALARM_GUI, NULL);
 }
 
+void ServerApp::save_rgb_settings(JsonVariant &json) {
+    JsonObject &&rgb_json = json.as<JsonObject>();
+    this->_state_app->rgb_state->save_rgb_enabled(rgb_json["rgb_enabled"].as<bool>());
+    this->_state_app->rgb_state->save_rgb_effect(rgb_json["rgb_mode"].as<int>());
+    this->_state_app->rgb_state->save_rgb_color(rgb_json["first_rgb_color"].as<int>(),
+                                                rgb_json["second_rgb_color"].as<int>(),
+                                                rgb_json["third_rgb_color"].as<int>());
+    this->_state_app->rgb_state->save_rgb_delay(rgb_json["rgb_delay"].as<int>());
+    this->_state_app->rgb_state->save_brightness(rgb_json["rgb_brightness"].as<int>());
+    this->_state_app->rgb_state->save_rgb_night(rgb_json["rgb_night"].as<bool>());
+}
+
+void ServerApp::save_sound_settings(JsonVariant &json) {
+    JsonObject &&sound_json = json.as<JsonObject>();
+    this->_state_app->sound_state->save_alarm_track(sound_json["alarm_track"].as<int>());
+    this->_state_app->sound_state->save_ee_track(sound_json["ee_track"].as<int>());
+    this->_state_app->sound_state->save_plug_track(sound_json["plug_track"].as<int>());
+    this->_state_app->sound_state->save_volume_level(
+        sound_json["volume_level"].as<int>());
+    this->_state_app->sound_state->save_sound_on(sound_json["sound_on"].as<bool>());
+    this->_state_app->sound_state->save_ee_sound_enabled(
+        sound_json["ee_sound_on"].as<bool>());
+    this->_state_app->sound_state->save_plug_sound_enabled(
+        sound_json["plug_sound_on"].as<bool>());
+}
+
 void ServerApp::get_settings(AsyncWebServerRequest *request) {
     Serial.println("Request on settings");
     AsyncResponseStream *response = request->beginResponseStream("application/json");
-    StaticJsonDocument<820> doc;
+    StaticJsonDocument<1024> doc;
     doc["ssid"] = this->_state_app->wifi_state->ssid;
     doc["password"] = this->_state_app->wifi_state->password;
     doc["ip_address"] = this->_state_app->wifi_state->ip_address;
@@ -471,6 +517,24 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["weekends_enabled"] = this->_state_app->alarm_state->weekends_switch_enabled;
     doc["one_off_enabled"] = this->_state_app->alarm_state->oneOff_switch_enabled;
     doc["fs_space"] = ((unsigned int)LittleFS.totalBytes()) / 1024;
+
+    doc["rgb_enabled"] = this->_state_app->rgb_state->enabled;
+    doc["rgb_mode"] = this->_state_app->rgb_state->effect;
+    doc["first_rgb_color"] = this->_state_app->rgb_state->first_rgb_color;
+    doc["second_rgb_color"] = this->_state_app->rgb_state->second_rgb_color;
+    doc["third_rgb_color"] = this->_state_app->rgb_state->third_rgb_color;
+    doc["rgb_delay"] = this->_state_app->rgb_state->delay;
+    doc["rgb_brightness"] = this->_state_app->rgb_state->brightness;
+    doc["rgb_night"] = this->_state_app->rgb_state->turn_off_at_night;
+
+    doc["alarm_track"] = this->_state_app->sound_state->alarm_track;
+    doc["ee_track"] = this->_state_app->sound_state->ee_track;
+    doc["plug_track"] = this->_state_app->sound_state->plug_track;
+
+    doc["volume_level"] = this->_state_app->sound_state->volume_level;
+    doc["sound_on"] = this->_state_app->sound_state->sound_on;
+    doc["ee_sound_on"] = this->_state_app->sound_state->ee_sound_on;
+    doc["plug_sound_on"] = this->_state_app->sound_state->plug_sound_on;
 
     serializeJson(doc, *response);
     request->send(response);

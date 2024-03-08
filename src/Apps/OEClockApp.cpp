@@ -58,7 +58,7 @@ void OEClockApp::setup() {
     this->wifi_app->connect_to_wifi();
     this->server_app->setup();
     this->wifi_app->subscribe_to_wifi_disconnected_event();
-    this->rgb_app->begin_rgb();
+    this->rgb_app->setup();
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->load_default_screen();
         this->gui_app->delete_loading_screen();
