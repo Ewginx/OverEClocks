@@ -5,7 +5,9 @@
 #include <Arduino.h>
 #include <DFMiniMp3.h>
 
-typedef DFMiniMp3<HardwareSerial> DfMp3;
+class SoundApp;
+
+typedef DFMiniMp3<HardwareSerial, DfMp3NoCallback, Mp3ChipOriginal, 900> DfMp3;
 
 class SoundApp {
   private:

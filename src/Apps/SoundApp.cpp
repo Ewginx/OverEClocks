@@ -81,6 +81,7 @@ int SoundApp::get_track_count_in_ee_folder() {
 void SoundApp::setup_player() {
     player.begin();
     player.reset(false);
+    player.setPlaybackSource(DfMp3_PlaySource_Sd);
     this->set_volume();
 }
 
