@@ -18,6 +18,7 @@ void SoundApp::play_alarm_sound() {
     if (!_state_app->sound_state->sound_on)
         return;
     if (this->sound_loop_timer == NULL) {
+        player.reset(false); 
         sound_loop_timer = lv_timer_create(loop_alarm_sound_cb_wrapper, 400, NULL);
         player.playFolderTrack(1, _state_app->sound_state->alarm_track);
         // Serial.println(player.getTotalFolderCount()); // doesn't work, at least with SD
