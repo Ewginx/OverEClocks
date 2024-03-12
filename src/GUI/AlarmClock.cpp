@@ -305,6 +305,12 @@ void AlarmClock::delete_alarm_modal_panel() {
     }
 }
 
+void AlarmClock::change_alarm_panel_parent_screen() {
+    if (alarmModalPanel != NULL) {
+        lv_obj_set_parent(this->alarmDummyPanel, lv_scr_act());
+    }
+}
+
 void AlarmClock::set_default_values() {
     lv_label_set_text(weekdaysRingsInLabel, "");
     lv_label_set_text(weekdaysButtonLabel, "08:00");
@@ -364,9 +370,10 @@ void AlarmClock::event_alarmModalOkButton_cb(lv_event_t *e) {
                               lv_roller_get_selected(hourRoller),
                               lv_roller_get_selected(minuteRoller));
         this->delete_roller_modal_panel();
-        this->_state_app->alarm_state->save_alarm_time(lv_label_get_text(this->weekdaysButtonLabel),
-                                          lv_label_get_text(this->weekendsButtonLabel),
-                                          lv_label_get_text(this->oneOffButtonLabel));
+        this->_state_app->alarm_state->save_alarm_time(
+            lv_label_get_text(this->weekdaysButtonLabel),
+            lv_label_get_text(this->weekendsButtonLabel),
+            lv_label_get_text(this->oneOffButtonLabel));
     }
 }
 

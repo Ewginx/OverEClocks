@@ -211,6 +211,7 @@ void GuiApp::screen_load_event_cb(lv_event_t *e) {
     if (lv_scr_act() != this->settings->settingsScreen) {
         this->dock_panel->change_dock_parent(lv_scr_act());
     }
+    this->alarm_clock->change_alarm_panel_parent_screen();
     if (lv_scr_act() != this->analog_clock->analogClockScreen &
         lv_scr_act() != this->digital_clock->digitalClockScreen) {
         lv_timer_reset(this->_screen_timer);
