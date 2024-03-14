@@ -261,6 +261,7 @@ void AlarmClock::delete_roller_modal_panel() {
 void AlarmClock::fire_alarm(lv_obj_t *target_label) {
     this->delete_roller_modal_panel();
     this->create_alarm_modal_panel(target_label);
+    lv_msg_send(MSG_ALARM_PLAY, NULL);
 }
 void AlarmClock::create_alarm_modal_panel(lv_obj_t *target_label) {
     alarmDummyPanel = lv_obj_create(lv_scr_act());
@@ -301,6 +302,12 @@ void AlarmClock::delete_alarm_modal_panel() {
         alarmModalPanel = NULL;
         modalOkButton = NULL;
         modalOkButtonLabel = NULL;
+    }
+}
+
+void AlarmClock::change_alarm_panel_parent_screen() {
+    if (alarmModalPanel != NULL) {
+        lv_obj_set_parent(this->alarmDummyPanel, lv_scr_act());
     }
 }
 
@@ -363,9 +370,10 @@ void AlarmClock::event_alarmModalOkButton_cb(lv_event_t *e) {
                               lv_roller_get_selected(hourRoller),
                               lv_roller_get_selected(minuteRoller));
         this->delete_roller_modal_panel();
-        this->_state_app->alarm_state->save_alarm_time(lv_label_get_text(this->weekdaysButtonLabel),
-                                          lv_label_get_text(this->weekendsButtonLabel),
-                                          lv_label_get_text(this->oneOffButtonLabel));
+        this->_state_app->alarm_state->save_alarm_time(
+            lv_label_get_text(this->weekdaysButtonLabel),
+            lv_label_get_text(this->weekendsButtonLabel),
+            lv_label_get_text(this->oneOffButtonLabel));
     }
 }
 
@@ -373,6 +381,7 @@ void AlarmClock::event_offAlarmButton_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_CLICKED) {
+        lv_msg_send(MSG_SOUND_STOP, NULL);
         this->delete_alarm_modal_panel();
     }
 }

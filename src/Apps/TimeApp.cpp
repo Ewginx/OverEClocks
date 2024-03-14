@@ -49,6 +49,7 @@ void TimeApp::notifyAboutTime() {
     digital_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     digital_clock->set_date(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
                             timeinfo.tm_wday);
+    this->check_alarm_clocks(timeinfo);
 }
 void TimeApp::check_alarm_clocks(struct tm &timeinfo) {
     this->check_weekends_alarm_clock(timeinfo);
@@ -68,6 +69,7 @@ void TimeApp::check_weekends_alarm_clock(tm &timeinfo) {
                 timeinfo.tm_min == minute_from_label) {
                 if (!this->weekends_already_fired) {
                     this->alarm_clock->fire_alarm(this->alarm_clock->weekendsButtonLabel);
+                    lv_msg_send(MSG_ALARM_PLAY, NULL);
                     this->weekends_already_fired = true;
                 }
             } else {
