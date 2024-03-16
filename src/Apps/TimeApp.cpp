@@ -11,6 +11,9 @@ extern "C" void update_time_cb_wrapper(lv_timer_t *timer) { instance->notifyAbou
 extern "C" void update_time_timer_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     instance->update_time_timer();
 }
+extern "C" void stop_alarm_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    instance->stop_alarm();
+}
 
 TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
                  AlarmClock *alarm_clock, StateApp *state_app) {
@@ -26,6 +29,7 @@ TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
 
     lv_msg_subscribe(MSG_UPDATE_TZ, update_tz_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_UPDATE_TIME_TIMER, update_time_timer_cb_wrapper, NULL);
+    lv_msg_subscribe(MSG_ALARM_STOP, stop_alarm_cb_wrapper, NULL);
 }
 
 void TimeApp::config_time() {
@@ -247,5 +251,8 @@ void TimeApp::update_time_timer() {
     } else {
         lv_timer_pause(this->_time_update_timer);
     }
+}
+void TimeApp::stop_alarm() {
+    this->alarm_clock->stop_alarm();
 }
 TimeApp::~TimeApp() {}

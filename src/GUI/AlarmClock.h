@@ -60,7 +60,7 @@ class AlarmClock {
     void change_alarm_panel_parent_screen();
 
     void fire_alarm(lv_obj_t *target_label);
-
+    void stop_alarm();
     void delete_roller_modal_panel();
 
     int parse_alarm_label(char *string, bool hour = true);
