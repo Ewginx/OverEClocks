@@ -16,6 +16,7 @@
 #include <LittleFS.h>
 #include <WiFi.h>
 #include "RGBApp.h"
+#include "ButtonApp.h"
 
 class OEClockApp {
   private:
@@ -25,6 +26,7 @@ class OEClockApp {
     MicroclimateApp *microclimate_app;
     SoundApp *sound_app;
     RGBApp *rgb_app;
+    ButtonApp *button_app;
 
   public:
     StateApp *state_app;

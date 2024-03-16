@@ -46,6 +46,7 @@ class TimeApp {
     void config_time();
     void set_timezone();
     void update_time_timer();
+    void stop_alarm();
     TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
             AlarmClock *alarm_clock, StateApp *state_app);
     ~TimeApp();

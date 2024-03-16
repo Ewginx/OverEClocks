@@ -20,5 +20,8 @@
 #define SD_SCK 14
 #define SD_CS 27
 
-//RGB pin
+//RGB PIN
 #define RGB_PIN 26
+
+//TOUCH SENSOR BUTTON PIN
+#define BUTTON_PIN 35

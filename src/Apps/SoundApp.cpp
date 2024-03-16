@@ -53,9 +53,10 @@ void SoundApp::reset_player() {
 }
 
 void SoundApp::play_ee_sound() {
-    if (this->can_play_sounds(_state_app->sound_state->ee_sound_on))
+    if (this->can_play_sounds(_state_app->sound_state->ee_sound_on)) {
         this->play_sound_from_folder_once(easter_egg_track_folder,
                                           _state_app->sound_state->ee_track);
+    }
 }
 
 void SoundApp::play_plug_in_sound() {
@@ -98,7 +99,7 @@ bool SoundApp::is_player_offline() {
 }
 
 bool SoundApp::can_play_sounds(bool sound_on) {
-    if (_state_app->sound_state->sound_on & _state_app->alarm_state->alarm_ringing &
+    if (_state_app->sound_state->sound_on & !_state_app->alarm_state->alarm_ringing &
         sound_on)
         return true;
     return false;
@@ -113,7 +114,6 @@ int SoundApp::get_track_count_in_ee_folder() {
 }
 
 void SoundApp::setup_player() {
-
     player.begin();
     player.reset(false);
     player.setPlaybackSource(DfMp3_PlaySource_Sd);

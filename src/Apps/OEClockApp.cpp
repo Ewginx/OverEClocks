@@ -31,6 +31,7 @@ OEClockApp::OEClockApp() {
     microclimate_app = new MicroclimateApp(this->gui_app->dock_panel);
     server_app = new ServerApp(state_app, brightness_app, microclimate_app);
     sound_app = new SoundApp(state_app);
+    button_app = new ButtonApp(state_app);
 }
 
 void OEClockApp::setup() {
