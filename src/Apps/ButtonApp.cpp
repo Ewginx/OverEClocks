@@ -26,8 +26,12 @@ void ButtonApp::measure_time_button_press() {
         if (this->elapsed_time >= 400 & !this->was_pressed) {
             Serial.println("BUTTON WAS SHORT PRESSED");
             this->elapsed_time = 0;
-            lv_msg_send(MSG_SHORT_PRESS, NULL);
-            return;
+            if (this->_state_app->alarm_state->alarm_ringing) {
+                lv_msg_send(MSG_ALARM_SNOOZE, NULL);
+                return;
+            }else{
+                lv_msg_send(MSG_SOUND_STOP, NULL);
+            }
         } else {
             this->was_pressed = false;
             this->elapsed_time = 0;
