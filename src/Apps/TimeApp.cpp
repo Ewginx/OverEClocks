@@ -256,7 +256,7 @@ void TimeApp::calculate_weekdays_remaining_time(int hour, int minute,
 }
 
 void TimeApp::calculate_snooze_time(int &hours, int &minutes, short int &snooze_count) {
-    minutes = minutes + snooze_count * 10;
+    minutes = minutes + snooze_count * this->snooze_period;
     if (minutes >= 60) {
         minutes = minutes - 60;
         hours++;

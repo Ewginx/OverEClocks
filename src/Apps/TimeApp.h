@@ -19,10 +19,12 @@ class TimeApp {
     AlarmClock *alarm_clock;
 
     lv_timer_t *_time_update_timer = NULL;
-
+    
     bool weekdays_already_fired = false;
     bool weekends_already_fired = false;
     bool oneOff_already_fired = false;
+
+    short int snooze_period = 10; // minutes
 
     bool snooze_weekends_alarm = false;
     bool snooze_weekdays_alarm = false;
