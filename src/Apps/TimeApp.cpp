@@ -82,7 +82,7 @@ void TimeApp::check_weekends_alarm_clock(tm &timeinfo) {
             if (timeinfo.tm_hour == hour_from_label &
                 timeinfo.tm_min == minute_from_label) {
                 if (!this->weekends_already_fired) {
-                    this->fire_alarm(this->alarm_clock->weekendsButtonLabel);
+                    this->fire_alarm(timeinfo.tm_hour , timeinfo.tm_min);
                     lv_msg_send(MSG_ALARM_PLAY, NULL);
                     this->weekends_already_fired = true;
                     if (this->snooze_weekends_alarm) {
@@ -119,7 +119,7 @@ void TimeApp::check_weekdays_alarm_clock(tm &timeinfo) {
             if (timeinfo.tm_hour == hour_from_label &
                 timeinfo.tm_min == minute_from_label) {
                 if (!this->weekdays_already_fired) {
-                    this->fire_alarm(this->alarm_clock->weekdaysButtonLabel);
+                    this->fire_alarm(timeinfo.tm_hour , timeinfo.tm_min);
                     this->weekdays_already_fired = true;
                     if (this->snooze_weekdays_alarm) {
                         this->snooze_weekdays_count++;
@@ -154,7 +154,7 @@ void TimeApp::check_oneOff_alarm_clock(tm &timeinfo) {
         if (timeinfo.tm_hour == hour_from_label & timeinfo.tm_min == minute_from_label) {
             if (!this->oneOff_already_fired) {
                 this->oneOff_already_fired = true;
-                this->fire_alarm(this->alarm_clock->oneOffButtonLabel);
+                this->fire_alarm(timeinfo.tm_hour , timeinfo.tm_min);
                 lv_obj_clear_state(this->alarm_clock->oneOffSwitch, LV_STATE_CHECKED);
                 this->alarm_clock->event_alarmSwitch_cb();
                 if (snooze_oneOff_alarm) {
@@ -311,8 +311,8 @@ void TimeApp::update_time_timer() {
         lv_timer_pause(this->_time_update_timer);
     }
 }
-void TimeApp::fire_alarm(lv_obj_t *target_label) {
-    this->alarm_clock->show_alarm(target_label);
+void TimeApp::fire_alarm(int hour, int minute) {
+    this->alarm_clock->show_alarm(hour, minute);
     this->_state_app->alarm_state->alarm_ringing = true;
     lv_msg_send(MSG_ALARM_PLAY, NULL);
 }

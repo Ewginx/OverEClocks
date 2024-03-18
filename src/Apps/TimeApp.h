@@ -24,7 +24,7 @@ class TimeApp {
     bool weekends_already_fired = false;
     bool oneOff_already_fired = false;
 
-    short int snooze_period = 10; // minutes
+    short int snooze_period = 2; // minutes
 
     bool snooze_weekends_alarm = false;
     bool snooze_weekdays_alarm = false;
@@ -59,7 +59,7 @@ class TimeApp {
     void config_time();
     void set_timezone();
     void update_time_timer();
-    void fire_alarm(lv_obj_t *target_label);
+    void fire_alarm(int hour, int minute);
     void stop_alarm();
     void turn_off_alarm();
     void snooze_alarm();

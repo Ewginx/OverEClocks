@@ -261,11 +261,11 @@ void AlarmClock::delete_roller_modal_panel() {
         modalOkButtonLabel = NULL;
     }
 }
-void AlarmClock::show_alarm(lv_obj_t *target_label) {
+void AlarmClock::show_alarm(int hour, int minute) {
     this->delete_roller_modal_panel();
-    this->create_alarm_modal_panel(target_label);
+    this->create_alarm_modal_panel(hour, minute);
 }
-void AlarmClock::create_alarm_modal_panel(lv_obj_t *target_label) {
+void AlarmClock::create_alarm_modal_panel(int hour, int minute) {
     alarmDummyPanel = lv_obj_create(lv_scr_act());
     lv_obj_set_size(alarmDummyPanel, 480, 320);
     lv_obj_set_align(alarmDummyPanel, LV_ALIGN_CENTER);
@@ -277,7 +277,7 @@ void AlarmClock::create_alarm_modal_panel(lv_obj_t *target_label) {
     lv_obj_clear_flag(alarmModalPanel, LV_OBJ_FLAG_SCROLLABLE);
 
     alarmTimeLabel = lv_label_create(alarmModalPanel);
-    lv_label_set_text(alarmTimeLabel, lv_label_get_text(target_label));
+    lv_label_set_text_fmt(alarmTimeLabel, "%02d:%02d", hour, minute);
     lv_obj_set_align(alarmTimeLabel, LV_ALIGN_CENTER);
     lv_obj_set_pos(alarmTimeLabel, 0, -30);
     lv_obj_set_style_text_font(alarmTimeLabel, &d_clock_font_120, LV_PART_MAIN);
@@ -437,11 +437,12 @@ int AlarmClock::parse_alarm_label(char *string, bool hour) {
     char alarm_buff[2];
     for (size_t i = 0; i < 2; i++) {
         if (hour) {
-            alarm_buff[i] = string[i + 0];
+            alarm_buff[i] = string[i];
         } else {
             alarm_buff[i] = string[i + 3];
         }
     }
+
     return atoi(alarm_buff);
 }
 
