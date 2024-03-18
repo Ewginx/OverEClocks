@@ -23,12 +23,17 @@ class TimeApp {
     bool weekdays_already_fired = false;
     bool weekends_already_fired = false;
     bool oneOff_already_fired = false;
-
-    short int snooze_period = 2; // minutes
+    short int current_alarm = 0;
+    short int snooze_period = 10; // minutes
+    short int snooze_max_count = 6; // minutes
 
     bool snooze_weekends_alarm = false;
     bool snooze_weekdays_alarm = false;
     bool snooze_oneOff_alarm = false;
+
+    int snooze_weekdays_time[2];
+    int snooze_weekends_time[2];
+    int snooze_oneOff_time[2];
 
     short int snooze_weekends_count = 1;
     short int snooze_weekdays_count = 1;
@@ -49,7 +54,7 @@ class TimeApp {
     void calculate_weekends_remaining_time(int hour, int minute, struct tm &timeinfo);
     void calculate_weekdays_remaining_time(int hour, int minute, struct tm &timeinfo);
 
-    void calculate_snooze_time(int &hours, int &minutes, short int &snooze_count);
+    void calculate_snooze_time(int &hours, int &minutes);
     
     void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
 

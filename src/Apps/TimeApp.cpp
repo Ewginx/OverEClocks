@@ -73,18 +73,19 @@ void TimeApp::check_weekends_alarm_clock(tm &timeinfo) {
             lv_label_get_text(this->alarm_clock->weekendsButtonLabel), false);
         if (this->is_weekends(timeinfo.tm_wday)) {
             if (this->snooze_weekends_alarm) {
-                this->calculate_snooze_time(hour_from_label, minute_from_label,
-                                            this->snooze_weekends_count);
-                if (snooze_weekends_count >= 6) {
+                hour_from_label = this->snooze_weekends_time[0];
+                minute_from_label = this->snooze_weekends_time[1];
+                this->calculate_snooze_time(hour_from_label, minute_from_label);
+                if (snooze_weekends_count >= snooze_max_count) {
                     this->snooze_weekends_alarm = false;
                 }
             }
             if (timeinfo.tm_hour == hour_from_label &
                 timeinfo.tm_min == minute_from_label) {
                 if (!this->weekends_already_fired) {
-                    this->fire_alarm(timeinfo.tm_hour , timeinfo.tm_min);
-                    lv_msg_send(MSG_ALARM_PLAY, NULL);
+                    this->fire_alarm(timeinfo.tm_hour, timeinfo.tm_min);
                     this->weekends_already_fired = true;
+                    this->current_alarm = 2;
                     if (this->snooze_weekends_alarm) {
                         this->snooze_weekends_count++;
                     }
@@ -97,7 +98,10 @@ void TimeApp::check_weekends_alarm_clock(tm &timeinfo) {
                                                 timeinfo);
     } else {
         this->snooze_weekends_alarm = false;
+        this->weekends_already_fired = false;
         this->snooze_weekends_count = 1;
+        this->snooze_weekends_time[0] = 0;
+        this->snooze_weekends_time[1] = 0;
         lv_label_set_text(this->alarm_clock->weekendsRingsInLabel, "");
     }
 }
@@ -110,17 +114,19 @@ void TimeApp::check_weekdays_alarm_clock(tm &timeinfo) {
             lv_label_get_text(this->alarm_clock->weekdaysButtonLabel), false);
         if (!this->is_weekends(timeinfo.tm_wday)) {
             if (this->snooze_weekdays_alarm) {
-                this->calculate_snooze_time(hour_from_label, minute_from_label,
-                                            this->snooze_weekdays_count);
-                if (snooze_weekdays_count >= 6) {
+                hour_from_label = this->snooze_weekdays_time[0];
+                minute_from_label = this->snooze_weekdays_time[1];
+                this->calculate_snooze_time(hour_from_label, minute_from_label);
+                if (snooze_weekdays_count >= snooze_max_count) {
                     this->snooze_weekdays_alarm = false;
                 }
             }
             if (timeinfo.tm_hour == hour_from_label &
                 timeinfo.tm_min == minute_from_label) {
                 if (!this->weekdays_already_fired) {
-                    this->fire_alarm(timeinfo.tm_hour , timeinfo.tm_min);
+                    this->fire_alarm(timeinfo.tm_hour, timeinfo.tm_min);
                     this->weekdays_already_fired = true;
+                    this->current_alarm = 1;
                     if (this->snooze_weekdays_alarm) {
                         this->snooze_weekdays_count++;
                     }
@@ -133,7 +139,10 @@ void TimeApp::check_weekdays_alarm_clock(tm &timeinfo) {
                                                 timeinfo);
     } else {
         this->snooze_weekdays_alarm = false;
+        this->weekdays_already_fired = false;
         this->snooze_weekdays_count = 1;
+        this->snooze_weekdays_time[0] = 0;
+        this->snooze_weekdays_time[1] = 0;
         lv_label_set_text(this->alarm_clock->weekdaysRingsInLabel, "");
     }
 }
@@ -145,23 +154,24 @@ void TimeApp::check_oneOff_alarm_clock(tm &timeinfo) {
         int minute_from_label = this->alarm_clock->parse_alarm_label(
             lv_label_get_text(this->alarm_clock->oneOffButtonLabel), false);
         if (this->snooze_oneOff_alarm) {
-            this->calculate_snooze_time(hour_from_label, minute_from_label,
-                                        this->snooze_oneOff_count);
-            if (snooze_oneOff_count >= 6) {
+            hour_from_label = this->snooze_oneOff_time[0];
+            minute_from_label = this->snooze_oneOff_time[1];
+            this->calculate_snooze_time(hour_from_label, minute_from_label);
+            if (snooze_oneOff_count >= snooze_max_count) {
                 this->snooze_oneOff_alarm = false;
+                lv_obj_clear_state(this->alarm_clock->oneOffSwitch, LV_STATE_CHECKED);
             }
         }
         if (timeinfo.tm_hour == hour_from_label & timeinfo.tm_min == minute_from_label) {
             if (!this->oneOff_already_fired) {
+                this->fire_alarm(timeinfo.tm_hour, timeinfo.tm_min);
                 this->oneOff_already_fired = true;
-                this->fire_alarm(timeinfo.tm_hour , timeinfo.tm_min);
                 lv_obj_clear_state(this->alarm_clock->oneOffSwitch, LV_STATE_CHECKED);
                 this->alarm_clock->event_alarmSwitch_cb();
+                this->current_alarm = 3;
                 if (snooze_oneOff_alarm) {
                     this->snooze_oneOff_count++;
                 }
-            } else {
-                this->oneOff_already_fired = false;
             }
         } else {
             this->oneOff_already_fired = false;
@@ -169,11 +179,14 @@ void TimeApp::check_oneOff_alarm_clock(tm &timeinfo) {
         this->calculate_oneOff_remaining_time(hour_from_label, minute_from_label,
                                               timeinfo);
     } else {
-        if (this->snooze_oneOff_alarm & this->oneOff_already_fired) {
+        if (this->snooze_oneOff_alarm) {
             lv_obj_add_state(this->alarm_clock->oneOffSwitch, LV_STATE_CHECKED);
         } else {
             this->snooze_oneOff_alarm = false;
-            this->snooze_oneOff_count = 1;
+            this->oneOff_already_fired = false;
+            this->snooze_weekdays_count = 1;
+            this->snooze_oneOff_time[0] = 0;
+            this->snooze_oneOff_time[1] = 0;
         }
         lv_label_set_text(this->alarm_clock->oneOffRingsInLabel, "");
     }
@@ -225,24 +238,24 @@ void TimeApp::calculate_weekdays_remaining_time(int hour, int minute,
     this->copy_timeinfo_struct(timeinfo_local, timeinfo);
     time_t now = mktime(&timeinfo_local);
     if (0 < timeinfo_local.tm_wday < 5) {
-        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min > minute) {
+        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
             timeinfo_local.tm_mday += 1;
         }
     }
     if (timeinfo_local.tm_wday == 5) {
-        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min > minute) {
+        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
             timeinfo_local.tm_mday += 3;
         }
     }
     if (timeinfo_local.tm_wday == 6) {
-        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min > minute) {
+        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
             timeinfo_local.tm_mday += 1;
         } else {
             timeinfo_local.tm_mday += 2;
         }
     }
     if (timeinfo_local.tm_wday == 0) {
-        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min > minute) {
+        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
             timeinfo_local.tm_mday += 2;
         } else {
             timeinfo_local.tm_mday += 1;
@@ -255,8 +268,8 @@ void TimeApp::calculate_weekdays_remaining_time(int hour, int minute,
     this->set_rings_in_label_text(difference, this->alarm_clock->weekdaysRingsInLabel);
 }
 
-void TimeApp::calculate_snooze_time(int &hours, int &minutes, short int &snooze_count) {
-    minutes = minutes + snooze_count * this->snooze_period;
+void TimeApp::calculate_snooze_time(int &hours, int &minutes) {
+    minutes = minutes + this->snooze_period;
     if (minutes >= 60) {
         minutes = minutes - 60;
         hours++;
@@ -322,23 +335,33 @@ void TimeApp::stop_alarm() {
     this->_state_app->alarm_state->alarm_ringing = false;
 }
 void TimeApp::turn_off_alarm() {
-    snooze_weekends_alarm = false;
-    snooze_weekdays_alarm = false;
-    snooze_oneOff_alarm = false;
-    snooze_weekends_count = 1;
-    snooze_weekdays_count = 1;
-    snooze_oneOff_count = 1;
+    if (this->current_alarm == 3) {
+        lv_obj_clear_state(this->alarm_clock->oneOffSwitch, LV_STATE_CHECKED);
+    }
+    this->current_alarm = 0;
+    this->snooze_weekends_alarm = false;
+    this->snooze_weekdays_alarm = false;
+    this->snooze_oneOff_alarm = false;
+    this->snooze_weekends_count = 1;
+    this->snooze_weekdays_count = 1;
+    this->snooze_oneOff_count = 1;
     this->stop_alarm();
 }
 void TimeApp::snooze_alarm() {
-    if (this->weekdays_already_fired) {
+    if (this->current_alarm == 1) {
         this->snooze_weekdays_alarm = true;
+        this->snooze_weekdays_time[0] = timeinfo.tm_hour;
+        this->snooze_weekdays_time[1] = timeinfo.tm_min;
     }
-    if (this->weekends_already_fired) {
+    if (this->current_alarm == 2) {
         this->snooze_weekends_alarm = true;
+        this->snooze_weekends_time[0] = timeinfo.tm_hour;
+        this->snooze_weekends_time[1] = timeinfo.tm_min;
     }
-    if (this->oneOff_already_fired) {
+    if (this->current_alarm == 3) {
         this->snooze_oneOff_alarm = true;
+        this->snooze_oneOff_time[0] = timeinfo.tm_hour;
+        this->snooze_oneOff_time[1] = timeinfo.tm_min;
     }
     this->stop_alarm();
 }
