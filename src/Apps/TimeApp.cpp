@@ -196,7 +196,8 @@ void TimeApp::calculate_oneOff_remaining_time(int hour, int minute, struct tm &t
     struct tm timeinfo_local;
     this->copy_timeinfo_struct(timeinfo_local, timeinfo);
     time_t now = mktime(&timeinfo_local);
-    if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
+    if ((timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) ||
+        timeinfo_local.tm_hour > hour) {
         timeinfo_local.tm_mday += 1;
     }
     timeinfo_local.tm_hour = hour;
@@ -216,12 +217,14 @@ void TimeApp::calculate_weekends_remaining_time(int hour, int minute,
         timeinfo_local.tm_mday += weekdays_add[timeinfo_local.tm_wday - 1];
     }
     if (timeinfo_local.tm_wday == 0) {
-        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min > minute) {
+        if ((timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) ||
+            timeinfo_local.tm_hour > hour) {
             timeinfo_local.tm_mday += 6;
         }
     }
     if (timeinfo_local.tm_wday == 6) {
-        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min > minute) {
+        if ((timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) ||
+            timeinfo_local.tm_hour > hour) {
             timeinfo_local.tm_mday += 1;
         }
     }
@@ -238,17 +241,20 @@ void TimeApp::calculate_weekdays_remaining_time(int hour, int minute,
     this->copy_timeinfo_struct(timeinfo_local, timeinfo);
     time_t now = mktime(&timeinfo_local);
     if (0 < timeinfo_local.tm_wday < 5) {
-        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
+        if ((timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) ||
+            timeinfo_local.tm_hour > hour) {
             timeinfo_local.tm_mday += 1;
         }
     }
     if (timeinfo_local.tm_wday == 5) {
-        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
+        if ((timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) ||
+            timeinfo_local.tm_hour > hour) {
             timeinfo_local.tm_mday += 3;
         }
     }
     if (timeinfo_local.tm_wday == 6) {
-        if (timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) {
+        if ((timeinfo_local.tm_hour >= hour & timeinfo_local.tm_min >= minute) ||
+            timeinfo_local.tm_hour > hour) {
             timeinfo_local.tm_mday += 1;
         } else {
             timeinfo_local.tm_mday += 2;
