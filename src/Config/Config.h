@@ -17,7 +17,7 @@
 #define LANGUAGE 1
 
  // Weather settings
-#define API_KEY "api_key"
+#define API_KEY ""
 #define WEATHER_CITY ""
 /*
 Arabic	ar
