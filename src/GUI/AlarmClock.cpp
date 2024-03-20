@@ -434,7 +434,7 @@ void AlarmClock::event_alarmSwitch_cb() {
 }
 
 int AlarmClock::parse_alarm_label(char *string, bool hour) {
-    char alarm_buff[2];
+    char alarm_buff[3];
     for (size_t i = 0; i < 2; i++) {
         if (hour) {
             alarm_buff[i] = string[i];
@@ -442,7 +442,7 @@ int AlarmClock::parse_alarm_label(char *string, bool hour) {
             alarm_buff[i] = string[i + 3];
         }
     }
-
+    alarm_buff[2] = '\0';
     return atoi(alarm_buff);
 }
 
