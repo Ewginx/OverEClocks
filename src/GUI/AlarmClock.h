@@ -17,8 +17,7 @@ class AlarmClock {
 
     void create_roller_modal_panel(lv_obj_t *target_label);
     void create_roller_data();
-    void create_alarm_modal_panel(lv_obj_t *target_label);
-    void delete_alarm_modal_panel();
+    void create_alarm_modal_panel(int hour, int minute);
 
   public:
     lv_obj_t *alarmScreen;
@@ -58,9 +57,8 @@ class AlarmClock {
     lv_obj_t *target_label;
 
     void change_alarm_panel_parent_screen();
-
-    void fire_alarm(lv_obj_t *target_label);
-    void stop_alarm();
+    void delete_alarm_modal_panel();
+    void show_alarm(int hour, int minute);
     void delete_roller_modal_panel();
 
     int parse_alarm_label(char *string, bool hour = true);
@@ -68,6 +66,7 @@ class AlarmClock {
     void event_alarmModalCancelButton_cb(lv_event_t *e);
     void event_alarmModalOkButton_cb(lv_event_t *e);
     void event_offAlarmButton_cb(lv_event_t *e);
+    void event_snoozeAlarmButton_cb(lv_event_t *e);
     void event_alarmButtons_cb(lv_event_t *e);
     void event_alarmSwitch_cb();
 

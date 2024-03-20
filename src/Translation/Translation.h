@@ -27,6 +27,8 @@ enum alarm_texts {
     day_short,
     hour_short,
     minute_short,
+    stop_button,
+    snooze_button,
 };
 enum weather_texts {
     wind_speed_uom,

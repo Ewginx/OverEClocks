@@ -11,6 +11,9 @@ extern "C" void event_alarmModalOkButton_cb_wrapper(lv_event_t *e) {
 extern "C" void event_offAlarmButton_cb_wrapper(lv_event_t *e) {
     instance->event_offAlarmButton_cb(e);
 }
+extern "C" void event_snoozeAlarmButton_cb_wrapper(lv_event_t *e) {
+    instance->event_snoozeAlarmButton_cb(e);
+}
 extern "C" void event_alarmButtons_cb_wrapper(lv_event_t *e) {
     instance->event_alarmButtons_cb(e);
 }
@@ -258,56 +261,67 @@ void AlarmClock::delete_roller_modal_panel() {
         modalOkButtonLabel = NULL;
     }
 }
-void AlarmClock::fire_alarm(lv_obj_t *target_label) {
+void AlarmClock::show_alarm(int hour, int minute) {
     this->delete_roller_modal_panel();
-    this->create_alarm_modal_panel(target_label);
-    this->_state_app->alarm_state->alarm_ringing = true;
-    lv_msg_send(MSG_ALARM_PLAY, NULL);
+    this->create_alarm_modal_panel(hour, minute);
 }
-void AlarmClock::stop_alarm() {
-    this->delete_alarm_modal_panel();
-    lv_msg_send(MSG_SOUND_STOP, NULL);
-    this->_state_app->alarm_state->alarm_ringing = false;
-}
-void AlarmClock::create_alarm_modal_panel(lv_obj_t *target_label) {
+void AlarmClock::create_alarm_modal_panel(int hour, int minute) {
     alarmDummyPanel = lv_obj_create(lv_scr_act());
     lv_obj_set_size(alarmDummyPanel, 480, 320);
     lv_obj_set_align(alarmDummyPanel, LV_ALIGN_CENTER);
     lv_obj_set_style_bg_opa(alarmDummyPanel, 200, 0);
 
     alarmModalPanel = lv_obj_create(alarmDummyPanel);
-    lv_obj_set_size(alarmModalPanel, 240, 160);
+    lv_obj_set_size(alarmModalPanel, 380, 240);
     lv_obj_set_align(alarmModalPanel, LV_ALIGN_CENTER);
     lv_obj_clear_flag(alarmModalPanel, LV_OBJ_FLAG_SCROLLABLE);
 
     alarmTimeLabel = lv_label_create(alarmModalPanel);
-    lv_label_set_text(alarmTimeLabel, lv_label_get_text(target_label));
+    lv_label_set_text_fmt(alarmTimeLabel, "%02d:%02d", hour, minute);
     lv_obj_set_align(alarmTimeLabel, LV_ALIGN_CENTER);
     lv_obj_set_pos(alarmTimeLabel, 0, -30);
-    lv_obj_set_style_text_font(alarmTimeLabel, &font_32, LV_PART_MAIN);
+    lv_obj_set_style_text_font(alarmTimeLabel, &d_clock_font_120, LV_PART_MAIN);
 
     modalOkButton = lv_btn_create(alarmModalPanel);
-    lv_obj_set_size(modalOkButton, 80, 45);
-    lv_obj_set_align(modalOkButton, LV_ALIGN_CENTER);
-    lv_obj_set_pos(modalOkButton, 0, 40);
+    lv_obj_set_size(modalOkButton, 130, 50);
+    lv_obj_align_to(modalOkButton, modalCancelButton, LV_ALIGN_BOTTOM_LEFT, 190, -5);
+    lv_obj_add_flag(modalOkButton, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     modalOkButtonLabel = lv_label_create(modalOkButton);
     lv_obj_set_align(modalOkButtonLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(modalOkButtonLabel, alarm_translation[ok_button]);
+    lv_label_set_text(modalOkButtonLabel, alarm_translation[stop_button]);
     lv_obj_set_style_text_font(modalOkButtonLabel, &font_18, LV_PART_MAIN);
+
+    modalCancelButton = lv_btn_create(alarmModalPanel);
+    lv_obj_set_size(modalCancelButton, 130, 50);
+    lv_obj_set_pos(modalCancelButton, 20, -5);
+    lv_obj_set_align(modalCancelButton, LV_ALIGN_BOTTOM_LEFT);
+    lv_obj_add_flag(modalCancelButton, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    modalCancelButtonLabel = lv_label_create(modalCancelButton);
+    lv_obj_set_size(modalCancelButtonLabel, LV_SIZE_CONTENT,
+                    LV_SIZE_CONTENT); /// 1
+    lv_obj_set_align(modalCancelButtonLabel, LV_ALIGN_CENTER);
+    lv_label_set_text(modalCancelButtonLabel, alarm_translation[snooze_button]);
+    lv_obj_set_style_text_font(modalCancelButtonLabel, &font_18, LV_PART_MAIN);
 
     lv_obj_add_event_cb(modalOkButton, event_offAlarmButton_cb_wrapper, LV_EVENT_ALL,
                         NULL);
+    lv_obj_add_event_cb(modalCancelButton, event_snoozeAlarmButton_cb_wrapper,
+                        LV_EVENT_ALL, NULL);
 }
 
 void AlarmClock::delete_alarm_modal_panel() {
     if (alarmModalPanel != NULL) {
         lv_obj_remove_event_cb(modalOkButton, event_offAlarmButton_cb_wrapper);
+        lv_obj_remove_event_cb(modalCancelButton, event_snoozeAlarmButton_cb_wrapper);
         lv_obj_del(alarmDummyPanel);
         alarmDummyPanel = NULL;
         alarmModalPanel = NULL;
         modalOkButton = NULL;
         modalOkButtonLabel = NULL;
+        modalCancelButton = NULL;
+        modalCancelButtonLabel = NULL;
     }
 }
 
@@ -387,7 +401,15 @@ void AlarmClock::event_offAlarmButton_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
     if (event_code == LV_EVENT_CLICKED) {
-        this->stop_alarm();
+        lv_msg_send(MSG_ALARM_STOP, NULL);
+    }
+}
+
+void AlarmClock::event_snoozeAlarmButton_cb(lv_event_t *e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t *target = lv_event_get_target(e);
+    if (event_code == LV_EVENT_CLICKED) {
+        lv_msg_send(MSG_ALARM_SNOOZE, NULL);
     }
 }
 
@@ -412,14 +434,15 @@ void AlarmClock::event_alarmSwitch_cb() {
 }
 
 int AlarmClock::parse_alarm_label(char *string, bool hour) {
-    char alarm_buff[2];
+    char alarm_buff[3];
     for (size_t i = 0; i < 2; i++) {
         if (hour) {
-            alarm_buff[i] = string[i + 0];
+            alarm_buff[i] = string[i];
         } else {
             alarm_buff[i] = string[i + 3];
         }
     }
+    alarm_buff[2] = '\0';
     return atoi(alarm_buff);
 }
 
