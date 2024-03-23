@@ -24,16 +24,20 @@ Except for 48 px font, which is only used to display the current temperature on 
 ---
 ### Dock panel font
 
-For Settings and Home buttons (used in SettingsScreen), Battery you need to add *FontAwesome5-Solid+Brands+Regular.woff* with this numbers in range:
+For Settings and Home buttons (used in SettingsScreen) you need to add *FontAwesome5-Solid+Brands+Regular.woff* with this numbers in range:
 
-**62016,62017,62018,62019,62020,61461,61459**
+**61461,61459** or **0xf015,0xf013**
+For Charge Battery symbol you will need *fa-solid-900.tff*  with code range:
+**0xf0e7**
+And add *Montserrat-Regular.ttf* with this symbols:
+**1234567890 CF%.°-**
 
+---
+### WiFi symbol font
 For WiFi connectivity symbols, you need to add *MaterialIcons-Regular.ttf* font with this range codes:
 - **0xe648** for WiFi Connected
 - **0xe63e** for WiFi Disconnected
   
-And add *Montserrat-Regular.ttf* with this symbols:
-**1234567890 CF%.°-**
 
 ---
 ### Weather font
