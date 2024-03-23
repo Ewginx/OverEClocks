@@ -17,6 +17,7 @@
 #include <WiFi.h>
 #include "RGBApp.h"
 #include "ButtonApp.h"
+#include "BatteryApp.h"
 
 class OEClockApp {
   private:
@@ -27,6 +28,7 @@ class OEClockApp {
     SoundApp *sound_app;
     RGBApp *rgb_app;
     ButtonApp *button_app;
+    BatteryApp *battery_app;
 
   public:
     StateApp *state_app;

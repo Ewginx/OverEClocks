@@ -14,8 +14,11 @@ public:
     lv_obj_t *temperatureLabel;
     lv_obj_t *humidityLabel;
     lv_obj_t *WiFiLabel;
+    
+    bool battery_charging = false;
 
-    void set_battery_charge(int charge);
+    void set_battery_level(int battery_level);
+    void set_battery_charging(bool charge);
     void set_temperature(float temperature);
     void set_humidity(int humidity);
     void set_default_values();

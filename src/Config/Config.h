@@ -85,11 +85,20 @@ Zulu	zu
 #define TIME_UPDATE_INTERVAL 900
 
 
-
+//   BAT+ ---+
+//           |
+//          R1
+//           |
+//           +------- SENSE
+//           |
+//          R2
+//           |
+//   BAT- ----
+// (R1 + R2) / R2  I am using R1=300k Ohms and R2=1M Ohms
+// for battery charge detection R1= Ohms and R2= Ohms
+#define DIVIDER_RATIO 1.3
 #define BAT_MAX_VOLT 4.2
-#define BAT_PIN 34
-#define BAT_CONV_FACTOR 1.725
-#define BAT_READS 24
+#define BAT_MIN_VOLT 2.9
 
 
 // Preferences namespace

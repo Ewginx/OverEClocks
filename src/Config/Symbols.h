@@ -1,6 +1,9 @@
-//DockPanel Symbols
+//WiFi Symbols
 #define WIFI_CONNECTED_SYMBOL "\uE63E"
 #define WIFI_DISCONNECTED_SYMBOL "\uE648"
+
+//Dock Panel Symbols
+#define CHARGE_SYMBOL "\uf0e7"
 
 //Weather Symbols
 #define PRESSURE_SYMBOL "\uf079"
