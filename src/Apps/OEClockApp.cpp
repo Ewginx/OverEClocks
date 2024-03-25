@@ -32,7 +32,7 @@ OEClockApp::OEClockApp() {
     server_app = new ServerApp(state_app, brightness_app, microclimate_app);
     sound_app = new SoundApp(state_app);
     button_app = new ButtonApp(state_app);
-    battery_app = new BatteryApp();
+    battery_app = new BatteryApp(state_app);
 }
 
 void OEClockApp::setup() {

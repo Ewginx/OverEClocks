@@ -128,7 +128,8 @@ SoundApp::SoundApp(StateApp *state_app) : player(Serial2) {
     lv_msg_subscribe(MSG_ALARM_PLAY, alarm_ringing_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_SOUND_STOP, stop_sound_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_PLAY_EE, play_ee_cb_wrapper, NULL);
-    lv_msg_subscribe(MSG_PLAY_PLUG_IN, play_plug_in_cb_wrapper, NULL);
+    lv_msg_subscribe(MSG_USB_CONNECTED, play_plug_in_cb_wrapper, NULL);
+    lv_msg_subscribe(MSG_USB_DISCONNECTED, stop_sound_cb_wrapper, NULL);
 }
 
 SoundApp::~SoundApp() {}

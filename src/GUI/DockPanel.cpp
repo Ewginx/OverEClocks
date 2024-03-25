@@ -6,9 +6,11 @@ extern "C" void set_battery_level_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     const int *payload = static_cast<const int *>(lv_msg_get_payload(msg));
     instance->set_battery_level(*payload);
 }
-extern "C" void set_battery_charging_cb_wrapper(void *subscriber, lv_msg_t *msg) {
-    const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
-    instance->set_battery_charging(*payload);
+extern "C" void battery_charging_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    instance->set_battery_charging(true);
+}
+extern "C" void battery_not_charging_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    instance->set_battery_charging(false);
 }
 
 DockPanel::DockPanel(lv_obj_t *parent_panel) {
@@ -46,7 +48,8 @@ DockPanel::DockPanel(lv_obj_t *parent_panel) {
 
     this->set_default_values();
     lv_msg_subscribe(MSG_SHOW_BATTERY_LVL, set_battery_level_cb_wrapper, NULL);
-    lv_msg_subscribe(MSG_SHOW_BATTERY_CHARGING, set_battery_charging_cb_wrapper, NULL);
+    lv_msg_subscribe(MSG_USB_CONNECTED, battery_charging_cb_wrapper, NULL);
+    lv_msg_subscribe(MSG_USB_DISCONNECTED, battery_not_charging_cb_wrapper, NULL);
 }
 
 void DockPanel::hide() {

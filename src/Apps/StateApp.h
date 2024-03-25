@@ -204,6 +204,16 @@ class RGBState {
     ~RGBState();
 };
 
+class BatteryState {
+
+  public:
+    bool battery_charging = false;
+    int battery_level = 0;
+
+    BatteryState();
+    ~BatteryState();
+};
+
 class StateApp {
   private:
     Preferences _preferences;
@@ -217,7 +227,9 @@ class StateApp {
     TimeState *time_state;
     SoundState *sound_state;
     RGBState *rgb_state;
+    BatteryState *battery_state;
 
+    
     StateApp(/* args */);
     ~StateApp();
 };
