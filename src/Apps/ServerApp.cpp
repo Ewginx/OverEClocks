@@ -155,6 +155,7 @@ void ServerApp::setup_settings_handlers() {
         new AsyncCallbackJsonWebHandler(
             "/settings/sound", [this](AsyncWebServerRequest *request, JsonVariant &json) {
                 this->save_sound_settings(json);
+                lv_msg_send(MSG_HANDLE_PLAYER_USB, NULL);
                 request->send(200);
             });
     server.addHandler(save_sound_settings_handler);
@@ -471,6 +472,8 @@ void ServerApp::save_sound_settings(JsonVariant &json) {
         sound_json["ee_sound_on"].as<bool>());
     this->_state_app->sound_state->save_plug_sound_enabled(
         sound_json["plug_sound_on"].as<bool>());
+    this->_state_app->sound_state->enable_player_usb =
+        sound_json["enable_player_usb"].as<bool>();
 }
 
 void ServerApp::get_settings(AsyncWebServerRequest *request) {

@@ -158,6 +158,8 @@ class SoundState {
     bool plug_sound_on;
     bool ee_sound_on;
 
+    bool enable_player_usb = false;
+
     short int alarm_track;
     short int ee_track;
     short int plug_track;

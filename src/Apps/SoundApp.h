@@ -16,6 +16,7 @@ class SoundApp {
     short int alarm_track_folder = 1;
     short int easter_egg_track_folder = 2;
     bool need_to_reset = false;
+
   public:
     StateApp *_state_app;
     void play_alarm_sound();
@@ -31,6 +32,8 @@ class SoundApp {
     bool can_play_sounds(bool sound_on);
     int get_track_count_in_alarm_folder();
     int get_track_count_in_ee_folder();
+
+    void handle_player_usb();
 
     void setup_player();
     bool is_player_offline();

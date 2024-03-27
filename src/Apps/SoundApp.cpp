@@ -13,6 +13,9 @@ extern "C" void play_ee_cb_wrapper(void *subscriber, lv_msg_t *msg) {
 extern "C" void play_plug_in_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     instance->play_plug_in_sound();
 }
+extern "C" void handle_usb_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    instance->handle_player_usb();
+}
 extern "C" void loop_alarm_sound_cb_wrapper(lv_timer_t *timer) {
     instance->loop_alarm_sound();
 }
@@ -120,16 +123,23 @@ void SoundApp::setup_player() {
     this->set_volume();
 }
 
+void SoundApp::handle_player_usb() {
+    digitalWrite(PLAYER_USB_CONTROL_PIN,
+                 this->_state_app->sound_state->enable_player_usb);
+}
+
 SoundApp::SoundApp(StateApp *state_app) : player(Serial2) {
     instance = this;
     this->_state_app = state_app;
     this->sound_loop_timer = lv_timer_create(loop_alarm_sound_cb_wrapper, 900, NULL);
+    pinMode(PLAYER_USB_CONTROL_PIN, OUTPUT);
     lv_timer_pause(this->sound_loop_timer);
     lv_msg_subscribe(MSG_ALARM_PLAY, alarm_ringing_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_SOUND_STOP, stop_sound_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_PLAY_EE, play_ee_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_USB_CONNECTED, play_plug_in_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_USB_DISCONNECTED, stop_sound_cb_wrapper, NULL);
+    lv_msg_subscribe(MSG_HANDLE_PLAYER_USB, handle_usb_cb_wrapper, NULL);
 }
 
 SoundApp::~SoundApp() {}
