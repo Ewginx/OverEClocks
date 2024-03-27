@@ -13,6 +13,7 @@ StateApp::StateApp() {
     time_state = new TimeState(_preferences);
     sound_state = new SoundState(_preferences);
     rgb_state = new RGBState(_preferences);
+    battery_state = new BatteryState();
 }
 StateApp::~StateApp() {}
 
@@ -290,3 +291,7 @@ void RGBState::save_brightness(int brightness) {
     this->_preferences.putInt("rgb_bright", brightness);
 }
 RGBState::~RGBState() {}
+
+BatteryState::BatteryState() {}
+
+BatteryState::~BatteryState() {}

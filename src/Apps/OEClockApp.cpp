@@ -32,6 +32,7 @@ OEClockApp::OEClockApp() {
     server_app = new ServerApp(state_app, brightness_app, microclimate_app);
     sound_app = new SoundApp(state_app);
     button_app = new ButtonApp(state_app);
+    battery_app = new BatteryApp(state_app);
 }
 
 void OEClockApp::setup() {
@@ -60,6 +61,7 @@ void OEClockApp::setup() {
     this->server_app->setup();
     this->wifi_app->subscribe_to_wifi_disconnected_event();
     this->rgb_app->setup();
+    this->battery_app->setup_battery_app();
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->load_default_screen();
         this->gui_app->delete_loading_screen();
