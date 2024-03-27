@@ -348,7 +348,7 @@ String ServerApp::getInfoForWS() {
     doc["temperature"] = this->_microclimate_app->get_temperature();
     doc["humidity"] = this->_microclimate_app->get_humidity();
     doc["lx"] = this->_brightness_app->get_light_level();
-    doc["battery_level"] = 84;
+    doc["battery_level"] = this->_state_app->battery_state->battery_level;
     doc["max_free_block"] = ESP.getMaxAllocHeap() / 1024;
     doc["free_heap"] = ESP.getFreeHeap() / 1024;
     doc["used_space"] = ((unsigned int)LittleFS.usedBytes()) / 1024;
@@ -535,9 +535,6 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["sound_on"] = this->_state_app->sound_state->sound_on;
     doc["ee_sound_on"] = this->_state_app->sound_state->ee_sound_on;
     doc["plug_sound_on"] = this->_state_app->sound_state->plug_sound_on;
-
-
-    doc["battery_level"] = this->_state_app->battery_state->battery_level;
 
     serializeJson(doc, *response);
     request->send(response);
