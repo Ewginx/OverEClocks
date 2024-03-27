@@ -14,7 +14,7 @@ class BatteryApp {
     void measure_battery_level_and_send_msg();
     int calculate_battery_percentage(int battery_adc);
     void check_charge_status_and_send_msg();
-    uint8_t sigmoidal(uint16_t voltage, uint16_t minVoltage, uint16_t maxVoltage);
+    uint8_t sigmoidal(float voltage, float minVoltage, float maxVoltage);
 
     void setup_battery_app();
     BatteryApp(StateApp *state_app);

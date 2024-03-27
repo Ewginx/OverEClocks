@@ -9,6 +9,7 @@ private:
 public:
 
     lv_obj_t *batteryLabel;
+    lv_obj_t *chargingLabel;
     lv_obj_t *settingsButton;
     lv_obj_t *settingsButtonLabel;
     lv_obj_t *temperatureLabel;
