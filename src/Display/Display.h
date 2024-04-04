@@ -3,7 +3,6 @@
 #include <LovyanGFX.hpp>
 #include <lvgl.h>
 
-
 class LGFX : public lgfx::LGFX_Device {
 
     lgfx::Panel_ST7796 _panel_instance;
@@ -20,12 +19,9 @@ class LGFX : public lgfx::LGFX_Device {
             auto cfg = _bus_instance.config();
 
             cfg.spi_host = VSPI_HOST;
-
-            cfg.spi_mode = 0;
-            cfg.freq_write = 80000000;
+            cfg.freq_write = 16000000;
             cfg.freq_read = 16000000;
             cfg.spi_3wire = false;
-            cfg.use_lock = true;
             cfg.dma_channel = SPI_DMA_CH_AUTO;
 
             cfg.pin_sclk = LCD_SCK;
@@ -41,20 +37,10 @@ class LGFX : public lgfx::LGFX_Device {
 
             cfg.pin_cs = LCD_CS;
             cfg.pin_rst = LCD_RST;
-            cfg.pin_busy = -1;
 
-            cfg.panel_width = 320;
-            cfg.panel_height = 480;
-            cfg.offset_x = 0;
-            cfg.offset_y = 0;
-            cfg.offset_rotation = 0;
-            cfg.dummy_read_pixel = 8;
-            cfg.dummy_read_bits = 1;
-            cfg.readable = true;
-            cfg.invert = false;
-            cfg.rgb_order = false;
-            cfg.dlen_16bit = false;
-            cfg.bus_shared = true;
+            // height and width intentionally swapped, setRotation(1) is set
+            cfg.panel_width = DISPLAY_HEIGHT;
+            cfg.panel_height = DISPLAY_WIDTH;
 
             _panel_instance.config(cfg);
         }
@@ -63,7 +49,6 @@ class LGFX : public lgfx::LGFX_Device {
             auto cfg = _light_instance.config();
 
             cfg.pin_bl = LCD_BACKLIGHT;
-            cfg.invert = false;
             cfg.freq = 44100;
             cfg.pwm_channel = 7;
 
@@ -73,21 +58,19 @@ class LGFX : public lgfx::LGFX_Device {
 
         {
             auto cfg = _touch_instance.config();
-
+            //if you use ST7796s display, you must remove D1 diode and bridge the pads https://github.com/Bodmer/TFT_eSPI/issues/849
             cfg.x_min = 0;
-            cfg.x_max = 319;
+            cfg.x_max = DISPLAY_HEIGHT - 1;
             cfg.y_min = 0;
-            cfg.y_max = 479;
-            cfg.pin_int = 38;
+            cfg.y_max = DISPLAY_WIDTH - 1;
             cfg.bus_shared = true;
-            cfg.offset_rotation = 0;
-
             cfg.spi_host = VSPI_HOST;
             cfg.freq = 1000000;
             cfg.pin_sclk = TS_SCK;
             cfg.pin_mosi = TS_MOSI;
             cfg.pin_miso = TS_MISO;
             cfg.pin_cs = TS_CS;
+
             _touch_instance.config(cfg);
             _panel_instance.setTouch(&_touch_instance);
         }
