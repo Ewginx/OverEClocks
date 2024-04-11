@@ -538,6 +538,7 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["sound_on"] = this->_state_app->sound_state->sound_on;
     doc["ee_sound_on"] = this->_state_app->sound_state->ee_sound_on;
     doc["plug_sound_on"] = this->_state_app->sound_state->plug_sound_on;
+    doc["enable_player_usb"] = this->_state_app->sound_state->enable_player_usb;
 
     serializeJson(doc, *response);
     request->send(response);

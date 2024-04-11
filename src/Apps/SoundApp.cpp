@@ -133,6 +133,7 @@ SoundApp::SoundApp(StateApp *state_app) : player(Serial2) {
     this->_state_app = state_app;
     this->sound_loop_timer = lv_timer_create(loop_alarm_sound_cb_wrapper, 900, NULL);
     pinMode(PLAYER_USB_CONTROL_PIN, OUTPUT);
+    digitalWrite(PLAYER_USB_CONTROL_PIN, LOW);
     lv_timer_pause(this->sound_loop_timer);
     lv_msg_subscribe(MSG_ALARM_PLAY, alarm_ringing_cb_wrapper, NULL);
     lv_msg_subscribe(MSG_SOUND_STOP, stop_sound_cb_wrapper, NULL);
