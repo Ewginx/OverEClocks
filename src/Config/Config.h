@@ -100,6 +100,8 @@ Zulu	zu
 #define BAT_MAX_VOLT 4.2
 #define BAT_MIN_VOLT 2.6
 
+//offset for temperature calibration
+#define TEMPERATURE_OFFSET 4
 
 // Preferences namespace
 #define NAMESPACE "OEClock"

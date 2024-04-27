@@ -3,7 +3,7 @@ static MicroclimateApp *instance = NULL;
 extern "C" void bme_timer_cb_wrapper(lv_timer_t *timer) { instance->bme_timer_cb(timer); }
 
 float MicroclimateApp::get_temperature() {
-    return this->_bme_sensor.readTemperature() - 1;
+    return this->_bme_sensor.readTemperature() - TEMPERATURE_OFFSET;
 }
 
 int MicroclimateApp::get_humidity() {
