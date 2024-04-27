@@ -71,7 +71,7 @@ int BrightnessApp::map_light_level(int light_level) {
         return 255;
     }
     int output =
-        static_cast<int>(5 + (250 / (this->_state_app->display_state->threshold)) * (light_level));
+        static_cast<int>(1 + (250 / (this->_state_app->display_state->threshold)) * (light_level));
     return output;
 }
 BrightnessApp::BrightnessApp(Display *display, Settings *settings, StateApp *state_app) {

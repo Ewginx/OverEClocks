@@ -270,7 +270,7 @@ void Settings::create_settings_screen() {
     this->brightnessSlider = lv_slider_create(this->settingsPanel);
     lv_obj_align_to(this->brightnessSlider, this->themeLabel, LV_ALIGN_OUT_BOTTOM_LEFT,
                     10, 30);
-    lv_slider_set_range(this->brightnessSlider, 5, 255);
+    lv_slider_set_range(this->brightnessSlider, 1, 255);
     lv_obj_add_flag(this->brightnessSlider, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     this->autoBrightnessCheckbox = lv_checkbox_create(this->settingsPanel);
