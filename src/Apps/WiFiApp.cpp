@@ -42,6 +42,7 @@ void WiFiApp::connect_to_wifi() {
         Serial.print(".");
         attempt++;
     }
+    WiFi.setSleep(true);
     this->handle_wifi_state(WiFi.status() == WL_CONNECTED);
 }
 
