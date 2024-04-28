@@ -75,18 +75,18 @@ int BrightnessApp::map_light_level(int light_level) {
 }
 
 void BrightnessApp::switch_theme(u_int32_t brightness) {
+    if (!this->_state_app->display_state->auto_theme_change) {
+        return;
+    }
     bool dark_theme = true;
-    if (brightness < CHANGE_THEME_THRESHOLD &
-        this->_state_app->display_state->auto_theme_change) {
+    if (brightness < CHANGE_THEME_THRESHOLD) {
         if (!_state_app->theme_state->current_theme_is_dark) {
             lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
         }
-    } else if (this->_state_app->display_state->auto_theme_change) {
-        if (_state_app->theme_state->current_theme_is_dark !=
-            this->_state_app->theme_state->dark_theme_enabled) {
-            dark_theme = this->_state_app->theme_state->dark_theme_enabled;
-            lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
-        }
+    } else if (_state_app->theme_state->current_theme_is_dark !=
+               this->_state_app->theme_state->dark_theme_enabled) {
+        dark_theme = this->_state_app->theme_state->dark_theme_enabled;
+        lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
     }
 }
 
