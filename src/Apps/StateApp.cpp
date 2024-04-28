@@ -234,7 +234,7 @@ void SoundState::save_ee_track(short int ee_track) {
 }
 void SoundState::save_plug_track(int plug_track) {
     this->plug_track = plug_track;
-    this->_preferences.putBool("plug_track", plug_track);
+    this->_preferences.putInt("plug_track", plug_track);
 }
 void SoundState::save_plug_sound_enabled(bool plug_sound_on) {
     this->plug_sound_on = plug_sound_on;
