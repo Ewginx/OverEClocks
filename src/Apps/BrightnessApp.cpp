@@ -19,44 +19,42 @@ void BrightnessApp::light_sensor_timer_cb() {
     int light_level = this->get_light_level();
     int old_brightness = this->_display->get_brightness();
     int new_brightness = this->map_light_level(light_level);
-    bool dark_theme = false;
+    bool dark_theme = true;
     if (new_brightness < CHANGE_THEME_THRESHOLD & this->_state_app->display_state->auto_theme_change) {
-        dark_theme = true;
         lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
     } else if(this->_state_app->display_state->auto_theme_change){
-        dark_theme = this->_state_app->theme_state->dark_theme_enabled ? true : false;
+        dark_theme = this->_state_app->theme_state->dark_theme_enabled;
         lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&dark_theme));
     }
-
     this->change_brightness_smoothly(new_brightness, old_brightness);
-    this->update_settings_slider(new_brightness);
 }
+
 void BrightnessApp::set_auto_brightness_timer(bool auto_brightness) {
     this->_settings->set_brightness_checkbox(auto_brightness);
     if (this->_light_sensor_timer == NULL & auto_brightness) {
-        _light_sensor_timer = lv_timer_create(light_sensor_timer_cb_wrapper, 600, NULL);
+        _light_sensor_timer = lv_timer_create(light_sensor_timer_cb_wrapper, 1500, NULL);
     } else if (this->_light_sensor_timer != NULL & !auto_brightness) {
         lv_timer_del(this->_light_sensor_timer);
         this->_light_sensor_timer = NULL;
     }
 }
+
 void BrightnessApp::change_brightness_smoothly(int new_light_level, int old_light_level) {
     lv_anim_set_exec_cb(&_brightness_anim, anim_brightness_change_cb);
-    lv_anim_set_var(&_brightness_anim, NULL);
-    lv_anim_set_time(&_brightness_anim, 300);
+    lv_anim_set_time(&_brightness_anim, 200);
     lv_anim_set_values(&_brightness_anim, old_light_level, new_light_level);
     lv_anim_start(&_brightness_anim);
 }
+
 void BrightnessApp::set_display_brightness(u_int32_t brightness) {
     this->_settings->set_brightness_slider(brightness);
     this->_display->set_brightness((uint8_t)brightness);
 }
-void BrightnessApp::update_settings_slider(u_int32_t slider_value) {
-    this->_settings->set_brightness_slider(slider_value, true);
-}
+
 int BrightnessApp::get_light_level() {
     return static_cast<int>(this->_light_sensor.readLightLevel());
 }
+
 bool BrightnessApp::begin() {
     if (!_light_sensor.begin()) {
         Serial.println("Can't find the light sensor");
@@ -66,6 +64,7 @@ bool BrightnessApp::begin() {
         return true;
     }
 }
+
 int BrightnessApp::map_light_level(int light_level) {
     if (light_level > this->_state_app->display_state->threshold) {
         return 255;
@@ -74,6 +73,7 @@ int BrightnessApp::map_light_level(int light_level) {
         static_cast<int>(1 + (250 / (this->_state_app->display_state->threshold)) * (light_level));
     return output;
 }
+
 BrightnessApp::BrightnessApp(Display *display, Settings *settings, StateApp *state_app) {
     instance = this;
     this->_display = display;
