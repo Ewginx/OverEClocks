@@ -341,6 +341,7 @@ void ServerApp::set_time(JsonVariant &json) {
 
 void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
     this->websocket.textAll(this->getInfoForWS());
+    this->websocket.cleanupClients();
 }
 
 String ServerApp::getInfoForWS() {
@@ -544,7 +545,6 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     request->send(response);
 }
 void ServerApp::run() {
-    this->websocket.cleanupClients();
     if (espShouldReboot) {
         Serial.println("ESP32 reboot ...");
         delay(100);
