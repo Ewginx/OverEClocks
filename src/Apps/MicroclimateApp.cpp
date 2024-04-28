@@ -11,6 +11,7 @@ int MicroclimateApp::get_humidity() {
 }
 
 void MicroclimateApp::bme_timer_cb(lv_timer_t *timer) {
+    _bme_sensor.takeForcedMeasurement();
     this->_dock_panel->set_temperature(this->get_temperature());
     this->_dock_panel->set_humidity(this->get_humidity());
 }
@@ -19,13 +20,18 @@ bool MicroclimateApp::begin() {
         return false;
     } else {
         Serial.println("BME280 sensor is connected");
+        _bme_sensor.setSampling(Adafruit_BME280::MODE_FORCED,
+                                Adafruit_BME280::SAMPLING_X1,
+                                Adafruit_BME280::SAMPLING_NONE,
+                                Adafruit_BME280::SAMPLING_X1,
+                                Adafruit_BME280::FILTER_OFF);
         return true;
     }
 }
 MicroclimateApp::MicroclimateApp(DockPanel *dock_panel) {
     instance = this;
     this->_dock_panel = dock_panel;
-    this->_bme_timer = lv_timer_create(bme_timer_cb_wrapper, 5000, NULL);
+    this->_bme_timer = lv_timer_create(bme_timer_cb_wrapper, 10000, NULL);
 }
 
 MicroclimateApp::~MicroclimateApp() {}
