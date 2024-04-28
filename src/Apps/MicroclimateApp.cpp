@@ -25,7 +25,7 @@ bool MicroclimateApp::begin() {
 MicroclimateApp::MicroclimateApp(DockPanel *dock_panel) {
     instance = this;
     this->_dock_panel = dock_panel;
-    this->_bme_timer = lv_timer_create(bme_timer_cb_wrapper, 600, NULL);
+    this->_bme_timer = lv_timer_create(bme_timer_cb_wrapper, 5000, NULL);
 }
 
 MicroclimateApp::~MicroclimateApp() {}
