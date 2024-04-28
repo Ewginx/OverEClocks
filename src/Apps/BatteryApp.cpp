@@ -6,7 +6,6 @@ extern "C" void measure_battery_level_cb_wrapper(lv_timer_t *timer) {
 }
 extern "C" void measure_battery_charge_cb_wrapper(lv_timer_t *timer) {
     instance->check_charge_status_and_send_msg();
-    ;
 }
 void BatteryApp::measure_battery_level_and_send_msg() {
     int battery_level = this->calculate_battery_percentage(analogRead(BATTERY_LEVEL_PIN));
@@ -27,7 +26,7 @@ int BatteryApp::calculate_battery_percentage(int battery_adc) {
     }
 }
 void BatteryApp::check_charge_status_and_send_msg() {
-    if (analogRead(BATTERY_CHARGE_PIN) > 2000) {
+    if (digitalRead(BATTERY_CHARGE_PIN)) {
         if (!this->_state_app->battery_state->battery_charging) {
             this->_state_app->battery_state->battery_charging = true;
             lv_msg_send(MSG_USB_CONNECTED, NULL);
@@ -40,8 +39,7 @@ void BatteryApp::check_charge_status_and_send_msg() {
         }
     }
 }
-uint8_t BatteryApp::sigmoidal(float voltage, float minVoltage,
-                              float maxVoltage) {
+uint8_t BatteryApp::sigmoidal(float voltage, float minVoltage, float maxVoltage) {
     // slow
     // uint8_t result = 110 - (110 / (1 + pow(1.468 * (voltage - minVoltage)/(maxVoltage -
     // minVoltage), 6)));
