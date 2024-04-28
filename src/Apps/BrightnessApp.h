@@ -3,12 +3,12 @@
 #include "Display/Display.h"
 #include "GUI/Settings.h"
 #include <Arduino.h>
-#include <BH1750.h>
+#include <hp_BH1750.h>
 #include "StateApp.h"
 
 class BrightnessApp {
   private:
-    BH1750 _light_sensor;
+    hp_BH1750 _light_sensor;
     lv_timer_t *_light_sensor_timer = NULL;
     lv_anim_t _brightness_anim;
     Display *_display;
@@ -26,6 +26,8 @@ class BrightnessApp {
     void light_sensor_timer_cb();
     void set_display_brightness(u_int32_t brightness);
     int get_light_level();
+
+    void switch_theme(u_int32_t brightness);
     BrightnessApp(Display *display, Settings *settings, StateApp *state_app);
     ~BrightnessApp();
 };

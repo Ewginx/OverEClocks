@@ -118,7 +118,7 @@ AlarmState::~AlarmState() {}
 ThemeState::ThemeState(Preferences &preferences) : _preferences(preferences) {
 
     this->dark_theme_enabled = _preferences.getBool("dark_theme", false);
-
+    this->current_theme_is_dark = dark_theme_enabled;
     this->light_primary_color = _preferences.getInt("light_primary", 48340);
     this->light_second_color = _preferences.getInt("light_second", 48340);
     this->light_screen_color = _preferences.getInt("light_screen", 16448250);

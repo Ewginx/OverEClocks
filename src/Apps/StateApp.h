@@ -87,6 +87,8 @@ class ThemeState {
     Preferences &_preferences;
 
   public:
+    bool current_theme_is_dark = false;
+
     bool dark_theme_enabled;
 
     int light_primary_color;

@@ -199,11 +199,13 @@ void GuiApp::swipe_alarm_screen() {
     }
 }
 
-void GuiApp::switch_theme(bool darktheme_enabled) {
-    if (darktheme_enabled) {
+void GuiApp::switch_theme(bool dark_theme_enabled) {
+    if (dark_theme_enabled) {
         this->switch_to_dark_theme();
+        this->state_app->theme_state->current_theme_is_dark = true;
     } else {
         this->switch_to_light_theme();
+        this->state_app->theme_state->current_theme_is_dark = false;
     }
 }
 
