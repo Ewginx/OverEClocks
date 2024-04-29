@@ -179,15 +179,11 @@ void TimeApp::check_oneOff_alarm_clock(tm &timeinfo) {
         this->calculate_oneOff_remaining_time(hour_from_label, minute_from_label,
                                               timeinfo);
     } else {
-        if (this->snooze_oneOff_alarm) {
-            lv_obj_add_state(this->alarm_clock->oneOffSwitch, LV_STATE_CHECKED);
-        } else {
-            this->snooze_oneOff_alarm = false;
-            this->oneOff_already_fired = false;
-            this->snooze_weekdays_count = 1;
-            this->snooze_oneOff_time[0] = 0;
-            this->snooze_oneOff_time[1] = 0;
-        }
+        this->snooze_oneOff_alarm = false;
+        this->oneOff_already_fired = false;
+        this->snooze_weekdays_count = 1;
+        this->snooze_oneOff_time[0] = 0;
+        this->snooze_oneOff_time[1] = 0;
         lv_label_set_text(this->alarm_clock->oneOffRingsInLabel, "");
     }
 }
@@ -365,6 +361,7 @@ void TimeApp::snooze_alarm() {
         this->snooze_weekends_time[1] = timeinfo.tm_min;
     }
     if (this->current_alarm == 3) {
+        lv_obj_add_state(this->alarm_clock->oneOffSwitch, LV_STATE_CHECKED);
         this->snooze_oneOff_alarm = true;
         this->snooze_oneOff_time[0] = timeinfo.tm_hour;
         this->snooze_oneOff_time[1] = timeinfo.tm_min;
