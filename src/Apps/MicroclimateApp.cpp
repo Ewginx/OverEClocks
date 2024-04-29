@@ -11,9 +11,10 @@ int MicroclimateApp::get_humidity() {
 }
 
 void MicroclimateApp::bme_timer_cb(lv_timer_t *timer) {
-    _bme_sensor.takeForcedMeasurement();
-    this->_dock_panel->set_temperature(this->get_temperature());
-    this->_dock_panel->set_humidity(this->get_humidity());
+    if (_bme_sensor.takeForcedMeasurement()) {
+        this->_dock_panel->set_temperature(this->get_temperature());
+        this->_dock_panel->set_humidity(this->get_humidity());
+    }
 }
 bool MicroclimateApp::begin() {
     if (!_bme_sensor.begin(0x76)) {
