@@ -488,7 +488,7 @@ void ServerApp::get_settings(AsyncWebServerRequest *request) {
     doc["ap_login"] = this->_state_app->wifi_state->ap_login;
     doc["ap_password"] = this->_state_app->wifi_state->ap_password;
     doc["auto_brightness"] = this->_state_app->display_state->auto_brightness;
-    doc["auto_theme_change"] = false;
+    doc["auto_theme_change"] = this->_state_app->display_state->auto_theme_change;
     doc["threshold"] = this->_state_app->display_state->threshold;
     doc["brightness_level"] = this->_state_app->display_state->brightness_level;
     doc["timezone_posix"] = this->_state_app->time_state->timezone_posix;
