@@ -15,7 +15,7 @@ void BatteryApp::measure_battery_level_and_send_msg() {
 int BatteryApp::calculate_battery_percentage(int battery_adc) {
     float battery_voltage =
         (analogReadMilliVolts(BATTERY_LEVEL_PIN) * DIVIDER_RATIO) / 1000.0f;
-    Serial.println(analogReadMilliVolts(BATTERY_LEVEL_PIN));
+    Serial.print("Battery voltage: ");
     Serial.println(battery_voltage);
     if (battery_voltage <= BAT_MIN_VOLT) {
         return 0;
@@ -47,6 +47,7 @@ uint8_t BatteryApp::sigmoidal(float voltage, float minVoltage, float maxVoltage)
     // steep
     // uint8_t result = 102 - (102 / (1 + pow(1.621 * (voltage - minVoltage)/(maxVoltage -
     // minVoltage), 8.1)));
+    
     // normal
     uint8_t result =
         105 - (105 / (1 + pow(1.724 * (voltage - minVoltage) / (maxVoltage - minVoltage),
