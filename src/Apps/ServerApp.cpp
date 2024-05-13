@@ -78,7 +78,7 @@ void ServerApp::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
                       client->remoteIP().toString().c_str());
         if (this->_websocket_notify_timer == NULL) {
             this->_websocket_notify_timer =
-                lv_timer_create(websocket_timer_cb_wrapper, 600, NULL);
+                lv_timer_create(websocket_timer_cb_wrapper, 3000, NULL);
         }
         break;
     case WS_EVT_DISCONNECT:
