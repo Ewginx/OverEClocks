@@ -4,6 +4,13 @@ static OEClockApp *instance = NULL;
 
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
 
+extern "C" void set_low_cpu_frequency(void *subscriber, lv_msg_t *msg) {
+    setCpuFrequencyMhz(80);
+}
+extern "C" void set_high_cpu_frequency(void *subscriber, lv_msg_t *msg) {
+    setCpuFrequencyMhz(240);
+}
+
 void serial_print(const char *buf) { Serial.println(buf); }
 
 void update_display(void *parameter) {
@@ -33,6 +40,8 @@ OEClockApp::OEClockApp() {
     sound_app = new SoundApp(state_app);
     button_app = new ButtonApp(state_app);
     battery_app = new BatteryApp(state_app);
+    lv_msg_subscribe(MSG_SET_LOW_CLOCK, set_low_cpu_frequency, NULL);
+    lv_msg_subscribe(MSG_SET_HIGH_CLOCK, set_high_cpu_frequency, NULL);
 }
 
 void OEClockApp::setup() {
@@ -97,7 +106,6 @@ void OEClockApp::loop() {
     lv_task_handler();
     delay(5);
     server_app->run();
-
 }
 
 OEClockApp::~OEClockApp() {}
