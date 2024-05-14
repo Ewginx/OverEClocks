@@ -230,6 +230,7 @@ void GuiApp::user_activity_event_cb(lv_event_t *e) {
     lv_timer_reset(this->_dock_panel_timer);
     lv_timer_resume(this->_dock_panel_timer);
     this->dock_panel->show();
+    lv_msg_send(MSG_SET_HIGH_CLOCK, NULL);
 }
 
 void GuiApp::screen_timer_cb(lv_timer_t *timer) {
@@ -249,6 +250,7 @@ void GuiApp::dock_panel_timer_cb(lv_timer_t *timer) {
     lv_timer_reset(this->_dock_panel_timer);
     lv_timer_pause(this->_dock_panel_timer);
     this->dock_panel->hide();
+    lv_msg_send(MSG_SET_LOW_CLOCK, NULL);
 }
 
 void GuiApp::settings_button_event_cb(lv_event_t *e) {
