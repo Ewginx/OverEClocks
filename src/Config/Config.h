@@ -97,19 +97,19 @@ Zulu	zu
 // (R1 + R2) / R2  I am using R1=R2=1M Ohms
 // for battery charge detection R1=1M Ohms and R2=1M Ohms
 #define DIVIDER_RATIO 1.94
-#define BAT_MAX_VOLT 4.2
+#define BAT_MAX_VOLT 4.12
 #define BAT_MIN_VOLT 2.6
 
 //offset for temperature calibration
-#define TEMPERATURE_OFFSET 4
+#define TEMPERATURE_OFFSET 5
 
 // Preferences namespace
 #define NAMESPACE "OEClock"
 
 #define MILLISECONDS 1000
 
-#define WIFI_SCAN_ITER 5
-#define WIFI_CONNECT_TIMEOUT (MILLISECONDS * 10)
+#define WIFI_CONNECT_ATTEMPTS 20
+#define WIFI_CONNECT_DELAY 500
 
 #define SCREEN_CHANGE_ANIM_TIME 200
 #define DISPLAY_WIDTH 480

@@ -37,8 +37,8 @@ void WiFiApp::connect_to_wifi() {
     WiFi.begin(this->_state_app->wifi_state->ssid,
                this->_state_app->wifi_state->password);
     int attempt = 0;
-    while (WiFi.status() != WL_CONNECTED & attempt < 20) {
-        delay(500);
+    while (WiFi.status() != WL_CONNECTED & attempt < WIFI_CONNECT_ATTEMPTS) {
+        delay(WIFI_CONNECT_DELAY);
         Serial.print(".");
         attempt++;
     }
