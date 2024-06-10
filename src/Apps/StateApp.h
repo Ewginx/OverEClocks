@@ -218,6 +218,12 @@ class BatteryState {
     ~BatteryState();
 };
 
+class MicroclimateState{
+  public:
+    float indoor_temperature = 0.0;
+    int indoor_humidity = 0;
+};
+
 class StateApp {
   private:
     Preferences _preferences;
@@ -232,6 +238,7 @@ class StateApp {
     SoundState *sound_state;
     RGBState *rgb_state;
     BatteryState *battery_state;
+    MicroclimateState *microclimate_state;
 
     
     StateApp(/* args */);

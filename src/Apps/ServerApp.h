@@ -61,7 +61,6 @@ class ServerApp {
     void setup();
     void run();
 
-    ServerApp(StateApp *state_app, BrightnessApp *brightness_app,
-              MicroclimateApp *microclimate_app);
+    ServerApp(StateApp *state_app, BrightnessApp *brightness_app);
     ~ServerApp();
 };
