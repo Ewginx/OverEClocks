@@ -1,5 +1,5 @@
 #include "OEClockApp.h"
-// SHT31 _temp_sensor;
+
 static OEClockApp *instance = NULL;
 
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
@@ -48,7 +48,6 @@ void OEClockApp::setup() {
     Serial.begin(115200);
     lv_log_register_print_cb(serial_print);
     this->init_i2c_apps();
-    // _temp_sensor.begin();
     this->sound_app->setup_player();
     // lv_port_sd_fs_init();
     lv_port_littlefs_fs_init();
@@ -81,7 +80,6 @@ void OEClockApp::setup() {
     Serial.printf("Full heap: %d KB \n", ESP.getHeapSize() / 1024);
     Serial.printf("Max free heap chunk: %d KB \n", ESP.getMaxAllocHeap() / 1024);
     Serial.printf("Free heap: %d KB \n", ESP.getFreeHeap() / 1024);
-    // _temp_sensor.requestData();
 }
 void OEClockApp::init_i2c_apps() {
     Wire.begin();
@@ -107,16 +105,6 @@ void OEClockApp::loop() {
     lv_task_handler();
     delay(5);
     server_app->run();
-    // if (_temp_sensor.dataReady()) {
-    //     bool success = _temp_sensor.readData(); //  default = true = fast
-    //     _temp_sensor.requestData(); //  request for next sample
-    //     if (success == false) {
-    //         Serial.println("Failed read");
-    //     } else {
-    //         Serial.println(_temp_sensor.getTemperature(), 1);
-    //         Serial.println(_temp_sensor.getHumidity(), 1);
-    //     }
-    // }
 }
 
 OEClockApp::~OEClockApp() {}
