@@ -1,20 +1,23 @@
 #pragma once
 #include "Config/Config.h"
 #include "GUI/DockPanel.h"
-#include <Adafruit_BME280.h>
+#include "StateApp.h"
 #include <Arduino.h>
+#include <SHT31.h>
+
 
 class MicroclimateApp {
   private:
-    Adafruit_BME280 _bme_sensor;
-    lv_timer_t *_bme_timer = NULL;
+    SHT31  _temp_sensor;
+    lv_timer_t *_temp_sensor_timer = NULL;
     DockPanel *_dock_panel;
 
   public:
+      StateApp *_state_app;
     float get_temperature();
     int get_humidity();
-    void bme_timer_cb(lv_timer_t *timer);
+    void temp_sensor_timer_cb(lv_timer_t *timer);
     bool begin();
-    MicroclimateApp(DockPanel *dock_panel);
+    MicroclimateApp(DockPanel *dock_panel, StateApp *state_app);
     ~MicroclimateApp();
 };

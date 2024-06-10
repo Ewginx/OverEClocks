@@ -11,13 +11,11 @@ void onEventWrapper(AsyncWebSocket *server, AsyncWebSocketClient *client,
     instance->onEvent(server, client, type, arg, data, len);
 }
 
-ServerApp::ServerApp(StateApp *state_app, BrightnessApp *brightness_app,
-                     MicroclimateApp *microclimate_app)
+ServerApp::ServerApp(StateApp *state_app, BrightnessApp *brightness_app)
     : server(port), websocket("/ws") {
     instance = this;
     this->_state_app = state_app;
     this->_brightness_app = brightness_app;
-    this->_microclimate_app = microclimate_app;
 }
 void ServerApp::setup() {
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
@@ -347,8 +345,8 @@ void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
 String ServerApp::getInfoForWS() {
     String sensors_readings;
     StaticJsonDocument<112> doc;
-    doc["temperature"] = this->_microclimate_app->get_temperature();
-    doc["humidity"] = this->_microclimate_app->get_humidity();
+    doc["temperature"] = this->_state_app->microclimate_state->indoor_temperature;
+    doc["humidity"] = this->_state_app->microclimate_state->indoor_humidity;
     doc["lx"] = this->_brightness_app->get_light_level();
     doc["battery_level"] = this->_state_app->battery_state->battery_level;
     doc["max_free_block"] = ESP.getMaxAllocHeap() / 1024;
