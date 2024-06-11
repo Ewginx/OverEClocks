@@ -70,11 +70,16 @@ float BatteryApp::calculate_battery_voltage() {
     for (int i = 0; i < this->_samples_count; i++) {
         battery_voltage = battery_voltage + this->_voltage_samples[i];
     }
+    battery_voltage = battery_voltage / this->_samples_count;
     for (int i = 0; i < this->_samples_count; i++) {
-        if(abs((battery_voltage - this->_voltage_samples[i])) > 0.02){
+        if (abs((battery_voltage - this->_voltage_samples[i])) > 0.03f) {
             this->_voltage_samples[i] = 0.0f;
             remain_voltages_count--;
         }
+    }
+    battery_voltage = 0.0f;
+    for (int i = 0; i < this->_samples_count; i++) {
+        battery_voltage = battery_voltage + this->_voltage_samples[i];
     }
     battery_voltage = battery_voltage / remain_voltages_count;
     return battery_voltage;

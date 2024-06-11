@@ -344,7 +344,7 @@ void ServerApp::websocket_timer_cb(lv_timer_t *timer) {
 
 String ServerApp::getInfoForWS() {
     String sensors_readings;
-    StaticJsonDocument<120> doc;
+    StaticJsonDocument<130> doc;
     doc["temperature"] = this->_state_app->microclimate_state->indoor_temperature;
     doc["humidity"] = this->_state_app->microclimate_state->indoor_humidity;
     doc["lx"] = this->_brightness_app->get_light_level();
