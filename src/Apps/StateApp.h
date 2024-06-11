@@ -213,6 +213,7 @@ class BatteryState {
   public:
     bool battery_charging = false;
     int battery_level = 0;
+    float battery_voltage = 0.0f;
 
     BatteryState();
     ~BatteryState();
