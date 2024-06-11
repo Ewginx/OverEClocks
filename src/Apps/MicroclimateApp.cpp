@@ -4,7 +4,7 @@ extern "C" void temp_sensor_timer_cb_wrapper(lv_timer_t *timer) {
     instance->temp_sensor_timer_cb(timer);
 }
 
-float MicroclimateApp::get_temperature() { return this->_temp_sensor.getTemperature(); }
+float MicroclimateApp::get_temperature() { return this->_temp_sensor.getTemperature() - TEMPERATURE_OFFSET; }
 
 int MicroclimateApp::get_humidity() {
     return static_cast<int>(this->_temp_sensor.getHumidity());
