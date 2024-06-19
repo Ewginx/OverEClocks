@@ -33,6 +33,8 @@ class RGBApp {
     void cycle_tri_colors();
     
     void rainbow_effect();
+    
+    void running_rainbow_effect();
 
     RGBApp(StateApp *state_app);
     ~RGBApp();

@@ -59,7 +59,7 @@ void RGBApp::show() {
         this->rainbow_effect();
         break;
     case 4:
-        /* code */
+        this->running_rainbow_effect();
         break;
     case 5:
         this->cycle_tri_colors();
@@ -138,8 +138,19 @@ void RGBApp::cycle_tri_colors() {
     }
 }
 void RGBApp::rainbow_effect() {
+    uint32_t color = this->wheel((rainbowCycles) & 255);
     for (uint16_t i = 0; i < pixels.numPixels(); i++) {
-        pixels.setPixelColor(i, wheel((i + rainbowCycles) & 255));
+        pixels.setPixelColor(i, color);
+    }
+    pixels.show();
+    rainbowCycles++;
+    if (rainbowCycles >= 256) {
+        rainbowCycles = 0;
+    }
+}
+void RGBApp::running_rainbow_effect() {
+    for (uint16_t i = 0; i < pixels.numPixels(); i++) {
+        pixels.setPixelColor(i, this->wheel((i + rainbowCycles) & 255));
     }
     pixels.show();
     rainbowCycles++;
