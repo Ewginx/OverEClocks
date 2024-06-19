@@ -32,6 +32,7 @@ bool MicroclimateApp::begin() {
         Serial.println("Can't find the temp sensor");
         return false;
     };
+    Serial.println("Temp sensor is connected");
     uint16_t stat = _temp_sensor.readStatus();
     Serial.print("Temp sensor status: ");
     Serial.println(stat, HEX);
