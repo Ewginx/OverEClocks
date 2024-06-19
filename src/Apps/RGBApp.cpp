@@ -62,7 +62,7 @@ void RGBApp::show() {
         this->running_rainbow_effect();
         break;
     case 5:
-        this->cycle_tri_colors();
+        this->cycle_tri_colors_effect();
         break;
 
     default:
@@ -102,7 +102,7 @@ void RGBApp::solid_tri_color_effect() {
     }
     pixels.show();
 }
-void RGBApp::cycle_tri_colors() {
+void RGBApp::cycle_tri_colors_effect() {
     pixels.clear();
     uint32_t startColor = this->tri_color[solid_tri_cycle_iterator];
     byte startRed = (startColor >> 16) & 0xff;
@@ -158,13 +158,13 @@ void RGBApp::running_rainbow_effect() {
         rainbowCycles = 0;
     }
 }
-void RGBApp::set_brightness() {
+void RGBApp::set_rgb_brightness() {
     this->pixels.setBrightness(this->_state_app->rgb_state->brightness);
     this->solid_enabled = false;
 }
 void RGBApp::update_rgb() {
     this->switch_rgb();
-    this->set_brightness();
+    this->set_rgb_brightness();
 }
 bool RGBApp::is_rgb_enabled() {
     if ((this->_state_app->rgb_state->turn_off_at_night &

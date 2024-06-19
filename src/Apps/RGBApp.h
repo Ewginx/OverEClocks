@@ -18,7 +18,7 @@ class RGBApp {
 
     void switch_rgb();
 
-    void set_brightness();
+    void set_rgb_brightness();
     
     void update_rgb();
     
@@ -28,12 +28,9 @@ class RGBApp {
 
     //RGB effects
     void solid_color_effect();
-
     void solid_tri_color_effect();
-    void cycle_tri_colors();
-    
+    void cycle_tri_colors_effect();
     void rainbow_effect();
-    
     void running_rainbow_effect();
 
     RGBApp(StateApp *state_app);
