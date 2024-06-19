@@ -1,6 +1,7 @@
 #pragma once
 #include "StateApp.h"
 #include <Arduino.h>
+#include <ESPmDNS.h>
 #include <WiFi.h>
 #include <lvgl.h>
 

@@ -6,19 +6,25 @@
 
 #define DEVICE_NAME "OEClock"
 
-
+//-----------------------------TIME SETTINGS-----------------------------
 // Posix Timezone String https://www.veron.nl/wp-content/uploads/2022/12/Posix-Timezone-Strings.pdf
 #define TIMEZONE "GMT"
+// Time check period, ms
+#define TIME_UPDATE_INTERVAL 900
+#define HOUR_COUNT 24
+#define MINUTE_COUNT 60
 
+//-----------------------------LANGUAGE SETTINGS-----------------------------
 /* 
 "0" - english
 "1" - русский
 */
 #define LANGUAGE 1
 
- // Weather settings
+//-----------------------------WEATHER SETTINGS-----------------------------
 #define API_KEY ""
 #define WEATHER_CITY ""
+
 /*
 Arabic	ar
 Bengali	bn
@@ -64,7 +70,10 @@ Zulu	zu
 */
 #define WEATHER_LANGUAGE "en"
 
-// WiFi credentials
+// Pass the interval according to your weather api plan
+#define WEATHER_API_POLLING_INTERVAL_MINUTES 20
+
+//-----------------------------WIFI SETTINGS-----------------------------
 #define WIFI_SSID ""
 #define WIFI_PASSWORD ""
 
@@ -74,19 +83,40 @@ Zulu	zu
 #define IP_ADDRESS ""
 #define GATEWAY_ADDRESS ""
 
+/*access clocks web server via MDNS_NAME.local
+works on MacOS and IPhone, Android 12 and higher
+works on Windows 10 10.0.19042 and higher or need to install Bonjour
+or just simply add OECLOCK_IP_ADDRESS YOUR_MDNS_NAME to C:\windows\system32\drivers\etc\hosts (e.g. 192.XXX.X.XX oeclock.local),
+don't forget to give OEClock a static IP in router settings
+need to install Ahavi on Linux
+*/
+#define MDNS_NAME "oeclock" 
+
+#define WIFI_CONNECT_ATTEMPTS 20
+#define WIFI_CONNECT_DELAY 500
+
+//-----------------------------SCREEN SETTINGS-----------------------------
 // Set false if you want to set Analog Clock as the main screen
 #define DIGITAL_CLOCK_MAIN_SCREEN true
 
-// Pass the interval according to your weather api plan
-#define WEATHER_API_POLLING_INTERVAL_MINUTES 20
+#define SCREEN_CHANGE_ANIM_TIME 200
 
+#define DISPLAY_WIDTH 480
+#define DISPLAY_HEIGHT 320
 
-// Time check period, ms
-#define TIME_UPDATE_INTERVAL 900
+//period in which active screen will be set back to DigitalClockScreen if no user activity is presented
+#define SCREEN_SWAP_PERIOD MILLISECONDS * 30 
+#define DOCK_PANEL_HIDE_PERIOD MILLISECONDS * 15
 
+#define DARK_THEME_CHANGE_THRESHOLD 25
+#define LIGHT_THEME_CHANGE_THRESHOLD 35
+
+//-----------------------------RGB SETTINGS-----------------------------
 #define RGB_TIME_MORNING 9 //Hour
 #define RGB_TIME_EVENING 22 //Hour
+#define NUMPIXELS 8
 
+//-----------------------------BATTERY SETTINGS-----------------------------
 //   BAT+ ---+
 //           |
 //          R1
@@ -102,39 +132,24 @@ Zulu	zu
 #define BAT_MAX_VOLT 4.02
 #define BAT_MIN_VOLT 2.7
 
+//-----------------------------TEMPERATURE SENSOR SETTINGS-----------------------------
 //offset for temperature calibration
 #define TEMPERATURE_OFFSET 4
 
+
+//-----------------------------MISC-----------------------------
 // Preferences namespace
 #define NAMESPACE "OEClock"
 
 #define MILLISECONDS 1000
 
-#define WIFI_CONNECT_ATTEMPTS 20
-#define WIFI_CONNECT_DELAY 500
-
-#define SCREEN_CHANGE_ANIM_TIME 200
-#define DISPLAY_WIDTH 480
-#define DISPLAY_HEIGHT 320
-
-
-//period in which active screen will be set back to DigitalClockScreen if no user activity is presented
-#define SCREEN_SWAP_PERIOD MILLISECONDS * 30 
-#define DOCK_PANEL_HIDE_PERIOD MILLISECONDS * 15
-
-#define DARK_THEME_CHANGE_THRESHOLD 25
-#define LIGHT_THEME_CHANGE_THRESHOLD 35
-
 #define WEATHER_API_POLLING_INTERVAL_MILLISECONDS (MILLISECONDS * WEATHER_API_POLLING_INTERVAL_MINUTES * 60)
 
 #define SECONDS_IN_ONE_HOUR 3600
 
-#define HOUR_COUNT 24
-#define MINUTE_COUNT 60
 #define HOUR_LABEL 0
 #define MINUTE_LABEL 3
 
-#define NUMPIXELS 8
 
 
 

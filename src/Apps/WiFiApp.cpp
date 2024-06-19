@@ -42,6 +42,12 @@ void WiFiApp::connect_to_wifi() {
         Serial.print(".");
         attempt++;
     }
+    if (!MDNS.begin(MDNS_NAME)) {
+        Serial.println("Error starting mDNS");
+    } else {
+        MDNS.addService("http", "tcp", 80);
+    }
+
     WiFi.setSleep(true);
     this->handle_wifi_state(WiFi.status() == WL_CONNECTED);
 }
