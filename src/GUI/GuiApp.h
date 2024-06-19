@@ -36,7 +36,7 @@ class GuiApp {
     void switch_theme(bool dark_theme_enabled);
     void screen_load_event_cb(lv_event_t *e);
 
-    void user_activity_event_cb(lv_event_t *e);
+    void user_activity_event_cb();
     void screen_timer_cb(lv_timer_t *timer);
     void dock_panel_timer_cb(lv_timer_t *timer);
     void settings_button_event_cb(lv_event_t *e);

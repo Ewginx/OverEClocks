@@ -8,7 +8,6 @@ extern "C" void set_battery_level_cb_wrapper(void *subscriber, lv_msg_t *msg) {
 }
 extern "C" void battery_charging_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     instance->set_battery_charging(true);
-    instance->show();
 }
 extern "C" void battery_not_charging_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     lv_obj_add_flag(instance->chargingLabel, LV_OBJ_FLAG_HIDDEN);

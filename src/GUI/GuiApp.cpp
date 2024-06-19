@@ -25,11 +25,14 @@ extern "C" void dock_update_wifi_icon_cb(void *subscriber, lv_msg_t *msg) {
         instance->state_app->wifi_state->wifi_connected);
 }
 extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
-    instance->user_activity_event_cb(e);
+    instance->user_activity_event_cb();
 }
 extern "C" void change_theme_cb_wrapper(void *subscriber, lv_msg_t *msg) {
     const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
     instance->switch_theme(*payload);
+}
+extern "C" void usb_connected_cb_wrapper(void *subscriber, lv_msg_t *msg) {
+    instance->user_activity_event_cb();
 }
 extern "C" void async_update_gif_src_cb(void *data) { instance->update_gif_img_src(); }
 extern "C" void update_gif_src_cb(void *subscriber, lv_msg_t *msg) {
@@ -100,6 +103,7 @@ GuiApp::GuiApp(StateApp *state_app) {
     lv_msg_subscribe(MSG_UPDATE_GIF_SRC, update_gif_src_cb, NULL);
     lv_msg_subscribe(MSG_UPDATE_CLOCK_IMG_SRC, update_clock_img_src_cb, NULL);
     lv_msg_subscribe(MSG_UPDATE_WIFI_CONNECTION_ICON, dock_update_wifi_icon_cb, NULL);
+    lv_msg_subscribe(MSG_USB_CONNECTED, usb_connected_cb_wrapper, NULL);
 
     this->dock_panel->show();
 };
@@ -224,7 +228,7 @@ void GuiApp::screen_load_event_cb(lv_event_t *e) {
     }
 }
 
-void GuiApp::user_activity_event_cb(lv_event_t *e) {
+void GuiApp::user_activity_event_cb() {
     lv_timer_reset(this->_screen_timer);
     lv_timer_resume(this->_screen_timer);
     lv_timer_reset(this->_dock_panel_timer);
