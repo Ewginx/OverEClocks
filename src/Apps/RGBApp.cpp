@@ -26,12 +26,15 @@ void RGBApp::begin_rgb() {
 
 void RGBApp::show() {
     if (!this->is_rgb_enabled()) {
-        lv_timer_pause(_rgb_show_timer);
-        this->pixels.clear();
-        pixels.show();
+        if (!this->_already_disabled) {
+            this->pixels.clear();
+            pixels.show();
+            this->_already_disabled = true;
+        }
+
         return;
     }
-    if (this->_state_app->rgb_state->effect != 1) {
+    this->_already_disabled = false;
         this->solid_enabled = false;
     }
     if (this->_state_app->rgb_state->effect == 1) {

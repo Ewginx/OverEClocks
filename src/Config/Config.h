@@ -84,6 +84,8 @@ Zulu	zu
 // Time check period, ms
 #define TIME_UPDATE_INTERVAL 900
 
+#define RGB_TIME_MORNING 9 //Hour
+#define RGB_TIME_EVENING 22 //Hour
 
 //   BAT+ ---+
 //           |

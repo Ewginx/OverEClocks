@@ -21,7 +21,7 @@ class RGBApp {
     void set_brightness();
     
     void update_rgb();
-
+    
     bool is_rgb_enabled();
 
     uint32_t wheel(byte WheelPos);
@@ -35,6 +35,8 @@ class RGBApp {
     ~RGBApp();
 
   private:
+    bool _already_disabled = false;
+
     lv_timer_t *_rgb_show_timer = NULL;
     int rainbowCycles = 0;
     bool solid_enabled = false;

@@ -48,11 +48,7 @@ void TimeApp::config_time() {
 
 void TimeApp::notifyAboutTime() {
     getLocalTime(&timeinfo);
-    if ((timeinfo.tm_hour <= 9) || (timeinfo.tm_hour >= 22)) {
-        this->_state_app->time_state->is_night = true;
-    } else {
-        this->_state_app->time_state->is_night = false;
-    }
+    this->check_is_it_night();
     analog_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     digital_clock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     digital_clock->set_date(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
@@ -295,6 +291,14 @@ void TimeApp::set_rings_in_label_text(double &difference_in_seconds,
     time += (int)difference_in_seconds % 86400 % 3600 / 60;
     time += alarm_translation[minute_short];
     lv_label_set_text(rings_in_label, time.c_str());
+}
+void TimeApp::check_is_it_night() {
+    if ((timeinfo.tm_hour <= RGB_TIME_MORNING) ||
+        (timeinfo.tm_hour >= RGB_TIME_EVENING)) {
+        this->_state_app->time_state->is_night = true;
+    } else {
+        this->_state_app->time_state->is_night = false;
+    }
 }
 bool TimeApp::is_weekends(int week_day) {
     if (week_day == 0 | week_day == 6) {

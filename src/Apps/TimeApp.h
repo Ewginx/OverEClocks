@@ -57,6 +57,7 @@ class TimeApp {
     void calculate_snooze_time(int &hours, int &minutes);
     
     void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
+    void check_is_it_night();
 
   public:
     void check_alarm_clocks(tm &timeinfo);
