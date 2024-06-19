@@ -28,6 +28,9 @@ class RGBApp {
 
     //RGB effects
     void solid_color_effect();
+
+    void solid_tri_color_effect();
+    void cycle_tri_colors();
     
     void rainbow_effect();
 
@@ -39,5 +42,9 @@ class RGBApp {
 
     lv_timer_t *_rgb_show_timer = NULL;
     int rainbowCycles = 0;
-    bool solid_enabled = false;
+    int triCycles = 0;
+    bool solid_enabled = false;    
+    int border_pixels = NUMPIXELS / 3;
+    int tri_color[3];
+    int solid_tri_cycle_iterator = 0;
 };

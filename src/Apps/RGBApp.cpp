@@ -9,6 +9,9 @@ extern "C" void rgb_show_cb_wrapper(lv_timer_t *timer) { instance->show(); }
 RGBApp::RGBApp(StateApp *state_app) : pixels(NUMPIXELS, RGB_PIN) {
     instance = this;
     this->_state_app = state_app;
+    this->tri_color[0] = this->_state_app->rgb_state->first_rgb_color;
+    this->tri_color[1] = this->_state_app->rgb_state->second_rgb_color;
+    this->tri_color[2] = this->_state_app->rgb_state->third_rgb_color;
     lv_msg_subscribe(MSG_RGB_STATE_CHANGED, update_rgb_cb_wrapper, NULL);
 }
 
@@ -35,15 +38,35 @@ void RGBApp::show() {
         return;
     }
     this->_already_disabled = false;
+    if (this->_state_app->rgb_state->effect != 1 ||
+        this->_state_app->rgb_state->effect != 2) {
         this->solid_enabled = false;
     }
-    if (this->_state_app->rgb_state->effect == 1) {
+    switch (this->_state_app->rgb_state->effect) {
+    case 1:
         if (!this->solid_enabled) {
             this->solid_color_effect();
             this->solid_enabled = true;
         }
-    } else if (this->_state_app->rgb_state->effect == 3) {
+        break;
+    case 2:
+        if (!this->solid_enabled) {
+            this->solid_tri_color_effect();
+            this->solid_enabled = true;
+        }
+        break;
+    case 3:
         this->rainbow_effect();
+        break;
+    case 4:
+        /* code */
+        break;
+    case 5:
+        this->cycle_tri_colors();
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -62,7 +85,56 @@ void RGBApp::solid_color_effect() {
     pixels.clear();
     for (int i = 0; i < NUMPIXELS; i++) {
         pixels.setPixelColor(i, this->_state_app->rgb_state->first_rgb_color);
+    }
+    pixels.show();
+}
+void RGBApp::solid_tri_color_effect() {
+    pixels.clear();
+
+    for (int i = 0; i < this->border_pixels; i++) {
+        pixels.setPixelColor(i, this->_state_app->rgb_state->first_rgb_color);
+    }
+    for (int i = this->border_pixels; i < NUMPIXELS - this->border_pixels; i++) {
+        pixels.setPixelColor(i, this->_state_app->rgb_state->second_rgb_color);
+    }
+    for (int i = NUMPIXELS - this->border_pixels; i < NUMPIXELS; i++) {
+        pixels.setPixelColor(i, this->_state_app->rgb_state->third_rgb_color);
+    }
+    pixels.show();
+}
+void RGBApp::cycle_tri_colors() {
+    pixels.clear();
+    uint32_t startColor = this->tri_color[solid_tri_cycle_iterator];
+    byte startRed = (startColor >> 16) & 0xff;
+    byte startGreen = (startColor >> 8) & 0xff;
+    byte startBlue = startColor & 0xff;
+    uint32_t endColor = 0;
+    if (this->tri_color[solid_tri_cycle_iterator] < 2) {
+        endColor = this->tri_color[solid_tri_cycle_iterator + 1];
+    } else {
+        endColor = this->tri_color[0];
+    }
+
+    byte endRed = (endColor >> 16) & 0xff;
+    byte endGreen = (endColor >> 8) & 0xff;
+    byte endBlue = endColor & 0xff;
+    for (int step = 0; step < 256; step++) {
+        byte red = map(step, 0, 255, startRed, endRed);
+        byte green = map(step, 0, 255, startGreen, endGreen);
+        byte blue = map(step, 0, 255, startBlue, endBlue);
+        for (int i = 0; i < NUMPIXELS; i++) {
+            pixels.setPixelColor(i, red, green, blue);
+        }
         pixels.show();
+    }
+    // triCycles++;
+    // if (triCycles >= 256) {
+    //     triCycles = 0;
+    // }
+    if (solid_tri_cycle_iterator == 2) {
+        solid_tri_cycle_iterator = 0;
+    } else {
+        solid_tri_cycle_iterator++;
     }
 }
 void RGBApp::rainbow_effect() {
