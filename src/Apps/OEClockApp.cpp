@@ -80,6 +80,7 @@ void OEClockApp::setup() {
     Serial.printf("Full heap: %d KB \n", ESP.getHeapSize() / 1024);
     Serial.printf("Max free heap chunk: %d KB \n", ESP.getMaxAllocHeap() / 1024);
     Serial.printf("Free heap: %d KB \n", ESP.getFreeHeap() / 1024);
+    setCpuFrequencyMhz(80);
 }
 void OEClockApp::init_i2c_apps() {
     Wire.begin();
