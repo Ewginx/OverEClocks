@@ -66,9 +66,8 @@ void OEClockApp::setup() {
     this->init_gui();
     this->weather_app->setup_weather_url();
     this->weather_app->create_weather_task();
-    this->wifi_app->connect_to_wifi();
+    this->wifi_app->setup();
     this->server_app->setup();
-    this->wifi_app->subscribe_to_wifi_disconnected_event();
     this->rgb_app->setup();
     this->battery_app->setup();
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {

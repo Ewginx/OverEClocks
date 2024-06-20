@@ -13,6 +13,8 @@ class WiFiApp {
     void connect_to_wifi();
     void handle_wifi_state(bool wifi_connected);
     void subscribe_to_wifi_disconnected_event();
+    
+    void setup();
 
     WiFiApp(StateApp *state_app, SemaphoreHandle_t &mutex);
     ~WiFiApp();

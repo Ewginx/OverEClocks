@@ -84,4 +84,9 @@ void WiFiApp::subscribe_to_wifi_disconnected_event() {
     WiFi.onEvent(wifi_disconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
 }
 
+void WiFiApp::setup() {
+    this->connect_to_wifi();
+    this->subscribe_to_wifi_disconnected_event();
+}
+
 WiFiApp::~WiFiApp() {}
