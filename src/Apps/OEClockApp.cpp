@@ -70,7 +70,7 @@ void OEClockApp::setup() {
     this->server_app->setup();
     this->wifi_app->subscribe_to_wifi_disconnected_event();
     this->rgb_app->setup();
-    this->battery_app->setup_battery_app();
+    this->battery_app->setup();
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->load_default_screen();
         this->gui_app->delete_loading_screen();

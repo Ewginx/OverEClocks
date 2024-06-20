@@ -20,7 +20,7 @@ class BatteryApp {
     void get_voltage_sample();
     float calculate_battery_voltage();
 
-    void setup_battery_app();
+    void setup();
     BatteryApp(StateApp *state_app);
     ~BatteryApp();
 };

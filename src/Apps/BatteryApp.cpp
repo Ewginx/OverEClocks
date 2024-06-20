@@ -84,7 +84,7 @@ float BatteryApp::calculate_battery_voltage() {
     battery_voltage = battery_voltage / remain_voltages_count;
     return battery_voltage;
 }
-void BatteryApp::setup_battery_app() {
+void BatteryApp::setup() {
     this->measure_battery_level_and_send_msg();
     this->check_charge_status_and_send_msg();
     this->battery_level_timer =
