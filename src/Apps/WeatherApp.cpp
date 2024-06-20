@@ -53,6 +53,10 @@ void WeatherApp::get_weather(void *parameter) {
                    portTICK_PERIOD_MS);
     }
 }
+void WeatherApp::setup() {
+    this->setup_weather_url();
+    this->create_weather_task();
+}
 void WeatherApp::setup_weather_url() {
     this->encode_city();
     this->_weather_url.clear();

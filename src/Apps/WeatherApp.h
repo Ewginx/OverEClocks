@@ -39,17 +39,19 @@ class WeatherApp {
 
     int get_mapped_image_code(int code);
 
+    void create_weather_task();
+    
+
   public:
     WiFiClient wifi;
     HttpClient client = HttpClient(wifi, "api.weatherapi.com", _port);
 
-    void create_weather_task();
+    void setup_weather_url();
 
     void update_weather();
 
     void encode_city();
     String url_encode(const char *str);
-    void setup_weather_url();
 
     int send_weather_request();
 
@@ -58,6 +60,8 @@ class WeatherApp {
     void suspend_task_on_error();
 
     static void get_weather(void *parameter);
+
+    void setup();
 
     WeatherApp(Weather *weather, StateApp *state_app);
     ~WeatherApp();
