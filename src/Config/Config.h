@@ -150,6 +150,7 @@ need to install Ahavi on Linux
 #define HOUR_LABEL 0
 #define MINUTE_LABEL 3
 
+#define RGB_BREATHE_STEP 5
 
 
 

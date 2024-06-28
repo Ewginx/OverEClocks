@@ -9,9 +9,8 @@ extern "C" void rgb_show_cb_wrapper(lv_timer_t *timer) { instance->show(); }
 RGBApp::RGBApp(StateApp *state_app) : pixels(NUMPIXELS, RGB_PIN) {
     instance = this;
     this->_state_app = state_app;
-    this->tri_color[0] = this->_state_app->rgb_state->first_rgb_color;
-    this->tri_color[1] = this->_state_app->rgb_state->second_rgb_color;
-    this->tri_color[2] = this->_state_app->rgb_state->third_rgb_color;
+    this->update_triColor_array();
+    this->calculate_breathe_count();
     lv_msg_subscribe(MSG_RGB_STATE_CHANGED, update_rgb_cb_wrapper, NULL);
 }
 
@@ -34,7 +33,6 @@ void RGBApp::show() {
             pixels.show();
             this->_already_disabled = true;
         }
-
         return;
     }
     this->_already_disabled = false;
@@ -62,9 +60,8 @@ void RGBApp::show() {
         this->running_rainbow_effect();
         break;
     case 5:
-        this->cycle_tri_colors_effect();
+        this->cycle_tri_colors_breathe_effect();
         break;
-
     default:
         break;
     }
@@ -90,7 +87,6 @@ void RGBApp::solid_color_effect() {
 }
 void RGBApp::solid_tri_color_effect() {
     pixels.clear();
-
     for (int i = 0; i < this->border_pixels; i++) {
         pixels.setPixelColor(i, this->_state_app->rgb_state->first_rgb_color);
     }
@@ -102,48 +98,48 @@ void RGBApp::solid_tri_color_effect() {
     }
     pixels.show();
 }
-void RGBApp::cycle_tri_colors_effect() {
+void RGBApp::cycle_tri_colors_breathe_effect() {
     pixels.clear();
-    uint32_t startColor = this->tri_color[solid_tri_cycle_iterator];
-    byte startRed = (startColor >> 16) & 0xff;
-    byte startGreen = (startColor >> 8) & 0xff;
-    byte startBlue = startColor & 0xff;
-    uint32_t endColor = 0;
-    if (this->tri_color[solid_tri_cycle_iterator] < 2) {
-        endColor = this->tri_color[solid_tri_cycle_iterator + 1];
-    } else {
-        endColor = this->tri_color[0];
+    if (this->triCyclesBreatheCnt == this->rgb_breathe_count - 1) {
+        this->triCyclesBreatheCnt = 1;
+    }
+    for (int i = 0; i < NUMPIXELS; i++) {
+        pixels.setPixelColor(i, this->tri_color[solid_tri_cycle_iterator]);
     }
 
-    byte endRed = (endColor >> 16) & 0xff;
-    byte endGreen = (endColor >> 8) & 0xff;
-    byte endBlue = endColor & 0xff;
-    for (int step = 0; step < 256; step++) {
-        byte red = map(step, 0, 255, startRed, endRed);
-        byte green = map(step, 0, 255, startGreen, endGreen);
-        byte blue = map(step, 0, 255, startBlue, endBlue);
-        for (int i = 0; i < NUMPIXELS; i++) {
-            pixels.setPixelColor(i, red, green, blue);
-        }
+    if (this->triCyclesBreatheCnt < this->rgb_breathe_count / 2) {
+        pixels.setBrightness(this->_state_app->rgb_state->brightness -
+                             (this->triCyclesBreatheCnt * RGB_BREATHE_STEP));
+        this->triCyclesBreatheCnt++;
         pixels.show();
+        return;
     }
-    // triCycles++;
-    // if (triCycles >= 256) {
-    //     triCycles = 0;
-    // }
-    if (solid_tri_cycle_iterator == 2) {
-        solid_tri_cycle_iterator = 0;
-    } else {
-        solid_tri_cycle_iterator++;
+
+    if (this->triCyclesBreatheCnt == this->rgb_breathe_count / 2) {
+        this->triCyclesBreatheCnt++;
+        if (solid_tri_cycle_iterator == 2) {
+            solid_tri_cycle_iterator = 0;
+        } else {
+            solid_tri_cycle_iterator++;
+        }
+        return;
+    }
+    if (this->triCyclesBreatheCnt > this->rgb_breathe_count / 2) {
+        pixels.setBrightness(
+            this->_state_app->rgb_state->brightness -
+            ((this->rgb_breathe_count - this->triCyclesBreatheCnt) * RGB_BREATHE_STEP));
+        this->triCyclesBreatheCnt++;
+        pixels.show();
+        return;
     }
 }
 void RGBApp::rainbow_effect() {
-    uint32_t color = this->wheel((rainbowCycles) & 255);
+    uint32_t color = this->wheel((rainbowCycles)&255);
     for (uint16_t i = 0; i < pixels.numPixels(); i++) {
         pixels.setPixelColor(i, color);
     }
     pixels.show();
-    rainbowCycles++;
+    this->rainbowCycles += 2;
     if (rainbowCycles >= 256) {
         rainbowCycles = 0;
     }
@@ -163,6 +159,9 @@ void RGBApp::set_rgb_brightness() {
     this->solid_enabled = false;
 }
 void RGBApp::update_rgb() {
+    this->triCyclesBreatheCnt = 1;
+    this->calculate_breathe_count();
+    this->update_triColor_array();
     this->switch_rgb();
     this->set_rgb_brightness();
 }
@@ -187,3 +186,14 @@ uint32_t RGBApp::wheel(byte WheelPos) {
     return pixels.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 RGBApp::~RGBApp() {}
+
+void RGBApp::calculate_breathe_count() {
+    this->rgb_breathe_count =
+        this->_state_app->rgb_state->brightness / RGB_BREATHE_STEP * 2;
+}
+
+void RGBApp::update_triColor_array() {
+    this->tri_color[0] = this->_state_app->rgb_state->first_rgb_color;
+    this->tri_color[1] = this->_state_app->rgb_state->second_rgb_color;
+    this->tri_color[2] = this->_state_app->rgb_state->third_rgb_color;
+}

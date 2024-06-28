@@ -29,7 +29,7 @@ class RGBApp {
     //RGB effects
     void solid_color_effect();
     void solid_tri_color_effect();
-    void cycle_tri_colors_effect();
+    void cycle_tri_colors_breathe_effect();
     void rainbow_effect();
     void running_rainbow_effect();
 
@@ -37,11 +37,18 @@ class RGBApp {
     ~RGBApp();
 
   private:
+    void calculate_breathe_count();
+    void update_triColor_array();
+
     bool _already_disabled = false;
 
     lv_timer_t *_rgb_show_timer = NULL;
     int rainbowCycles = 0;
+
     int triCycles = 0;
+    int triCyclesBreatheCnt = 1;
+    int rgb_breathe_count = 1;
+
     bool solid_enabled = false;    
     int border_pixels = NUMPIXELS / 3;
     int tri_color[3];
