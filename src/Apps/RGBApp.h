@@ -7,50 +7,59 @@
 
 class RGBApp {
   public:
-    Adafruit_NeoPixel pixels;
 
-    StateApp *_state_app;
     void setup();
-
-    void begin_rgb();
-
     void show();
-
-    void switch_rgb();
-
-    void set_rgb_brightness();
-    
-    void update_rgb();
-    
-    bool is_rgb_enabled();
-
-    uint32_t wheel(byte WheelPos);
-
-    //RGB effects
-    void solid_color_effect();
-    void solid_tri_color_effect();
-    void cycle_tri_colors_breathe_effect();
-    void rainbow_effect();
-    void running_rainbow_effect();
+    void update();
 
     RGBApp(StateApp *state_app);
     ~RGBApp();
 
   private:
-    void calculate_breathe_count();
-    void update_triColor_array();
+    enum RGB_effect {
+        one_color = 1,
+        three_colors,
+        rainbow,
+        running_rainbow,
+        cycle_three_colors_with_breathe
+    };
+    StateApp *_state_app;
+    Adafruit_NeoPixel pixels;
+
+    lv_timer_t *_rgb_timer = NULL;
+
+    uint8_t border_pixels = NUMBER_OF_PIXELS / 3;
+
+    uint32_t wheel(byte WheelPos);
 
     bool _already_disabled = false;
+    bool _static_effect_enabled = false;
 
-    lv_timer_t *_rgb_show_timer = NULL;
-    int rainbowCycles = 0;
+    uint16_t rainbowCycles = 0;
 
-    int triCycles = 0;
-    int triCyclesBreatheCnt = 1;
-    int rgb_breathe_count = 1;
+    uint32_t three_colors_array[3];
+    uint8_t breathe_iterator = 1;
+    uint8_t color_iterator = 0;
+    uint8_t rgb_breathe_count = 1;
 
-    bool solid_enabled = false;    
-    int border_pixels = NUMPIXELS / 3;
-    int tri_color[3];
-    int solid_tri_cycle_iterator = 0;
+    void begin();
+    void toggle();
+
+    void set_brightness();
+    void calculate_breathe_count();
+    void update_triColor_array();
+    void change_iterator_to_next_color();
+
+    bool is_disabled_at_night();
+
+    bool is_dynamic_effect();
+
+    bool is_enabled();
+
+    // RGB effects
+    void one_color_effect();
+    void three_colors_effect();
+    void cycle_three_colors_breathe_effect();
+    void rainbow_effect();
+    void running_rainbow_effect();
 };

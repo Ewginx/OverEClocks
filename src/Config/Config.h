@@ -114,7 +114,7 @@ need to install Ahavi on Linux
 //-----------------------------RGB SETTINGS-----------------------------
 #define RGB_TIME_MORNING 9 //Hour
 #define RGB_TIME_EVENING 22 //Hour
-#define NUMPIXELS 8
+#define NUMBER_OF_PIXELS 8
 
 //-----------------------------BATTERY SETTINGS-----------------------------
 //   BAT+ ---+
