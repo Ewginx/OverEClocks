@@ -12,54 +12,54 @@ class RGBApp {
     void show();
     void update();
 
-    RGBApp(StateApp *state_app);
+    RGBApp(StateApp *p_stateApp);
     ~RGBApp();
 
   private:
     enum RGB_effect {
-        one_color = 1,
-        three_colors,
+        oneColor = 1,
+        threeColors,
         rainbow,
-        running_rainbow,
-        cycle_three_colors_with_breathe
+        runningRainbow,
+        cycleThreeColorsWithBreathe
     };
-    StateApp *_state_app;
+    StateApp *p_stateApp;
     Adafruit_NeoPixel pixels;
 
-    lv_timer_t *_rgb_timer = NULL;
+    lv_timer_t *p_rgbTimer = NULL;
 
-    uint8_t border_pixels = NUMBER_OF_PIXELS / 3;
+    uint8_t borderPixels = NUMBER_OF_PIXELS / 3;
 
     uint32_t wheel(byte WheelPos);
 
-    bool _already_disabled = false;
-    bool _static_effect_enabled = false;
+    bool alreadyDisabled = false;
+    bool staticEffectEnabled = false;
 
     uint16_t rainbowCycles = 0;
 
-    uint32_t three_colors_array[3];
-    uint8_t breathe_iterator = 1;
-    uint8_t color_iterator = 0;
-    uint8_t rgb_breathe_count = 1;
+    uint32_t threeColorsArray[3];
+    uint8_t breatheIterator = 1;
+    uint8_t colorIterator = 0;
+    uint8_t rgbBreatheCount = 1;
 
     void begin();
     void toggle();
 
-    void set_brightness();
-    void calculate_breathe_count();
-    void update_triColor_array();
-    void change_iterator_to_next_color();
+    void setBrightness();
+    void calculateBreatheCount();
+    void updateThreeColorArray();
+    void changeIteratorToNextColor();
 
-    bool is_disabled_at_night();
+    bool isDisabledAtNight();
 
-    bool is_dynamic_effect();
+    bool isDynamicEffect();
 
-    bool is_enabled();
+    bool isEnabled();
 
     // RGB effects
-    void one_color_effect();
-    void three_colors_effect();
-    void cycle_three_colors_breathe_effect();
-    void rainbow_effect();
-    void running_rainbow_effect();
+    void oneColorEffect();
+    void threeColorsEffect();
+    void cycleThreeColorsBreatheEffect();
+    void rainbowEffect();
+    void runningRainbowEffect();
 };

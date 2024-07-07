@@ -6,193 +6,191 @@ extern "C" void update_rgb_cb_wrapper(void *subscriber, lv_msg_t *msg) {
 }
 extern "C" void rgb_show_cb_wrapper(lv_timer_t *timer) { instance->show(); }
 
-RGBApp::RGBApp(StateApp *state_app) : pixels(NUMBER_OF_PIXELS, RGB_PIN) {
+RGBApp::RGBApp(StateApp *p_stateApp) : pixels(NUMBER_OF_PIXELS, RGB_PIN) {
     instance = this;
-    this->_state_app = state_app;
-    this->update_triColor_array();
-    this->calculate_breathe_count();
+    this->p_stateApp = p_stateApp;
+    this->updateThreeColorArray();
+    this->calculateBreatheCount();
     lv_msg_subscribe(MSG_RGB_STATE_CHANGED, update_rgb_cb_wrapper, NULL);
 }
 
 void RGBApp::begin() {
-    this->pixels.begin();
-    this->pixels.clear();
+    pixels.begin();
+    pixels.clear();
 }
 
 void RGBApp::setup() {
     this->begin();
-    _rgb_timer =
-        lv_timer_create(rgb_show_cb_wrapper, this->_state_app->rgb_state->delay, NULL);
+    p_rgbTimer =
+        lv_timer_create(rgb_show_cb_wrapper, p_stateApp->rgb_state->delay, NULL);
     this->toggle();
 }
 
 void RGBApp::toggle() {
-    if (this->is_enabled()) {
-        lv_timer_set_period(this->_rgb_timer, this->_state_app->rgb_state->delay);
-        lv_timer_resume(_rgb_timer);
+    if (this->isEnabled()) {
+        lv_timer_set_period(this->p_rgbTimer, p_stateApp->rgb_state->delay);
+        lv_timer_resume(this->p_rgbTimer);
     } else {
-        this->pixels.clear();
+        pixels.clear();
         pixels.show();
-        lv_timer_pause(_rgb_timer);
+        lv_timer_pause(this->p_rgbTimer);
     }
 }
 
-bool RGBApp::is_enabled() { return this->_state_app->rgb_state->enabled; }
+bool RGBApp::isEnabled() { return p_stateApp->rgb_state->enabled; }
 
 void RGBApp::update() {
-    this->breathe_iterator = 1;
-    this->calculate_breathe_count();
-    this->update_triColor_array();
+    breatheIterator = 1;
+    this->calculateBreatheCount();
+    this->updateThreeColorArray();
     this->toggle();
-    this->set_brightness();
+    this->setBrightness();
 }
 
-void RGBApp::calculate_breathe_count() {
-    this->rgb_breathe_count =
-        this->_state_app->rgb_state->brightness / RGB_BREATHE_STEP * 2;
+void RGBApp::calculateBreatheCount() {
+    rgbBreatheCount = p_stateApp->rgb_state->brightness / RGB_BREATHE_STEP * 2;
 }
 
-void RGBApp::update_triColor_array() {
-    this->three_colors_array[0] = this->_state_app->rgb_state->first_rgb_color;
-    this->three_colors_array[1] = this->_state_app->rgb_state->second_rgb_color;
-    this->three_colors_array[2] = this->_state_app->rgb_state->third_rgb_color;
+void RGBApp::updateThreeColorArray() {
+    threeColorsArray[0] = p_stateApp->rgb_state->first_rgb_color;
+    threeColorsArray[1] = p_stateApp->rgb_state->second_rgb_color;
+    threeColorsArray[2] = p_stateApp->rgb_state->third_rgb_color;
 }
 
-void RGBApp::change_iterator_to_next_color() {
-    if (this->color_iterator == 2) {
-        this->color_iterator = 0;
+void RGBApp::changeIteratorToNextColor() {
+    if (colorIterator == 2) {
+        colorIterator = 0;
     } else {
-        this->color_iterator++;
+        colorIterator++;
     }
 }
 
-void RGBApp::set_brightness() {
-    this->pixels.setBrightness(this->_state_app->rgb_state->brightness);
-    this->pixels.show();
+void RGBApp::setBrightness() {
+    pixels.setBrightness(this->p_stateApp->rgb_state->brightness);
+    pixels.show();
 }
 
 void RGBApp::show() {
-    if (!this->is_enabled() || this->is_disabled_at_night()) {
+    if (!this->isEnabled() || this->isDisabledAtNight()) {
         return;
     }
-    if (this->is_dynamic_effect()) {
-        this->_static_effect_enabled = false;
+    if (this->isDynamicEffect()) {
+        staticEffectEnabled = false;
     }
-    switch (this->_state_app->rgb_state->effect) {
-    case RGB_effect::one_color:
-        if (!this->_static_effect_enabled) {
-            this->one_color_effect();
-            this->_static_effect_enabled = true;
+    switch (this->p_stateApp->rgb_state->effect) {
+    case RGB_effect::oneColor:
+        if (!staticEffectEnabled) {
+            this->oneColorEffect();
+            staticEffectEnabled = true;
         }
         break;
-    case RGB_effect::three_colors:
-        if (!this->_static_effect_enabled) {
-            this->three_colors_effect();
-            this->_static_effect_enabled = true;
+    case RGB_effect::threeColors:
+        if (!staticEffectEnabled) {
+            this->threeColorsEffect();
+            staticEffectEnabled = true;
         }
         break;
     case RGB_effect::rainbow:
-        this->rainbow_effect();
+        this->rainbowEffect();
         break;
-    case RGB_effect::running_rainbow:
-        this->running_rainbow_effect();
+    case RGB_effect::runningRainbow:
+        this->runningRainbowEffect();
         break;
-    case RGB_effect::cycle_three_colors_with_breathe:
-        this->cycle_three_colors_breathe_effect();
+    case RGB_effect::cycleThreeColorsWithBreathe:
+        this->cycleThreeColorsBreatheEffect();
         break;
     default:
         break;
     }
 }
 
-bool RGBApp::is_disabled_at_night() {
-    if (this->_state_app->rgb_state->turn_off_at_night &
-        this->_state_app->time_state->is_night) {
-        if (!this->_already_disabled) {
-            this->pixels.clear();
+bool RGBApp::isDisabledAtNight() {
+    if (p_stateApp->rgb_state->turn_off_at_night &
+        p_stateApp->time_state->is_night) {
+        if (!alreadyDisabled) {
+            pixels.clear();
             pixels.show();
-            this->_already_disabled = true;
+            alreadyDisabled = true;
         }
         return true;
     } else {
-        this->_already_disabled = false;
+        alreadyDisabled = false;
         return false;
     }
 }
 
-bool RGBApp::is_dynamic_effect() {
-    if (this->_state_app->rgb_state->effect != RGB_effect::one_color ||
-        this->_state_app->rgb_state->effect != RGB_effect::three_colors) {
+bool RGBApp::isDynamicEffect() {
+    if (p_stateApp->rgb_state->effect != RGB_effect::oneColor ||
+        p_stateApp->rgb_state->effect != RGB_effect::threeColors) {
         return true;
     }
     return false;
 }
 
-void RGBApp::one_color_effect() {
+void RGBApp::oneColorEffect() {
     pixels.clear();
     for (uint8_t i = 0; i < NUMBER_OF_PIXELS; i++) {
-        pixels.setPixelColor(i, this->_state_app->rgb_state->first_rgb_color);
+        pixels.setPixelColor(i, p_stateApp->rgb_state->first_rgb_color);
     }
     pixels.show();
 }
-void RGBApp::three_colors_effect() {
+void RGBApp::threeColorsEffect() {
     pixels.clear();
-    for (uint8_t i = 0; i < this->border_pixels; i++) {
-        pixels.setPixelColor(i, this->_state_app->rgb_state->first_rgb_color);
+    for (uint8_t i = 0; i < borderPixels; i++) {
+        pixels.setPixelColor(i, p_stateApp->rgb_state->first_rgb_color);
     }
-    for (uint8_t i = this->border_pixels; i < NUMBER_OF_PIXELS - this->border_pixels;
-         i++) {
-        pixels.setPixelColor(i, this->_state_app->rgb_state->second_rgb_color);
+    for (uint8_t i = borderPixels; i < NUMBER_OF_PIXELS - borderPixels; i++) {
+        pixels.setPixelColor(i, p_stateApp->rgb_state->second_rgb_color);
     }
-    for (uint8_t i = NUMBER_OF_PIXELS - this->border_pixels; i < NUMBER_OF_PIXELS; i++) {
-        pixels.setPixelColor(i, this->_state_app->rgb_state->third_rgb_color);
+    for (uint8_t i = NUMBER_OF_PIXELS - borderPixels; i < NUMBER_OF_PIXELS; i++) {
+        pixels.setPixelColor(i, p_stateApp->rgb_state->third_rgb_color);
     }
     pixels.show();
 }
-void RGBApp::cycle_three_colors_breathe_effect() {
+void RGBApp::cycleThreeColorsBreatheEffect() {
     pixels.clear();
-    if (this->breathe_iterator == this->rgb_breathe_count - 1) {
-        this->breathe_iterator = 1;
+    if (breatheIterator == rgbBreatheCount - 1) {
+        breatheIterator = 1;
     }
 
     for (uint8_t i = 0; i < NUMBER_OF_PIXELS; i++) {
-        pixels.setPixelColor(i, this->three_colors_array[color_iterator]);
+        pixels.setPixelColor(i, threeColorsArray[colorIterator]);
     }
 
-    if (this->breathe_iterator < this->rgb_breathe_count / 2) {
-        pixels.setBrightness(this->_state_app->rgb_state->brightness -
-                             (this->breathe_iterator * RGB_BREATHE_STEP));
-        this->breathe_iterator++;
+    if (breatheIterator < rgbBreatheCount / 2) {
+        pixels.setBrightness(p_stateApp->rgb_state->brightness -
+                                   (breatheIterator * RGB_BREATHE_STEP));
+        breatheIterator++;
         pixels.show();
         return;
     }
 
-    if (this->breathe_iterator == this->rgb_breathe_count / 2) {
-        this->change_iterator_to_next_color();
-        this->breathe_iterator++;
+    if (breatheIterator == rgbBreatheCount / 2) {
+        this->changeIteratorToNextColor();
+        breatheIterator++;
         return;
     }
-    if (this->breathe_iterator > this->rgb_breathe_count / 2) {
+    if (breatheIterator > rgbBreatheCount / 2) {
         pixels.setBrightness(
-            this->_state_app->rgb_state->brightness -
-            ((this->rgb_breathe_count - this->breathe_iterator) * RGB_BREATHE_STEP));
-        this->breathe_iterator++;
+            p_stateApp->rgb_state->brightness -
+            ((rgbBreatheCount - breatheIterator) * RGB_BREATHE_STEP));
+        breatheIterator++;
         pixels.show();
         return;
     }
 }
-void RGBApp::rainbow_effect() {
+void RGBApp::rainbowEffect() {
     uint32_t color = this->wheel((rainbowCycles)&255);
     for (uint8_t i = 0; i < NUMBER_OF_PIXELS; i++) {
         pixels.setPixelColor(i, color);
     }
     pixels.show();
-    this->rainbowCycles += 2;
+    rainbowCycles += 2;
     if (rainbowCycles >= 256) {
         rainbowCycles = 0;
     }
 }
-void RGBApp::running_rainbow_effect() {
+void RGBApp::runningRainbowEffect() {
     for (uint8_t i = 0; i < NUMBER_OF_PIXELS; i++) {
         pixels.setPixelColor(i, this->wheel((i + rainbowCycles) & 255));
     }
