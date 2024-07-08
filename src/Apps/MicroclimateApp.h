@@ -5,19 +5,19 @@
 #include <Arduino.h>
 #include <SHT31.h>
 
-
 class MicroclimateApp {
-  private:
-    SHT31  _temp_sensor;
-    lv_timer_t *_temp_sensor_timer = NULL;
-    DockPanel *_dock_panel;
-
   public:
-      StateApp *_state_app;
-    float get_temperature();
-    int get_humidity();
-    void temp_sensor_timer_cb(lv_timer_t *timer);
+    void temperatureSensorTimerCallback();
     bool begin();
-    MicroclimateApp(DockPanel *dock_panel, StateApp *state_app);
+    MicroclimateApp(DockPanel *dockPanel, StateApp *stateApp);
     ~MicroclimateApp();
+
+  private:
+    StateApp *stateApp;
+    SHT31 temperatureSensor;
+    lv_timer_t *temperatureSensorTimer = NULL;
+    DockPanel *dockPanel;
+
+    float getTemperature();
+    int getHumidity();
 };
