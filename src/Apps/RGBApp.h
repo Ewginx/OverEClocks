@@ -12,7 +12,7 @@ class RGBApp {
     void show();
     void update();
 
-    RGBApp(StateApp *p_stateApp);
+    RGBApp(StateApp *stateApp);
     ~RGBApp();
 
   private:
@@ -23,7 +23,7 @@ class RGBApp {
         runningRainbow,
         cycleThreeColorsWithBreathe
     };
-    StateApp *p_stateApp;
+    StateApp *stateApp;
     Adafruit_NeoPixel pixels;
 
     lv_timer_t *p_rgbTimer = NULL;
