@@ -347,7 +347,7 @@ String ServerApp::getInfoForWS() {
     StaticJsonDocument<130> doc;
     doc["temperature"] = this->_state_app->microclimate_state->indoor_temperature;
     doc["humidity"] = this->_state_app->microclimate_state->indoor_humidity;
-    doc["lx"] = this->_brightness_app->get_light_level();
+    doc["lx"] = this->_brightness_app->getLightLevel();
     doc["battery_level"] = this->_state_app->battery_state->battery_level;
     doc["battery_voltage"] = this->_state_app->battery_state->battery_voltage;
     doc["max_free_block"] = ESP.getMaxAllocHeap() / 1024;

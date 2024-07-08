@@ -61,7 +61,7 @@ void OEClockApp::setup() {
                             &update_display_task,           /* Task handle. */
                             0);
 
-    this->brightness_app->set_display_brightness(
+    this->brightness_app->setDisplayBrightness(
         this->state_app->display_state->brightness_level);
     this->init_gui();
     this->weather_app->setup();
@@ -91,7 +91,7 @@ void OEClockApp::init_gui() {
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
         this->gui_app->analog_clock->set_analog_clock_img_src();
         this->gui_app->setup_gui();
-        this->brightness_app->set_auto_brightness_timer(
+        this->brightness_app->setAutoBrightnessTimer(
             this->state_app->display_state->auto_brightness);
         xSemaphoreGive(mutex);
     }
