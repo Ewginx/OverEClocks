@@ -48,7 +48,7 @@ void OEClockApp::setup() {
     Serial.begin(115200);
     lv_log_register_print_cb(serial_print);
     this->init_i2c_apps();
-    this->sound_app->setup_player();
+    this->sound_app->setup();
     // lv_port_sd_fs_init();
     lv_port_littlefs_fs_init();
     TaskHandle_t update_display_task;

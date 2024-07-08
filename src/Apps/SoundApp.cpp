@@ -1,83 +1,125 @@
 #include "SoundApp.h"
 
 static SoundApp *instance = NULL;
-extern "C" void alarm_ringing_cb_wrapper(void *subscriber, lv_msg_t *msg) {
-    instance->play_alarm_sound();
+
+extern "C" void alarmRingingCallbackWrapper(void *subscriber, lv_msg_t *msg) {
+    instance->playAlarmSound();
 }
-extern "C" void stop_sound_cb_wrapper(void *subscriber, lv_msg_t *msg) {
-    instance->stop_sound();
+extern "C" void stopSoundCallbackWrapper(void *subscriber, lv_msg_t *msg) {
+    instance->stopSound();
 }
-extern "C" void play_ee_cb_wrapper(void *subscriber, lv_msg_t *msg) {
-    instance->play_ee_sound();
+extern "C" void playEasterEggCallbackWrapper(void *subscriber, lv_msg_t *msg) {
+    instance->playEasterEggSound();
 }
-extern "C" void play_plug_in_cb_wrapper(void *subscriber, lv_msg_t *msg) {
-    instance->play_plug_in_sound();
+extern "C" void playPlugInCallbackWrapper(void *subscriber, lv_msg_t *msg) {
+    instance->playPlugInSound();
 }
-extern "C" void handle_usb_cb_wrapper(void *subscriber, lv_msg_t *msg) {
-    instance->handle_player_usb();
+extern "C" void handlePlayerUsbCallbackWrapper(void *subscriber, lv_msg_t *msg) {
+    instance->handlePlayerUsb();
 }
-extern "C" void loop_alarm_sound_cb_wrapper(lv_timer_t *timer) {
-    instance->loop_alarm_sound();
+extern "C" void loopAlarmSoundCallbackWrapper(lv_timer_t *timer) {
+    instance->loopAlarmSound();
 }
 
-void SoundApp::play_alarm_sound() {
-    if (!_state_app->sound_state->sound_on)
+SoundApp::SoundApp(StateApp *stateApp) : player(Serial2) {
+    instance = this;
+
+    this->stateApp = stateApp;
+
+    pinMode(PLAYER_USB_CONTROL_PIN, OUTPUT);
+    digitalWrite(PLAYER_USB_CONTROL_PIN, LOW);
+
+    soundLoopTimer = lv_timer_create(loopAlarmSoundCallbackWrapper, 900, NULL);
+    lv_timer_pause(this->soundLoopTimer);
+
+    lv_msg_subscribe(MSG_ALARM_PLAY, alarmRingingCallbackWrapper, NULL);
+    lv_msg_subscribe(MSG_SOUND_STOP, stopSoundCallbackWrapper, NULL);
+    lv_msg_subscribe(MSG_PLAY_EE, playEasterEggCallbackWrapper, NULL);
+    lv_msg_subscribe(MSG_USB_CONNECTED, playPlugInCallbackWrapper, NULL);
+    lv_msg_subscribe(MSG_USB_DISCONNECTED, stopSoundCallbackWrapper, NULL);
+    lv_msg_subscribe(MSG_HANDLE_PLAYER_USB, handlePlayerUsbCallbackWrapper, NULL);
+}
+
+void SoundApp::setup() {
+    player.begin();
+    player.reset(false);
+    player.setPlaybackSource(DfMp3_PlaySource_Sd);
+    this->setVolume();
+}
+
+void SoundApp::setVolume() { player.setVolume(this->stateApp->sound_state->volume_level); }
+
+void SoundApp::playAlarmSound() {
+    if (!stateApp->sound_state->sound_on)
         return;
-    this->reset_player();
-    lv_timer_resume(this->sound_loop_timer);
-    this->set_volume();
-    player.playFolderTrack(1, _state_app->sound_state->alarm_track);
+    this->resetPlayer();
+    lv_timer_resume(this->soundLoopTimer);
+    this->setVolume();
+    player.playFolderTrack(1, this->stateApp->sound_state->alarm_track);
 }
 
-void SoundApp::loop_alarm_sound() {
-    if (this->is_player_offline()) {
-        this->stop_sound();
-        return;
-    };
-    if (this->is_playing()) {
-        return;
-    }
-    this->set_volume();
-    player.playFolderTrack(alarm_track_folder, _state_app->sound_state->alarm_track);
-}
-
-void SoundApp::set_volume() { player.setVolume(_state_app->sound_state->volume_level); }
-
-void SoundApp::stop_sound() {
-    player.stop();
-    lv_timer_pause(this->sound_loop_timer);
-}
-
-void SoundApp::reset_player() {
-    if (this->need_to_reset) {
+void SoundApp::resetPlayer() {
+    if (needToResetMp3Module) {
         player.reset(false);
-        this->need_to_reset = false;
+        needToResetMp3Module = false;
     }
 }
 
-void SoundApp::play_ee_sound() {
-    if (this->can_play_sounds(_state_app->sound_state->ee_sound_on)) {
-        this->play_sound_from_folder_once(easter_egg_track_folder,
-                                          _state_app->sound_state->ee_track);
+void SoundApp::stopSound() {
+    player.stop();
+    lv_timer_pause(this->soundLoopTimer);
+}
+
+void SoundApp::playEasterEggSound() {
+    if (this->canPlaySounds(stateApp->sound_state->ee_sound_on)) {
+        this->playSoundFromFolderOnce(easterEggTrackFolder,
+                                      stateApp->sound_state->ee_track);
     }
 }
 
-void SoundApp::play_plug_in_sound() {
-    if (this->can_play_sounds(_state_app->sound_state->plug_sound_on))
-        this->play_sound_from_folder_once(easter_egg_track_folder,
-                                          _state_app->sound_state->plug_track);
+bool SoundApp::canPlaySounds(bool sound_on) {
+    if (stateApp->sound_state->sound_on & !stateApp->alarm_state->alarm_ringing &
+        sound_on)
+        return true;
+    return false;
 }
 
-void SoundApp::play_sound_from_folder_once(int folder, int track) {
-    if (this->is_player_offline()) {
+void SoundApp::playPlugInSound() {
+    if (this->canPlaySounds(stateApp->sound_state->plug_sound_on))
+        this->playSoundFromFolderOnce(easterEggTrackFolder,
+                                      stateApp->sound_state->plug_track);
+}
+
+void SoundApp::playSoundFromFolderOnce(uint8_t folder, uint8_t track) {
+    if (this->isPlayerOffline()) {
         return;
     }
-    this->reset_player();
-    player.setVolume(_state_app->sound_state->volume_level);
+    this->resetPlayer();
+    player.setVolume(this->stateApp->sound_state->volume_level);
     player.playFolderTrack(folder, track);
 }
 
-bool SoundApp::is_playing() {
+void SoundApp::loopAlarmSound() {
+    if (this->isPlayerOffline()) {
+        this->stopSound();
+        return;
+    };
+    if (this->isPlaying()) {
+        return;
+    }
+    this->setVolume();
+    player.playFolderTrack(this->alarmTrackFolder, this->stateApp->sound_state->alarm_track);
+}
+
+bool SoundApp::isPlayerOffline() {
+    if (player.getTotalTrackCount() == 0) {
+        needToResetMp3Module = true;
+        return true;
+    }
+    return false;
+}
+
+bool SoundApp::isPlaying() {
     DfMp3_Status current_status = player.getStatus();
     if (current_status.state == DfMp3_StatusState_Playing) {
         return true;
@@ -85,7 +127,7 @@ bool SoundApp::is_playing() {
     return false;
 }
 
-bool SoundApp::is_idling() {
+bool SoundApp::isIdling() {
     DfMp3_Status current_status = player.getStatus();
     if (current_status.state == DfMp3_StatusState_Idle) {
         return true;
@@ -93,54 +135,16 @@ bool SoundApp::is_idling() {
     return false;
 }
 
-bool SoundApp::is_player_offline() {
-    if (player.getTotalTrackCount() == 0) {
-        this->need_to_reset = true;
-        return true;
-    }
-    return false;
+int SoundApp::getTrackCountInAlarmFolder() {
+    return player.getFolderTrackCount(alarmTrackFolder);
 }
 
-bool SoundApp::can_play_sounds(bool sound_on) {
-    if (_state_app->sound_state->sound_on & !_state_app->alarm_state->alarm_ringing &
-        sound_on)
-        return true;
-    return false;
+int SoundApp::getTrackCountInEasterEggFolder() {
+    return player.getFolderTrackCount(easterEggTrackFolder);
 }
 
-int SoundApp::get_track_count_in_alarm_folder() {
-    return player.getFolderTrackCount(alarm_track_folder);
-}
-
-int SoundApp::get_track_count_in_ee_folder() {
-    return player.getFolderTrackCount(easter_egg_track_folder);
-}
-
-void SoundApp::setup_player() {
-    player.begin();
-    player.reset(false);
-    player.setPlaybackSource(DfMp3_PlaySource_Sd);
-    this->set_volume();
-}
-
-void SoundApp::handle_player_usb() {
-    digitalWrite(PLAYER_USB_CONTROL_PIN,
-                 this->_state_app->sound_state->enable_player_usb);
-}
-
-SoundApp::SoundApp(StateApp *state_app) : player(Serial2) {
-    instance = this;
-    this->_state_app = state_app;
-    pinMode(PLAYER_USB_CONTROL_PIN, OUTPUT);
-    digitalWrite(PLAYER_USB_CONTROL_PIN, LOW);
-    this->sound_loop_timer = lv_timer_create(loop_alarm_sound_cb_wrapper, 900, NULL);
-    lv_timer_pause(this->sound_loop_timer);
-    lv_msg_subscribe(MSG_ALARM_PLAY, alarm_ringing_cb_wrapper, NULL);
-    lv_msg_subscribe(MSG_SOUND_STOP, stop_sound_cb_wrapper, NULL);
-    lv_msg_subscribe(MSG_PLAY_EE, play_ee_cb_wrapper, NULL);
-    lv_msg_subscribe(MSG_USB_CONNECTED, play_plug_in_cb_wrapper, NULL);
-    lv_msg_subscribe(MSG_USB_DISCONNECTED, stop_sound_cb_wrapper, NULL);
-    lv_msg_subscribe(MSG_HANDLE_PLAYER_USB, handle_usb_cb_wrapper, NULL);
+void SoundApp::handlePlayerUsb() {
+    digitalWrite(PLAYER_USB_CONTROL_PIN, this->stateApp->sound_state->enable_player_usb);
 }
 
 SoundApp::~SoundApp() {}
