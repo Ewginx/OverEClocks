@@ -4,17 +4,19 @@
 #include "lvgl.h"
 #include <Arduino.h>
 
-
 class ButtonApp {
-  private:
-    int measure_delay = 300;
-    int elapsed_time = 0;
-    bool was_pressed = false;
-    lv_timer_t *button_timer = NULL;
-
   public:
-    StateApp *_state_app;
-    void measure_time_button_press();
-    ButtonApp(StateApp *state_app);
+    void measureTimeButtonIsPressed();
+    ButtonApp(StateApp *stateApp);
     ~ButtonApp();
+
+  private:
+    StateApp *stateApp;
+    lv_timer_t *buttonTimer = NULL;
+
+    uint16_t measureDelay = 300;
+    uint16_t elapsedTime = 0;
+    bool wasPressed = false;
+    void longPress();
+    void shortPress();
 };
