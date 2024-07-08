@@ -77,9 +77,9 @@ void SoundApp::playEasterEggSound() {
     }
 }
 
-bool SoundApp::canPlaySounds(bool sound_on) {
+bool SoundApp::canPlaySounds(bool soundOn) {
     if (stateApp->sound_state->sound_on & !stateApp->alarm_state->alarm_ringing &
-        sound_on)
+        soundOn)
         return true;
     return false;
 }
