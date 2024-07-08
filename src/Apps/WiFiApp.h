@@ -7,15 +7,20 @@
 
 class WiFiApp {
   public:
-    StateApp *_state_app;
-    SemaphoreHandle_t &mutex;
-
-    void connect_to_wifi();
-    void handle_wifi_state(bool wifi_connected);
-    void subscribe_to_wifi_disconnected_event();
-    
     void setup();
+    bool isWiFiConnected();
+    void connectToWiFi();
+    void handleWiFiState(bool wifiConnected);
 
     WiFiApp(StateApp *state_app, SemaphoreHandle_t &mutex);
     ~WiFiApp();
+
+  private:
+    StateApp *stateApp;
+    SemaphoreHandle_t &mutex;
+
+    void setupMDNS();
+    void initiateAPMode();
+    void notifyOtherApps();
+    void subscribeToWiFiDisconnectedEvent();
 };
