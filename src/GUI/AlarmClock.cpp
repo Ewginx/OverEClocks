@@ -226,7 +226,7 @@ void AlarmClock::create_roller_modal_panel(lv_obj_t *target_label) {
 
 void AlarmClock::create_roller_data() {
     char hour_buffer[4] = {0};
-    char minute_buffer[3] = {0};
+    char minute_buffer[4] = {0};
     for (short int i = 0; i < HOUR_COUNT; i++) {
         if (i == HOUR_COUNT - 1) {
             sprintf(hour_buffer, "%2i", i);
