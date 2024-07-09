@@ -13,7 +13,7 @@ void ServerApp::websocketTimerCallback(lv_timer_t *timer) {
 
 String ServerApp::getInfoForWS() {
     String sensors_readings;
-    StaticJsonDocument<128> doc;
+    DynamicJsonDocument doc(128);
     doc["temperature"] = this->stateApp->microclimate_state->indoor_temperature;
     doc["humidity"] = this->stateApp->microclimate_state->indoor_humidity;
     doc["lx"] = this->brightnessApp->getLightLevel();
@@ -133,7 +133,7 @@ void ServerApp::setupRedirectHandlers() {
 void ServerApp::getSettings(AsyncWebServerRequest *request) {
     Serial.println("Request on settings");
     AsyncResponseStream *response = request->beginResponseStream("application/json");
-    StaticJsonDocument<1024> doc;
+    DynamicJsonDocument doc(1024);
     doc["ssid"] = this->stateApp->wifi_state->ssid.c_str();
     doc["password"] = this->stateApp->wifi_state->password.c_str();
     doc["ip_address"] = this->stateApp->wifi_state->ip_address.c_str();
