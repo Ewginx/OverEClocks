@@ -1,0 +1,10 @@
+{
+    "temperature": 25.8,
+    "humidity": 48,
+    "lx": 150,
+    "battery_level": 87,
+    "battery_voltage": 4.21,
+    "max_free_block": 46,
+    "free_heap": 99,
+    "used_space": 1024
+}
