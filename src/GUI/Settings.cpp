@@ -39,7 +39,8 @@ extern "C" void update_weather_gui_state_cb_wrapper(void *subscriber, lv_msg_t *
     instance->update_weather_gui_state();
 }
 extern "C" void update_ip_address_label_cb(void *subscriber, lv_msg_t *msg) {
-    instance->set_ipAddressLabel(instance->_state_app->wifi_state->current_ip_address.c_str());
+    instance->set_ipAddressLabel(
+        instance->_state_app->wifi_state->current_ip_address.c_str());
 }
 Settings::Settings(StateApp *state_app) {
     instance = this;
@@ -50,8 +51,8 @@ Settings::Settings(StateApp *state_app) {
 }
 
 void Settings::load_settings_screen(lv_obj_t *screen) {
-    lv_slider_set_value(this->brightnessSlider, this->_state_app->display_state->brightness_level,
-                        LV_ANIM_OFF);
+    lv_slider_set_value(this->brightnessSlider,
+                        this->_state_app->display_state->brightness_level, LV_ANIM_OFF);
     this->home_screen = screen;
     lv_scr_load_anim(this->settingsScreen, LV_SCR_LOAD_ANIM_NONE, SCREEN_CHANGE_ANIM_TIME,
                      0, false);
@@ -128,7 +129,8 @@ void Settings::settings_cityTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->weather_state->save_city(lv_textarea_get_text(this->cityTextArea));
+        this->_state_app->weather_state->save_city(
+            lv_textarea_get_text(this->cityTextArea));
         lv_msg_send(MSG_WEATHER_CITY_CHANGED, NULL);
     }
 }
@@ -144,7 +146,8 @@ void Settings::settings_languageTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->weather_state->save_language(lv_textarea_get_text(this->languageTextArea));
+        this->_state_app->weather_state->save_language(
+            lv_textarea_get_text(this->languageTextArea));
         lv_msg_send(MSG_WEATHER_LANGUAGE_CHANGED, NULL);
     }
 }
@@ -176,13 +179,15 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->wifi_state->save_password(lv_textarea_get_text(passwordTextArea));
+        this->_state_app->wifi_state->save_password(
+            lv_textarea_get_text(passwordTextArea));
     }
 }
 void Settings::settings_brightnessSlider_event_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);
-    this->_state_app->display_state->save_brightness_level(lv_slider_get_value(this->brightnessSlider));
+    this->_state_app->display_state->save_brightness_level(
+        lv_slider_get_value(this->brightnessSlider));
     lv_msg_send(MSG_BRIGHTNESS_CHANGED, NULL);
 }
 void Settings::settings_autoBrightness_checkbox_event_cb(lv_event_t *e) {
@@ -225,8 +230,10 @@ void Settings::set_brightness_checkbox(bool auto_brightness_enabled) {
 }
 
 void Settings::update_weather_gui_state() {
-    lv_textarea_set_text(this->cityTextArea, this->_state_app->weather_state->city.c_str());
-    lv_textarea_set_text(this->languageTextArea, this->_state_app->weather_state->language.c_str());
+    lv_textarea_set_text(this->cityTextArea,
+                         this->_state_app->weather_state->city.c_str());
+    lv_textarea_set_text(this->languageTextArea,
+                         this->_state_app->weather_state->language.c_str());
     if (!this->_state_app->wifi_state->wifi_connected) {
         lv_obj_clear_state(this->weatherSwitch, LV_STATE_CHECKED);
         lv_obj_add_state(this->weatherSwitch, LV_STATE_DISABLED);
@@ -415,14 +422,14 @@ void Settings::create_settings_screen() {
     lv_obj_add_event_cb(this->autoBrightnessCheckbox,
                         settings_autoBrightness_checkbox_event_cb_wrapper,
                         LV_EVENT_VALUE_CHANGED, NULL);
-    lv_obj_add_event_cb(this->homeButton, home_button_event_cb_wrapper, LV_EVENT_CLICKED,
+    lv_obj_add_event_cb(this->homeButton, home_button_event_cb_wrapper, LV_EVENT_PRESSED,
                         NULL);
     lv_obj_add_event_cb(this->weatherSwitch, weather_switch_event_cb_wrapper,
                         LV_EVENT_VALUE_CHANGED, NULL);
-    lv_obj_add_event_cb(this->wifiButton, wifi_button_event_cb_wrapper, LV_EVENT_CLICKED,
+    lv_obj_add_event_cb(this->wifiButton, wifi_button_event_cb_wrapper, LV_EVENT_PRESSED,
                         NULL);
     lv_obj_add_event_cb(this->weatherButton, weather_button_event_cb_wrapper,
-                        LV_EVENT_CLICKED, NULL);
+                        LV_EVENT_PRESSED, NULL);
 }
 Settings::~Settings() {
     // if (settingsScreen != NULL)
