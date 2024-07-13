@@ -155,20 +155,20 @@ void ServerApp::getSettings(AsyncWebServerRequest *request) {
     doc["language"] = this->stateApp->weatherState->language.c_str();
     doc["request_period"] = this->stateApp->weatherState->request_period;
 
-    doc["dark_theme_enabled"] = this->stateApp->theme_state->dark_theme_enabled;
-    doc["light_primary_color"] = this->stateApp->theme_state->light_primary_color;
-    doc["light_second_color"] = this->stateApp->theme_state->light_second_color;
-    doc["light_screen_color"] = this->stateApp->theme_state->light_screen_color;
-    doc["light_card_color"] = this->stateApp->theme_state->light_card_color;
-    doc["light_text_color"] = this->stateApp->theme_state->light_text_color;
-    doc["light_grey_color"] = this->stateApp->theme_state->light_grey_color;
+    doc["dark_theme_enabled"] = this->stateApp->themeState->dark_theme_enabled;
+    doc["light_primary_color"] = this->stateApp->themeState->light_primary_color;
+    doc["light_second_color"] = this->stateApp->themeState->light_second_color;
+    doc["light_screen_color"] = this->stateApp->themeState->light_screen_color;
+    doc["light_card_color"] = this->stateApp->themeState->light_card_color;
+    doc["light_text_color"] = this->stateApp->themeState->light_text_color;
+    doc["light_grey_color"] = this->stateApp->themeState->light_grey_color;
 
-    doc["dark_primary_color"] = this->stateApp->theme_state->dark_primary_color;
-    doc["dark_second_color"] = this->stateApp->theme_state->dark_second_color;
-    doc["dark_screen_color"] = this->stateApp->theme_state->dark_screen_color;
-    doc["dark_card_color"] = this->stateApp->theme_state->dark_card_color;
-    doc["dark_text_color"] = this->stateApp->theme_state->dark_text_color;
-    doc["dark_grey_color"] = this->stateApp->theme_state->dark_grey_color;
+    doc["dark_primary_color"] = this->stateApp->themeState->dark_primary_color;
+    doc["dark_second_color"] = this->stateApp->themeState->dark_second_color;
+    doc["dark_screen_color"] = this->stateApp->themeState->dark_screen_color;
+    doc["dark_card_color"] = this->stateApp->themeState->dark_card_color;
+    doc["dark_text_color"] = this->stateApp->themeState->dark_text_color;
+    doc["dark_grey_color"] = this->stateApp->themeState->dark_grey_color;
 
     doc["weekdays_time"] = this->stateApp->alarmState->weekdays_time.c_str();
     doc["weekends_time"] = this->stateApp->alarmState->weekends_time.c_str();
@@ -299,7 +299,7 @@ void ServerApp::saveWeatherSettings(JsonVariant &json) {
 
 void ServerApp::saveThemeSettings(JsonVariant &json) {
     JsonObject &&theme_json = json.as<JsonObject>();
-    this->stateApp->theme_state->save_dark_theme_enabled(
+    this->stateApp->themeState->save_dark_theme_enabled(
         theme_json["dark_theme_enabled"].as<bool>());
     ThemeStruct light_theme;
     light_theme.primary_color = theme_json["light_primary_color"].as<int>();
@@ -308,7 +308,7 @@ void ServerApp::saveThemeSettings(JsonVariant &json) {
     light_theme.text_color = theme_json["light_text_color"].as<int>();
     light_theme.card_color = theme_json["light_card_color"].as<int>();
     light_theme.grey_color = theme_json["light_grey_color"].as<int>();
-    this->stateApp->theme_state->save_light_colors(light_theme);
+    this->stateApp->themeState->save_light_colors(light_theme);
 
     ThemeStruct dark_theme;
     dark_theme.primary_color = theme_json["dark_primary_color"].as<int>();
@@ -317,9 +317,9 @@ void ServerApp::saveThemeSettings(JsonVariant &json) {
     dark_theme.text_color = theme_json["dark_text_color"].as<int>();
     dark_theme.card_color = theme_json["dark_card_color"].as<int>();
     dark_theme.grey_color = theme_json["dark_grey_color"].as<int>();
-    this->stateApp->theme_state->save_dark_colors(dark_theme);
+    this->stateApp->themeState->save_dark_colors(dark_theme);
     lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(
-                                      &this->stateApp->theme_state->dark_theme_enabled));
+                                      &this->stateApp->themeState->dark_theme_enabled));
 }
 
 void ServerApp::saveBrightnessSettings(JsonVariant &json) {

@@ -66,13 +66,13 @@ void BrightnessApp::switchTheme(uint8_t brightness) {
     }
     bool darkTheme = true;
     if (brightness < DARK_THEME_CHANGE_THRESHOLD) {
-        if (!stateApp->theme_state->current_theme_is_dark) {
+        if (!stateApp->themeState->current_theme_is_dark) {
             lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&darkTheme));
         }
-    } else if (stateApp->theme_state->current_theme_is_dark !=
-               this->stateApp->theme_state->dark_theme_enabled) {
+    } else if (stateApp->themeState->current_theme_is_dark !=
+               this->stateApp->themeState->dark_theme_enabled) {
         if (brightness > LIGHT_THEME_CHANGE_THRESHOLD) {
-            darkTheme = this->stateApp->theme_state->dark_theme_enabled;
+            darkTheme = this->stateApp->themeState->dark_theme_enabled;
             lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&darkTheme));
         }
     }

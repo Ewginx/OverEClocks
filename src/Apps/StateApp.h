@@ -233,7 +233,7 @@ class StateApp {
     WiFiState *wifiState;
     WeatherState *weatherState;
     AlarmState *alarmState;
-    ThemeState *theme_state;
+    ThemeState *themeState;
     DisplayState *display_state;
     TimeState *time_state;
     SoundState *sound_state;

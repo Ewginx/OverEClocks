@@ -8,7 +8,7 @@ StateApp::StateApp() {
     wifiState = new WiFiState(preferences);
     weatherState = new WeatherState(preferences);
     alarmState = new AlarmState(preferences);
-    theme_state = new ThemeState(preferences);
+    themeState = new ThemeState(preferences);
     display_state = new DisplayState(preferences);
     time_state = new TimeState(preferences);
     sound_state = new SoundState(preferences);
