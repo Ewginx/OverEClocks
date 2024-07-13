@@ -22,7 +22,7 @@ extern "C" void dock_panel_timer_cb_wrapper(lv_timer_t *timer) {
 }
 extern "C" void dock_update_wifi_icon_cb(void *subscriber, lv_msg_t *msg) {
     instance->dock_panel->show_wifi_connection(
-        instance->state_app->wifi_state->wifi_connected);
+        instance->state_app->wifiState->wifi_connected);
 }
 extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
     instance->user_activity_event_cb();
@@ -111,8 +111,8 @@ GuiApp::GuiApp(StateApp *state_app) {
 void GuiApp::setup_gui() {
     this->switch_theme(this->state_app->theme_state->dark_theme_enabled);
     this->alarm_clock->set_alarm_clock_gui();
-    this->settings->set_wifi_settings(this->state_app->wifi_state->ssid.c_str(),
-                                      this->state_app->wifi_state->password.c_str());
+    this->settings->set_wifi_settings(this->state_app->wifiState->ssid.c_str(),
+                                      this->state_app->wifiState->password.c_str());
     this->settings->set_weather_settings(
         this->state_app->weather_state->city.c_str(),
         this->state_app->weather_state->language.c_str());

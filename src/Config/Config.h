@@ -130,7 +130,7 @@ need to install Ahavi on Linux
 // for battery charge detection R1=1M Ohms and R2=1M Ohms
 #define DIVIDER_RATIO 1.94
 #define BAT_MAX_VOLT 4.02
-#define BAT_MIN_VOLT 2.7
+#define BAT_MIN_VOLT 2.6
 
 //-----------------------------TEMPERATURE SENSOR SETTINGS-----------------------------
 //offset for temperature calibration

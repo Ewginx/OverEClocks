@@ -97,8 +97,8 @@ void ServerApp::setup() {
 
 void ServerApp::setupIndexHandler() {
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        if (!request->authenticate(this->stateApp->wifi_state->ap_login.c_str(),
-                                   this->stateApp->wifi_state->ap_password.c_str()))
+        if (!request->authenticate(this->stateApp->wifiState->ap_login.c_str(),
+                                   this->stateApp->wifiState->ap_password.c_str()))
             return request->requestAuthentication();
         AsyncWebServerResponse *response =
             request->beginResponse(LittleFS, "/index.html.gz", "text/html");
@@ -134,12 +134,12 @@ void ServerApp::getSettings(AsyncWebServerRequest *request) {
     Serial.println("Request on settings");
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     DynamicJsonDocument doc(1024);
-    doc["ssid"] = this->stateApp->wifi_state->ssid.c_str();
-    doc["password"] = this->stateApp->wifi_state->password.c_str();
-    doc["ip_address"] = this->stateApp->wifi_state->ip_address.c_str();
-    doc["gateway"] = this->stateApp->wifi_state->gateway_address.c_str();
-    doc["ap_login"] = this->stateApp->wifi_state->ap_login.c_str();
-    doc["ap_password"] = this->stateApp->wifi_state->ap_password.c_str();
+    doc["ssid"] = this->stateApp->wifiState->ssid.c_str();
+    doc["password"] = this->stateApp->wifiState->password.c_str();
+    doc["ip_address"] = this->stateApp->wifiState->ip_address.c_str();
+    doc["gateway"] = this->stateApp->wifiState->gateway_address.c_str();
+    doc["ap_login"] = this->stateApp->wifiState->ap_login.c_str();
+    doc["ap_password"] = this->stateApp->wifiState->ap_password.c_str();
 
     doc["auto_brightness"] = this->stateApp->display_state->auto_brightness;
     doc["auto_theme_change"] = this->stateApp->display_state->auto_theme_change;
@@ -338,13 +338,13 @@ void ServerApp::saveBrightnessSettings(JsonVariant &json) {
 
 void ServerApp::saveWiFiSettings(JsonVariant &json) {
     JsonObject &&wifi_json = json.as<JsonObject>();
-    this->stateApp->wifi_state->save_ssid(wifi_json["ssid"].as<const char *>());
-    this->stateApp->wifi_state->save_password(wifi_json["password"].as<const char *>());
-    this->stateApp->wifi_state->save_ip_and_gateway_addresses(
+    this->stateApp->wifiState->save_ssid(wifi_json["ssid"].as<const char *>());
+    this->stateApp->wifiState->save_password(wifi_json["password"].as<const char *>());
+    this->stateApp->wifiState->save_ip_and_gateway_addresses(
         wifi_json["ip_address"].as<const char *>(),
         wifi_json["gateway"].as<const char *>());
-    this->stateApp->wifi_state->save_ap_login(wifi_json["ap_login"].as<const char *>());
-    this->stateApp->wifi_state->save_ap_password(
+    this->stateApp->wifiState->save_ap_login(wifi_json["ap_login"].as<const char *>());
+    this->stateApp->wifiState->save_ap_password(
         wifi_json["ap_password"].as<const char *>());
 }
 
@@ -398,7 +398,7 @@ void ServerApp::setupSetTimeHandler() {
 }
 
 void ServerApp::setTime(JsonVariant &json) {
-    if (this->stateApp->wifi_state->wifi_connected) {
+    if (this->stateApp->wifiState->wifi_connected) {
         return;
     }
     JsonObject &&time_json = json.as<JsonObject>();

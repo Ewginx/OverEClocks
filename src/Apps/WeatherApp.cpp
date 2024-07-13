@@ -184,7 +184,7 @@ void WeatherApp::suspendTaskOnError() {
 }
 
 void WeatherApp::updateTaskState() {
-    if (stateApp->weather_state->weather_enabled & stateApp->wifi_state->wifi_connected) {
+    if (stateApp->weather_state->weather_enabled & stateApp->wifiState->wifi_connected) {
         if (!weatherRunning) {
             vTaskResume(this->weatherTask);
         } else {
@@ -198,7 +198,7 @@ void WeatherApp::updateTaskState() {
             Serial.println("Task already suspended!");
         }
     }
-    weatherRunning = stateApp->wifi_state->wifi_connected
+    weatherRunning = stateApp->wifiState->wifi_connected
                          ? stateApp->weather_state->weather_enabled
                          : false;
 }

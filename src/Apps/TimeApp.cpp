@@ -37,7 +37,7 @@ TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
 }
 
 void TimeApp::config_time() {
-    if (this->_state_app->wifi_state->wifi_connected) {
+    if (this->_state_app->wifiState->wifi_connected) {
         configTime(0, 0, "pool.ntp.org");
         this->set_timezone();
         if (getLocalTime(&timeinfo)) {
@@ -325,7 +325,7 @@ void TimeApp::set_timezone() {
 }
 void TimeApp::update_time_timer() {
     this->config_time();
-    if (this->_state_app->wifi_state->wifi_connected ||
+    if (this->_state_app->wifiState->wifi_connected ||
         this->_state_app->time_state->time_is_set) {
         lv_timer_resume(this->_time_update_timer);
     } else {

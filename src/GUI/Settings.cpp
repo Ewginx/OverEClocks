@@ -40,7 +40,7 @@ extern "C" void update_weather_gui_state_cb_wrapper(void *subscriber, lv_msg_t *
 }
 extern "C" void update_ip_address_label_cb(void *subscriber, lv_msg_t *msg) {
     instance->set_ipAddressLabel(
-        instance->_state_app->wifi_state->current_ip_address.c_str());
+        instance->_state_app->wifiState->current_ip_address.c_str());
 }
 Settings::Settings(StateApp *state_app) {
     instance = this;
@@ -163,7 +163,7 @@ void Settings::settings_SSIDTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->wifi_state->save_ssid(lv_textarea_get_text(SSIDTextArea));
+        this->_state_app->wifiState->save_ssid(lv_textarea_get_text(SSIDTextArea));
     }
 }
 
@@ -179,7 +179,7 @@ void Settings::settings_passwordTextArea_event_cb(lv_event_t *e) {
     }
     if (event_code == LV_EVENT_READY) {
         this->delete_keyboard();
-        this->_state_app->wifi_state->save_password(
+        this->_state_app->wifiState->save_password(
             lv_textarea_get_text(passwordTextArea));
     }
 }
@@ -234,7 +234,7 @@ void Settings::update_weather_gui_state() {
                          this->_state_app->weather_state->city.c_str());
     lv_textarea_set_text(this->languageTextArea,
                          this->_state_app->weather_state->language.c_str());
-    if (!this->_state_app->wifi_state->wifi_connected) {
+    if (!this->_state_app->wifiState->wifi_connected) {
         lv_obj_clear_state(this->weatherSwitch, LV_STATE_CHECKED);
         lv_obj_add_state(this->weatherSwitch, LV_STATE_DISABLED);
         lv_obj_add_state(this->weatherButton, LV_STATE_DISABLED);

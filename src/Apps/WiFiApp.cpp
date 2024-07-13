@@ -14,7 +14,7 @@ void wifiDisconnectedCallback(WiFiEvent_t event, WiFiEventInfo_t info) {
     }
     // WiFi.reconnect();
 }
-bool WiFiApp::isWiFiConnected() { return this->stateApp->wifi_state->wifi_connected; }
+bool WiFiApp::isWiFiConnected() { return this->stateApp->wifiState->wifi_connected; }
 
 WiFiApp::WiFiApp(StateApp *stateApp, SemaphoreHandle_t &mutex) : mutex(mutex) {
     instance = this;
@@ -34,13 +34,13 @@ void WiFiApp::connectToWiFi() {
     IPAddress primaryDNS(8, 8, 8, 8);
     IPAddress secondaryDNS(8, 8, 4, 4);
     IPAddress subnet(255, 255, 0, 0);
-    localIP.fromString(this->stateApp->wifi_state->ip_address);
-    gatewayIP.fromString(this->stateApp->wifi_state->gateway_address);
+    localIP.fromString(this->stateApp->wifiState->ip_address);
+    gatewayIP.fromString(this->stateApp->wifiState->gateway_address);
     if (WiFi.isConnected()) {
         WiFi.disconnect();
     }
     WiFi.config(localIP, gatewayIP, subnet, primaryDNS, secondaryDNS);
-    WiFi.begin(this->stateApp->wifi_state->ssid, this->stateApp->wifi_state->password);
+    WiFi.begin(this->stateApp->wifiState->ssid, this->stateApp->wifiState->password);
     uint8_t attempt = 0;
     while (WiFi.status() != WL_CONNECTED & attempt < WIFI_CONNECT_ATTEMPTS) {
         delay(WIFI_CONNECT_DELAY);
@@ -66,9 +66,9 @@ void WiFiApp::subscribeToWiFiDisconnectedEvent() {
 }
 
 void WiFiApp::handleWiFiState(bool wifiConnected) {
-    this->stateApp->wifi_state->wifi_connected = wifiConnected;
+    this->stateApp->wifiState->wifi_connected = wifiConnected;
     if (wifiConnected) {
-        this->stateApp->wifi_state->current_ip_address = WiFi.localIP().toString();
+        this->stateApp->wifiState->current_ip_address = WiFi.localIP().toString();
         Serial.print("Connected to WiFi network with IP Address: ");
         Serial.println(WiFi.localIP());
     } else {
@@ -82,14 +82,14 @@ void WiFiApp::handleWiFiState(bool wifiConnected) {
 }
 void WiFiApp::initiateAPMode() {
     IPAddress localIP;
-    localIP.fromString(this->stateApp->wifi_state->ip_address);
+    localIP.fromString(this->stateApp->wifiState->ip_address);
     IPAddress subnet(255, 255, 255, 0);
     WiFi.disconnect();
     WiFi.mode(WIFI_AP);
     WiFi.softAPConfig(localIP, localIP, subnet);
-    WiFi.softAP(this->stateApp->wifi_state->ap_login,
-                this->stateApp->wifi_state->ap_password);
-    this->stateApp->wifi_state->current_ip_address = WiFi.softAPIP().toString();
+    WiFi.softAP(this->stateApp->wifiState->ap_login,
+                this->stateApp->wifiState->ap_password);
+    this->stateApp->wifiState->current_ip_address = WiFi.softAPIP().toString();
 }
 
 void WiFiApp::notifyOtherApps() {
