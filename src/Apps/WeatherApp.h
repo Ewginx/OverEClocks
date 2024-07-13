@@ -9,60 +9,59 @@
 #include <WiFiClient.h>
 
 class WeatherApp {
-  private:
-    short int _port = 80;
-    String _api_url = "/v1/forecast.json";
-    String _weather_url;
-    Weather *weather;
-    TaskHandle_t _weather_task;
-    StateApp *_state_app;
-    bool _weather_running = false;
-
-    void deserialize_json_response(String &response);
-
-    void set_temperature(int temperature);
-    void set_feels_like(double temperature);
-    void set_weather_condition(const char *conditions);
-    void set_wind(double wind_speed, double wind_dir);
-    void set_humidity(int humidity);
-    void set_pressure(int pressure);
-    void set_precipitation_probability(int rain_probability, int snow_probability,
-                                       int temp);
-    void set_max_min_temperatures(int max_temp, int min_temp);
-    void set_daily_temperatures(double night_temp, double morning_temp,
-                                double afternoon_temp, double evening_temp);
-    // void set_visibility(char *visibility);
-    // void set_uv(char *uv);
-    void set_city_and_country_code(const char *city, const char *country_code);
-    // void set_hour_forecast();
-    void set_weather_img(const char *url);
-
-    int get_mapped_image_code(int code);
-
-    void create_weather_task();
-    
 
   public:
     WiFiClient wifi;
-    HttpClient client = HttpClient(wifi, "api.weatherapi.com", _port);
-
-    void setup_weather_url();
-
-    void update_weather();
-
-    void encode_city();
-    String url_encode(const char *str);
-
-    int send_weather_request();
-
-    void update_weather_task_state();
-
-    void suspend_task_on_error();
-
-    static void get_weather(void *parameter);
+    HttpClient client = HttpClient(wifi, "api.weatherapi.com");
 
     void setup();
 
-    WeatherApp(Weather *weather, StateApp *state_app);
+    void assembleUrl();
+
+    void restartTask();
+
+    int sendGetRequest();
+
+    void updateTaskState();
+
+    void suspendTaskOnError();
+
+    static void updateWeather(void *parameter);
+
+    WeatherApp(Weather *weather, StateApp *stateApp);
     ~WeatherApp();
+
+  private:
+    String apiUrl = "/v1/forecast.json";
+    String weatherUrl;
+
+    Weather *weather;
+    StateApp *stateApp;
+
+    TaskHandle_t weatherTask;
+
+    bool weatherRunning = false;
+
+    void encodeCity();
+    String urlEncode(const char *str);
+
+    void deserializeJsonResponse(String &response);
+
+    void setTemperature(int temperature);
+    void setFeelsLike(float temperature);
+    void setWeatherCondition(const char *conditions);
+    void setWind(float windSpeed, float windDirection);
+    void setHumidity(int humidity);
+    void setPressure(int pressure);
+    void setPrecipitationProbability(int rainProbability, int snowProbability,
+                                       int temp);
+    void setMaxMinTemperatures(int maxTemperature, int minTemperature);
+    void setHourlyTemperatures(float nightTemperature, float morningTemperature,
+                                float afternoonTemperature, float eveningTemperature);
+    void setCityAndCountryCode(const char *city, const char *countryCode);
+    void setWeatherImg(const char *url);
+
+    int getMappedImageCode(int code);
+
+    void createTask();
 };

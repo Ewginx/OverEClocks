@@ -1,111 +1,123 @@
 #include "WeatherApp.h"
 
 static WeatherApp *instance = NULL;
-void update_weather_task_cb(void *subscriber, lv_msg_t *msg) {
-    // const bool *payload = static_cast<const bool *>(lv_msg_get_payload(msg));
-    // instance->update_weather_task_state(*payload);
-    instance->update_weather_task_state();
+
+void updateTaskCallbackWrapper(void *subscriber, lv_msg_t *msg) {
+    instance->updateTaskState();
 }
-void update_weather_url_cb(void *subscriber, lv_msg_t *msg) {
-    instance->setup_weather_url();
+void updateWeatherUrlCallbackWrapper(void *subscriber, lv_msg_t *msg) {
+    instance->assembleUrl();
 }
-void weather_update_cb(void *subscriber, lv_msg_t *msg) { instance->update_weather(); }
-WeatherApp::WeatherApp(Weather *weather, StateApp *state_app) {
-    instance = this;
-    this->_state_app = state_app;
-    this->weather = weather;
-    lv_msg_subscribe(MSG_WEATHER_UPDATE, weather_update_cb, NULL);
-    lv_msg_subscribe(MSG_UPDATE_WEATHER_TASK, update_weather_task_cb, NULL);
-    lv_msg_subscribe(MSG_WEATHER_CITY_CHANGED, update_weather_url_cb, NULL);
-    lv_msg_subscribe(MSG_WEATHER_LANGUAGE_CHANGED, update_weather_url_cb, NULL);
+void restartTaskCallbackWrapper(void *subscriber, lv_msg_t *msg) {
+    instance->restartTask();
 }
 
-void WeatherApp::get_weather(void *parameter) {
-    // WeatherApp *l_pThis = (WeatherApp *)parameter;
+void WeatherApp::restartTask() {
+    if (weatherRunning) {
+        this->assembleUrl();
+        vTaskSuspend(this->weatherTask);
+        vTaskResume(this->weatherTask);
+    }
+}
+
+WeatherApp::WeatherApp(Weather *weather, StateApp *stateApp) {
+    instance = this;
+    this->stateApp = stateApp;
+    this->weather = weather;
+    lv_msg_subscribe(MSG_WEATHER_UPDATE, restartTaskCallbackWrapper, NULL);
+    lv_msg_subscribe(MSG_UPDATE_WEATHER_TASK, updateTaskCallbackWrapper, NULL);
+    lv_msg_subscribe(MSG_WEATHER_CITY_CHANGED, updateWeatherUrlCallbackWrapper, NULL);
+    lv_msg_subscribe(MSG_WEATHER_LANGUAGE_CHANGED, updateWeatherUrlCallbackWrapper, NULL);
+}
+
+void WeatherApp::setup() {
+    this->assembleUrl();
+    this->createTask();
+}
+
+void WeatherApp::assembleUrl() {
+    this->encodeCity();
+    weatherUrl.clear();
+    weatherUrl += apiUrl;
+    weatherUrl += "?key=";
+    weatherUrl += stateApp->weather_state->api_key;
+    weatherUrl += "&q=";
+    weatherUrl += stateApp->weather_state->city_encoded;
+    weatherUrl += "&aqi=no";
+    weatherUrl += "&lang=";
+    weatherUrl += stateApp->weather_state->language;
+}
+
+void WeatherApp::createTask() {
+    xTaskCreatePinnedToCore(this->updateWeather, /* Function to implement the task */
+                            "request",           /* Name of the task */
+                            4096, /* Stack size in bytes */
+                            NULL,                           /* Task input parameter */
+                            0,                              /* Priority of the task */
+                            &this->weatherTask,             /* Task handle. */
+                            0);
+    vTaskSuspend(this->weatherTask);
+}
+
+void WeatherApp::encodeCity() {
+    stateApp->weather_state->city_encoded =
+        this->urlEncode(stateApp->weather_state->city.c_str());
+}
+
+String WeatherApp::urlEncode(const char *str) {
+    String encodedMsg = "";
+    const char *hex = "0123456789ABCDEF";
+    while (*str != '\0') {
+        if (('a' <= *str && *str <= 'z') || ('A' <= *str && *str <= 'Z') ||
+            ('0' <= *str && *str <= '9') || *str == '-' || *str == '_' || *str == '.' ||
+            *str == '~') {
+            encodedMsg += *str;
+        } else {
+            encodedMsg += '%';
+            encodedMsg += hex[(unsigned char)*str >> 4];
+            encodedMsg += hex[*str & 0xf];
+        }
+        str++;
+    }
+    return encodedMsg;
+}
+
+void WeatherApp::updateWeather(void *parameter) {
     for (;;) {
-        if (WiFi.status() == WL_CONNECTED & instance->_weather_running) {
-            int i = 0;
-            for (i; i < 3; i++) {
-                int statusCode = instance->send_weather_request();
+        if (WiFi.status() == WL_CONNECTED & instance->weatherRunning) {
+            uint8_t retry = 0;
+            for (retry; retry < 3; retry++) {
+                int statusCode = instance->sendGetRequest();
                 Serial.print("Status code: ");
                 Serial.println(statusCode);
                 if (statusCode == 200) {
                     String response = instance->client.responseBody();
-                    instance->deserialize_json_response(response);
-                    // Serial.print("Response: ");
-                    // Serial.println(response);
-                    Serial.printf("Waiting %i minutes for the next request",
-                                  instance->_state_app->weather_state->request_period /
+                    instance->deserializeJsonResponse(response);
+                    Serial.printf("Waiting %i minutes for the next request\n",
+                                  instance->stateApp->weather_state->request_period /
                                       60000);
-                    Serial.println();
                     break;
                 } else {
-                    Serial.printf("Try %d of 3 \n", i + 1);
+                    Serial.printf("Try %d of 3 \n", retry + 1);
                     Serial.println(instance->client.responseBody());
                     vTaskDelay(300 / portTICK_PERIOD_MS);
                 }
             }
-            if (i == 3) {
-                instance->suspend_task_on_error();
+            if (retry == 3) {
+                instance->suspendTaskOnError();
             }
         }
-        vTaskDelay(instance->_state_app->weather_state->request_period /
+        vTaskDelay(instance->stateApp->weather_state->request_period /
                    portTICK_PERIOD_MS);
     }
 }
-void WeatherApp::setup() {
-    this->setup_weather_url();
-    this->create_weather_task();
-}
-void WeatherApp::setup_weather_url() {
-    this->encode_city();
-    this->_weather_url.clear();
-    this->_weather_url += this->_api_url;
-    this->_weather_url += "?key=";
-    this->_weather_url += this->_state_app->weather_state->api_key;
-    this->_weather_url += "&q=";
-    this->_weather_url += this->_state_app->weather_state->city_encoded;
-    this->_weather_url += "&aqi=no";
-    this->_weather_url += "&lang=";
-    this->_weather_url += this->_state_app->weather_state->language;
-}
 
-int WeatherApp::send_weather_request() {
-    this->client.get(this->_weather_url.c_str());
+int WeatherApp::sendGetRequest() {
+    this->client.get(weatherUrl.c_str());
     return this->client.responseStatusCode();
 }
-void WeatherApp::encode_city() {
-    this->_state_app->weather_state->city_encoded =
-        this->url_encode(this->_state_app->weather_state->city.c_str());
-}
-void WeatherApp::update_weather_task_state() {
 
-    if (this->_state_app->weather_state->weather_enabled &
-        this->_state_app->wifi_state->wifi_connected) {
-        if (!this->_weather_running) {
-            vTaskResume(this->_weather_task);
-        } else {
-            Serial.println("Task already resumed!");
-        }
-    } else {
-        if (this->_weather_running) {
-            this->weather->set_no_data_values();
-            vTaskSuspend(this->_weather_task);
-        } else {
-            Serial.println("Task already suspended!");
-        }
-    }
-    this->_weather_running = this->_state_app->wifi_state->wifi_connected
-                                 ? this->_state_app->weather_state->weather_enabled
-                                 : false;
-}
-void WeatherApp::suspend_task_on_error() {
-    this->_state_app->weather_state->weather_enabled = false;
-    this->update_weather_task_state();
-    lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
-}
-
-void WeatherApp::deserialize_json_response(String &response) {
+void WeatherApp::deserializeJsonResponse(String &response) {
     DynamicJsonDocument doc(1536);
     StaticJsonDocument<368> filter;
     filter["location"]["name"] = true;
@@ -137,92 +149,107 @@ void WeatherApp::deserialize_json_response(String &response) {
     Serial.println("Updating weather");
 
     JsonObject location = doc["location"];
-    this->set_city_and_country_code(location["name"].as<const char *>(),
-                                    location["country"].as<const char *>());
-    // location["lat"];                        // 48.5
-    // location["lon"];                        // 135.1
+    this->setCityAndCountryCode(location["name"].as<const char *>(),
+                                location["country"].as<const char *>());
 
     JsonObject current_weather = doc["current"];
-    // current_weather["is_day"]; // 0
-    this->set_temperature(current_weather["temp_c"].as<int>());
+    this->setTemperature(current_weather["temp_c"].as<int>());
     JsonObject current_condition = current_weather["condition"];
-    this->set_weather_condition(current_condition["text"].as<const char *>());
-    // int current_condition_code = ; // 1000
-    this->set_weather_img(current_condition["icon"].as<const char *>());
-    // current_weather["wind_dir"];  // SW
-    this->set_wind(current_weather["wind_kph"].as<int>(),
-                   current_weather["wind_degree"].as<double>());
-    this->set_pressure(current_weather["pressure_mb"].as<int>());
-    this->set_humidity(current_weather["humidity"].as<int>());
-    // current_weather["cloud"];  // 0
-    this->set_feels_like(current_weather["feelslike_c"].as<double>());
-    // current_weather["vis_km"];  // 10
-    // current_weather["uv"];  // 1
-    // current_weather["gust_kph"];   // 16.6
+    this->setWeatherCondition(current_condition["text"].as<const char *>());
+    this->setWeatherImg(current_condition["icon"].as<const char *>());
+    this->setWind(current_weather["wind_kph"].as<int>(),
+                  current_weather["wind_degree"].as<float>());
+    this->setPressure(current_weather["pressure_mb"].as<int>());
+    this->setHumidity(current_weather["humidity"].as<int>());
+    this->setFeelsLike(current_weather["feelslike_c"].as<float>());
 
     JsonObject forecastday = doc["forecast"]["forecastday"][0]["day"];
-    this->set_max_min_temperatures(forecastday["maxtemp_c"].as<int>(),
-                                   forecastday["mintemp_c"].as<int>());
-    //  forecastday["avgtemp_c"]; // -9.6
-    //  forecastday["maxwind_kph"]; // 15.1
-    //  forecastday["totalsnow_cm"]; // 0
-    //  forecastday["avghumidity"]; // 84
-    //  forecastday["daily_will_it_rain"];
-    //  forecastday["daily_will_it_snow"];
-
-    this->set_precipitation_probability(forecastday["daily_chance_of_rain"].as<int>(),
-                                        forecastday["daily_chance_of_snow"].as<int>(),
-                                        current_weather["temp_c"].as<int>());
-    // forecastday["condition"]["code"]; // 1003
-    // forecastday["uv"]; // 2
-    this->set_daily_temperatures(
-        doc["forecast"]["forecastday"][0]["hour"][2]["temp_c"].as<double>(),
-        doc["forecast"]["forecastday"][0]["hour"][7]["temp_c"].as<double>(),
-        doc["forecast"]["forecastday"][0]["hour"][13]["temp_c"].as<double>(),
-        doc["forecast"]["forecastday"][0]["hour"][19]["temp_c"].as<double>());
+    this->setMaxMinTemperatures(forecastday["maxtemp_c"].as<int>(),
+                                forecastday["mintemp_c"].as<int>());
+    this->setPrecipitationProbability(forecastday["daily_chance_of_rain"].as<int>(),
+                                      forecastday["daily_chance_of_snow"].as<int>(),
+                                      current_weather["temp_c"].as<int>());
+    this->setHourlyTemperatures(
+        doc["forecast"]["forecastday"][0]["hour"][2]["temp_c"].as<float>(),
+        doc["forecast"]["forecastday"][0]["hour"][7]["temp_c"].as<float>(),
+        doc["forecast"]["forecastday"][0]["hour"][13]["temp_c"].as<float>(),
+        doc["forecast"]["forecastday"][0]["hour"][19]["temp_c"].as<float>());
 }
-void WeatherApp::set_temperature(int temperature) {
+
+void WeatherApp::suspendTaskOnError() {
+    stateApp->weather_state->weather_enabled = false;
+    this->updateTaskState();
+    lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
+}
+
+void WeatherApp::updateTaskState() {
+    if (stateApp->weather_state->weather_enabled & stateApp->wifi_state->wifi_connected) {
+        if (!weatherRunning) {
+            vTaskResume(this->weatherTask);
+        } else {
+            Serial.println("Task already resumed!");
+        }
+    } else {
+        if (weatherRunning) {
+            weather->set_no_data_values();
+            vTaskSuspend(this->weatherTask);
+        } else {
+            Serial.println("Task already suspended!");
+        }
+    }
+    weatherRunning = stateApp->wifi_state->wifi_connected
+                         ? stateApp->weather_state->weather_enabled
+                         : false;
+}
+
+void WeatherApp::setTemperature(int temperature) {
     lv_label_set_text_fmt(weather->weatherTemperatureLabel, "%d°C", temperature);
 }
-void WeatherApp::set_feels_like(double temperature) {
+
+void WeatherApp::setFeelsLike(float temperature) {
     lv_label_set_text_fmt(weather->feelsLikeLabel, "%s %0.1f°C",
                           weather_translation[feels_like], temperature);
 }
-void WeatherApp::set_weather_condition(const char *conditions) {
+
+void WeatherApp::setWeatherCondition(const char *conditions) {
     lv_label_set_text(weather->briefingLabel, conditions);
 }
-void WeatherApp::set_wind(double wind_speed, double wind_dir) {
+
+void WeatherApp::setWind(float wind_speed, float wind_dir) {
     char wind_symbol[4];
-    if (337.5 < wind_dir | wind_dir < 22.5) {
+    if (337.5f < wind_dir | wind_dir < 22.5f) {
         strcpy(wind_symbol, N_WIND_SYMBOL);
-    } else if (292.5 <= wind_dir & wind_dir <= 337.5) {
+    } else if (292.5f <= wind_dir & wind_dir <= 337.5f) {
         strcpy(wind_symbol, NW_WIND_SYMBOL);
-    } else if (247.5 < wind_dir & wind_dir < 292.5) {
+    } else if (247.5f < wind_dir & wind_dir < 292.5f) {
         strcpy(wind_symbol, W_WIND_SYMBOL);
-    } else if (202.5 <= wind_dir & wind_dir <= 247.5) {
+    } else if (202.5f <= wind_dir & wind_dir <= 247.5f) {
         strcpy(wind_symbol, SW_WIND_SYMBOL);
-    } else if (157.5 < wind_dir & wind_dir < 202.5) {
+    } else if (157.5f < wind_dir & wind_dir < 202.5f) {
         strcpy(wind_symbol, S_WIND_SYMBOL);
-    } else if (112.5 <= wind_dir & wind_dir <= 157.5) {
+    } else if (112.5f <= wind_dir & wind_dir <= 157.5f) {
         strcpy(wind_symbol, SE_WIND_SYMBOL);
-    } else if (67.5 < wind_dir & wind_dir < 112.5) {
+    } else if (67.5f < wind_dir & wind_dir < 112.5f) {
         strcpy(wind_symbol, E_WIND_SYMBOL);
-    } else if (22.5 <= wind_dir & wind_dir <= 67.5) {
+    } else if (22.5f <= wind_dir & wind_dir <= 67.5f) {
         strcpy(wind_symbol, NE_WIND_SYMBOL);
     }
     lv_label_set_text_fmt(weather->windLabel, WIND_SYMBOL " %.1f %s %s", wind_speed,
                           weather_translation[wind_speed_uom], wind_symbol);
 }
-void WeatherApp::set_humidity(int humidity) {
+
+void WeatherApp::setHumidity(int humidity) {
     lv_label_set_text_fmt(weather->weatherHumidityLabel, HUMIDITY_SYMBOL " %d%%",
                           humidity);
 }
-void WeatherApp::set_city_and_country_code(const char *city, const char *country_code) {
+
+void WeatherApp::setCityAndCountryCode(const char *city, const char *country_code) {
     lv_label_set_text_fmt(weather->weatherCityLabel, "%s, %s", city, country_code);
 }
-void WeatherApp::set_precipitation_probability(int rain_probability, int snow_probability,
-                                               int temp) {
-    if (temp < 0) {
+
+void WeatherApp::setPrecipitationProbability(int rain_probability, int snow_probability,
+                                             int temperature) {
+    if (temperature < 0) {
         lv_label_set_text_fmt(weather->weatherProbabilityLabel, SNOWFLAKE_SYMBOL " %d%%",
                               snow_probability);
     } else {
@@ -230,13 +257,16 @@ void WeatherApp::set_precipitation_probability(int rain_probability, int snow_pr
                               rain_probability);
     }
 }
-void WeatherApp::set_max_min_temperatures(int max_temp, int min_temp) {
-    lv_label_set_text_fmt(weather->weatherMaxTempLabel, TEMP_UP_SYMBOL " %d°C", max_temp);
+
+void WeatherApp::setMaxMinTemperatures(int maxTemperature, int minTemperature) {
+    lv_label_set_text_fmt(weather->weatherMaxTempLabel, TEMP_UP_SYMBOL " %d°C",
+                          maxTemperature);
     lv_label_set_text_fmt(weather->weatherMinTempLabel, TEMP_DOWN_SYMBOL " %d°C",
-                          min_temp);
+                          minTemperature);
 }
-void WeatherApp::set_daily_temperatures(double night_temp, double morning_temp,
-                                        double afternoon_temp, double evening_temp) {
+
+void WeatherApp::setHourlyTemperatures(float night_temp, float morning_temp,
+                                       float afternoon_temp, float evening_temp) {
     lv_label_set_text_fmt(weather->weatherFirstTempLabel, "%0.1f°C", night_temp);
     lv_label_set_text_fmt(weather->weatherSecondTempLabel, "%0.1f°C", morning_temp);
 
@@ -244,11 +274,15 @@ void WeatherApp::set_daily_temperatures(double night_temp, double morning_temp,
 
     lv_label_set_text_fmt(weather->weatherFourthTempLabel, "%0.1f°C", evening_temp);
 }
-void WeatherApp::set_pressure(int pressure) {
+
+void WeatherApp::setPressure(int pressure) {
     lv_label_set_text_fmt(weather->weatherPressureLabel, PRESSURE_SYMBOL " %d %s",
                           pressure, weather_translation[pressure_uom]);
 }
-void WeatherApp::set_weather_img(const char *url) {
+
+void WeatherApp::setWeatherImg(const char *url) {
+    Serial.println("url");
+    Serial.println(url);
     char path[26];
     if (url[35] == 'n') {
         char code[4];
@@ -256,7 +290,7 @@ void WeatherApp::set_weather_img(const char *url) {
         code[1] = url[42];
         code[2] = url[43];
         code[3] = '\0';
-        int image_code = this->get_mapped_image_code(atoi(code));
+        int image_code = this->getMappedImageCode(atoi(code));
         char folder[] = "night";
         sprintf(path, "F:/weather/%s/%d.bin", folder, image_code);
 
@@ -266,16 +300,17 @@ void WeatherApp::set_weather_img(const char *url) {
         code[1] = url[40];
         code[2] = url[41];
         code[3] = '\0';
-        int image_code = this->get_mapped_image_code(atoi(code));
+        int image_code = this->getMappedImageCode(atoi(code));
         char folder[] = "day";
         sprintf(path, "F:/weather/%s/%d.bin", folder, image_code);
     }
-    lv_img_set_src(this->weather->weatherImage, path);
-    // cdn.weatherapi.com/weather/64x64/day/368.png
-    // cdn.weatherapi.com/weather/64x64/night/368.png
+    lv_img_set_src(weather->weatherImage, path);
+    // //cdn.weatherapi.com/weather/64x64/day/368.png
+    // //cdn.weatherapi.com/weather/64x64/night/368.png
     // F:/weather/night/113.bin
 }
-int WeatherApp::get_mapped_image_code(int code) {
+
+int WeatherApp::getMappedImageCode(int code) {
     if (code == 113 || code == 119 || code == 116 || code == 122) {
         return code;
     }
@@ -336,39 +371,5 @@ int WeatherApp::get_mapped_image_code(int code) {
     }
     return code;
 }
-void WeatherApp::update_weather() {
-    if (this->_weather_running) {
-        this->setup_weather_url();
-        Serial.println("Update weather");
-        vTaskSuspend(this->_weather_task);
-        vTaskResume(this->_weather_task);
-    }
-}
-String WeatherApp::url_encode(const char *str) {
-    String encodedMsg = "";
-    const char *hex = "0123456789ABCDEF";
-    while (*str != '\0') {
-        if (('a' <= *str && *str <= 'z') || ('A' <= *str && *str <= 'Z') ||
-            ('0' <= *str && *str <= '9') || *str == '-' || *str == '_' || *str == '.' ||
-            *str == '~') {
-            encodedMsg += *str;
-        } else {
-            encodedMsg += '%';
-            encodedMsg += hex[(unsigned char)*str >> 4];
-            encodedMsg += hex[*str & 0xf];
-        }
-        str++;
-    }
-    return encodedMsg;
-}
-void WeatherApp::create_weather_task() {
-    xTaskCreatePinnedToCore(this->get_weather, /* Function to implement the task */
-                            "request",         /* Name of the task */
-                            4096, /* Stack size in bytes */ // change from 10000
-                            NULL,                           /* Task input parameter */
-                            0,                              /* Priority of the task */
-                            &this->_weather_task,           /* Task handle. */
-                            0);
-    vTaskSuspend(this->_weather_task);
-}
+
 WeatherApp::~WeatherApp() {}
