@@ -1,0 +1,150 @@
+{
+    "location": {
+        "name": "Moscow",
+        "region": "Moscow City",
+        "country": "Russia",
+        "lat": 55.75,
+        "lon": 37.62,
+        "tz_id": "Europe/Moscow",
+        "localtime_epoch": 1720879785,
+        "localtime": "2024-07-13 17:09"
+    },
+    "current": {
+        "temp_c": 28.0,
+        "is_day": 1,
+        "condition": {
+            "text": "Partly Cloudy",
+            "icon": "//cdn.weatherapi.com/weather/64x64/day/116.png",
+            "code": 1003
+        },
+        "wind_kph": 7.2,
+        "wind_degree": 315,
+        "wind_dir": "NW",
+        "pressure_mb": 1012.0,
+        "humidity": 51,
+        "cloud": 59,
+        "feelslike_c": 28.8,
+        "gust_kph": 10.7
+    },
+    "forecast": {
+        "forecastday": [
+            {
+                "date": "2024-07-13",
+                "date_epoch": 1720828800,
+                "day": {
+                    "maxtemp_c": 29.3,
+                    "mintemp_c": 18.3,
+                    "avgtemp_c": 24.3,
+                    "maxwind_kph": 14.4,
+                    "avghumidity": 61,
+                    "daily_will_it_rain": 1,
+                    "daily_chance_of_rain": 84,
+                    "daily_will_it_snow": 0,
+                    "daily_chance_of_snow": 0,
+                    "condition": {
+                        "text": "Patchy rain nearby",
+                        "code": 1063
+                    }
+                },
+                "hour": [
+                    {
+                        "time": "2024-07-13 00:00",
+                        "temp_c": 20.3
+                    },
+                    {
+                        "time": "2024-07-13 01:00",
+                        "temp_c": 19.8
+                    },
+                    {
+                        "time": "2024-07-13 02:00",
+                        "temp_c": 19.1
+                    },
+                    {
+                        "time": "2024-07-13 03:00",
+                        "temp_c": 18.7
+                    },
+                    {
+                        "time": "2024-07-13 04:00",
+                        "temp_c": 18.3
+                    },
+                    {
+                        "time": "2024-07-13 05:00",
+                        "temp_c": 19.6
+                    },
+                    {
+                        "time": "2024-07-13 06:00",
+                        "temp_c": 20.6
+                    },
+                    {
+                        "time": "2024-07-13 07:00",
+                        "temp_c": 21.6
+                    },
+                    {
+                        "time": "2024-07-13 08:00",
+                        "temp_c": 23.1
+                    },
+                    {
+                        "time": "2024-07-13 09:00",
+                        "temp_c": 24.8
+                    },
+                    {
+                        "time": "2024-07-13 10:00",
+                        "temp_c": 26.3
+                    },
+                    {
+                        "time": "2024-07-13 11:00",
+                        "temp_c": 26.5
+                    },
+                    {
+                        "time": "2024-07-13 12:00",
+                        "temp_c": 27.1
+                    },
+                    {
+                        "time": "2024-07-13 13:00",
+                        "temp_c": 28.2
+                    },
+                    {
+                        "time": "2024-07-13 14:00",
+                        "temp_c": 28.8
+                    },
+                    {
+                        "time": "2024-07-13 15:00",
+                        "temp_c": 29.3
+                    },
+                    {
+                        "time": "2024-07-13 16:00",
+                        "temp_c": 29.1
+                    },
+                    {
+                        "time": "2024-07-13 17:00",
+                        "temp_c": 28.0
+                    },
+                    {
+                        "time": "2024-07-13 18:00",
+                        "temp_c": 27.3
+                    },
+                    {
+                        "time": "2024-07-13 19:00",
+                        "temp_c": 26.4
+                    },
+                    {
+                        "time": "2024-07-13 20:00",
+                        "temp_c": 25.4
+                    },
+                    {
+                        "time": "2024-07-13 21:00",
+                        "temp_c": 24.9
+                    },
+                    {
+                        "time": "2024-07-13 22:00",
+                        "temp_c": 24.6
+                    },
+                    {
+                        "time": "2024-07-13 23:00",
+                        "temp_c": 24.2
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,104 @@
+{
+    "location": {
+        "name": true,
+        "country": true
+    },
+    "current": {
+        "temp_c": true,
+        "condition": {
+            "text": true,
+            "icon": true
+        },
+        "wind_kph": true,
+        "wind_degree": true,
+        "pressure_mb": true,
+        "humidity": true,
+        "feelslike_c": true
+    },
+    "forecast": {
+        "forecastday": [
+            {
+                "day": {
+                    "maxtemp_c": true,
+                    "mintemp_c": true,
+                    "daily_chance_of_rain": true,
+                    "daily_chance_of_snow": true
+                },
+                "hour": [
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    },
+                    {
+                        "temp_c": true
+                    }
+                ]
+            }
+        ]
+    }
+}
