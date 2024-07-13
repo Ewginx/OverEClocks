@@ -239,9 +239,9 @@ class StateApp {
     SoundState *soundState;
     RGBState *rgbState;
     BatteryState *batteryState;
-    MicroclimateState *microclimate_state;
+    MicroclimateState *microclimateState;
 
     
-    StateApp(/* args */);
+    StateApp();
     ~StateApp();
 };

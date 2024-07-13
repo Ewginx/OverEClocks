@@ -14,7 +14,7 @@ StateApp::StateApp() {
     soundState = new SoundState(preferences);
     rgbState = new RGBState(preferences);
     batteryState = new BatteryState();
-    microclimate_state = new MicroclimateState();
+    microclimateState = new MicroclimateState();
 }
 StateApp::~StateApp() {}
 

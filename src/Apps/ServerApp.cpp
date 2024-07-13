@@ -14,8 +14,8 @@ void ServerApp::websocketTimerCallback(lv_timer_t *timer) {
 String ServerApp::getInfoForWS() {
     String sensors_readings;
     DynamicJsonDocument doc(128);
-    doc["temperature"] = this->stateApp->microclimate_state->indoor_temperature;
-    doc["humidity"] = this->stateApp->microclimate_state->indoor_humidity;
+    doc["temperature"] = this->stateApp->microclimateState->indoor_temperature;
+    doc["humidity"] = this->stateApp->microclimateState->indoor_humidity;
     doc["lx"] = this->brightnessApp->getLightLevel();
     doc["battery_level"] = this->stateApp->batteryState->battery_level;
     doc["battery_voltage"] = this->stateApp->batteryState->battery_voltage;
