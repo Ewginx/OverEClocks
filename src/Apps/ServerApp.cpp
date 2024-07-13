@@ -141,13 +141,13 @@ void ServerApp::getSettings(AsyncWebServerRequest *request) {
     doc["ap_login"] = this->stateApp->wifiState->ap_login.c_str();
     doc["ap_password"] = this->stateApp->wifiState->ap_password.c_str();
 
-    doc["auto_brightness"] = this->stateApp->display_state->auto_brightness;
-    doc["auto_theme_change"] = this->stateApp->display_state->auto_theme_change;
-    doc["threshold"] = this->stateApp->display_state->threshold;
-    doc["brightness_level"] = this->stateApp->display_state->brightness_level;
+    doc["auto_brightness"] = this->stateApp->displayState->auto_brightness;
+    doc["auto_theme_change"] = this->stateApp->displayState->auto_theme_change;
+    doc["threshold"] = this->stateApp->displayState->threshold;
+    doc["brightness_level"] = this->stateApp->displayState->brightness_level;
 
     doc["timezone_posix"] = this->stateApp->time_state->timezone_posix.c_str();
-    doc["digital_main_screen"] = this->stateApp->display_state->digital_main_screen;
+    doc["digital_main_screen"] = this->stateApp->displayState->digital_main_screen;
 
     doc["weather_enabled"] = this->stateApp->weatherState->weather_enabled;
     doc["api_key"] = this->stateApp->weatherState->api_key.c_str();
@@ -272,7 +272,7 @@ void ServerApp::saveTimeSettings(JsonVariant &json) {
     JsonObject &&time_json = json.as<JsonObject>();
     this->stateApp->time_state->save_timezone(
         time_json["timezone_posix"].as<const char *>());
-    this->stateApp->display_state->save_digital_main_screen(
+    this->stateApp->displayState->save_digital_main_screen(
         time_json["digital_main_screen"].as<bool>());
     lv_msg_send(MSG_UPDATE_TZ, NULL);
 }
@@ -324,13 +324,13 @@ void ServerApp::saveThemeSettings(JsonVariant &json) {
 
 void ServerApp::saveBrightnessSettings(JsonVariant &json) {
     JsonObject &&brightness_json = json.as<JsonObject>();
-    this->stateApp->display_state->save_auto_brightness_enabled(
+    this->stateApp->displayState->save_auto_brightness_enabled(
         brightness_json["auto_brightness"].as<bool>());
-    this->stateApp->display_state->save_auto_theme_change(
+    this->stateApp->displayState->save_auto_theme_change(
         brightness_json["auto_theme_change"].as<bool>());
-    this->stateApp->display_state->save_brightness_threshold(
+    this->stateApp->displayState->save_brightness_threshold(
         brightness_json["threshold"].as<int>());
-    this->stateApp->display_state->save_brightness_level(
+    this->stateApp->displayState->save_brightness_level(
         brightness_json["brightness_level"].as<int>());
     lv_msg_send(MSG_BRIGHTNESS_CHANGED, NULL);
     lv_msg_send(MSG_AUTO_BRIGHTNESS, NULL);

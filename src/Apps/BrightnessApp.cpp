@@ -3,10 +3,10 @@
 static BrightnessApp *instance = NULL;
 
 extern "C" void autoBrightnessCallbackWrapper(void *subscriber, lv_msg_t *msg) {
-    instance->setAutoBrightnessTimer(instance->stateApp->display_state->auto_brightness);
+    instance->setAutoBrightnessTimer(instance->stateApp->displayState->auto_brightness);
 }
 extern "C" void brightnessChangedCallbackWrapper(void *subscriber, lv_msg_t *msg) {
-    instance->setDisplayBrightness(instance->stateApp->display_state->brightness_level);
+    instance->setDisplayBrightness(instance->stateApp->displayState->brightness_level);
 }
 extern "C" void lightSensorTimerCallbackWrapper(lv_timer_t *timer) {
     instance->lightSensorTimerCallback();
@@ -52,16 +52,16 @@ void BrightnessApp::lightSensorTimerCallback() {
 int BrightnessApp::getLightLevel() { return int(this->lightSensor.getLux()); }
 
 int BrightnessApp::mapLightLevel(int lightLevel) {
-    if (lightLevel > this->stateApp->display_state->threshold) {
+    if (lightLevel > this->stateApp->displayState->threshold) {
         return 255;
     }
-    int output = static_cast<int>(1 + (250 / (this->stateApp->display_state->threshold)) *
+    int output = static_cast<int>(1 + (250 / (this->stateApp->displayState->threshold)) *
                                           (lightLevel));
     return output;
 }
 
 void BrightnessApp::switchTheme(uint8_t brightness) {
-    if (!this->stateApp->display_state->auto_theme_change) {
+    if (!this->stateApp->displayState->auto_theme_change) {
         return;
     }
     bool darkTheme = true;

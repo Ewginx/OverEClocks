@@ -234,7 +234,7 @@ class StateApp {
     WeatherState *weatherState;
     AlarmState *alarmState;
     ThemeState *themeState;
-    DisplayState *display_state;
+    DisplayState *displayState;
     TimeState *time_state;
     SoundState *sound_state;
     RGBState *rgb_state;

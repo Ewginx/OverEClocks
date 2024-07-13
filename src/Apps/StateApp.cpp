@@ -9,7 +9,7 @@ StateApp::StateApp() {
     weatherState = new WeatherState(preferences);
     alarmState = new AlarmState(preferences);
     themeState = new ThemeState(preferences);
-    display_state = new DisplayState(preferences);
+    displayState = new DisplayState(preferences);
     time_state = new TimeState(preferences);
     sound_state = new SoundState(preferences);
     rgb_state = new RGBState(preferences);

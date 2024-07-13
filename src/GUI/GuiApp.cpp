@@ -117,15 +117,15 @@ void GuiApp::setup_gui() {
         this->state_app->weatherState->city.c_str(),
         this->state_app->weatherState->language.c_str());
     this->settings->set_brightness_slider(
-        this->state_app->display_state->brightness_level);
+        this->state_app->displayState->brightness_level);
     this->settings->set_brightness_checkbox(
-        this->state_app->display_state->auto_brightness);
+        this->state_app->displayState->auto_brightness);
     this->settings->set_theme_switch(this->state_app->themeState->dark_theme_enabled);
     this->create_gif_img();
 }
 
 void GuiApp::create_gif_img() {
-    this->gif_image = lv_gif_create(this->state_app->display_state->digital_main_screen
+    this->gif_image = lv_gif_create(this->state_app->displayState->digital_main_screen
                                         ? this->digital_clock->digitalClockPanel
                                         : this->analog_clock->analogClockPanel);
     lv_gif_set_src(this->gif_image, "F:/gif/gif.gif");
@@ -136,7 +136,7 @@ void GuiApp::create_gif_img() {
 }
 
 void GuiApp::set_gif_parent() {
-    lv_obj_set_parent(this->gif_image, this->state_app->display_state->digital_main_screen
+    lv_obj_set_parent(this->gif_image, this->state_app->displayState->digital_main_screen
                                            ? this->digital_clock->digitalClockPanel
                                            : this->analog_clock->analogClockPanel);
 }
@@ -149,7 +149,7 @@ void GuiApp::update_gif_img_src() {
 void GuiApp::update_clock_img_src() { this->analog_clock->set_analog_clock_img_src(); }
 
 void GuiApp::load_default_screen() {
-    if (this->state_app->display_state->digital_main_screen) {
+    if (this->state_app->displayState->digital_main_screen) {
         lv_scr_load(digital_clock->digitalClockScreen);
     } else {
         lv_scr_load(analog_clock->analogClockScreen);
@@ -240,7 +240,7 @@ void GuiApp::user_activity_event_cb() {
 void GuiApp::screen_timer_cb(lv_timer_t *timer) {
     if (lv_scr_act() != this->analog_clock->analogClockScreen &
         lv_scr_act() != this->digital_clock->digitalClockScreen) {
-        if (this->state_app->display_state->digital_main_screen) {
+        if (this->state_app->displayState->digital_main_screen) {
             lv_scr_load_anim(this->digital_clock->digitalClockScreen,
                              LV_SCR_LOAD_ANIM_FADE_IN, SCREEN_CHANGE_ANIM_TIME, 0, false);
         } else {

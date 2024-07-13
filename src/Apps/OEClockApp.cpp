@@ -62,7 +62,7 @@ void OEClockApp::setup() {
                             0);
 
     this->brightness_app->setDisplayBrightness(
-        this->state_app->display_state->brightness_level);
+        this->state_app->displayState->brightness_level);
     this->init_gui();
     this->weather_app->setup();
     this->wifi_app->setup();
@@ -92,7 +92,7 @@ void OEClockApp::init_gui() {
         this->gui_app->analog_clock->set_analog_clock_img_src();
         this->gui_app->setup_gui();
         this->brightness_app->setAutoBrightnessTimer(
-            this->state_app->display_state->auto_brightness);
+            this->state_app->displayState->auto_brightness);
         xSemaphoreGive(mutex);
     }
     Serial.println("GUI initialized");
