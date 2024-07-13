@@ -52,9 +52,9 @@ void RGBApp::calculateBreatheCount() {
 }
 
 void RGBApp::updateThreeColorArray() {
-    threeColorsArray[0] = stateApp->rgbState->first_rgb_color;
-    threeColorsArray[1] = stateApp->rgbState->second_rgb_color;
-    threeColorsArray[2] = stateApp->rgbState->third_rgb_color;
+    threeColorsArray[0] = stateApp->rgbState->firstRgbColor;
+    threeColorsArray[1] = stateApp->rgbState->secondRgbColor;
+    threeColorsArray[2] = stateApp->rgbState->thirdRgbColor;
 }
 
 void RGBApp::changeIteratorToNextColor() {
@@ -105,8 +105,8 @@ void RGBApp::show() {
 }
 
 bool RGBApp::isDisabledAtNight() {
-    if (stateApp->rgbState->turn_off_at_night &
-        stateApp->timeState->is_night) {
+    if (stateApp->rgbState->turnOffAtNight &
+        stateApp->timeState->isNight) {
         if (!alreadyDisabled) {
             pixels.clear();
             pixels.show();
@@ -130,20 +130,20 @@ bool RGBApp::isDynamicEffect() {
 void RGBApp::oneColorEffect() {
     pixels.clear();
     for (uint8_t i = 0; i < NUMBER_OF_PIXELS; i++) {
-        pixels.setPixelColor(i, stateApp->rgbState->first_rgb_color);
+        pixels.setPixelColor(i, stateApp->rgbState->firstRgbColor);
     }
     pixels.show();
 }
 void RGBApp::threeColorsEffect() {
     pixels.clear();
     for (uint8_t i = 0; i < borderPixels; i++) {
-        pixels.setPixelColor(i, stateApp->rgbState->first_rgb_color);
+        pixels.setPixelColor(i, stateApp->rgbState->firstRgbColor);
     }
     for (uint8_t i = borderPixels; i < NUMBER_OF_PIXELS - borderPixels; i++) {
-        pixels.setPixelColor(i, stateApp->rgbState->second_rgb_color);
+        pixels.setPixelColor(i, stateApp->rgbState->secondRgbColor);
     }
     for (uint8_t i = NUMBER_OF_PIXELS - borderPixels; i < NUMBER_OF_PIXELS; i++) {
-        pixels.setPixelColor(i, stateApp->rgbState->third_rgb_color);
+        pixels.setPixelColor(i, stateApp->rgbState->thirdRgbColor);
     }
     pixels.show();
 }

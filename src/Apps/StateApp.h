@@ -8,21 +8,22 @@ class WiFiState {
     Preferences &preferences;
 
   public:
-    bool wifi_connected = false;
+    bool wifiIsConnected = false;
+
     String ssid;
     String password;
-    String ap_login;
-    String ap_password;
-    String ip_address;
-    String gateway_address;
-    String current_ip_address;
+    String apLogin;
+    String apPassword;
+    String ipAddress;
+    String gatewayAddress;
+    String currentIpAddress;
 
-    void save_ssid(const char *ssid);
-    void save_password(const char *password);
-    void save_ap_login(const char *login);
-    void save_ap_password(const char *password);
-    void save_ip_and_gateway_addresses(const char *ip_address,
-                                       const char *gateway_address);
+    void saveSsid(const char *ssid);
+    void savePassword(const char *password);
+    void saveApLogin(const char *login);
+    void saveApPassword(const char *password);
+    void saveIpAndGatewayAddresses(const char *ipAddress,
+                                       const char *gatewayAddress);
 
     WiFiState(Preferences &preferences);
     ~WiFiState();
@@ -33,19 +34,19 @@ class WeatherState {
     Preferences &preferences;
 
   public:
-    bool weather_enabled;
+    bool weatherEnabled;
 
     String city;
-    String city_encoded;
+    String cityEncoded;
     String language;
-    String api_key;
-    int request_period;
+    String apiKey;
+    int requestPeriod;
 
-    void save_city(const char *city);
-    void save_language(const char *language);
-    void save_api_key(const char *api_key);
-    void save_request_period(int request_period);
-    void save_weather_enabled(bool enabled);
+    void saveCity(const char *city);
+    void saveLanguage(const char *language);
+    void saveApiKey(const char *apiKey);
+    void saveRequestPeriod(int requestPeriod);
+    void saveWeatherEnabled(bool weatherEnabled);
 
     WeatherState(Preferences &preferences);
     ~WeatherState();
@@ -56,30 +57,31 @@ class AlarmState {
     Preferences &preferences;
 
   public:
-    bool weekdays_switch_enabled;
-    bool weekends_switch_enabled;
-    bool oneOff_switch_enabled;
-    bool alarm_ringing;
-    String weekdays_time;
-    String weekends_time;
-    String oneOff_time;
+    bool weekdaysSwitchEnabled;
+    bool weekendsSwitchEnabled;
+    bool oneOffSwitchEnabled;
+    bool alarmIsRinging;
 
-    void save_alarm_switches_enabled(bool weekdays_enabled, bool weekends_enabled,
-                                     bool oneOff_enabled);
-    void save_alarm_time(const char *weekdays_time, const char *weekends_time,
-                         const char *oneOff_time);
+    String weekdaysTime;
+    String weekendsTime;
+    String oneOffTime;
+
+    void saveAlarmSwitchStates(bool weekdaysSwitchEnabled, bool weekendsSwitchEnabled,
+                               bool oneOffSwitchEnabled);
+    void saveAlarmTimes(const char *weekdaysTime, const char *weekendsTime,
+                        const char *oneOffTime);
 
     AlarmState(Preferences &preferences);
     ~AlarmState();
 };
 
 struct ThemeStruct {
-    int primary_color;
-    int second_color;
-    int screen_color;
-    int card_color;
-    int text_color;
-    int grey_color;
+    int primaryColor;
+    int secondColor;
+    int screenColor;
+    int cardColor;
+    int textColor;
+    int greyColor;
 };
 
 class ThemeState {
@@ -87,27 +89,27 @@ class ThemeState {
     Preferences &preferences;
 
   public:
-    bool current_theme_is_dark = false;
+    bool currentThemeIsDark = false;
 
-    bool dark_theme_enabled;
+    bool darkThemeEnabled;
 
-    int light_primary_color;
-    int light_second_color;
-    int light_screen_color;
-    int light_card_color;
-    int light_text_color;
-    int light_grey_color;
+    int lightPrimaryColor;
+    int lightSecondColor;
+    int lightScreenColor;
+    int lightCardColor;
+    int lightTextColor;
+    int lightGreyColor;
 
-    int dark_primary_color;
-    int dark_second_color;
-    int dark_screen_color;
-    int dark_card_color;
-    int dark_text_color;
-    int dark_grey_color;
+    int darkPrimaryColor;
+    int darkSecondColor;
+    int darkScreenColor;
+    int darkCardColor;
+    int darkTextColor;
+    int darkGreyColor;
 
-    void save_dark_theme_enabled(bool enabled);
-    void save_light_colors(ThemeStruct light_theme);
-    void save_dark_colors(ThemeStruct dark_theme);
+    void saveDarkThemeEnabled(bool darkThemeEnabled);
+    void saveLightColors(ThemeStruct lightTheme);
+    void saveDarkColors(ThemeStruct darkTheme);
 
     ThemeState(Preferences &preferences);
     ~ThemeState();
@@ -118,19 +120,18 @@ class DisplayState {
     Preferences &preferences;
 
   public:
-    bool auto_brightness;
-    unsigned int brightness_level;
-    bool auto_theme_change;
+    bool autoBrightness;
+    unsigned int brightnessLevel;
+    bool autoThemeChange;
     int threshold;
 
-    bool digital_main_screen;
+    bool mainScreenIsDigital;
 
-    void save_auto_brightness_enabled(bool enabled);
-    void save_brightness_level(unsigned int brightness_level);
-    void save_brightness_threshold(int threshold);
-
-    void save_auto_theme_change(bool change);
-    void save_digital_main_screen(bool digital_main_screen);
+    void saveAutoBrightnessEnabled(bool autoBrightness);
+    void saveBrightnessLevel(unsigned int brightnessLevel);
+    void saveAutoBrightnessThreshold(int threshold);
+    void saveAutoThemeChange(bool autoThemeChange);
+    void saveMainScreenIsDigital(bool mainScreenIsDigital);
 
     DisplayState(Preferences &preferences);
     ~DisplayState();
@@ -141,11 +142,11 @@ class TimeState {
     Preferences &preferences;
 
   public:
-    String timezone_posix;
-    bool is_night = false;
-    bool time_is_set = false;
+    String timezonePosix;
+    bool isNight = false;
+    bool timeIsSet = false;
 
-    void save_timezone(const char *timezone_posix);
+    void saveTimezone(const char *timezonePosix);
 
     TimeState(Preferences &preferences);
     ~TimeState();
@@ -156,25 +157,25 @@ class SoundState {
     Preferences &preferences;
 
   public:
-    bool sound_on;
-    bool plug_sound_on;
-    bool ee_sound_on;
+    bool soundOn;
+    bool plugInSoundOn;
+    bool eeSoundOn;
 
-    bool enable_player_usb = false;
+    bool enablePlayerUsb = false;
 
-    short int alarm_track;
-    short int ee_track;
-    short int plug_track;
+    int alarmTrackNumber;
+    int eeTrackNumber;
+    int plugInTrackNumber;
 
-    short int volume_level;
+    int volumeLevel;
 
-    void save_volume_level(short int volume_level);
-    void save_alarm_track(short int alarm_track);
-    void save_ee_track(short int ee_track_number);
-    void save_plug_track(int plug_track);
-    void save_plug_sound_enabled(bool plug_sound_on);
-    void save_ee_sound_enabled(bool ee_sound_on);
-    void save_sound_on(bool sound_on);
+    void saveVolumeLevel(int volumeLevel);
+    void saveAlarmTrackNumber(int alarmTrack);
+    void saveEETrackNumber(int eeTrackNumber);
+    void savePlugInTrackNumber(int plugInTrackNumber);
+    void savePlugInSoundOn(bool plugInSoundOn);
+    void saveEESoundOn(bool eeSoundOn);
+    void saveSoundOn(bool soundOn);
 
     SoundState(Preferences &preferences);
     ~SoundState();
@@ -186,23 +187,22 @@ class RGBState {
 
   public:
     bool enabled;
-    bool turn_off_at_night;
-    short int effect;
+    bool turnOffAtNight;
 
-    int first_rgb_color;
-    int second_rgb_color;
-    int third_rgb_color;
-
+    int effect;
     int brightness;
-
     int delay;
 
-    void save_rgb_color(int first_rgb_color, int second_rgb_color, int third_rgb_color);
-    void save_rgb_enabled(bool enabled);
-    void save_rgb_night(bool turn_off_at_night);
-    void save_rgb_effect(short int effect);
-    void save_rgb_delay(int delay);
-    void save_brightness(int brightness);
+    int firstRgbColor;
+    int secondRgbColor;
+    int thirdRgbColor;
+
+    void saveColors(int firstRgbColor, int secondRgbColor, int thirdRgbColor);
+    void saveIsEnabled(bool enabled);
+    void saveTurnOffAtNight(bool turnOffAtNight);
+    void saveEffect(int effect);
+    void saveDelay(int delay);
+    void saveRgbBrightness(int brightness);
 
     RGBState(Preferences &preferences);
     ~RGBState();
@@ -211,18 +211,18 @@ class RGBState {
 class BatteryState {
 
   public:
-    bool battery_charging = false;
-    int battery_level = 0;
-    float battery_voltage = 0.0f;
+    bool batteryCharging = false;
+    int batteryLevel = 0;
+    float batteryVoltage = 0.0f;
 
     BatteryState();
     ~BatteryState();
 };
 
-class MicroclimateState{
+class MicroclimateState {
   public:
-    float indoor_temperature = 0.0;
-    int indoor_humidity = 0;
+    float indoorTemperature = 0.0f;
+    int indoorHumidity = 0;
 };
 
 class StateApp {
@@ -241,7 +241,6 @@ class StateApp {
     BatteryState *batteryState;
     MicroclimateState *microclimateState;
 
-    
     StateApp();
     ~StateApp();
 };

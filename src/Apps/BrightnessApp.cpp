@@ -3,10 +3,10 @@
 static BrightnessApp *instance = NULL;
 
 extern "C" void autoBrightnessCallbackWrapper(void *subscriber, lv_msg_t *msg) {
-    instance->setAutoBrightnessTimer(instance->stateApp->displayState->auto_brightness);
+    instance->setAutoBrightnessTimer(instance->stateApp->displayState->autoBrightness);
 }
 extern "C" void brightnessChangedCallbackWrapper(void *subscriber, lv_msg_t *msg) {
-    instance->setDisplayBrightness(instance->stateApp->displayState->brightness_level);
+    instance->setDisplayBrightness(instance->stateApp->displayState->brightnessLevel);
 }
 extern "C" void lightSensorTimerCallbackWrapper(lv_timer_t *timer) {
     instance->lightSensorTimerCallback();
@@ -61,18 +61,18 @@ int BrightnessApp::mapLightLevel(int lightLevel) {
 }
 
 void BrightnessApp::switchTheme(uint8_t brightness) {
-    if (!this->stateApp->displayState->auto_theme_change) {
+    if (!this->stateApp->displayState->autoThemeChange) {
         return;
     }
     bool darkTheme = true;
     if (brightness < DARK_THEME_CHANGE_THRESHOLD) {
-        if (!stateApp->themeState->current_theme_is_dark) {
+        if (!stateApp->themeState->currentThemeIsDark) {
             lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&darkTheme));
         }
-    } else if (stateApp->themeState->current_theme_is_dark !=
-               this->stateApp->themeState->dark_theme_enabled) {
+    } else if (stateApp->themeState->currentThemeIsDark !=
+               this->stateApp->themeState->darkThemeEnabled) {
         if (brightness > LIGHT_THEME_CHANGE_THRESHOLD) {
-            darkTheme = this->stateApp->themeState->dark_theme_enabled;
+            darkTheme = this->stateApp->themeState->darkThemeEnabled;
             lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(&darkTheme));
         }
     }

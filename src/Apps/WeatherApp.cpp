@@ -40,9 +40,9 @@ void WeatherApp::assembleUrl() {
     weatherUrl.clear();
     weatherUrl += apiUrl;
     weatherUrl += "?key=";
-    weatherUrl += stateApp->weatherState->api_key;
+    weatherUrl += stateApp->weatherState->apiKey;
     weatherUrl += "&q=";
-    weatherUrl += stateApp->weatherState->city_encoded;
+    weatherUrl += stateApp->weatherState->cityEncoded;
     weatherUrl += "&aqi=no";
     weatherUrl += "&lang=";
     weatherUrl += stateApp->weatherState->language;
@@ -60,7 +60,7 @@ void WeatherApp::createTask() {
 }
 
 void WeatherApp::encodeCity() {
-    stateApp->weatherState->city_encoded =
+    stateApp->weatherState->cityEncoded =
         this->urlEncode(stateApp->weatherState->city.c_str());
 }
 
@@ -94,7 +94,7 @@ void WeatherApp::updateWeather(void *parameter) {
                     String response = instance->client.responseBody();
                     instance->deserializeJsonResponse(response);
                     Serial.printf("Waiting %i minutes for the next request\n",
-                                  instance->stateApp->weatherState->request_period /
+                                  instance->stateApp->weatherState->requestPeriod /
                                       60000);
                     break;
                 } else {
@@ -108,7 +108,7 @@ void WeatherApp::updateWeather(void *parameter) {
                 instance->suspendTaskOnError();
             }
         }
-        vTaskDelay(instance->stateApp->weatherState->request_period /
+        vTaskDelay(instance->stateApp->weatherState->requestPeriod /
                    portTICK_PERIOD_MS);
     }
 }
@@ -178,13 +178,13 @@ void WeatherApp::deserializeJsonResponse(String &response) {
 }
 
 void WeatherApp::suspendTaskOnError() {
-    stateApp->weatherState->weather_enabled = false;
+    stateApp->weatherState->weatherEnabled = false;
     this->updateTaskState();
     lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
 }
 
 void WeatherApp::updateTaskState() {
-    if (stateApp->weatherState->weather_enabled & stateApp->wifiState->wifi_connected) {
+    if (stateApp->weatherState->weatherEnabled & stateApp->wifiState->wifiIsConnected) {
         if (!weatherRunning) {
             vTaskResume(this->weatherTask);
         } else {
@@ -198,8 +198,8 @@ void WeatherApp::updateTaskState() {
             Serial.println("Task already suspended!");
         }
     }
-    weatherRunning = stateApp->wifiState->wifi_connected
-                         ? stateApp->weatherState->weather_enabled
+    weatherRunning = stateApp->wifiState->wifiIsConnected
+                         ? stateApp->weatherState->weatherEnabled
                          : false;
 }
 

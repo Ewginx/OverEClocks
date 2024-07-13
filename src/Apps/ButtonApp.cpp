@@ -38,7 +38,7 @@ void ButtonApp::measureTimeButtonIsPressed() {
 void ButtonApp::longPress() {
     wasPressed = true;
     elapsedTime = 0;
-    if (stateApp->alarmState->alarm_ringing) {
+    if (stateApp->alarmState->alarmIsRinging) {
         lv_msg_send(MSG_ALARM_STOP, NULL);
     } else {
         lv_msg_send(MSG_PLAY_EE, NULL);
@@ -47,7 +47,7 @@ void ButtonApp::longPress() {
 
 void ButtonApp::shortPress() {
     elapsedTime = 0;
-    if (stateApp->alarmState->alarm_ringing) {
+    if (stateApp->alarmState->alarmIsRinging) {
         lv_msg_send(MSG_ALARM_SNOOZE, NULL);
     } else {
         lv_msg_send(MSG_SOUND_STOP, NULL);

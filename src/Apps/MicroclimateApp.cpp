@@ -42,13 +42,13 @@ void MicroclimateApp::temperatureSensorTimerCallback() {
         bool success = this->temperatureSensor.readData();
         this->temperatureSensor.requestData();
         if (success) {
-            this->stateApp->microclimateState->indoor_humidity = this->getHumidity();
-            this->stateApp->microclimateState->indoor_temperature =
+            this->stateApp->microclimateState->indoorHumidity = this->getHumidity();
+            this->stateApp->microclimateState->indoorTemperature =
                 this->getTemperature();
             this->dockPanel->set_temperature(
-                this->stateApp->microclimateState->indoor_temperature);
+                this->stateApp->microclimateState->indoorTemperature);
             this->dockPanel->set_humidity(
-                this->stateApp->microclimateState->indoor_humidity);
+                this->stateApp->microclimateState->indoorHumidity);
         } else {
             Serial.println("Failed read");
         }

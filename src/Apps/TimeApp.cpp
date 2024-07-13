@@ -37,11 +37,11 @@ TimeApp::TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
 }
 
 void TimeApp::config_time() {
-    if (this->_state_app->wifiState->wifi_connected) {
+    if (this->_state_app->wifiState->wifiIsConnected) {
         configTime(0, 0, "pool.ntp.org");
         this->set_timezone();
         if (getLocalTime(&timeinfo)) {
-            this->_state_app->timeState->time_is_set = true;
+            this->_state_app->timeState->timeIsSet = true;
         }
     }
 }
@@ -295,10 +295,10 @@ void TimeApp::set_rings_in_label_text(double &difference_in_seconds,
 bool TimeApp::is_night() {
     if ((timeinfo.tm_hour <= RGB_TIME_MORNING) ||
         (timeinfo.tm_hour >= RGB_TIME_EVENING)) {
-        this->_state_app->timeState->is_night = true;
+        this->_state_app->timeState->isNight = true;
         return true;
     } else {
-        this->_state_app->timeState->is_night = false;
+        this->_state_app->timeState->isNight = false;
         return false;
     }
 }
@@ -320,13 +320,13 @@ void TimeApp::copy_timeinfo_struct(tm &new_tm, tm &old_tm) {
     new_tm.tm_isdst = old_tm.tm_isdst;
 }
 void TimeApp::set_timezone() {
-    setenv("TZ", this->_state_app->timeState->timezone_posix.c_str(), 1);
+    setenv("TZ", this->_state_app->timeState->timezonePosix.c_str(), 1);
     tzset();
 }
 void TimeApp::update_time_timer() {
     this->config_time();
-    if (this->_state_app->wifiState->wifi_connected ||
-        this->_state_app->timeState->time_is_set) {
+    if (this->_state_app->wifiState->wifiIsConnected ||
+        this->_state_app->timeState->timeIsSet) {
         lv_timer_resume(this->_time_update_timer);
     } else {
         lv_timer_pause(this->_time_update_timer);
@@ -334,13 +334,13 @@ void TimeApp::update_time_timer() {
 }
 void TimeApp::fire_alarm(int hour, int minute) {
     this->alarm_clock->show_alarm(hour, minute);
-    this->_state_app->alarmState->alarm_ringing = true;
+    this->_state_app->alarmState->alarmIsRinging = true;
     lv_msg_send(MSG_ALARM_PLAY, NULL);
 }
 void TimeApp::stop_alarm() {
     this->alarm_clock->delete_alarm_modal_panel();
     lv_msg_send(MSG_SOUND_STOP, NULL);
-    this->_state_app->alarmState->alarm_ringing = false;
+    this->_state_app->alarmState->alarmIsRinging = false;
 }
 void TimeApp::turn_off_alarm() {
     if (this->current_alarm == 3) {

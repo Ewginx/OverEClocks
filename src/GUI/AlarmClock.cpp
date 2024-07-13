@@ -341,12 +341,12 @@ void AlarmClock::set_default_values() {
 }
 
 void AlarmClock::set_alarm_clock_gui() {
-    this->set_alarm_buttons(this->_state_app->alarmState->weekdays_time.c_str(),
-                            this->_state_app->alarmState->weekends_time.c_str(),
-                            this->_state_app->alarmState->oneOff_time.c_str());
-    this->set_alarm_switches(this->_state_app->alarmState->weekdays_switch_enabled,
-                             this->_state_app->alarmState->weekends_switch_enabled,
-                             this->_state_app->alarmState->oneOff_switch_enabled);
+    this->set_alarm_buttons(this->_state_app->alarmState->weekdaysTime.c_str(),
+                            this->_state_app->alarmState->weekendsTime.c_str(),
+                            this->_state_app->alarmState->oneOffTime.c_str());
+    this->set_alarm_switches(this->_state_app->alarmState->weekdaysSwitchEnabled,
+                             this->_state_app->alarmState->weekendsSwitchEnabled,
+                             this->_state_app->alarmState->oneOffSwitchEnabled);
 }
 
 void AlarmClock::set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw) {
@@ -390,7 +390,7 @@ void AlarmClock::event_alarmModalOkButton_cb(lv_event_t *e) {
                               lv_roller_get_selected(hourRoller),
                               lv_roller_get_selected(minuteRoller));
         this->delete_roller_modal_panel();
-        this->_state_app->alarmState->save_alarm_time(
+        this->_state_app->alarmState->saveAlarmTimes(
             lv_label_get_text(this->weekdaysButtonLabel),
             lv_label_get_text(this->weekendsButtonLabel),
             lv_label_get_text(this->oneOffButtonLabel));
@@ -427,7 +427,7 @@ void AlarmClock::event_alarmButtons_cb(lv_event_t *e) {
 }
 
 void AlarmClock::event_alarmSwitch_cb() {
-    this->_state_app->alarmState->save_alarm_switches_enabled(
+    this->_state_app->alarmState->saveAlarmSwitchStates(
         lv_obj_has_state(this->weekdaysSwitch, LV_STATE_CHECKED),
         lv_obj_has_state(this->weekendsSwitch, LV_STATE_CHECKED),
         lv_obj_has_state(this->oneOffSwitch, LV_STATE_CHECKED));

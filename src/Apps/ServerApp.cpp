@@ -14,11 +14,11 @@ void ServerApp::websocketTimerCallback(lv_timer_t *timer) {
 String ServerApp::getInfoForWS() {
     String sensors_readings;
     DynamicJsonDocument doc(128);
-    doc["temperature"] = this->stateApp->microclimateState->indoor_temperature;
-    doc["humidity"] = this->stateApp->microclimateState->indoor_humidity;
+    doc["temperature"] = this->stateApp->microclimateState->indoorTemperature;
+    doc["humidity"] = this->stateApp->microclimateState->indoorHumidity;
     doc["lx"] = this->brightnessApp->getLightLevel();
-    doc["battery_level"] = this->stateApp->batteryState->battery_level;
-    doc["battery_voltage"] = this->stateApp->batteryState->battery_voltage;
+    doc["battery_level"] = this->stateApp->batteryState->batteryLevel;
+    doc["battery_voltage"] = this->stateApp->batteryState->batteryVoltage;
     doc["max_free_block"] = ESP.getMaxAllocHeap() / 1024;
     doc["free_heap"] = ESP.getFreeHeap() / 1024;
     doc["used_space"] = ((unsigned int)LittleFS.usedBytes()) / 1024;
@@ -97,8 +97,8 @@ void ServerApp::setup() {
 
 void ServerApp::setupIndexHandler() {
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        if (!request->authenticate(this->stateApp->wifiState->ap_login.c_str(),
-                                   this->stateApp->wifiState->ap_password.c_str()))
+        if (!request->authenticate(this->stateApp->wifiState->apLogin.c_str(),
+                                   this->stateApp->wifiState->apPassword.c_str()))
             return request->requestAuthentication();
         AsyncWebServerResponse *response =
             request->beginResponse(LittleFS, "/index.html.gz", "text/html");
@@ -136,66 +136,66 @@ void ServerApp::getSettings(AsyncWebServerRequest *request) {
     DynamicJsonDocument doc(1024);
     doc["ssid"] = this->stateApp->wifiState->ssid.c_str();
     doc["password"] = this->stateApp->wifiState->password.c_str();
-    doc["ip_address"] = this->stateApp->wifiState->ip_address.c_str();
-    doc["gateway"] = this->stateApp->wifiState->gateway_address.c_str();
-    doc["ap_login"] = this->stateApp->wifiState->ap_login.c_str();
-    doc["ap_password"] = this->stateApp->wifiState->ap_password.c_str();
+    doc["ip_address"] = this->stateApp->wifiState->ipAddress.c_str();
+    doc["gateway"] = this->stateApp->wifiState->gatewayAddress.c_str();
+    doc["ap_login"] = this->stateApp->wifiState->apLogin.c_str();
+    doc["ap_password"] = this->stateApp->wifiState->apPassword.c_str();
 
-    doc["auto_brightness"] = this->stateApp->displayState->auto_brightness;
-    doc["auto_theme_change"] = this->stateApp->displayState->auto_theme_change;
+    doc["auto_brightness"] = this->stateApp->displayState->autoBrightness;
+    doc["auto_theme_change"] = this->stateApp->displayState->autoThemeChange;
     doc["threshold"] = this->stateApp->displayState->threshold;
-    doc["brightness_level"] = this->stateApp->displayState->brightness_level;
+    doc["brightness_level"] = this->stateApp->displayState->brightnessLevel;
 
-    doc["timezone_posix"] = this->stateApp->timeState->timezone_posix.c_str();
-    doc["digital_main_screen"] = this->stateApp->displayState->digital_main_screen;
+    doc["timezone_posix"] = this->stateApp->timeState->timezonePosix.c_str();
+    doc["digital_main_screen"] = this->stateApp->displayState->mainScreenIsDigital;
 
-    doc["weather_enabled"] = this->stateApp->weatherState->weather_enabled;
-    doc["api_key"] = this->stateApp->weatherState->api_key.c_str();
+    doc["weather_enabled"] = this->stateApp->weatherState->weatherEnabled;
+    doc["api_key"] = this->stateApp->weatherState->apiKey.c_str();
     doc["city"] = this->stateApp->weatherState->city.c_str();
     doc["language"] = this->stateApp->weatherState->language.c_str();
-    doc["request_period"] = this->stateApp->weatherState->request_period;
+    doc["request_period"] = this->stateApp->weatherState->requestPeriod;
 
-    doc["dark_theme_enabled"] = this->stateApp->themeState->dark_theme_enabled;
-    doc["light_primary_color"] = this->stateApp->themeState->light_primary_color;
-    doc["light_second_color"] = this->stateApp->themeState->light_second_color;
-    doc["light_screen_color"] = this->stateApp->themeState->light_screen_color;
-    doc["light_card_color"] = this->stateApp->themeState->light_card_color;
-    doc["light_text_color"] = this->stateApp->themeState->light_text_color;
-    doc["light_grey_color"] = this->stateApp->themeState->light_grey_color;
+    doc["dark_theme_enabled"] = this->stateApp->themeState->darkThemeEnabled;
+    doc["light_primary_color"] = this->stateApp->themeState->lightPrimaryColor;
+    doc["light_second_color"] = this->stateApp->themeState->lightSecondColor;
+    doc["light_screen_color"] = this->stateApp->themeState->lightScreenColor;
+    doc["light_card_color"] = this->stateApp->themeState->lightCardColor;
+    doc["light_text_color"] = this->stateApp->themeState->lightTextColor;
+    doc["light_grey_color"] = this->stateApp->themeState->lightGreyColor;
 
-    doc["dark_primary_color"] = this->stateApp->themeState->dark_primary_color;
-    doc["dark_second_color"] = this->stateApp->themeState->dark_second_color;
-    doc["dark_screen_color"] = this->stateApp->themeState->dark_screen_color;
-    doc["dark_card_color"] = this->stateApp->themeState->dark_card_color;
-    doc["dark_text_color"] = this->stateApp->themeState->dark_text_color;
-    doc["dark_grey_color"] = this->stateApp->themeState->dark_grey_color;
+    doc["dark_primary_color"] = this->stateApp->themeState->darkPrimaryColor;
+    doc["dark_second_color"] = this->stateApp->themeState->darkSecondColor;
+    doc["dark_screen_color"] = this->stateApp->themeState->darkScreenColor;
+    doc["dark_card_color"] = this->stateApp->themeState->darkCardColor;
+    doc["dark_text_color"] = this->stateApp->themeState->darkTextColor;
+    doc["dark_grey_color"] = this->stateApp->themeState->darkGreyColor;
 
-    doc["weekdays_time"] = this->stateApp->alarmState->weekdays_time.c_str();
-    doc["weekends_time"] = this->stateApp->alarmState->weekends_time.c_str();
-    doc["one_off_time"] = this->stateApp->alarmState->oneOff_time.c_str();
-    doc["weekdays_enabled"] = this->stateApp->alarmState->weekdays_switch_enabled;
-    doc["weekends_enabled"] = this->stateApp->alarmState->weekends_switch_enabled;
-    doc["one_off_enabled"] = this->stateApp->alarmState->oneOff_switch_enabled;
+    doc["weekdays_time"] = this->stateApp->alarmState->weekdaysTime.c_str();
+    doc["weekends_time"] = this->stateApp->alarmState->weekendsTime.c_str();
+    doc["one_off_time"] = this->stateApp->alarmState->oneOffTime.c_str();
+    doc["weekdays_enabled"] = this->stateApp->alarmState->weekdaysSwitchEnabled;
+    doc["weekends_enabled"] = this->stateApp->alarmState->weekendsSwitchEnabled;
+    doc["one_off_enabled"] = this->stateApp->alarmState->oneOffSwitchEnabled;
 
     doc["fs_space"] = ((unsigned int)LittleFS.totalBytes()) / 1024;
 
     doc["rgb_enabled"] = this->stateApp->rgbState->enabled;
     doc["rgb_mode"] = this->stateApp->rgbState->effect;
-    doc["first_rgb_color"] = this->stateApp->rgbState->first_rgb_color;
-    doc["second_rgb_color"] = this->stateApp->rgbState->second_rgb_color;
-    doc["third_rgb_color"] = this->stateApp->rgbState->third_rgb_color;
+    doc["first_rgb_color"] = this->stateApp->rgbState->firstRgbColor;
+    doc["second_rgb_color"] = this->stateApp->rgbState->secondRgbColor;
+    doc["third_rgb_color"] = this->stateApp->rgbState->thirdRgbColor;
     doc["rgb_delay"] = this->stateApp->rgbState->delay;
     doc["rgb_brightness"] = this->stateApp->rgbState->brightness;
-    doc["rgb_night"] = this->stateApp->rgbState->turn_off_at_night;
+    doc["rgb_night"] = this->stateApp->rgbState->turnOffAtNight;
 
-    doc["sound_on"] = this->stateApp->soundState->sound_on;
-    doc["ee_sound_on"] = this->stateApp->soundState->ee_sound_on;
-    doc["plug_sound_on"] = this->stateApp->soundState->plug_sound_on;
-    doc["volume_level"] = this->stateApp->soundState->volume_level;
-    doc["alarm_track"] = this->stateApp->soundState->alarm_track;
-    doc["ee_track"] = this->stateApp->soundState->ee_track;
-    doc["plug_track"] = this->stateApp->soundState->plug_track;
-    doc["enable_player_usb"] = this->stateApp->soundState->enable_player_usb;
+    doc["sound_on"] = this->stateApp->soundState->soundOn;
+    doc["ee_sound_on"] = this->stateApp->soundState->eeSoundOn;
+    doc["plug_sound_on"] = this->stateApp->soundState->plugInSoundOn;
+    doc["volume_level"] = this->stateApp->soundState->volumeLevel;
+    doc["alarm_track"] = this->stateApp->soundState->alarmTrackNumber;
+    doc["ee_track"] = this->stateApp->soundState->eeTrackNumber;
+    doc["plug_track"] = this->stateApp->soundState->plugInTrackNumber;
+    doc["enable_player_usb"] = this->stateApp->soundState->enablePlayerUsb;
 
     serializeJson(doc, *response);
     request->send(response);
@@ -270,67 +270,67 @@ void ServerApp::setupSettingsHandlers() {
 
 void ServerApp::saveTimeSettings(JsonVariant &json) {
     JsonObject &&time_json = json.as<JsonObject>();
-    this->stateApp->timeState->save_timezone(
+    this->stateApp->timeState->saveTimezone(
         time_json["timezone_posix"].as<const char *>());
-    this->stateApp->displayState->save_digital_main_screen(
+    this->stateApp->displayState->saveMainScreenIsDigital(
         time_json["digital_main_screen"].as<bool>());
     lv_msg_send(MSG_UPDATE_TZ, NULL);
 }
 
 void ServerApp::saveWeatherSettings(JsonVariant &json) {
     JsonObject &&weather_json = json.as<JsonObject>();
-    this->stateApp->weatherState->save_weather_enabled(
+    this->stateApp->weatherState->saveWeatherEnabled(
         weather_json["weather_enabled"].as<bool>());
-    this->stateApp->weatherState->save_api_key(
+    this->stateApp->weatherState->saveApiKey(
         weather_json["api_key"].as<const char *>());
-    this->stateApp->weatherState->save_city(weather_json["city"].as<const char *>());
-    this->stateApp->weatherState->save_language(
+    this->stateApp->weatherState->saveCity(weather_json["city"].as<const char *>());
+    this->stateApp->weatherState->saveLanguage(
         weather_json["language"].as<const char *>());
-    this->stateApp->weatherState->save_request_period(
+    this->stateApp->weatherState->saveRequestPeriod(
         weather_json["request_period"].as<int>());
     lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
     lv_msg_send(
         MSG_UPDATE_WEATHER_TASK,
-        static_cast<const void *>(&this->stateApp->weatherState->weather_enabled));
-    if (this->stateApp->weatherState->weather_enabled) {
+        static_cast<const void *>(&this->stateApp->weatherState->weatherEnabled));
+    if (this->stateApp->weatherState->weatherEnabled) {
         lv_msg_send(MSG_WEATHER_UPDATE, NULL);
     }
 }
 
 void ServerApp::saveThemeSettings(JsonVariant &json) {
     JsonObject &&theme_json = json.as<JsonObject>();
-    this->stateApp->themeState->save_dark_theme_enabled(
+    this->stateApp->themeState->saveDarkThemeEnabled(
         theme_json["dark_theme_enabled"].as<bool>());
     ThemeStruct light_theme;
-    light_theme.primary_color = theme_json["light_primary_color"].as<int>();
-    light_theme.second_color = theme_json["light_second_color"].as<int>();
-    light_theme.screen_color = theme_json["light_screen_color"].as<int>();
-    light_theme.text_color = theme_json["light_text_color"].as<int>();
-    light_theme.card_color = theme_json["light_card_color"].as<int>();
-    light_theme.grey_color = theme_json["light_grey_color"].as<int>();
-    this->stateApp->themeState->save_light_colors(light_theme);
+    light_theme.primaryColor = theme_json["light_primary_color"].as<int>();
+    light_theme.secondColor = theme_json["light_second_color"].as<int>();
+    light_theme.screenColor = theme_json["light_screen_color"].as<int>();
+    light_theme.textColor = theme_json["light_text_color"].as<int>();
+    light_theme.cardColor = theme_json["light_card_color"].as<int>();
+    light_theme.greyColor = theme_json["light_grey_color"].as<int>();
+    this->stateApp->themeState->saveLightColors(light_theme);
 
     ThemeStruct dark_theme;
-    dark_theme.primary_color = theme_json["dark_primary_color"].as<int>();
-    dark_theme.second_color = theme_json["dark_second_color"].as<int>();
-    dark_theme.screen_color = theme_json["dark_screen_color"].as<int>();
-    dark_theme.text_color = theme_json["dark_text_color"].as<int>();
-    dark_theme.card_color = theme_json["dark_card_color"].as<int>();
-    dark_theme.grey_color = theme_json["dark_grey_color"].as<int>();
-    this->stateApp->themeState->save_dark_colors(dark_theme);
+    dark_theme.primaryColor = theme_json["dark_primary_color"].as<int>();
+    dark_theme.secondColor = theme_json["dark_second_color"].as<int>();
+    dark_theme.screenColor = theme_json["dark_screen_color"].as<int>();
+    dark_theme.textColor = theme_json["dark_text_color"].as<int>();
+    dark_theme.cardColor = theme_json["dark_card_color"].as<int>();
+    dark_theme.greyColor = theme_json["dark_grey_color"].as<int>();
+    this->stateApp->themeState->saveDarkColors(dark_theme);
     lv_msg_send(MSG_CHANGE_THEME, static_cast<const void *>(
-                                      &this->stateApp->themeState->dark_theme_enabled));
+                                      &this->stateApp->themeState->darkThemeEnabled));
 }
 
 void ServerApp::saveBrightnessSettings(JsonVariant &json) {
     JsonObject &&brightness_json = json.as<JsonObject>();
-    this->stateApp->displayState->save_auto_brightness_enabled(
+    this->stateApp->displayState->saveAutoBrightnessEnabled(
         brightness_json["auto_brightness"].as<bool>());
-    this->stateApp->displayState->save_auto_theme_change(
+    this->stateApp->displayState->saveAutoThemeChange(
         brightness_json["auto_theme_change"].as<bool>());
-    this->stateApp->displayState->save_brightness_threshold(
+    this->stateApp->displayState->saveAutoBrightnessThreshold(
         brightness_json["threshold"].as<int>());
-    this->stateApp->displayState->save_brightness_level(
+    this->stateApp->displayState->saveBrightnessLevel(
         brightness_json["brightness_level"].as<int>());
     lv_msg_send(MSG_BRIGHTNESS_CHANGED, NULL);
     lv_msg_send(MSG_AUTO_BRIGHTNESS, NULL);
@@ -338,23 +338,23 @@ void ServerApp::saveBrightnessSettings(JsonVariant &json) {
 
 void ServerApp::saveWiFiSettings(JsonVariant &json) {
     JsonObject &&wifi_json = json.as<JsonObject>();
-    this->stateApp->wifiState->save_ssid(wifi_json["ssid"].as<const char *>());
-    this->stateApp->wifiState->save_password(wifi_json["password"].as<const char *>());
-    this->stateApp->wifiState->save_ip_and_gateway_addresses(
+    this->stateApp->wifiState->saveSsid(wifi_json["ssid"].as<const char *>());
+    this->stateApp->wifiState->savePassword(wifi_json["password"].as<const char *>());
+    this->stateApp->wifiState->saveIpAndGatewayAddresses(
         wifi_json["ip_address"].as<const char *>(),
         wifi_json["gateway"].as<const char *>());
-    this->stateApp->wifiState->save_ap_login(wifi_json["ap_login"].as<const char *>());
-    this->stateApp->wifiState->save_ap_password(
+    this->stateApp->wifiState->saveApLogin(wifi_json["ap_login"].as<const char *>());
+    this->stateApp->wifiState->saveApPassword(
         wifi_json["ap_password"].as<const char *>());
 }
 
 void ServerApp::saveAlarmClockSettings(JsonVariant &json) {
     JsonObject &&alarm_clock_json = json.as<JsonObject>();
-    this->stateApp->alarmState->save_alarm_time(
+    this->stateApp->alarmState->saveAlarmTimes(
         alarm_clock_json["weekdays_time"].as<const char *>(),
         alarm_clock_json["weekends_time"].as<const char *>(),
         alarm_clock_json["one_off_time"].as<const char *>());
-    this->stateApp->alarmState->save_alarm_switches_enabled(
+    this->stateApp->alarmState->saveAlarmSwitchStates(
         alarm_clock_json["weekdays_enabled"].as<bool>(),
         alarm_clock_json["weekends_enabled"].as<bool>(),
         alarm_clock_json["one_off_enabled"].as<bool>());
@@ -363,28 +363,28 @@ void ServerApp::saveAlarmClockSettings(JsonVariant &json) {
 
 void ServerApp::saveRGBSettings(JsonVariant &json) {
     JsonObject &&rgb_json = json.as<JsonObject>();
-    this->stateApp->rgbState->save_rgb_enabled(rgb_json["rgb_enabled"].as<bool>());
-    this->stateApp->rgbState->save_rgb_effect(rgb_json["rgb_mode"].as<int>());
-    this->stateApp->rgbState->save_rgb_color(rgb_json["first_rgb_color"].as<int>(),
+    this->stateApp->rgbState->saveIsEnabled(rgb_json["rgb_enabled"].as<bool>());
+    this->stateApp->rgbState->saveEffect(rgb_json["rgb_mode"].as<int>());
+    this->stateApp->rgbState->saveColors(rgb_json["first_rgb_color"].as<int>(),
                                               rgb_json["second_rgb_color"].as<int>(),
                                               rgb_json["third_rgb_color"].as<int>());
-    this->stateApp->rgbState->save_rgb_delay(rgb_json["rgb_delay"].as<int>());
-    this->stateApp->rgbState->save_brightness(rgb_json["rgb_brightness"].as<int>());
-    this->stateApp->rgbState->save_rgb_night(rgb_json["rgb_night"].as<bool>());
+    this->stateApp->rgbState->saveDelay(rgb_json["rgb_delay"].as<int>());
+    this->stateApp->rgbState->saveRgbBrightness(rgb_json["rgb_brightness"].as<int>());
+    this->stateApp->rgbState->saveTurnOffAtNight(rgb_json["rgb_night"].as<bool>());
 }
 
 void ServerApp::saveSoundSettings(JsonVariant &json) {
     JsonObject &&sound_json = json.as<JsonObject>();
-    this->stateApp->soundState->save_alarm_track(sound_json["alarm_track"].as<int>());
-    this->stateApp->soundState->save_ee_track(sound_json["ee_track"].as<int>());
-    this->stateApp->soundState->save_plug_track(sound_json["plug_track"].as<int>());
-    this->stateApp->soundState->save_volume_level(sound_json["volume_level"].as<int>());
-    this->stateApp->soundState->save_sound_on(sound_json["sound_on"].as<bool>());
-    this->stateApp->soundState->save_ee_sound_enabled(
+    this->stateApp->soundState->saveAlarmTrackNumber(sound_json["alarm_track"].as<int>());
+    this->stateApp->soundState->saveEETrackNumber(sound_json["ee_track"].as<int>());
+    this->stateApp->soundState->savePlugInTrackNumber(sound_json["plug_track"].as<int>());
+    this->stateApp->soundState->saveVolumeLevel(sound_json["volume_level"].as<int>());
+    this->stateApp->soundState->saveSoundOn(sound_json["sound_on"].as<bool>());
+    this->stateApp->soundState->saveEESoundOn(
         sound_json["ee_sound_on"].as<bool>());
-    this->stateApp->soundState->save_plug_sound_enabled(
+    this->stateApp->soundState->savePlugInSoundOn(
         sound_json["plug_sound_on"].as<bool>());
-    this->stateApp->soundState->enable_player_usb =
+    this->stateApp->soundState->enablePlayerUsb =
         sound_json["enable_player_usb"].as<bool>();
 }
 
@@ -398,7 +398,7 @@ void ServerApp::setupSetTimeHandler() {
 }
 
 void ServerApp::setTime(JsonVariant &json) {
-    if (this->stateApp->wifiState->wifi_connected) {
+    if (this->stateApp->wifiState->wifiIsConnected) {
         return;
     }
     JsonObject &&time_json = json.as<JsonObject>();
@@ -407,7 +407,7 @@ void ServerApp::setTime(JsonVariant &json) {
     tv.tv_usec = 0;
     Serial.println(time_json["time"].as<unsigned long>());
     settimeofday(&tv, NULL);
-    this->stateApp->timeState->time_is_set = true;
+    this->stateApp->timeState->timeIsSet = true;
     lv_msg_send(MSG_UPDATE_TZ, NULL);
     lv_msg_send(MSG_UPDATE_TIME_TIMER, NULL);
 }

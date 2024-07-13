@@ -22,7 +22,7 @@ extern "C" void dock_panel_timer_cb_wrapper(lv_timer_t *timer) {
 }
 extern "C" void dock_update_wifi_icon_cb(void *subscriber, lv_msg_t *msg) {
     instance->dock_panel->show_wifi_connection(
-        instance->state_app->wifiState->wifi_connected);
+        instance->state_app->wifiState->wifiIsConnected);
 }
 extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
     instance->user_activity_event_cb();
@@ -48,7 +48,7 @@ extern "C" void update_clock_img_src_cb(void *subscriber, lv_msg_t *msg) {
 GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
     this->state_app = state_app;
-    this->state_app->themeState->dark_theme_enabled ? this->init_dark_theme()
+    this->state_app->themeState->darkThemeEnabled ? this->init_dark_theme()
                                                      : this->init_light_theme();
     alarm_clock = new AlarmClock(this->state_app);
     digital_clock = new DigitalClock();
@@ -109,7 +109,7 @@ GuiApp::GuiApp(StateApp *state_app) {
 };
 
 void GuiApp::setup_gui() {
-    this->switch_theme(this->state_app->themeState->dark_theme_enabled);
+    this->switch_theme(this->state_app->themeState->darkThemeEnabled);
     this->alarm_clock->set_alarm_clock_gui();
     this->settings->set_wifi_settings(this->state_app->wifiState->ssid.c_str(),
                                       this->state_app->wifiState->password.c_str());
@@ -117,15 +117,15 @@ void GuiApp::setup_gui() {
         this->state_app->weatherState->city.c_str(),
         this->state_app->weatherState->language.c_str());
     this->settings->set_brightness_slider(
-        this->state_app->displayState->brightness_level);
+        this->state_app->displayState->brightnessLevel);
     this->settings->set_brightness_checkbox(
-        this->state_app->displayState->auto_brightness);
-    this->settings->set_theme_switch(this->state_app->themeState->dark_theme_enabled);
+        this->state_app->displayState->autoBrightness);
+    this->settings->set_theme_switch(this->state_app->themeState->darkThemeEnabled);
     this->create_gif_img();
 }
 
 void GuiApp::create_gif_img() {
-    this->gif_image = lv_gif_create(this->state_app->displayState->digital_main_screen
+    this->gif_image = lv_gif_create(this->state_app->displayState->mainScreenIsDigital
                                         ? this->digital_clock->digitalClockPanel
                                         : this->analog_clock->analogClockPanel);
     lv_gif_set_src(this->gif_image, "F:/gif/gif.gif");
@@ -136,7 +136,7 @@ void GuiApp::create_gif_img() {
 }
 
 void GuiApp::set_gif_parent() {
-    lv_obj_set_parent(this->gif_image, this->state_app->displayState->digital_main_screen
+    lv_obj_set_parent(this->gif_image, this->state_app->displayState->mainScreenIsDigital
                                            ? this->digital_clock->digitalClockPanel
                                            : this->analog_clock->analogClockPanel);
 }
@@ -149,7 +149,7 @@ void GuiApp::update_gif_img_src() {
 void GuiApp::update_clock_img_src() { this->analog_clock->set_analog_clock_img_src(); }
 
 void GuiApp::load_default_screen() {
-    if (this->state_app->displayState->digital_main_screen) {
+    if (this->state_app->displayState->mainScreenIsDigital) {
         lv_scr_load(digital_clock->digitalClockScreen);
     } else {
         lv_scr_load(analog_clock->analogClockScreen);
@@ -206,10 +206,10 @@ void GuiApp::swipe_alarm_screen() {
 void GuiApp::switch_theme(bool dark_theme_enabled) {
     if (dark_theme_enabled) {
         this->switch_to_dark_theme();
-        this->state_app->themeState->current_theme_is_dark = true;
+        this->state_app->themeState->currentThemeIsDark = true;
     } else {
         this->switch_to_light_theme();
-        this->state_app->themeState->current_theme_is_dark = false;
+        this->state_app->themeState->currentThemeIsDark = false;
     }
 }
 
@@ -240,7 +240,7 @@ void GuiApp::user_activity_event_cb() {
 void GuiApp::screen_timer_cb(lv_timer_t *timer) {
     if (lv_scr_act() != this->analog_clock->analogClockScreen &
         lv_scr_act() != this->digital_clock->digitalClockScreen) {
-        if (this->state_app->displayState->digital_main_screen) {
+        if (this->state_app->displayState->mainScreenIsDigital) {
             lv_scr_load_anim(this->digital_clock->digitalClockScreen,
                              LV_SCR_LOAD_ANIM_FADE_IN, SCREEN_CHANGE_ANIM_TIME, 0, false);
         } else {
@@ -267,7 +267,7 @@ void GuiApp::theme_switch_event_cb(lv_event_t *e) {
     lv_disp_t *disp = lv_disp_get_default();
     if (event_code == LV_EVENT_VALUE_CHANGED) {
         this->switch_theme(lv_obj_has_state(target, LV_STATE_CHECKED));
-        this->state_app->themeState->save_dark_theme_enabled(
+        this->state_app->themeState->saveDarkThemeEnabled(
             lv_obj_has_state(target, LV_STATE_CHECKED));
     }
 }
@@ -293,14 +293,14 @@ void GuiApp::switch_to_dark_theme() {
 }
 void GuiApp::init_light_theme() {
     lv_color_t primary_color =
-        lv_color_hex(this->state_app->themeState->light_primary_color);
+        lv_color_hex(this->state_app->themeState->lightPrimaryColor);
     lv_color_t second_color =
-        lv_color_hex(this->state_app->themeState->light_second_color);
+        lv_color_hex(this->state_app->themeState->lightSecondColor);
     lv_color_t color_screen =
-        lv_color_hex(this->state_app->themeState->light_screen_color);
-    lv_color_t color_card = lv_color_hex(this->state_app->themeState->light_card_color);
-    lv_color_t color_text = lv_color_hex(this->state_app->themeState->light_text_color);
-    lv_color_t color_grey = lv_color_hex(this->state_app->themeState->light_grey_color);
+        lv_color_hex(this->state_app->themeState->lightScreenColor);
+    lv_color_t color_card = lv_color_hex(this->state_app->themeState->lightCardColor);
+    lv_color_t color_text = lv_color_hex(this->state_app->themeState->lightTextColor);
+    lv_color_t color_grey = lv_color_hex(this->state_app->themeState->lightGreyColor);
 
     lv_theme_t *theme =
         theme_custom_init(NULL, primary_color, second_color, color_screen, color_card,
@@ -309,14 +309,14 @@ void GuiApp::init_light_theme() {
 }
 void GuiApp::init_dark_theme() {
     lv_color_t primary_color =
-        lv_color_hex(this->state_app->themeState->dark_primary_color);
+        lv_color_hex(this->state_app->themeState->darkPrimaryColor);
     lv_color_t second_color =
-        lv_color_hex(this->state_app->themeState->dark_second_color);
+        lv_color_hex(this->state_app->themeState->darkSecondColor);
     lv_color_t color_screen =
-        lv_color_hex(this->state_app->themeState->dark_screen_color);
-    lv_color_t color_card = lv_color_hex(this->state_app->themeState->dark_card_color);
-    lv_color_t color_text = lv_color_hex(this->state_app->themeState->dark_text_color);
-    lv_color_t color_grey = lv_color_hex(this->state_app->themeState->dark_grey_color);
+        lv_color_hex(this->state_app->themeState->darkScreenColor);
+    lv_color_t color_card = lv_color_hex(this->state_app->themeState->darkCardColor);
+    lv_color_t color_text = lv_color_hex(this->state_app->themeState->darkTextColor);
+    lv_color_t color_grey = lv_color_hex(this->state_app->themeState->darkGreyColor);
 
     lv_theme_t *theme =
         theme_custom_init(NULL, primary_color, second_color, color_screen, color_card,
