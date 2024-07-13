@@ -99,6 +99,7 @@ void WeatherApp::updateWeather(void *parameter) {
                     break;
                 } else {
                     Serial.printf("Try %d of 3 \n", retry + 1);
+                    Serial.println(instance->weatherUrl);
                     Serial.println(instance->client.responseBody());
                     vTaskDelay(300 / portTICK_PERIOD_MS);
                 }
