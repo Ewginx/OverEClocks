@@ -106,7 +106,7 @@ void RGBApp::show() {
 
 bool RGBApp::isDisabledAtNight() {
     if (stateApp->rgb_state->turn_off_at_night &
-        stateApp->time_state->is_night) {
+        stateApp->timeState->is_night) {
         if (!alreadyDisabled) {
             pixels.clear();
             pixels.show();

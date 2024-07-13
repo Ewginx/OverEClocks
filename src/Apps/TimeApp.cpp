@@ -41,7 +41,7 @@ void TimeApp::config_time() {
         configTime(0, 0, "pool.ntp.org");
         this->set_timezone();
         if (getLocalTime(&timeinfo)) {
-            this->_state_app->time_state->time_is_set = true;
+            this->_state_app->timeState->time_is_set = true;
         }
     }
 }
@@ -295,10 +295,10 @@ void TimeApp::set_rings_in_label_text(double &difference_in_seconds,
 bool TimeApp::is_night() {
     if ((timeinfo.tm_hour <= RGB_TIME_MORNING) ||
         (timeinfo.tm_hour >= RGB_TIME_EVENING)) {
-        this->_state_app->time_state->is_night = true;
+        this->_state_app->timeState->is_night = true;
         return true;
     } else {
-        this->_state_app->time_state->is_night = false;
+        this->_state_app->timeState->is_night = false;
         return false;
     }
 }
@@ -320,13 +320,13 @@ void TimeApp::copy_timeinfo_struct(tm &new_tm, tm &old_tm) {
     new_tm.tm_isdst = old_tm.tm_isdst;
 }
 void TimeApp::set_timezone() {
-    setenv("TZ", this->_state_app->time_state->timezone_posix.c_str(), 1);
+    setenv("TZ", this->_state_app->timeState->timezone_posix.c_str(), 1);
     tzset();
 }
 void TimeApp::update_time_timer() {
     this->config_time();
     if (this->_state_app->wifiState->wifi_connected ||
-        this->_state_app->time_state->time_is_set) {
+        this->_state_app->timeState->time_is_set) {
         lv_timer_resume(this->_time_update_timer);
     } else {
         lv_timer_pause(this->_time_update_timer);

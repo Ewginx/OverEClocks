@@ -146,7 +146,7 @@ void ServerApp::getSettings(AsyncWebServerRequest *request) {
     doc["threshold"] = this->stateApp->displayState->threshold;
     doc["brightness_level"] = this->stateApp->displayState->brightness_level;
 
-    doc["timezone_posix"] = this->stateApp->time_state->timezone_posix.c_str();
+    doc["timezone_posix"] = this->stateApp->timeState->timezone_posix.c_str();
     doc["digital_main_screen"] = this->stateApp->displayState->digital_main_screen;
 
     doc["weather_enabled"] = this->stateApp->weatherState->weather_enabled;
@@ -270,7 +270,7 @@ void ServerApp::setupSettingsHandlers() {
 
 void ServerApp::saveTimeSettings(JsonVariant &json) {
     JsonObject &&time_json = json.as<JsonObject>();
-    this->stateApp->time_state->save_timezone(
+    this->stateApp->timeState->save_timezone(
         time_json["timezone_posix"].as<const char *>());
     this->stateApp->displayState->save_digital_main_screen(
         time_json["digital_main_screen"].as<bool>());
@@ -407,7 +407,7 @@ void ServerApp::setTime(JsonVariant &json) {
     tv.tv_usec = 0;
     Serial.println(time_json["time"].as<unsigned long>());
     settimeofday(&tv, NULL);
-    this->stateApp->time_state->time_is_set = true;
+    this->stateApp->timeState->time_is_set = true;
     lv_msg_send(MSG_UPDATE_TZ, NULL);
     lv_msg_send(MSG_UPDATE_TIME_TIMER, NULL);
 }

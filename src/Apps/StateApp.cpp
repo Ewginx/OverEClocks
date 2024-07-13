@@ -10,7 +10,7 @@ StateApp::StateApp() {
     alarmState = new AlarmState(preferences);
     themeState = new ThemeState(preferences);
     displayState = new DisplayState(preferences);
-    time_state = new TimeState(preferences);
+    timeState = new TimeState(preferences);
     sound_state = new SoundState(preferences);
     rgb_state = new RGBState(preferences);
     battery_state = new BatteryState();
