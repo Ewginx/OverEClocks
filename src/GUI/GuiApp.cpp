@@ -114,8 +114,8 @@ void GuiApp::setup_gui() {
     this->settings->set_wifi_settings(this->state_app->wifiState->ssid.c_str(),
                                       this->state_app->wifiState->password.c_str());
     this->settings->set_weather_settings(
-        this->state_app->weather_state->city.c_str(),
-        this->state_app->weather_state->language.c_str());
+        this->state_app->weatherState->city.c_str(),
+        this->state_app->weatherState->language.c_str());
     this->settings->set_brightness_slider(
         this->state_app->display_state->brightness_level);
     this->settings->set_brightness_checkbox(

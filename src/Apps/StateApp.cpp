@@ -6,7 +6,7 @@ StateApp::StateApp() {
     instance = this;
     this->preferences.begin(NAMESPACE);
     wifiState = new WiFiState(preferences);
-    weather_state = new WeatherState(preferences);
+    weatherState = new WeatherState(preferences);
     alarm_state = new AlarmState(preferences);
     theme_state = new ThemeState(preferences);
     display_state = new DisplayState(preferences);

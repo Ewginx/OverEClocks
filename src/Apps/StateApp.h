@@ -231,7 +231,7 @@ class StateApp {
 
   public:
     WiFiState *wifiState;
-    WeatherState *weather_state;
+    WeatherState *weatherState;
     AlarmState *alarm_state;
     ThemeState *theme_state;
     DisplayState *display_state;

@@ -149,11 +149,11 @@ void ServerApp::getSettings(AsyncWebServerRequest *request) {
     doc["timezone_posix"] = this->stateApp->time_state->timezone_posix.c_str();
     doc["digital_main_screen"] = this->stateApp->display_state->digital_main_screen;
 
-    doc["weather_enabled"] = this->stateApp->weather_state->weather_enabled;
-    doc["api_key"] = this->stateApp->weather_state->api_key.c_str();
-    doc["city"] = this->stateApp->weather_state->city.c_str();
-    doc["language"] = this->stateApp->weather_state->language.c_str();
-    doc["request_period"] = this->stateApp->weather_state->request_period;
+    doc["weather_enabled"] = this->stateApp->weatherState->weather_enabled;
+    doc["api_key"] = this->stateApp->weatherState->api_key.c_str();
+    doc["city"] = this->stateApp->weatherState->city.c_str();
+    doc["language"] = this->stateApp->weatherState->language.c_str();
+    doc["request_period"] = this->stateApp->weatherState->request_period;
 
     doc["dark_theme_enabled"] = this->stateApp->theme_state->dark_theme_enabled;
     doc["light_primary_color"] = this->stateApp->theme_state->light_primary_color;
@@ -279,20 +279,20 @@ void ServerApp::saveTimeSettings(JsonVariant &json) {
 
 void ServerApp::saveWeatherSettings(JsonVariant &json) {
     JsonObject &&weather_json = json.as<JsonObject>();
-    this->stateApp->weather_state->save_weather_enabled(
+    this->stateApp->weatherState->save_weather_enabled(
         weather_json["weather_enabled"].as<bool>());
-    this->stateApp->weather_state->save_api_key(
+    this->stateApp->weatherState->save_api_key(
         weather_json["api_key"].as<const char *>());
-    this->stateApp->weather_state->save_city(weather_json["city"].as<const char *>());
-    this->stateApp->weather_state->save_language(
+    this->stateApp->weatherState->save_city(weather_json["city"].as<const char *>());
+    this->stateApp->weatherState->save_language(
         weather_json["language"].as<const char *>());
-    this->stateApp->weather_state->save_request_period(
+    this->stateApp->weatherState->save_request_period(
         weather_json["request_period"].as<int>());
     lv_msg_send(MSG_UPDATE_WEATHER_GUI, NULL);
     lv_msg_send(
         MSG_UPDATE_WEATHER_TASK,
-        static_cast<const void *>(&this->stateApp->weather_state->weather_enabled));
-    if (this->stateApp->weather_state->weather_enabled) {
+        static_cast<const void *>(&this->stateApp->weatherState->weather_enabled));
+    if (this->stateApp->weatherState->weather_enabled) {
         lv_msg_send(MSG_WEATHER_UPDATE, NULL);
     }
 }
