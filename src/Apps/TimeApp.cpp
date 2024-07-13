@@ -334,13 +334,13 @@ void TimeApp::update_time_timer() {
 }
 void TimeApp::fire_alarm(int hour, int minute) {
     this->alarm_clock->show_alarm(hour, minute);
-    this->_state_app->alarm_state->alarm_ringing = true;
+    this->_state_app->alarmState->alarm_ringing = true;
     lv_msg_send(MSG_ALARM_PLAY, NULL);
 }
 void TimeApp::stop_alarm() {
     this->alarm_clock->delete_alarm_modal_panel();
     lv_msg_send(MSG_SOUND_STOP, NULL);
-    this->_state_app->alarm_state->alarm_ringing = false;
+    this->_state_app->alarmState->alarm_ringing = false;
 }
 void TimeApp::turn_off_alarm() {
     if (this->current_alarm == 3) {

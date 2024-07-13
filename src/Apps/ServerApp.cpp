@@ -170,12 +170,12 @@ void ServerApp::getSettings(AsyncWebServerRequest *request) {
     doc["dark_text_color"] = this->stateApp->theme_state->dark_text_color;
     doc["dark_grey_color"] = this->stateApp->theme_state->dark_grey_color;
 
-    doc["weekdays_time"] = this->stateApp->alarm_state->weekdays_time.c_str();
-    doc["weekends_time"] = this->stateApp->alarm_state->weekends_time.c_str();
-    doc["one_off_time"] = this->stateApp->alarm_state->oneOff_time.c_str();
-    doc["weekdays_enabled"] = this->stateApp->alarm_state->weekdays_switch_enabled;
-    doc["weekends_enabled"] = this->stateApp->alarm_state->weekends_switch_enabled;
-    doc["one_off_enabled"] = this->stateApp->alarm_state->oneOff_switch_enabled;
+    doc["weekdays_time"] = this->stateApp->alarmState->weekdays_time.c_str();
+    doc["weekends_time"] = this->stateApp->alarmState->weekends_time.c_str();
+    doc["one_off_time"] = this->stateApp->alarmState->oneOff_time.c_str();
+    doc["weekdays_enabled"] = this->stateApp->alarmState->weekdays_switch_enabled;
+    doc["weekends_enabled"] = this->stateApp->alarmState->weekends_switch_enabled;
+    doc["one_off_enabled"] = this->stateApp->alarmState->oneOff_switch_enabled;
 
     doc["fs_space"] = ((unsigned int)LittleFS.totalBytes()) / 1024;
 
@@ -350,11 +350,11 @@ void ServerApp::saveWiFiSettings(JsonVariant &json) {
 
 void ServerApp::saveAlarmClockSettings(JsonVariant &json) {
     JsonObject &&alarm_clock_json = json.as<JsonObject>();
-    this->stateApp->alarm_state->save_alarm_time(
+    this->stateApp->alarmState->save_alarm_time(
         alarm_clock_json["weekdays_time"].as<const char *>(),
         alarm_clock_json["weekends_time"].as<const char *>(),
         alarm_clock_json["one_off_time"].as<const char *>());
-    this->stateApp->alarm_state->save_alarm_switches_enabled(
+    this->stateApp->alarmState->save_alarm_switches_enabled(
         alarm_clock_json["weekdays_enabled"].as<bool>(),
         alarm_clock_json["weekends_enabled"].as<bool>(),
         alarm_clock_json["one_off_enabled"].as<bool>());

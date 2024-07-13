@@ -7,7 +7,7 @@ StateApp::StateApp() {
     this->preferences.begin(NAMESPACE);
     wifiState = new WiFiState(preferences);
     weatherState = new WeatherState(preferences);
-    alarm_state = new AlarmState(preferences);
+    alarmState = new AlarmState(preferences);
     theme_state = new ThemeState(preferences);
     display_state = new DisplayState(preferences);
     time_state = new TimeState(preferences);

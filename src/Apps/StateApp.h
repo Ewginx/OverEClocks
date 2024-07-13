@@ -232,7 +232,7 @@ class StateApp {
   public:
     WiFiState *wifiState;
     WeatherState *weatherState;
-    AlarmState *alarm_state;
+    AlarmState *alarmState;
     ThemeState *theme_state;
     DisplayState *display_state;
     TimeState *time_state;
