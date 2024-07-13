@@ -22,13 +22,13 @@ void RGBApp::begin() {
 void RGBApp::setup() {
     this->begin();
     p_rgbTimer =
-        lv_timer_create(rgb_show_cb_wrapper, stateApp->rgb_state->delay, NULL);
+        lv_timer_create(rgb_show_cb_wrapper, stateApp->rgbState->delay, NULL);
     this->toggle();
 }
 
 void RGBApp::toggle() {
     if (this->isEnabled()) {
-        lv_timer_set_period(this->p_rgbTimer, stateApp->rgb_state->delay);
+        lv_timer_set_period(this->p_rgbTimer, stateApp->rgbState->delay);
         lv_timer_resume(this->p_rgbTimer);
     } else {
         pixels.clear();
@@ -37,7 +37,7 @@ void RGBApp::toggle() {
     }
 }
 
-bool RGBApp::isEnabled() { return stateApp->rgb_state->enabled; }
+bool RGBApp::isEnabled() { return stateApp->rgbState->enabled; }
 
 void RGBApp::update() {
     breatheIterator = 1;
@@ -48,13 +48,13 @@ void RGBApp::update() {
 }
 
 void RGBApp::calculateBreatheCount() {
-    rgbBreatheCount = stateApp->rgb_state->brightness / RGB_BREATHE_STEP * 2;
+    rgbBreatheCount = stateApp->rgbState->brightness / RGB_BREATHE_STEP * 2;
 }
 
 void RGBApp::updateThreeColorArray() {
-    threeColorsArray[0] = stateApp->rgb_state->first_rgb_color;
-    threeColorsArray[1] = stateApp->rgb_state->second_rgb_color;
-    threeColorsArray[2] = stateApp->rgb_state->third_rgb_color;
+    threeColorsArray[0] = stateApp->rgbState->first_rgb_color;
+    threeColorsArray[1] = stateApp->rgbState->second_rgb_color;
+    threeColorsArray[2] = stateApp->rgbState->third_rgb_color;
 }
 
 void RGBApp::changeIteratorToNextColor() {
@@ -66,7 +66,7 @@ void RGBApp::changeIteratorToNextColor() {
 }
 
 void RGBApp::setBrightness() {
-    pixels.setBrightness(this->stateApp->rgb_state->brightness);
+    pixels.setBrightness(this->stateApp->rgbState->brightness);
     pixels.show();
 }
 
@@ -77,7 +77,7 @@ void RGBApp::show() {
     if (this->isDynamicEffect()) {
         staticEffectEnabled = false;
     }
-    switch (this->stateApp->rgb_state->effect) {
+    switch (this->stateApp->rgbState->effect) {
     case RGB_effect::oneColor:
         if (!staticEffectEnabled) {
             this->oneColorEffect();
@@ -105,7 +105,7 @@ void RGBApp::show() {
 }
 
 bool RGBApp::isDisabledAtNight() {
-    if (stateApp->rgb_state->turn_off_at_night &
+    if (stateApp->rgbState->turn_off_at_night &
         stateApp->timeState->is_night) {
         if (!alreadyDisabled) {
             pixels.clear();
@@ -120,8 +120,8 @@ bool RGBApp::isDisabledAtNight() {
 }
 
 bool RGBApp::isDynamicEffect() {
-    if (stateApp->rgb_state->effect != RGB_effect::oneColor ||
-        stateApp->rgb_state->effect != RGB_effect::threeColors) {
+    if (stateApp->rgbState->effect != RGB_effect::oneColor ||
+        stateApp->rgbState->effect != RGB_effect::threeColors) {
         return true;
     }
     return false;
@@ -130,20 +130,20 @@ bool RGBApp::isDynamicEffect() {
 void RGBApp::oneColorEffect() {
     pixels.clear();
     for (uint8_t i = 0; i < NUMBER_OF_PIXELS; i++) {
-        pixels.setPixelColor(i, stateApp->rgb_state->first_rgb_color);
+        pixels.setPixelColor(i, stateApp->rgbState->first_rgb_color);
     }
     pixels.show();
 }
 void RGBApp::threeColorsEffect() {
     pixels.clear();
     for (uint8_t i = 0; i < borderPixels; i++) {
-        pixels.setPixelColor(i, stateApp->rgb_state->first_rgb_color);
+        pixels.setPixelColor(i, stateApp->rgbState->first_rgb_color);
     }
     for (uint8_t i = borderPixels; i < NUMBER_OF_PIXELS - borderPixels; i++) {
-        pixels.setPixelColor(i, stateApp->rgb_state->second_rgb_color);
+        pixels.setPixelColor(i, stateApp->rgbState->second_rgb_color);
     }
     for (uint8_t i = NUMBER_OF_PIXELS - borderPixels; i < NUMBER_OF_PIXELS; i++) {
-        pixels.setPixelColor(i, stateApp->rgb_state->third_rgb_color);
+        pixels.setPixelColor(i, stateApp->rgbState->third_rgb_color);
     }
     pixels.show();
 }
@@ -158,7 +158,7 @@ void RGBApp::cycleThreeColorsBreatheEffect() {
     }
 
     if (breatheIterator < rgbBreatheCount / 2) {
-        pixels.setBrightness(stateApp->rgb_state->brightness -
+        pixels.setBrightness(stateApp->rgbState->brightness -
                                    (breatheIterator * RGB_BREATHE_STEP));
         breatheIterator++;
         pixels.show();
@@ -172,7 +172,7 @@ void RGBApp::cycleThreeColorsBreatheEffect() {
     }
     if (breatheIterator > rgbBreatheCount / 2) {
         pixels.setBrightness(
-            stateApp->rgb_state->brightness -
+            stateApp->rgbState->brightness -
             ((rgbBreatheCount - breatheIterator) * RGB_BREATHE_STEP));
         breatheIterator++;
         pixels.show();

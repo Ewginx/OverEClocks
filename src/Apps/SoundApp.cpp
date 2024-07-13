@@ -47,15 +47,15 @@ void SoundApp::setup() {
     this->setVolume();
 }
 
-void SoundApp::setVolume() { player.setVolume(this->stateApp->sound_state->volume_level); }
+void SoundApp::setVolume() { player.setVolume(this->stateApp->soundState->volume_level); }
 
 void SoundApp::playAlarmSound() {
-    if (!stateApp->sound_state->sound_on)
+    if (!stateApp->soundState->sound_on)
         return;
     this->resetPlayer();
     lv_timer_resume(this->soundLoopTimer);
     this->setVolume();
-    player.playFolderTrack(1, this->stateApp->sound_state->alarm_track);
+    player.playFolderTrack(1, this->stateApp->soundState->alarm_track);
 }
 
 void SoundApp::resetPlayer() {
@@ -71,23 +71,23 @@ void SoundApp::stopSound() {
 }
 
 void SoundApp::playEasterEggSound() {
-    if (this->canPlaySounds(stateApp->sound_state->ee_sound_on)) {
+    if (this->canPlaySounds(stateApp->soundState->ee_sound_on)) {
         this->playSoundFromFolderOnce(easterEggTrackFolder,
-                                      stateApp->sound_state->ee_track);
+                                      stateApp->soundState->ee_track);
     }
 }
 
 bool SoundApp::canPlaySounds(bool soundOn) {
-    if (stateApp->sound_state->sound_on & !stateApp->alarmState->alarm_ringing &
+    if (stateApp->soundState->sound_on & !stateApp->alarmState->alarm_ringing &
         soundOn)
         return true;
     return false;
 }
 
 void SoundApp::playPlugInSound() {
-    if (this->canPlaySounds(stateApp->sound_state->plug_sound_on))
+    if (this->canPlaySounds(stateApp->soundState->plug_sound_on))
         this->playSoundFromFolderOnce(easterEggTrackFolder,
-                                      stateApp->sound_state->plug_track);
+                                      stateApp->soundState->plug_track);
 }
 
 void SoundApp::playSoundFromFolderOnce(uint8_t folder, uint8_t track) {
@@ -95,7 +95,7 @@ void SoundApp::playSoundFromFolderOnce(uint8_t folder, uint8_t track) {
         return;
     }
     this->resetPlayer();
-    player.setVolume(this->stateApp->sound_state->volume_level);
+    player.setVolume(this->stateApp->soundState->volume_level);
     player.playFolderTrack(folder, track);
 }
 
@@ -108,7 +108,7 @@ void SoundApp::loopAlarmSound() {
         return;
     }
     this->setVolume();
-    player.playFolderTrack(this->alarmTrackFolder, this->stateApp->sound_state->alarm_track);
+    player.playFolderTrack(this->alarmTrackFolder, this->stateApp->soundState->alarm_track);
 }
 
 bool SoundApp::isPlayerOffline() {
@@ -144,7 +144,7 @@ int SoundApp::getTrackCountInEasterEggFolder() {
 }
 
 void SoundApp::handlePlayerUsb() {
-    digitalWrite(PLAYER_USB_CONTROL_PIN, this->stateApp->sound_state->enable_player_usb);
+    digitalWrite(PLAYER_USB_CONTROL_PIN, this->stateApp->soundState->enable_player_usb);
 }
 
 SoundApp::~SoundApp() {}

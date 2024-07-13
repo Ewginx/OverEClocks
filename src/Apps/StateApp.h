@@ -236,9 +236,9 @@ class StateApp {
     ThemeState *themeState;
     DisplayState *displayState;
     TimeState *timeState;
-    SoundState *sound_state;
-    RGBState *rgb_state;
-    BatteryState *battery_state;
+    SoundState *soundState;
+    RGBState *rgbState;
+    BatteryState *batteryState;
     MicroclimateState *microclimate_state;
 
     

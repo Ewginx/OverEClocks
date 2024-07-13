@@ -17,8 +17,8 @@ String ServerApp::getInfoForWS() {
     doc["temperature"] = this->stateApp->microclimate_state->indoor_temperature;
     doc["humidity"] = this->stateApp->microclimate_state->indoor_humidity;
     doc["lx"] = this->brightnessApp->getLightLevel();
-    doc["battery_level"] = this->stateApp->battery_state->battery_level;
-    doc["battery_voltage"] = this->stateApp->battery_state->battery_voltage;
+    doc["battery_level"] = this->stateApp->batteryState->battery_level;
+    doc["battery_voltage"] = this->stateApp->batteryState->battery_voltage;
     doc["max_free_block"] = ESP.getMaxAllocHeap() / 1024;
     doc["free_heap"] = ESP.getFreeHeap() / 1024;
     doc["used_space"] = ((unsigned int)LittleFS.usedBytes()) / 1024;
@@ -179,23 +179,23 @@ void ServerApp::getSettings(AsyncWebServerRequest *request) {
 
     doc["fs_space"] = ((unsigned int)LittleFS.totalBytes()) / 1024;
 
-    doc["rgb_enabled"] = this->stateApp->rgb_state->enabled;
-    doc["rgb_mode"] = this->stateApp->rgb_state->effect;
-    doc["first_rgb_color"] = this->stateApp->rgb_state->first_rgb_color;
-    doc["second_rgb_color"] = this->stateApp->rgb_state->second_rgb_color;
-    doc["third_rgb_color"] = this->stateApp->rgb_state->third_rgb_color;
-    doc["rgb_delay"] = this->stateApp->rgb_state->delay;
-    doc["rgb_brightness"] = this->stateApp->rgb_state->brightness;
-    doc["rgb_night"] = this->stateApp->rgb_state->turn_off_at_night;
+    doc["rgb_enabled"] = this->stateApp->rgbState->enabled;
+    doc["rgb_mode"] = this->stateApp->rgbState->effect;
+    doc["first_rgb_color"] = this->stateApp->rgbState->first_rgb_color;
+    doc["second_rgb_color"] = this->stateApp->rgbState->second_rgb_color;
+    doc["third_rgb_color"] = this->stateApp->rgbState->third_rgb_color;
+    doc["rgb_delay"] = this->stateApp->rgbState->delay;
+    doc["rgb_brightness"] = this->stateApp->rgbState->brightness;
+    doc["rgb_night"] = this->stateApp->rgbState->turn_off_at_night;
 
-    doc["sound_on"] = this->stateApp->sound_state->sound_on;
-    doc["ee_sound_on"] = this->stateApp->sound_state->ee_sound_on;
-    doc["plug_sound_on"] = this->stateApp->sound_state->plug_sound_on;
-    doc["volume_level"] = this->stateApp->sound_state->volume_level;
-    doc["alarm_track"] = this->stateApp->sound_state->alarm_track;
-    doc["ee_track"] = this->stateApp->sound_state->ee_track;
-    doc["plug_track"] = this->stateApp->sound_state->plug_track;
-    doc["enable_player_usb"] = this->stateApp->sound_state->enable_player_usb;
+    doc["sound_on"] = this->stateApp->soundState->sound_on;
+    doc["ee_sound_on"] = this->stateApp->soundState->ee_sound_on;
+    doc["plug_sound_on"] = this->stateApp->soundState->plug_sound_on;
+    doc["volume_level"] = this->stateApp->soundState->volume_level;
+    doc["alarm_track"] = this->stateApp->soundState->alarm_track;
+    doc["ee_track"] = this->stateApp->soundState->ee_track;
+    doc["plug_track"] = this->stateApp->soundState->plug_track;
+    doc["enable_player_usb"] = this->stateApp->soundState->enable_player_usb;
 
     serializeJson(doc, *response);
     request->send(response);
@@ -363,28 +363,28 @@ void ServerApp::saveAlarmClockSettings(JsonVariant &json) {
 
 void ServerApp::saveRGBSettings(JsonVariant &json) {
     JsonObject &&rgb_json = json.as<JsonObject>();
-    this->stateApp->rgb_state->save_rgb_enabled(rgb_json["rgb_enabled"].as<bool>());
-    this->stateApp->rgb_state->save_rgb_effect(rgb_json["rgb_mode"].as<int>());
-    this->stateApp->rgb_state->save_rgb_color(rgb_json["first_rgb_color"].as<int>(),
+    this->stateApp->rgbState->save_rgb_enabled(rgb_json["rgb_enabled"].as<bool>());
+    this->stateApp->rgbState->save_rgb_effect(rgb_json["rgb_mode"].as<int>());
+    this->stateApp->rgbState->save_rgb_color(rgb_json["first_rgb_color"].as<int>(),
                                               rgb_json["second_rgb_color"].as<int>(),
                                               rgb_json["third_rgb_color"].as<int>());
-    this->stateApp->rgb_state->save_rgb_delay(rgb_json["rgb_delay"].as<int>());
-    this->stateApp->rgb_state->save_brightness(rgb_json["rgb_brightness"].as<int>());
-    this->stateApp->rgb_state->save_rgb_night(rgb_json["rgb_night"].as<bool>());
+    this->stateApp->rgbState->save_rgb_delay(rgb_json["rgb_delay"].as<int>());
+    this->stateApp->rgbState->save_brightness(rgb_json["rgb_brightness"].as<int>());
+    this->stateApp->rgbState->save_rgb_night(rgb_json["rgb_night"].as<bool>());
 }
 
 void ServerApp::saveSoundSettings(JsonVariant &json) {
     JsonObject &&sound_json = json.as<JsonObject>();
-    this->stateApp->sound_state->save_alarm_track(sound_json["alarm_track"].as<int>());
-    this->stateApp->sound_state->save_ee_track(sound_json["ee_track"].as<int>());
-    this->stateApp->sound_state->save_plug_track(sound_json["plug_track"].as<int>());
-    this->stateApp->sound_state->save_volume_level(sound_json["volume_level"].as<int>());
-    this->stateApp->sound_state->save_sound_on(sound_json["sound_on"].as<bool>());
-    this->stateApp->sound_state->save_ee_sound_enabled(
+    this->stateApp->soundState->save_alarm_track(sound_json["alarm_track"].as<int>());
+    this->stateApp->soundState->save_ee_track(sound_json["ee_track"].as<int>());
+    this->stateApp->soundState->save_plug_track(sound_json["plug_track"].as<int>());
+    this->stateApp->soundState->save_volume_level(sound_json["volume_level"].as<int>());
+    this->stateApp->soundState->save_sound_on(sound_json["sound_on"].as<bool>());
+    this->stateApp->soundState->save_ee_sound_enabled(
         sound_json["ee_sound_on"].as<bool>());
-    this->stateApp->sound_state->save_plug_sound_enabled(
+    this->stateApp->soundState->save_plug_sound_enabled(
         sound_json["plug_sound_on"].as<bool>());
-    this->stateApp->sound_state->enable_player_usb =
+    this->stateApp->soundState->enable_player_usb =
         sound_json["enable_player_usb"].as<bool>();
 }
 

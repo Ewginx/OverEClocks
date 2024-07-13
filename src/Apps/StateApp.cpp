@@ -11,9 +11,9 @@ StateApp::StateApp() {
     themeState = new ThemeState(preferences);
     displayState = new DisplayState(preferences);
     timeState = new TimeState(preferences);
-    sound_state = new SoundState(preferences);
-    rgb_state = new RGBState(preferences);
-    battery_state = new BatteryState();
+    soundState = new SoundState(preferences);
+    rgbState = new RGBState(preferences);
+    batteryState = new BatteryState();
     microclimate_state = new MicroclimateState();
 }
 StateApp::~StateApp() {}

@@ -9,11 +9,11 @@ extern "C" void measure_battery_charge_cb_wrapper(lv_timer_t *timer) {
 }
 void BatteryApp::measure_battery_level_and_send_msg() {
     if (this->_samples_count > 4) {
-        this->_state_app->battery_state->battery_voltage =
+        this->_state_app->batteryState->battery_voltage =
             this->calculate_battery_voltage();
         int battery_level = this->calculate_battery_percentage(
-            this->_state_app->battery_state->battery_voltage);
-        this->_state_app->battery_state->battery_level = battery_level;
+            this->_state_app->batteryState->battery_voltage);
+        this->_state_app->batteryState->battery_level = battery_level;
         lv_msg_send(MSG_SHOW_BATTERY_LVL, static_cast<const void *>(&battery_level));
         this->_samples_count = 0;
     } else {
@@ -31,14 +31,14 @@ int BatteryApp::calculate_battery_percentage(float battery_voltage) {
 }
 void BatteryApp::check_charge_status_and_send_msg() {
     if (digitalRead(BATTERY_CHARGE_PIN)) {
-        if (!this->_state_app->battery_state->battery_charging) {
-            this->_state_app->battery_state->battery_charging = true;
+        if (!this->_state_app->batteryState->battery_charging) {
+            this->_state_app->batteryState->battery_charging = true;
             lv_msg_send(MSG_USB_CONNECTED, NULL);
         }
 
     } else {
-        if (this->_state_app->battery_state->battery_charging) {
-            this->_state_app->battery_state->battery_charging = false;
+        if (this->_state_app->batteryState->battery_charging) {
+            this->_state_app->batteryState->battery_charging = false;
             lv_msg_send(MSG_USB_DISCONNECTED, NULL);
         }
     }
