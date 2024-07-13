@@ -14,8 +14,8 @@ class ButtonApp {
     StateApp *stateApp;
     lv_timer_t *buttonTimer = NULL;
 
-    uint16_t measureDelay = 300;
-    uint16_t elapsedTime = 0;
+    int measureDelay = 300;
+    int elapsedTime = 0;
     bool wasPressed = false;
     void longPress();
     void shortPress();
