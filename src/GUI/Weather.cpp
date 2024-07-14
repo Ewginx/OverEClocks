@@ -1,14 +1,19 @@
 #include "Weather.h"
 
 Weather::Weather() {
+    this->createWeatherWidgets();
+    this->setNoDataValues();
+}
+
+void Weather::createWeatherWidgets() {
     weatherScreen = lv_obj_create(NULL);
-    lv_obj_clear_flag(weatherScreen, LV_OBJ_FLAG_SCROLLABLE); /// Flags
+    lv_obj_clear_flag(weatherScreen, LV_OBJ_FLAG_SCROLLABLE);
 
     weatherPanel = lv_obj_create(weatherScreen);
     lv_obj_set_size(weatherPanel, lv_pct(100), lv_pct(100));
     lv_obj_set_pos(weatherPanel, 0, 0);
     lv_obj_set_align(weatherPanel, LV_ALIGN_CENTER);
-    lv_obj_clear_flag(weatherPanel, LV_OBJ_FLAG_SCROLLABLE); /// Flags
+    lv_obj_clear_flag(weatherPanel, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_add_flag(weatherPanel, LV_OBJ_FLAG_EVENT_BUBBLE);
 
     weatherImage = lv_img_create(weatherPanel);
@@ -21,7 +26,7 @@ Weather::Weather() {
     lv_obj_set_style_text_font(windLabel, &weather_font_18, 0);
 
     weatherCityLabel = lv_label_create(weatherPanel);
-    lv_obj_set_size(weatherCityLabel, 200, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_size(weatherCityLabel, 200, LV_SIZE_CONTENT);
     lv_obj_set_pos(weatherCityLabel, 20, 35);
     lv_obj_set_align(weatherCityLabel, LV_ALIGN_TOP_MID);
 
@@ -41,7 +46,7 @@ Weather::Weather() {
     lv_obj_set_style_text_align(feelsLikeLabel, LV_TEXT_ALIGN_CENTER, 0);
 
     briefingLabel = lv_label_create(weatherPanel);
-    lv_obj_set_size(briefingLabel, 320, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_size(briefingLabel, 320, LV_SIZE_CONTENT);
     lv_obj_set_pos(briefingLabel, 0, 40);
     lv_obj_set_align(briefingLabel, LV_ALIGN_CENTER);
     lv_label_set_long_mode(briefingLabel, LV_LABEL_LONG_SCROLL_CIRCULAR);
@@ -101,9 +106,9 @@ Weather::Weather() {
     weatherFourthTempLabel = lv_label_create(weatherPanel);
     lv_obj_align_to(weatherFourthTempLabel, weatherThirdTempLabel, LV_ALIGN_OUT_RIGHT_TOP,
                     65, 0);
-    this->set_no_data_values();
 }
-void Weather::set_no_data_values() {
+
+void Weather::setNoDataValues() {
     lv_label_set_text_fmt(windLabel, WIND_SYMBOL " %s %s " NO_DATA_SYMBOL, NO_DATA_SYMBOL,
                           weather_translation[wind_speed_uom]);
     lv_label_set_text_fmt(weatherCityLabel, "%s", weather_translation[no_data]);
@@ -122,8 +127,9 @@ void Weather::set_no_data_values() {
     lv_label_set_text(weatherSecondTempLabel, "  -°C");
     lv_label_set_text(weatherThirdTempLabel, "  -°C");
     lv_label_set_text(weatherFourthTempLabel, "  -°C");
-    
+
     lv_obj_set_style_text_font(weatherImage, &weather_font_18, LV_PART_MAIN);
     lv_img_set_src(weatherImage, NO_DATA_SYMBOL);
 }
+
 Weather::~Weather(){};

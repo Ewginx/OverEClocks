@@ -191,7 +191,7 @@ void WeatherApp::updateTaskState() {
         }
     } else {
         if (weatherRunning) {
-            weather->set_no_data_values();
+            weather->setNoDataValues();
             vTaskSuspend(this->weatherTask);
         } else {
             Serial.println("Task already suspended!");
