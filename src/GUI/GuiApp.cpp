@@ -111,16 +111,16 @@ GuiApp::GuiApp(StateApp *state_app) {
 void GuiApp::setup_gui() {
     this->switch_theme(this->state_app->themeState->darkThemeEnabled);
     this->alarm_clock->setAlarmClockGui();
-    this->settings->set_wifi_settings(this->state_app->wifiState->ssid.c_str(),
+    this->settings->setWifiSettings(this->state_app->wifiState->ssid.c_str(),
                                       this->state_app->wifiState->password.c_str());
-    this->settings->set_weather_settings(
+    this->settings->setWeatherSettings(
         this->state_app->weatherState->city.c_str(),
         this->state_app->weatherState->language.c_str());
-    this->settings->set_brightness_slider(
+    this->settings->setBrightnessSliderValue(
         this->state_app->displayState->brightnessLevel);
-    this->settings->set_brightness_checkbox(
+    this->settings->setBrightnessCheckbox(
         this->state_app->displayState->autoBrightness);
-    this->settings->set_theme_switch(this->state_app->themeState->darkThemeEnabled);
+    this->settings->setThemeSwitch(this->state_app->themeState->darkThemeEnabled);
     this->create_gif_img();
 }
 
@@ -259,7 +259,7 @@ void GuiApp::dock_panel_timer_cb(lv_timer_t *timer) {
 }
 
 void GuiApp::settings_button_event_cb(lv_event_t *e) {
-    settings->load_settings_screen(lv_scr_act());
+    settings->loadSettingsScreen(lv_scr_act());
 }
 
 void GuiApp::theme_switch_event_cb(lv_event_t *e) {

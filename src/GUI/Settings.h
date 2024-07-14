@@ -6,29 +6,55 @@
 #include "Translation/Translation.h"
 
 class Settings {
-  private:
-
-    int _settings_panel_height = 450;
-
   public:
-    StateApp *_state_app;
-
-    lv_obj_t *keyboard;
-
-    lv_obj_t *home_screen;
+    StateApp *stateApp;
 
     lv_obj_t *settingsScreen;
+
+    lv_obj_t *themeSwitch;
+
+    void setBrightnessSliderValue(u_int32_t sliderValue, bool withAnimation = false);
+    void setBrightnessCheckbox(bool autoBrightnessEnabled);
+    void setIpAddressLabel(const char *ipAddress);
+    void setWeatherSettings(const char *city, const char *language);
+    void setWifiSettings(const char *ssid, const char *password);
+    void setThemeSwitch(bool darkThemeEnabled);
+
+    void updateWeatherGuiState();
+
+    void createSettingsScreen();
+    void loadSettingsScreen(lv_obj_t *screen);
+
+    void wifiButtonEventCallback(lv_event_t *e);
+    void weatherButtonEventCallback(lv_event_t *e);
+    void weatherSwitchEventCallback(lv_event_t *e);
+    void settingsCityTextAreaEventCallback(lv_event_t *e);
+    void settingsLanguageTextAreaEventCallback(lv_event_t *e);
+    void settingsSsidTextAreaEventCallback(lv_event_t *e);
+    void settingsPasswordTextAreaEventCallback(lv_event_t *e);
+    void settingsBrightnessSliderEventCallback(lv_event_t *e);
+    void settingsAutoBrightnessCheckboxEventCallback(lv_event_t *e);
+    void keyboardEventCallback(lv_event_t *e);
+    void homeButtonEventCallback(lv_event_t *e);
+
+    Settings(StateApp *stateApp);
+    ~Settings();
+
+  private:
+    lv_obj_t *keyboard;
+
+    lv_obj_t *homeScreen;
+
     lv_obj_t *settingsPanel;
 
     lv_obj_t *themeLabel;
-    lv_obj_t *themeSwitch;
 
     lv_obj_t *cityTextArea;
     lv_obj_t *languageTextArea;
     lv_obj_t *cityLabel;
 
-    lv_obj_t *SSIDLabel;
-    lv_obj_t *SSIDTextArea;
+    lv_obj_t *ssidLabel;
+    lv_obj_t *ssidTextArea;
 
     lv_obj_t *passwordLabel;
     lv_obj_t *passwordTextArea;
@@ -49,34 +75,8 @@ class Settings {
     lv_obj_t *brightnessSlider;
     lv_obj_t *autoBrightnessCheckbox;
 
-    void set_weather_settings(const char *city, const char *language);
-    void set_wifi_settings(const char *ssid, const char *password);
-    void set_theme_switch(bool dark_theme_enabled);
-    void set_brightness_slider(u_int32_t slider_value, bool with_anim = false);
-    void set_brightness_checkbox(bool auto_brightness_enabled);
+    int settingsPanelHeight = 450;
 
-    void update_weather_gui_state();
-
-    void create_settings_screen();
-    void load_settings_screen(lv_obj_t *screen);
-
-    void create_keyboard(lv_obj_t *target);
-    void delete_keyboard();
-    
-    void set_ipAddressLabel(const char* ip_address);
-
-    void wifi_button_event_cb(lv_event_t *e);
-    void weather_button_event_cb(lv_event_t *e);
-    void weather_switch_event_cb(lv_event_t *e);
-    void settings_cityTextArea_event_cb(lv_event_t *e);
-    void settings_languageTextArea_event_cb(lv_event_t *e);
-    void settings_SSIDTextArea_event_cb(lv_event_t *e);
-    void settings_passwordTextArea_event_cb(lv_event_t *e);
-    void settings_brightnessSlider_event_cb(lv_event_t *e);
-    void settings_autoBrightness_checkbox_event_cb(lv_event_t *e);
-    void keyboard_event_cb(lv_event_t *e);
-    void home_button_event_cb(lv_event_t *e);
-
-    Settings(StateApp *state_app);
-    ~Settings();
+    void createKeyboard(lv_obj_t *target);
+    void deleteKeyboard();
 };

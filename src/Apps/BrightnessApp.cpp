@@ -90,7 +90,7 @@ void BrightnessApp::changeBrightnessSmoothly(int newLightLevel, int oldLightLeve
 }
 
 void BrightnessApp::setAutoBrightnessTimer(bool autoBrightness) {
-    this->settings->set_brightness_checkbox(autoBrightness);
+    this->settings->setBrightnessCheckbox(autoBrightness);
     if (this->lightSensorTimer == NULL & autoBrightness) {
         lightSensorTimer = lv_timer_create(lightSensorTimerCallbackWrapper, 1500, NULL);
     } else if (this->lightSensorTimer != NULL & !autoBrightness) {
@@ -100,7 +100,7 @@ void BrightnessApp::setAutoBrightnessTimer(bool autoBrightness) {
 }
 
 void BrightnessApp::setDisplayBrightness(uint8_t brightness) {
-    this->settings->set_brightness_slider(brightness);
+    this->settings->setBrightnessSliderValue(brightness);
     this->display->set_brightness((uint8_t)brightness);
 }
 
