@@ -10,10 +10,14 @@ class AnalogClock {
     lv_obj_t *imageArmHour;
     lv_obj_t *imageArmMinute;
     lv_obj_t *imageArmSecond;
-    void set_time(int hour, int minute, int second);
-    void set_default_values();
-    void set_analog_clock_img_src();
+
+    void setTime(int hour, int minute, int second);
+    void setDefaultValues();
+    void setAnalogClockImages();
 
     AnalogClock();
     ~AnalogClock();
+
+  private:
+    void createAnalogClockWidgets();
 };

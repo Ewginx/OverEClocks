@@ -71,7 +71,7 @@ void OEClockApp::initGUI() {
     Serial.println();
     Serial.println("Start GUI initialization");
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-        this->guiApp->analog_clock->set_analog_clock_img_src();
+        this->guiApp->analog_clock->setAnalogClockImages();
         this->guiApp->setup_gui();
         this->brightnessApp->setAutoBrightnessTimer(
             this->stateApp->displayState->autoBrightness);

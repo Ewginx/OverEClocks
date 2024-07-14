@@ -146,7 +146,7 @@ void GuiApp::update_gif_img_src() {
     lv_gif_restart(this->gif_image);
 }
 
-void GuiApp::update_clock_img_src() { this->analog_clock->set_analog_clock_img_src(); }
+void GuiApp::update_clock_img_src() { this->analog_clock->setAnalogClockImages(); }
 
 void GuiApp::load_default_screen() {
     if (this->state_app->displayState->mainScreenIsDigital) {
