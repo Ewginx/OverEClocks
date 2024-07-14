@@ -2,7 +2,6 @@
 #include "Translation/Translation.h"
 #include <lvgl.h>
 
-
 class DigitalClock {
 
   public:
@@ -12,10 +11,12 @@ class DigitalClock {
     lv_obj_t *secondsLabel;
     lv_obj_t *dateLabel;
 
-    void set_time(int hours, int minutes, int seconds);
-    void set_date(int month_day, int month, int year, int day);
-    void set_default_values();
+    void setTime(int hours, int minutes, int seconds);
+    void setDate(int month_day, int month, int year, int day);
+    void setDefaultValues();
 
     DigitalClock();
     ~DigitalClock();
+    private:
+    void createDigitalClockWidgets();
 };

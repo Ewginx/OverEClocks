@@ -61,8 +61,8 @@ void TimeApp::notifyAboutTime() {
     getLocalTime(&timeinfo);
     this->isNight();
     analogClock->setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-    digitalClock->set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-    digitalClock->set_date(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
+    digitalClock->setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+    digitalClock->setDate(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
                            timeinfo.tm_wday);
     this->checkAlarmClocks(timeinfo);
 }
