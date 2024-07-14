@@ -5,22 +5,23 @@
 #include <Arduino.h>
 
 class BatteryApp {
-  private:
-    lv_timer_t *battery_level_timer = NULL;
-    lv_timer_t *battery_charge_timer = NULL;
-    float _voltage_samples[5] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    int _samples_count = 0;
-
   public:
-    StateApp *_state_app;
-    void measure_battery_level_and_send_msg();
-    int calculate_battery_percentage(float battery_voltage);
-    void check_charge_status_and_send_msg();
-    uint8_t sigmoidal(float voltage, float minVoltage, float maxVoltage);
-    void get_voltage_sample();
-    float calculate_battery_voltage();
+    StateApp *stateApp;
 
     void setup();
-    BatteryApp(StateApp *state_app);
+    void measureBatteryLevelAndSendMsg();
+    int calculateBatteryPercentage(float batteryVoltage);
+    void checkChargeStatusAndSendMsg();
+    int sigmoidal(float voltage, float minVoltage, float maxVoltage);
+    void getVoltageSample();
+    float calculateBatteryVoltage();
+
+    BatteryApp(StateApp *stateApp);
     ~BatteryApp();
+
+  private:
+    lv_timer_t *batteryLevelTimer = NULL;
+    lv_timer_t *batteryChargingTimer = NULL;
+    float voltageSamples[5] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    int voltageSamplesCount = 0;
 };
