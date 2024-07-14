@@ -21,7 +21,7 @@ extern "C" void dock_panel_timer_cb_wrapper(lv_timer_t *timer) {
     instance->dock_panel_timer_cb(timer);
 }
 extern "C" void dock_update_wifi_icon_cb(void *subscriber, lv_msg_t *msg) {
-    instance->dock_panel->show_wifi_connection(
+    instance->dock_panel->changeWifiConnectionIcon(
         instance->state_app->wifiState->wifiIsConnected);
 }
 extern "C" void user_activity_event_cb_wrapper(lv_event_t *e) {
@@ -216,7 +216,7 @@ void GuiApp::switch_theme(bool dark_theme_enabled) {
 
 void GuiApp::screen_load_event_cb(lv_event_t *e) {
     if (lv_scr_act() != this->settings->settingsScreen) {
-        this->dock_panel->change_dock_parent(lv_scr_act());
+        this->dock_panel->changeDockPanelParent(lv_scr_act());
     }
     this->alarm_clock->changeAlarmPanelParentScreen();
     if (lv_scr_act() != this->analog_clock->analogClockScreen &

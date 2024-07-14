@@ -45,9 +45,9 @@ void MicroclimateApp::temperatureSensorTimerCallback() {
             this->stateApp->microclimateState->indoorHumidity = this->getHumidity();
             this->stateApp->microclimateState->indoorTemperature =
                 this->getTemperature();
-            this->dockPanel->set_temperature(
+            this->dockPanel->setTemperatureLabel(
                 this->stateApp->microclimateState->indoorTemperature);
-            this->dockPanel->set_humidity(
+            this->dockPanel->setHumidityLabel(
                 this->stateApp->microclimateState->indoorHumidity);
         } else {
             Serial.println("Failed read");
