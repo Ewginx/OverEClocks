@@ -10,6 +10,7 @@ class BrightnessApp {
   public:
     StateApp *stateApp;
 
+    void setup();
     bool begin();
     void setAutoBrightnessTimer(bool autoBrightness);
     void lightSensorTimerCallback();

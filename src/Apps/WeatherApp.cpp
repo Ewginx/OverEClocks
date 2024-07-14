@@ -51,10 +51,10 @@ void WeatherApp::assembleUrl() {
 void WeatherApp::createTask() {
     xTaskCreatePinnedToCore(this->updateWeather, /* Function to implement the task */
                             "request",           /* Name of the task */
-                            4096, /* Stack size in bytes */
-                            NULL,                           /* Task input parameter */
-                            0,                              /* Priority of the task */
-                            &this->weatherTask,             /* Task handle. */
+                            4096,                /* Stack size in bytes */
+                            NULL,                /* Task input parameter */
+                            0,                   /* Priority of the task */
+                            &this->weatherTask,  /* Task handle. */
                             0);
     vTaskSuspend(this->weatherTask);
 }
@@ -88,12 +88,12 @@ void WeatherApp::updateWeather(void *parameter) {
             uint8_t retry = 0;
             for (retry; retry < 3; retry++) {
                 int statusCode = instance->sendGetRequest();
-                Serial.print("Status code: ");
+                Serial.print("Weather response status code: ");
                 Serial.println(statusCode);
                 if (statusCode == 200) {
                     String response = instance->client.responseBody();
                     instance->deserializeJsonResponse(response);
-                    Serial.printf("Waiting %i minutes for the next request\n",
+                    Serial.printf("Waiting %u minutes for the next request\n",
                                   instance->stateApp->weatherState->requestPeriod /
                                       60000);
                     break;
@@ -108,8 +108,7 @@ void WeatherApp::updateWeather(void *parameter) {
                 instance->suspendTaskOnError();
             }
         }
-        vTaskDelay(instance->stateApp->weatherState->requestPeriod /
-                   portTICK_PERIOD_MS);
+        vTaskDelay(instance->stateApp->weatherState->requestPeriod / portTICK_PERIOD_MS);
     }
 }
 
@@ -146,7 +145,7 @@ void WeatherApp::deserializeJsonResponse(String &response) {
         Serial.println(error.c_str());
         return;
     }
-
+    Serial.println();
     Serial.println("Updating weather");
 
     JsonObject location = doc["location"];
@@ -282,8 +281,6 @@ void WeatherApp::setPressure(int pressure) {
 }
 
 void WeatherApp::setWeatherImg(const char *url) {
-    Serial.println("url");
-    Serial.println(url);
     char path[26];
     if (url[35] == 'n') {
         char code[4];

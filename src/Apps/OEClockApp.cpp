@@ -4,16 +4,16 @@ static OEClockApp *instance = NULL;
 
 SemaphoreHandle_t mutex = xSemaphoreCreateMutex();
 
-extern "C" void set_low_cpu_frequency(void *subscriber, lv_msg_t *msg) {
+extern "C" void setLowCpuFrequency(void *subscriber, lv_msg_t *msg) {
     setCpuFrequencyMhz(80);
 }
-extern "C" void set_high_cpu_frequency(void *subscriber, lv_msg_t *msg) {
+extern "C" void setHighCpuFrequency(void *subscriber, lv_msg_t *msg) {
     setCpuFrequencyMhz(240);
 }
 
-void serial_print(const char *buf) { Serial.println(buf); }
+void serialPrint(const char *buf) { Serial.println(buf); }
 
-void update_display(void *parameter) {
+void updateDisplay(void *parameter) {
     for (;;) {
         if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
             lv_timer_handler();
@@ -26,84 +26,107 @@ void update_display(void *parameter) {
 OEClockApp::OEClockApp() {
     instance = this;
     display = new Display();
-    state_app = new StateApp();
-    rgb_app = new RGBApp(this->state_app);
-    wifi_app = new WiFiApp(this->state_app, mutex);
-    gui_app = new GuiApp(this->state_app);
-    weather_app = new WeatherApp(this->gui_app->weather, this->state_app);
-    time_app = new TimeApp(gui_app->digital_clock, this->gui_app->analog_clock,
-                           this->gui_app->alarm_clock, this->state_app);
-    brightness_app =
-        new BrightnessApp(this->display, this->gui_app->settings, this->state_app);
-    microclimate_app = new MicroclimateApp(this->gui_app->dock_panel, this->state_app);
-    server_app = new ServerApp(state_app, brightness_app);
-    sound_app = new SoundApp(state_app);
-    button_app = new ButtonApp(state_app);
-    battery_app = new BatteryApp(state_app);
-    lv_msg_subscribe(MSG_SET_LOW_CLOCK, set_low_cpu_frequency, NULL);
-    lv_msg_subscribe(MSG_SET_HIGH_CLOCK, set_high_cpu_frequency, NULL);
+    stateApp = new StateApp();
+    rgbApp = new RGBApp(this->stateApp);
+    wifiApp = new WiFiApp(this->stateApp, mutex);
+    guiApp = new GuiApp(this->stateApp);
+    weatherApp = new WeatherApp(this->guiApp->weather, this->stateApp);
+    timeApp = new TimeApp(guiApp->digital_clock, this->guiApp->analog_clock,
+                          this->guiApp->alarm_clock, this->stateApp);
+    brightnessApp =
+        new BrightnessApp(this->display, this->guiApp->settings, this->stateApp);
+    microclimateApp = new MicroclimateApp(this->guiApp->dock_panel, this->stateApp);
+    serverApp = new ServerApp(stateApp, brightnessApp);
+    soundApp = new SoundApp(stateApp);
+    buttonApp = new ButtonApp(stateApp);
+    batteryApp = new BatteryApp(stateApp);
+    lv_msg_subscribe(MSG_SET_LOW_CLOCK, setLowCpuFrequency, NULL);
+    lv_msg_subscribe(MSG_SET_HIGH_CLOCK, setHighCpuFrequency, NULL);
 }
 
 void OEClockApp::setup() {
     Serial.begin(115200);
-    lv_log_register_print_cb(serial_print);
-    this->init_i2c_apps();
-    this->sound_app->setup();
+    lv_log_register_print_cb(serialPrint);
+    TaskHandle_t updateDisplayTask = this->createLoadingScreenTask();
+    this->initI2CApps();
     // lv_port_sd_fs_init();
     lv_port_littlefs_fs_init();
-    TaskHandle_t update_display_task;
-    this->gui_app->create_loading_screen();
-    xTaskCreatePinnedToCore(update_display,        /* Function to implement the task */
-                            "update_display_task", /* Name of the task */
-                            3072, /* Stack size in words */ // change from 10000 bytes
-                            NULL,                           /* Task input parameter */
-                            0,                              /* Priority of the task */
-                            &update_display_task,           /* Task handle. */
-                            0);
-
-    this->brightness_app->setDisplayBrightness(
-        this->state_app->displayState->brightnessLevel);
-    this->init_gui();
-    this->weather_app->setup();
-    this->wifi_app->setup();
-    this->server_app->setup();
-    this->rgb_app->setup();
-    this->battery_app->setup();
-    if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-        this->gui_app->load_default_screen();
-        this->gui_app->delete_loading_screen();
-        xSemaphoreGive(mutex);
-    }
-    vTaskDelete(update_display_task);
-    Serial.printf("Full heap: %d KB \n", ESP.getHeapSize() / 1024);
-    Serial.printf("Max free heap chunk: %d KB \n", ESP.getMaxAllocHeap() / 1024);
-    Serial.printf("Free heap: %d KB \n", ESP.getFreeHeap() / 1024);
+    this->initGUI();
+    this->initApps();
+    this->deleteLoadingScreenTask(updateDisplayTask);
     setCpuFrequencyMhz(80);
+    this->printHeapInformation();
 }
-void OEClockApp::init_i2c_apps() {
+void OEClockApp::initI2CApps() {
+    Serial.println();
+    Serial.println("Start I2C Apps initialization");
     Wire.begin();
     Wire.setClock(100000);
-    this->brightness_app->begin();
-    this->microclimate_app->begin();
+    this->brightnessApp->begin();
+    this->microclimateApp->begin();
+    Serial.println("I2C Apps initialized");
 }
 
-void OEClockApp::init_gui() {
+void OEClockApp::initGUI() {
+    Serial.println();
+    Serial.println("Start GUI initialization");
     if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
-        this->gui_app->analog_clock->set_analog_clock_img_src();
-        this->gui_app->setup_gui();
-        this->brightness_app->setAutoBrightnessTimer(
-            this->state_app->displayState->autoBrightness);
+        this->guiApp->analog_clock->set_analog_clock_img_src();
+        this->guiApp->setup_gui();
+        this->brightnessApp->setAutoBrightnessTimer(
+            this->stateApp->displayState->autoBrightness);
         xSemaphoreGive(mutex);
     }
     Serial.println("GUI initialized");
 }
 
+void OEClockApp::initApps() {
+    Serial.println();
+    Serial.println("Start Apps initialization");
+    this->soundApp->setup();
+    this->brightnessApp->setup();
+    this->weatherApp->setup();
+    this->wifiApp->setup();
+    this->serverApp->setup();
+    this->rgbApp->setup();
+    this->batteryApp->setup();
+    Serial.println("Apps initialized");
+}
+
+void OEClockApp::printHeapInformation() {
+    Serial.println();
+    Serial.printf("Full heap: %u KB \n", ESP.getHeapSize() / 1024);
+    Serial.printf("Max free heap chunk: %u KB \n", ESP.getMaxAllocHeap() / 1024);
+    Serial.printf("Free heap: %u KB \n", ESP.getFreeHeap() / 1024);
+}
+
+TaskHandle_t OEClockApp::createLoadingScreenTask() {
+    TaskHandle_t updateDisplayTask;
+    this->guiApp->create_loading_screen();
+    xTaskCreatePinnedToCore(updateDisplay,       /* Function to implement the task */
+                            "updateDisplayTask", /* Name of the task */
+                            3072,                /* Stack size in words */
+                            NULL,                /* Task input parameter */
+                            0,                   /* Priority of the task */
+                            &updateDisplayTask,  /* Task handle. */
+                            0);
+    return updateDisplayTask;
+}
+
+void OEClockApp::deleteLoadingScreenTask(TaskHandle_t updateDisplayTask) {
+    if (xSemaphoreTake(mutex, portMAX_DELAY) == pdTRUE) {
+        this->guiApp->load_default_screen();
+        xSemaphoreGive(mutex);
+    }
+    vTaskDelete(updateDisplayTask);
+}
+
 void OEClockApp::loop() {
-    // red line artifacts on screen, when use this timer handler, need proper
-    // investigation lv_timer_handler_run_in_period(5);
+    /* red line artifacts on screen, when use this timer handler, need proper
+    investigation lv_timer_handler_run_in_period(5);*/
     lv_task_handler();
     delay(5);
-    server_app->run();
+    serverApp->run();
 }
 
 OEClockApp::~OEClockApp() {}

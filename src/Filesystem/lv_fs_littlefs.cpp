@@ -1,13 +1,15 @@
 #include "lv_fs_littlefs.h"
 
 void fs_init_littlefs(void) {
-
+    Serial.println();
+    Serial.println("Start LittleFS initialization");
     if (!LittleFS.begin(true)) {
         Serial.println("An Error has occurred while mounting LittleFS");
     }
 
     Serial.printf("Total space: %d Kb\n", ((unsigned int)LittleFS.totalBytes()) / 1024);
-    Serial.printf("Used space: %d Kb\n",  ((unsigned int)LittleFS.usedBytes()) / 1024);
+    Serial.printf("Used space: %d Kb\n", ((unsigned int)LittleFS.usedBytes()) / 1024);
+    Serial.println("LittleFS initialized");
 }
 
 void *littlefs_fs_open(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode) {
@@ -48,7 +50,7 @@ lv_fs_res_t littlefs_fs_close(lv_fs_drv_t *drv, void *file_p) {
 }
 
 lv_fs_res_t littlefs_fs_read(lv_fs_drv_t *drv, void *file_p, void *fileBuf, uint32_t btr,
-                       uint32_t *br) {
+                             uint32_t *br) {
     LV_UNUSED(drv);
 
     File *fp = (File *)file_p;
@@ -57,8 +59,8 @@ lv_fs_res_t littlefs_fs_read(lv_fs_drv_t *drv, void *file_p, void *fileBuf, uint
 
     return (int32_t)(*br) < 0 ? LV_FS_RES_UNKNOWN : LV_FS_RES_OK;
 }
-lv_fs_res_t littlefs_fs_write(lv_fs_drv_t *drv, void *file_p, const void *buf, uint32_t btw,
-                        uint32_t *bw) {
+lv_fs_res_t littlefs_fs_write(lv_fs_drv_t *drv, void *file_p, const void *buf,
+                              uint32_t btw, uint32_t *bw) {
     LV_UNUSED(drv);
 
     File *fp = (File *)file_p;
@@ -69,7 +71,7 @@ lv_fs_res_t littlefs_fs_write(lv_fs_drv_t *drv, void *file_p, const void *buf, u
 }
 
 lv_fs_res_t littlefs_fs_seek(lv_fs_drv_t *drv, void *file_p, uint32_t pos,
-                       lv_fs_whence_t whence) {
+                             lv_fs_whence_t whence) {
     LV_UNUSED(drv);
 
     File *fp = (File *)file_p;

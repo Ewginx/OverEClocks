@@ -38,6 +38,10 @@ bool BrightnessApp::begin() {
     }
 }
 
+void BrightnessApp::setup() {
+    this->setDisplayBrightness(this->stateApp->displayState->brightnessLevel);
+}
+
 void BrightnessApp::lightSensorTimerCallback() {
     if (lightSensor.hasValue()) {
         int lightLevel = this->getLightLevel();

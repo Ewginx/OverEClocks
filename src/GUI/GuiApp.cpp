@@ -154,6 +154,7 @@ void GuiApp::load_default_screen() {
     } else {
         lv_scr_load(analog_clock->analogClockScreen);
     }
+    this->delete_loading_screen();
 };
 
 void GuiApp::swipe_screen_event_cb(lv_event_t *e) {
