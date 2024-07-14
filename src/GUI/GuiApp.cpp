@@ -110,7 +110,7 @@ GuiApp::GuiApp(StateApp *state_app) {
 
 void GuiApp::setup_gui() {
     this->switch_theme(this->state_app->themeState->darkThemeEnabled);
-    this->alarm_clock->set_alarm_clock_gui();
+    this->alarm_clock->setAlarmClockGui();
     this->settings->set_wifi_settings(this->state_app->wifiState->ssid.c_str(),
                                       this->state_app->wifiState->password.c_str());
     this->settings->set_weather_settings(
@@ -200,7 +200,7 @@ void GuiApp::swipe_alarm_screen() {
     if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT) {
         lv_scr_load_anim(this->analog_clock->analogClockScreen,
                          LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
-        this->alarm_clock->delete_roller_modal_panel();
+        this->alarm_clock->deleteRollerModalPanel();
     }
 }
 
@@ -218,7 +218,7 @@ void GuiApp::screen_load_event_cb(lv_event_t *e) {
     if (lv_scr_act() != this->settings->settingsScreen) {
         this->dock_panel->change_dock_parent(lv_scr_act());
     }
-    this->alarm_clock->change_alarm_panel_parent_screen();
+    this->alarm_clock->changeAlarmPanelParentScreen();
     if (lv_scr_act() != this->analog_clock->analogClockScreen &
         lv_scr_act() != this->digital_clock->digitalClockScreen) {
         lv_timer_reset(this->_screen_timer);

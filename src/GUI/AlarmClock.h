@@ -7,17 +7,6 @@
 #include <stdio.h>
 
 class AlarmClock {
-  private:
-    char _hour_count[HOUR_COUNT * 3] = {0};
-    char _minute_count[MINUTE_COUNT * 3] = {0};
-
-    StateApp *_state_app;
-
-    void set_roller_time(const lv_obj_t *label);
-
-    void create_roller_modal_panel(lv_obj_t *target_label);
-    void create_roller_data();
-    void create_alarm_modal_panel(int hour, int minute);
 
   public:
     lv_obj_t *alarmScreen;
@@ -54,33 +43,48 @@ class AlarmClock {
     lv_obj_t *modalOkButton;
     lv_obj_t *modalOkButtonLabel;
 
-    lv_obj_t *target_label;
+    lv_obj_t *targetLabel;
 
-    void change_alarm_panel_parent_screen();
-    void delete_alarm_modal_panel();
-    void show_alarm(int hour, int minute);
-    void delete_roller_modal_panel();
+    void changeAlarmPanelParentScreen();
+    void deleteAlarmModalPanel();
+    void showAlarm(int hour, int minute);
+    void deleteRollerModalPanel();
 
-    int parse_alarm_label(char *string, bool hour = true);
+    void eventAlarmModalCancelButtonCallback(lv_event_t *e);
+    void eventAlarmModalOkButtonCallback(lv_event_t *e);
+    void eventOffAlarmButtonCallback(lv_event_t *e);
+    void eventSnoozeAlarmButtonCallback(lv_event_t *e);
+    void eventAlarmButtonsCallback(lv_event_t *e);
+    void eventAlarmSwitchCallback();
 
-    void event_alarmModalCancelButton_cb(lv_event_t *e);
-    void event_alarmModalOkButton_cb(lv_event_t *e);
-    void event_offAlarmButton_cb(lv_event_t *e);
-    void event_snoozeAlarmButton_cb(lv_event_t *e);
-    void event_alarmButtons_cb(lv_event_t *e);
-    void event_alarmSwitch_cb();
+    void setDefaultValues();
 
-    void set_default_values();
+    void setAlarmClockGui();
 
-    void set_alarm_clock_gui();
-
-    void set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw);
-    void set_alarm_buttons(const char *weekdays_time, const char *weekends_time,
-                           const char *oneOff_time);
     int getHourFromAlarmLabel(lv_obj_t *alarmLabel);
     int getMinuteFromAlarmLabel(lv_obj_t *alarmLabel);
+
     bool isAlarmDisabled(lv_obj_t *alarmSwitch);
 
-    AlarmClock(StateApp *state_app);
+    AlarmClock(StateApp *stateApp);
     ~AlarmClock();
+
+  private:
+    char hourCount[HOUR_COUNT * 3] = {0};
+    char minuteCount[MINUTE_COUNT * 3] = {0};
+
+    StateApp *stateApp;
+    void createAlarmClockWidgets();
+
+    void setRollerTime(const lv_obj_t *label);
+
+    void createRollerModalPanel(lv_obj_t *targetLabel);
+    void createRollerData();
+    void createAlarmModalPanel(int hour, int minute);
+
+    void setAlarmSwitches(bool weekdaysSwitch, bool weekendsSwitch, bool oneOffSwitch);
+    void setAlarmButtons(const char *weekdaysTime, const char *weekendsTime,
+                         const char *oneOffTime);
+
+    int parseAlarmLabel(char *string, bool hour = true);
 };

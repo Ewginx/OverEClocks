@@ -324,7 +324,7 @@ void TimeApp::copyTimeinfoStruct(tm &newTm, tm &oldTm) {
 }
 
 void TimeApp::fireAlarm(int hour, int minute) {
-    alarmClock->show_alarm(hour, minute);
+    alarmClock->showAlarm(hour, minute);
     this->stateApp->alarmState->alarmIsRinging = true;
     lv_msg_send(MSG_ALARM_PLAY, NULL);
 }
@@ -342,7 +342,7 @@ void TimeApp::processFireAlarm(int alarmType) {
     }
 }
 void TimeApp::stopAlarm() {
-    this->alarmClock->delete_alarm_modal_panel();
+    this->alarmClock->deleteAlarmModalPanel();
     lv_msg_send(MSG_SOUND_STOP, NULL);
     this->stateApp->alarmState->alarmIsRinging = false;
 }
