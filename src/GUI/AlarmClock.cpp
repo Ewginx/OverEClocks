@@ -374,6 +374,18 @@ void AlarmClock::set_alarm_buttons(const char *weekdays_time, const char *weeken
     lv_label_set_text(oneOffButtonLabel, oneOff_time);
 }
 
+int AlarmClock::getHourFromAlarmLabel(lv_obj_t *alarmLabel) {
+    return this->parse_alarm_label(lv_label_get_text(alarmLabel), true);
+}
+
+int AlarmClock::getMinuteFromAlarmLabel(lv_obj_t *alarmLabel) {
+    return this->parse_alarm_label(lv_label_get_text(alarmLabel), false);
+}
+
+bool AlarmClock::isAlarmDisabled(lv_obj_t *alarmSwitch) {
+    return !lv_obj_has_state(alarmSwitch, LV_STATE_CHECKED);
+}
+
 void AlarmClock::event_alarmModalCancelButton_cb(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t *target = lv_event_get_target(e);

@@ -77,6 +77,9 @@ class AlarmClock {
     void set_alarm_switches(bool weekdays_sw, bool weekends_sw, bool oneOff_sw);
     void set_alarm_buttons(const char *weekdays_time, const char *weekends_time,
                            const char *oneOff_time);
+    int getHourFromAlarmLabel(lv_obj_t *alarmLabel);
+    int getMinuteFromAlarmLabel(lv_obj_t *alarmLabel);
+    bool isAlarmDisabled(lv_obj_t *alarmSwitch);
 
     AlarmClock(StateApp *state_app);
     ~AlarmClock();

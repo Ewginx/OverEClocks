@@ -1,21 +1,24 @@
 #pragma once
 // #include <Arduino.h>
 #include "MessageCodes.h"
-#include "Symbols.h"
 #include "Pins.h"
+#include "Symbols.h"
+
 
 #define DEVICE_NAME "OEClock"
 
 //-----------------------------TIME SETTINGS-----------------------------
-// Posix Timezone String https://www.veron.nl/wp-content/uploads/2022/12/Posix-Timezone-Strings.pdf
+// Posix Timezone String
+// https://www.veron.nl/wp-content/uploads/2022/12/Posix-Timezone-Strings.pdf
 #define TIMEZONE "GMT"
 // Time check period, ms
 #define TIME_UPDATE_INTERVAL 900
 #define HOUR_COUNT 24
 #define MINUTE_COUNT 60
-
+#define SNOOZE_PERIOD_MINUTES 10
+#define SNOOZE_RETRY 6
 //-----------------------------LANGUAGE SETTINGS-----------------------------
-/* 
+/*
 "0" - english
 "1" - русский
 */
@@ -86,11 +89,11 @@ Zulu	zu
 /*access clocks web server via MDNS_NAME.local
 works on MacOS and IPhone, Android 12 and higher
 works on Windows 10 10.0.19042 and higher or need to install Bonjour
-or just simply add OECLOCK_IP_ADDRESS YOUR_MDNS_NAME to C:\windows\system32\drivers\etc\hosts (e.g. 192.XXX.X.XX oeclock.local),
-don't forget to give OEClock a static IP in router settings
-need to install Ahavi on Linux
+or just simply add OECLOCK_IP_ADDRESS YOUR_MDNS_NAME to
+C:\windows\system32\drivers\etc\hosts (e.g. 192.XXX.X.XX oeclock.local), don't forget to
+give OEClock a static IP in router settings need to install Ahavi on Linux
 */
-#define MDNS_NAME "oeclock" 
+#define MDNS_NAME "oeclock"
 
 #define WIFI_CONNECT_ATTEMPTS 20
 #define WIFI_CONNECT_DELAY 500
@@ -104,16 +107,17 @@ need to install Ahavi on Linux
 #define DISPLAY_WIDTH 480
 #define DISPLAY_HEIGHT 320
 
-//period in which active screen will be set back to DigitalClockScreen if no user activity is presented
-#define SCREEN_SWAP_PERIOD MILLISECONDS * 30 
+// period in which active screen will be set back to DigitalClockScreen if no user
+// activity is presented
+#define SCREEN_SWAP_PERIOD MILLISECONDS * 30
 #define DOCK_PANEL_HIDE_PERIOD MILLISECONDS * 15
 
 #define DARK_THEME_CHANGE_THRESHOLD 25
 #define LIGHT_THEME_CHANGE_THRESHOLD 35
 
 //-----------------------------RGB SETTINGS-----------------------------
-#define RGB_TIME_MORNING 9 //Hour
-#define RGB_TIME_EVENING 22 //Hour
+#define RGB_TIME_MORNING 9  // Hour
+#define RGB_TIME_EVENING 22 // Hour
 #define NUMBER_OF_PIXELS 8
 
 //-----------------------------BATTERY SETTINGS-----------------------------
@@ -133,9 +137,8 @@ need to install Ahavi on Linux
 #define BAT_MIN_VOLT 2.6
 
 //-----------------------------TEMPERATURE SENSOR SETTINGS-----------------------------
-//offset for temperature calibration
+// offset for temperature calibration
 #define TEMPERATURE_OFFSET 4
-
 
 //-----------------------------MISC-----------------------------
 // Preferences namespace
@@ -143,7 +146,8 @@ need to install Ahavi on Linux
 
 #define MILLISECONDS 1000
 
-#define WEATHER_API_POLLING_INTERVAL_MILLISECONDS (MILLISECONDS * WEATHER_API_POLLING_INTERVAL_MINUTES * 60)
+#define WEATHER_API_POLLING_INTERVAL_MILLISECONDS                                        \
+    (MILLISECONDS * WEATHER_API_POLLING_INTERVAL_MINUTES * 60)
 
 #define SECONDS_IN_ONE_HOUR 3600
 
@@ -151,7 +155,3 @@ need to install Ahavi on Linux
 #define MINUTE_LABEL 3
 
 #define RGB_BREATHE_STEP 5
-
-
-
-

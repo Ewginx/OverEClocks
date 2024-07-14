@@ -16,11 +16,11 @@ extern "C" void updateTimeTimerCallbackWrapper(void *subscriber, lv_msg_t *msg) 
 }
 
 extern "C" void turnOffAlarmCallbackWrapper(void *subscriber, lv_msg_t *msg) {
-    instance->turnOff();
+    instance->turnOffAlarm();
 }
 
 extern "C" void snoozeAlarmCallbackWrapper(void *subscriber, lv_msg_t *msg) {
-    instance->snooze();
+    instance->snoozeAlarm();
 }
 
 TimeApp::TimeApp(DigitalClock *digitalClock, AnalogClock *analogClock,
@@ -69,45 +69,32 @@ void TimeApp::notifyAboutTime() {
 
 void TimeApp::updateTimeTimer() {
     this->setupTime();
-    if (this->stateApp->wifiState->wifiIsConnected ||
-        this->stateApp->timeState->timeIsSet) {
+    if (this->stateApp->timeState->timeIsSet) {
         lv_timer_resume(this->timeUpdateTimer);
     } else {
         lv_timer_pause(this->timeUpdateTimer);
     }
 }
 
-void TimeApp::turnOff() {
-    if (this->currentAlarm == 3) {
+void TimeApp::turnOffAlarm() {
+    if (this->currentAlarm == alarmType::oneOffAlarm) {
         lv_obj_clear_state(this->alarmClock->oneOffSwitch, LV_STATE_CHECKED);
     }
     this->currentAlarm = 0;
-    this->snoozeWeekendsAlarm = false;
-    this->snoozeWeekdaysAlarm = false;
-    this->snoozeOneOffAlarm = false;
-    this->snoozeWeekendsCount = 1;
-    this->snoozeWeekdaysCount = 1;
-    this->snoozeOneOffCount = 1;
-    this->stop();
+    for (int i = 0; i < alarmType::item_count; i++) {
+        needToSnoozeAlarm[i] = false;
+        snoozeAlarmCount[i] = 1;
+    }
+    this->stopAlarm();
 }
-void TimeApp::snooze() {
-    if (this->currentAlarm == 1) {
-        this->snoozeWeekdaysAlarm = true;
-        this->snoozeWeekdaysTime[0] = timeinfo.tm_hour;
-        this->snoozeWeekdaysTime[1] = timeinfo.tm_min;
-    }
-    if (this->currentAlarm == 2) {
-        this->snoozeWeekendsAlarm = true;
-        this->snoozeWeekendsTime[0] = timeinfo.tm_hour;
-        this->snoozeWeekendsTime[1] = timeinfo.tm_min;
-    }
-    if (this->currentAlarm == 3) {
+void TimeApp::snoozeAlarm() {
+    needToSnoozeAlarm[this->currentAlarm] = true;
+    snoozeAlarmTime[this->currentAlarm][0] = timeinfo.tm_hour;
+    snoozeAlarmTime[this->currentAlarm][1] = timeinfo.tm_min;
+    if (this->currentAlarm == alarmType::oneOffAlarm) {
         lv_obj_add_state(this->alarmClock->oneOffSwitch, LV_STATE_CHECKED);
-        this->snoozeOneOffAlarm = true;
-        this->snoozeOneOffTime[0] = timeinfo.tm_hour;
-        this->snoozeOneOffTime[1] = timeinfo.tm_min;
     }
-    this->stop();
+    this->stopAlarm();
 }
 
 bool TimeApp::isNight() {
@@ -128,121 +115,79 @@ void TimeApp::checkAlarmClocks(struct tm &timeinfo) {
 }
 
 void TimeApp::checkWeekendsAlarmClock(tm &timeinfo) {
-    if (lv_obj_has_state(this->alarmClock->weekendsSwitch, LV_STATE_CHECKED)) {
-        int hourFromLabel = this->alarmClock->parse_alarm_label(
-            lv_label_get_text(this->alarmClock->weekendsButtonLabel), true);
-        int minuteFromLabel = this->alarmClock->parse_alarm_label(
-            lv_label_get_text(this->alarmClock->weekendsButtonLabel), false);
-        if (this->isWeekends(timeinfo.tm_wday)) {
-            if (this->snoozeWeekendsAlarm) {
-                hourFromLabel = this->snoozeWeekendsTime[0];
-                minuteFromLabel = this->snoozeWeekendsTime[1];
-                this->calculateSnoozeTime(hourFromLabel, minuteFromLabel);
-                if (snoozeWeekendsCount >= snoozeMaxCount) {
-                    this->snoozeWeekendsAlarm = false;
-                }
-            }
-            if (timeinfo.tm_hour == hourFromLabel & timeinfo.tm_min == minuteFromLabel) {
-                if (!this->weekendsAlarmAlreadyFired) {
-                    this->fire(timeinfo.tm_hour, timeinfo.tm_min);
-                    this->weekendsAlarmAlreadyFired = true;
-                    this->currentAlarm = 2;
-                    if (this->snoozeWeekendsAlarm) {
-                        this->snoozeWeekendsCount++;
-                    }
-                }
-            } else {
-                this->weekendsAlarmAlreadyFired = false;
-            }
-        }
-        this->calculateWeekendsRemainingTime(hourFromLabel, minuteFromLabel, timeinfo);
-    } else {
-        this->snoozeWeekendsAlarm = false;
-        this->weekendsAlarmAlreadyFired = false;
-        this->snoozeWeekendsCount = 1;
-        this->snoozeWeekendsTime[0] = 0;
-        this->snoozeWeekendsTime[1] = 0;
-        lv_label_set_text(this->alarmClock->weekendsRingsInLabel, "");
+    if (this->alarmClock->isAlarmDisabled(this->alarmClock->weekendsSwitch)) {
+        this->resetAlarmParameters(this->alarmClock->weekendsRingsInLabel,
+                                   alarmType::weekendsAlarm);
+        return;
     }
+    int hourFromLabel =
+        this->alarmClock->getHourFromAlarmLabel(this->alarmClock->weekendsButtonLabel);
+    int minuteFromLabel =
+        this->alarmClock->getMinuteFromAlarmLabel(this->alarmClock->weekendsButtonLabel);
+    if (this->isWeekends(timeinfo.tm_wday)) {
+        if (needToSnoozeAlarm[alarmType::weekendsAlarm]) {
+            this->processSnooze(alarmType::weekendsAlarm, hourFromLabel, minuteFromLabel);
+        }
+        if (timeinfo.tm_hour == hourFromLabel & timeinfo.tm_min == minuteFromLabel) {
+            this->processFireAlarm(alarmType::weekendsAlarm);
+        } else {
+            alarmAlreadyFired[alarmType::weekendsAlarm] = false;
+        }
+    }
+    this->calculateWeekendsRemainingTime(hourFromLabel, minuteFromLabel, timeinfo);
 }
 
 void TimeApp::checkWeekdaysAlarmClock(tm &timeinfo) {
-    if (lv_obj_has_state(this->alarmClock->weekdaysSwitch, LV_STATE_CHECKED)) {
-        int hourFromLabel = this->alarmClock->parse_alarm_label(
-            lv_label_get_text(this->alarmClock->weekdaysButtonLabel), true);
-        int minuteFromLabel = this->alarmClock->parse_alarm_label(
-            lv_label_get_text(this->alarmClock->weekdaysButtonLabel), false);
-        if (!this->isWeekends(timeinfo.tm_wday)) {
-            if (this->snoozeWeekdaysAlarm) {
-                hourFromLabel = this->snoozeWeekdaysTime[0];
-                minuteFromLabel = this->snoozeWeekdaysTime[1];
-                this->calculateSnoozeTime(hourFromLabel, minuteFromLabel);
-                if (snoozeWeekdaysCount >= snoozeMaxCount) {
-                    this->snoozeWeekdaysAlarm = false;
-                }
-            }
-            if (timeinfo.tm_hour == hourFromLabel & timeinfo.tm_min == minuteFromLabel) {
-                if (!this->weekdaysAlarmAlreadyFired) {
-                    this->fire(timeinfo.tm_hour, timeinfo.tm_min);
-                    this->weekdaysAlarmAlreadyFired = true;
-                    this->currentAlarm = 1;
-                    if (this->snoozeWeekdaysAlarm) {
-                        this->snoozeWeekdaysCount++;
-                    }
-                }
-            } else {
-                this->weekdaysAlarmAlreadyFired = false;
-            }
-        }
-        this->calculateWeekdaysRemainingTime(hourFromLabel, minuteFromLabel, timeinfo);
-    } else {
-        this->snoozeWeekdaysAlarm = false;
-        this->weekdaysAlarmAlreadyFired = false;
-        this->snoozeWeekdaysCount = 1;
-        this->snoozeWeekdaysTime[0] = 0;
-        this->snoozeWeekdaysTime[1] = 0;
-        lv_label_set_text(this->alarmClock->weekdaysRingsInLabel, "");
+    if (this->alarmClock->isAlarmDisabled(this->alarmClock->weekdaysSwitch)) {
+        this->resetAlarmParameters(this->alarmClock->weekdaysRingsInLabel,
+                                   alarmType::weekdaysAlarm);
+        return;
     }
+    int hourFromLabel =
+        this->alarmClock->getHourFromAlarmLabel(this->alarmClock->weekdaysButtonLabel);
+    int minuteFromLabel =
+        this->alarmClock->getMinuteFromAlarmLabel(this->alarmClock->weekdaysButtonLabel);
+    if (!this->isWeekends(timeinfo.tm_wday)) {
+        if (needToSnoozeAlarm[alarmType::weekdaysAlarm]) {
+            this->processSnooze(alarmType::weekdaysAlarm, hourFromLabel, minuteFromLabel);
+        }
+        if (timeinfo.tm_hour == hourFromLabel & timeinfo.tm_min == minuteFromLabel) {
+            this->processFireAlarm(alarmType::weekdaysAlarm);
+        } else {
+            alarmAlreadyFired[alarmType::weekdaysAlarm] = false;
+        }
+    }
+    this->calculateWeekdaysRemainingTime(hourFromLabel, minuteFromLabel, timeinfo);
 }
 
 void TimeApp::checkOneOffAlarmClock(tm &timeinfo) {
-    if (lv_obj_has_state(this->alarmClock->oneOffSwitch, LV_STATE_CHECKED)) {
-        int hourFromLabel = this->alarmClock->parse_alarm_label(
-            lv_label_get_text(this->alarmClock->oneOffButtonLabel), true);
-        int minuteFromLabel = this->alarmClock->parse_alarm_label(
-            lv_label_get_text(this->alarmClock->oneOffButtonLabel), false);
-        if (this->snoozeOneOffAlarm) {
-            hourFromLabel = this->snoozeOneOffTime[0];
-            minuteFromLabel = this->snoozeOneOffTime[1];
-            this->calculateSnoozeTime(hourFromLabel, minuteFromLabel);
-            if (snoozeOneOffCount >= snoozeMaxCount) {
-                this->snoozeOneOffAlarm = false;
-                lv_obj_clear_state(this->alarmClock->oneOffSwitch, LV_STATE_CHECKED);
-            }
-        }
-        if (timeinfo.tm_hour == hourFromLabel & timeinfo.tm_min == minuteFromLabel) {
-            if (!this->oneOffAlarmAlreadyFired) {
-                this->fire(timeinfo.tm_hour, timeinfo.tm_min);
-                this->oneOffAlarmAlreadyFired = true;
-                lv_obj_clear_state(this->alarmClock->oneOffSwitch, LV_STATE_CHECKED);
-                this->alarmClock->event_alarmSwitch_cb();
-                this->currentAlarm = 3;
-                if (snoozeOneOffAlarm) {
-                    this->snoozeOneOffCount++;
-                }
-            }
-        } else {
-            this->oneOffAlarmAlreadyFired = false;
-        }
-        this->calculateOneOffRemainingTime(hourFromLabel, minuteFromLabel, timeinfo);
-    } else {
-        this->snoozeOneOffAlarm = false;
-        this->oneOffAlarmAlreadyFired = false;
-        this->snoozeWeekdaysCount = 1;
-        this->snoozeOneOffTime[0] = 0;
-        this->snoozeOneOffTime[1] = 0;
-        lv_label_set_text(this->alarmClock->oneOffRingsInLabel, "");
+    if (this->alarmClock->isAlarmDisabled(this->alarmClock->oneOffSwitch)) {
+        this->resetAlarmParameters(this->alarmClock->oneOffRingsInLabel,
+                                   alarmType::oneOffAlarm);
+        return;
     }
+    int hourFromLabel =
+        this->alarmClock->getHourFromAlarmLabel(this->alarmClock->oneOffButtonLabel);
+    int minuteFromLabel =
+        this->alarmClock->getMinuteFromAlarmLabel(this->alarmClock->oneOffButtonLabel);
+    if (needToSnoozeAlarm[alarmType::oneOffAlarm]) {
+        this->processSnooze(alarmType::oneOffAlarm, hourFromLabel, minuteFromLabel);
+    }
+    if (timeinfo.tm_hour == hourFromLabel & timeinfo.tm_min == minuteFromLabel) {
+        this->processFireAlarm(alarmType::oneOffAlarm);
+    } else {
+        alarmAlreadyFired[alarmType::oneOffAlarm] = false;
+    }
+    this->calculateOneOffRemainingTime(hourFromLabel, minuteFromLabel, timeinfo);
+}
+
+void TimeApp::resetAlarmParameters(lv_obj_t *label, int alarmType) {
+    needToSnoozeAlarm[alarmType] = false;
+    alarmAlreadyFired[alarmType] = false;
+    snoozeAlarmCount[alarmType] = 1;
+    snoozeAlarmTime[alarmType][0] = 0;
+    snoozeAlarmTime[alarmType][1] = 0;
+    lv_label_set_text(label, "");
 }
 
 void TimeApp::calculateOneOffRemainingTime(int hour, int minute, struct tm &timeinfo) {
@@ -257,7 +202,7 @@ void TimeApp::calculateOneOffRemainingTime(int hour, int minute, struct tm &time
     timeinfoLocal.tm_min = minute;
     time_t nextTime = mktime(&timeinfoLocal);
     double difference = difftime(nextTime, now);
-    this->setRingsInLabelText(difference, this->alarmClock->oneOffRingsInLabel);
+    this->setRingsInLabelText(difference, alarmClock->oneOffRingsInLabel);
 }
 
 void TimeApp::calculateWeekendsRemainingTime(int hour, int minute, struct tm &timeinfo) {
@@ -284,7 +229,7 @@ void TimeApp::calculateWeekendsRemainingTime(int hour, int minute, struct tm &ti
     timeinfoLocal.tm_min = minute;
     time_t nextTime = mktime(&timeinfoLocal);
     double difference = difftime(nextTime, now);
-    this->setRingsInLabelText(difference, this->alarmClock->weekendsRingsInLabel);
+    this->setRingsInLabelText(difference, alarmClock->weekendsRingsInLabel);
 }
 
 void TimeApp::calculateWeekdaysRemainingTime(int hour, int minute, struct tm &timeinfo) {
@@ -322,11 +267,23 @@ void TimeApp::calculateWeekdaysRemainingTime(int hour, int minute, struct tm &ti
     timeinfoLocal.tm_min = minute;
     time_t nextTime = mktime(&timeinfoLocal);
     double difference = difftime(nextTime, now);
-    this->setRingsInLabelText(difference, this->alarmClock->weekdaysRingsInLabel);
+    this->setRingsInLabelText(difference, alarmClock->weekdaysRingsInLabel);
+}
+
+void TimeApp::processSnooze(int alarmType, int &hours, int &minutes) {
+    hours = snoozeAlarmTime[alarmType][0];
+    minutes = snoozeAlarmTime[alarmType][1];
+    this->calculateSnoozeTime(hours, minutes);
+    if (snoozeAlarmCount[alarmType] >= SNOOZE_RETRY) {
+        needToSnoozeAlarm[alarmType] = false;
+        if (alarmType == alarmType::oneOffAlarm) {
+            lv_obj_clear_state(this->alarmClock->oneOffSwitch, LV_STATE_CHECKED);
+        }
+    }
 }
 
 void TimeApp::calculateSnoozeTime(int &hours, int &minutes) {
-    minutes = minutes + this->snoozePeriodInMinutes;
+    minutes = minutes + SNOOZE_PERIOD_MINUTES;
     if (minutes >= 60) {
         minutes = minutes - 60;
         hours++;
@@ -352,7 +309,7 @@ void TimeApp::setRingsInLabelText(double &differenceInSeconds, lv_obj_t *ringsIn
 }
 
 bool TimeApp::isWeekends(int weekDay) {
-    return (weekDay == 0 | weekDay == 6) ? true : false;
+    return (weekDay == 0 || weekDay == 6) ? true : false;
 }
 void TimeApp::copyTimeinfoStruct(tm &newTm, tm &oldTm) {
     newTm.tm_hour = oldTm.tm_hour;
@@ -366,12 +323,25 @@ void TimeApp::copyTimeinfoStruct(tm &newTm, tm &oldTm) {
     newTm.tm_isdst = oldTm.tm_isdst;
 }
 
-void TimeApp::fire(int hour, int minute) {
-    this->alarmClock->show_alarm(hour, minute);
+void TimeApp::fireAlarm(int hour, int minute) {
+    alarmClock->show_alarm(hour, minute);
     this->stateApp->alarmState->alarmIsRinging = true;
     lv_msg_send(MSG_ALARM_PLAY, NULL);
 }
-void TimeApp::stop() {
+void TimeApp::processFireAlarm(int alarmType) {
+    if (!alarmAlreadyFired[alarmType]) {
+        this->fireAlarm(timeinfo.tm_hour, timeinfo.tm_min);
+        alarmAlreadyFired[alarmType] = true;
+        this->currentAlarm = alarmType;
+        if (needToSnoozeAlarm[alarmType]) {
+            snoozeAlarmCount[alarmType]++;
+        }
+        if (alarmType == alarmType::oneOffAlarm) {
+            lv_obj_clear_state(this->alarmClock->oneOffSwitch, LV_STATE_CHECKED);
+        }
+    }
+}
+void TimeApp::stopAlarm() {
     this->alarmClock->delete_alarm_modal_panel();
     lv_msg_send(MSG_SOUND_STOP, NULL);
     this->stateApp->alarmState->alarmIsRinging = false;
