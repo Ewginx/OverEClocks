@@ -7,74 +7,71 @@
 #include <Arduino.h>
 #include <time.h>
 
-
 class TimeApp {
-
   public:
+    void notifyAboutTime();
+    void setTimezone();
+    void snooze();
+    void updateTimeTimer();
+    void turnOff();
+
+    TimeApp(DigitalClock *digitalClock, AnalogClock *analogClock, AlarmClock *alarmClock,
+            StateApp *stateApp);
+    ~TimeApp();
+
   private:
-    StateApp *_state_app;
+    StateApp *stateApp;
 
-    DigitalClock *digital_clock;
-    AnalogClock *analog_clock;
-    AlarmClock *alarm_clock;
+    DigitalClock *digitalClock;
+    AnalogClock *analogClock;
+    AlarmClock *alarmClock;
 
-    lv_timer_t *_time_update_timer = NULL;
-    
-    bool weekdays_already_fired = false;
-    bool weekends_already_fired = false;
-    bool oneOff_already_fired = false;
-    short int current_alarm = 0;
-    short int snooze_period = 10; // minutes
-    short int snooze_max_count = 6; // minutes
+    lv_timer_t *timeUpdateTimer = NULL;
 
-    bool snooze_weekends_alarm = false;
-    bool snooze_weekdays_alarm = false;
-    bool snooze_oneOff_alarm = false;
+    bool weekdaysAlarmAlreadyFired = false;
+    bool weekendsAlarmAlreadyFired = false;
+    bool oneOffAlarmAlreadyFired = false;
+    short int currentAlarm = 0;
+    short int snoozePeriodInMinutes = 10;
+    short int snoozeMaxCount = 6;
 
-    int snooze_weekdays_time[2];
-    int snooze_weekends_time[2];
-    int snooze_oneOff_time[2];
+    bool snoozeWeekendsAlarm = false;
+    bool snoozeWeekdaysAlarm = false;
+    bool snoozeOneOffAlarm = false;
 
-    short int snooze_weekends_count = 1;
-    short int snooze_weekdays_count = 1;
-    short int snooze_oneOff_count = 1;
+    int snoozeWeekdaysTime[2];
+    int snoozeWeekendsTime[2];
+    int snoozeOneOffTime[2];
+
+    short int snoozeWeekendsCount = 1;
+    short int snoozeWeekdaysCount = 1;
+    short int snoozeOneOffCount = 1;
 
     struct tm timeinfo;
 
     const char *ntpServer = "pool.ntp.org";
 
-    static void copy_timeinfo_struct(struct tm &new_tm, struct tm &old_tm);
+    void setupTime();
 
-    static bool is_weekends(int week_day);
-    bool is_night();
-    
-    void check_weekends_alarm_clock(tm &timeinfo);
-    void check_weekdays_alarm_clock(tm &timeinfo);
-    void check_oneOff_alarm_clock(tm &timeinfo);
+    void fire(int hour, int minute);
+    void stop();
 
-    void calculate_oneOff_remaining_time(int hour, int minute, struct tm &timeinfo);
-    void calculate_weekends_remaining_time(int hour, int minute, struct tm &timeinfo);
-    void calculate_weekdays_remaining_time(int hour, int minute, struct tm &timeinfo);
+    void checkAlarmClocks(tm &timeinfo);
 
-    void calculate_snooze_time(int &hours, int &minutes);
-    
-    void set_rings_in_label_text(double &difference_in_seconds, lv_obj_t *rings_in_label);
+    static void copyTimeinfoStruct(struct tm &newTm, struct tm &oldTm);
 
-    
+    static bool isWeekends(int weekDay);
+    bool isNight();
 
-  public:
-  
-    void check_alarm_clocks(tm &timeinfo);
-    void notifyAboutTime();
-    void config_time();
-    void set_timezone();
-    void update_time_timer();
-    void fire_alarm(int hour, int minute);
-    void stop_alarm();
-    void turn_off_alarm();
-    void snooze_alarm();
+    void checkWeekendsAlarmClock(tm &timeinfo);
+    void checkWeekdaysAlarmClock(tm &timeinfo);
+    void checkOneOffAlarmClock(tm &timeinfo);
 
-    TimeApp(DigitalClock *digital_clock, AnalogClock *analog_clock,
-            AlarmClock *alarm_clock, StateApp *state_app);
-    ~TimeApp();
+    void calculateOneOffRemainingTime(int hour, int minute, struct tm &timeinfo);
+    void calculateWeekendsRemainingTime(int hour, int minute, struct tm &timeinfo);
+    void calculateWeekdaysRemainingTime(int hour, int minute, struct tm &timeinfo);
+
+    void calculateSnoozeTime(int &hours, int &minutes);
+
+    void setRingsInLabelText(double &differenceInSeconds, lv_obj_t *ringsInLabel);
 };
