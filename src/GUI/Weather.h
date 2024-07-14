@@ -1,10 +1,10 @@
 #pragma once
-#include "lvgl.h"
 #include "Config/Config.h"
 #include "Translation/Translation.h"
+#include "lvgl.h"
 
-class Weather{
-public:
+class Weather {
+  public:
     lv_obj_t *weatherScreen;
     lv_obj_t *weatherPanel;
     lv_obj_t *weatherImage;
@@ -24,8 +24,9 @@ public:
     lv_obj_t *weatherThirdTempLabel;
     lv_obj_t *weatherFourthTempLabel;
     void setNoDataValues();
-    void createWeatherWidgets();
     Weather();
     ~Weather();
 
+  private:
+    void createWeatherWidgets();
 };
