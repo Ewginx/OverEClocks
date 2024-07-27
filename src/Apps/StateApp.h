@@ -222,7 +222,7 @@ class BatteryState {
 class MicroclimateState {
   public:
     float indoorTemperature = 0.0f;
-    int indoorHumidity = 0;
+    unsigned int indoorHumidity = 0;
 };
 
 class StateApp {

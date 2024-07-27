@@ -138,7 +138,7 @@ give OEClock a static IP in router settings need to install Ahavi on Linux
 
 //-----------------------------TEMPERATURE SENSOR SETTINGS-----------------------------
 // offset for temperature calibration
-#define TEMPERATURE_OFFSET 4
+#define TEMPERATURE_OFFSET 3
 
 //-----------------------------MISC-----------------------------
 // Preferences namespace
