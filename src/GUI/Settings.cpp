@@ -381,7 +381,7 @@ void Settings::createSettingsScreen() {
     this->weatherLabel = lv_label_create(this->settingsPanel);
     lv_obj_align_to(this->weatherLabel, this->passwordLabel, LV_ALIGN_OUT_BOTTOM_LEFT, 0,
                     10);
-    lv_label_set_text(this->weatherLabel, settings_translation[update_weather]);
+    lv_label_set_text(this->weatherLabel, settings_translation[weather_update]);
     lv_obj_set_style_text_font(this->weatherLabel, &font_18, 0);
 
     this->weatherSwitch = lv_switch_create(this->settingsPanel);

@@ -97,6 +97,7 @@ give OEClock a static IP in router settings need to install Ahavi on Linux
 
 #define WIFI_CONNECT_ATTEMPTS 20
 #define WIFI_CONNECT_DELAY 500
+#define WIFI_RECONNECT_DELAY 300
 
 //-----------------------------SCREEN SETTINGS-----------------------------
 // Set false if you want to set Analog Clock as the main screen
@@ -138,7 +139,7 @@ give OEClock a static IP in router settings need to install Ahavi on Linux
 
 //-----------------------------TEMPERATURE SENSOR SETTINGS-----------------------------
 // offset for temperature calibration
-#define TEMPERATURE_OFFSET 4
+#define TEMPERATURE_OFFSET 3
 
 //-----------------------------MISC-----------------------------
 // Preferences namespace

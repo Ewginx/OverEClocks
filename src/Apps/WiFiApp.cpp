@@ -9,10 +9,20 @@ extern "C" void reconnectToWiFiCallback(void *subscriber, lv_msg_t *msg) {
 void wifiDisconnectedCallback(WiFiEvent_t event, WiFiEventInfo_t info) {
     Serial.print("Disconnected from WiFi access point. Reason: ");
     Serial.println(info.wifi_sta_disconnected.reason);
-    if (instance->isWiFiConnected()) {
-        instance->handleWiFiState(false);
+    instance->handleWiFiState(false);
+    Serial.print("Trying to reconnect WiFi");
+    while (WiFi.status() != WL_CONNECTED & instance->wifi_reconnect_attempts > 0) {
+        bool wifi_reconnected = WiFi.reconnect();
+        if (!wifi_reconnected) {
+            delay(WIFI_RECONNECT_DELAY);
+            Serial.print(".");
+            instance->wifi_reconnect_attempts--;
+        } else {
+            Serial.println("\n WiFi reconnected");
+            instance->handleWiFiState(wifi_reconnected);
+            break;
+        }
     }
-    // WiFi.reconnect();
 }
 bool WiFiApp::isWiFiConnected() { return this->stateApp->wifiState->wifiIsConnected; }
 
