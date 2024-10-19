@@ -7,6 +7,8 @@
 
 class WiFiApp {
   public:
+    int wifi_reconnect_attempts = 4;
+
     void setup();
     bool isWiFiConnected();
     void connectToWiFi();
