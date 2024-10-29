@@ -19,7 +19,7 @@ void AnalogClock::createAnalogClockWidgets() {
     lv_obj_set_width(watchface, LV_SIZE_CONTENT);
     lv_obj_set_height(watchface, LV_SIZE_CONTENT);
     lv_obj_set_align(watchface, LV_ALIGN_CENTER);
-    lv_obj_set_y(watchface, 15);
+    lv_obj_set_y(watchface, 5);
     lv_obj_add_flag(watchface, LV_OBJ_FLAG_ADV_HITTEST);
     lv_obj_clear_flag(watchface, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_add_flag(watchface, LV_OBJ_FLAG_EVENT_BUBBLE);
@@ -28,7 +28,7 @@ void AnalogClock::createAnalogClockWidgets() {
     lv_obj_set_width(imageArmHour, LV_SIZE_CONTENT);
     lv_obj_set_height(imageArmHour, LV_SIZE_CONTENT);
     lv_obj_set_x(imageArmHour, 0);
-    lv_obj_set_y(imageArmHour, -20);
+    lv_obj_set_y(imageArmHour, -25);
     lv_obj_set_align(imageArmHour, LV_ALIGN_CENTER);
     lv_obj_add_flag(imageArmHour, LV_OBJ_FLAG_ADV_HITTEST);
     lv_obj_clear_flag(imageArmHour, LV_OBJ_FLAG_SCROLLABLE);
@@ -38,7 +38,7 @@ void AnalogClock::createAnalogClockWidgets() {
     lv_obj_set_width(imageArmMinute, LV_SIZE_CONTENT);
     lv_obj_set_height(imageArmMinute, LV_SIZE_CONTENT);
     lv_obj_set_x(imageArmMinute, 0);
-    lv_obj_set_y(imageArmMinute, -34);
+    lv_obj_set_y(imageArmMinute, -39);
     lv_obj_set_align(imageArmMinute, LV_ALIGN_CENTER);
     lv_obj_add_flag(imageArmMinute, LV_OBJ_FLAG_ADV_HITTEST);
     lv_obj_clear_flag(imageArmMinute, LV_OBJ_FLAG_SCROLLABLE);
@@ -48,7 +48,7 @@ void AnalogClock::createAnalogClockWidgets() {
     lv_obj_set_width(imageArmSecond, LV_SIZE_CONTENT);
     lv_obj_set_height(imageArmSecond, LV_SIZE_CONTENT);
     lv_obj_set_x(imageArmSecond, 0);
-    lv_obj_set_y(imageArmSecond, -32);
+    lv_obj_set_y(imageArmSecond, -37);
     lv_obj_set_align(imageArmSecond, LV_ALIGN_CENTER);
     lv_obj_add_flag(imageArmSecond, LV_OBJ_FLAG_ADV_HITTEST);
     lv_obj_clear_flag(imageArmSecond, LV_OBJ_FLAG_SCROLLABLE);

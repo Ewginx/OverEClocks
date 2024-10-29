@@ -423,7 +423,7 @@ void Settings::createSettingsScreen() {
 
     this->homeButton = lv_btn_create(this->settingsPanel);
     lv_obj_set_size(this->homeButton, 35, 35);
-    lv_obj_set_pos(this->homeButton, 401, -6);
+    lv_obj_set_pos(this->homeButton, 406, -6);
     lv_obj_set_align(this->homeButton, LV_ALIGN_TOP_LEFT);
 
     this->homeButtonLabel = lv_label_create(this->homeButton);

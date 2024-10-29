@@ -59,7 +59,7 @@ void DockPanel::changeWifiConnectionIcon(bool wifiEnabled) {
 
 void DockPanel::setBatteryLevelLabel(int batteryLevel) {
 
-    lv_label_set_text_fmt(batteryLabel, "%d %%", batteryLevel);
+    lv_label_set_text_fmt(batteryLabel, "%d%%", batteryLevel);
 }
 
 void DockPanel::setBatteryChargingIcon(bool charge) { this->batteryCharging = charge; }
@@ -89,12 +89,12 @@ void DockPanel::createDockPanelWidgets(lv_obj_t *panel) {
     lv_obj_set_style_text_font(temperatureLabel, &dock_panel_font_20, 0);
 
     humidityLabel = lv_label_create(panel);
-    lv_obj_align_to(humidityLabel, temperatureLabel, LV_ALIGN_OUT_RIGHT_TOP, 25, -1);
+    lv_obj_align_to(humidityLabel, temperatureLabel, LV_ALIGN_OUT_RIGHT_TOP, 30, -1);
     lv_obj_set_style_text_font(humidityLabel, &dock_panel_font_20, 0);
 
     settingsButton = lv_btn_create(panel);
     lv_obj_set_size(settingsButton, 35, 35);
-    lv_obj_set_pos(settingsButton, 401, -6);
+    lv_obj_set_pos(settingsButton, 406, -6);
     lv_obj_set_align(settingsButton, LV_ALIGN_TOP_LEFT);
     lv_obj_set_style_bg_opa(settingsButton, 0, 0);
 
@@ -105,16 +105,16 @@ void DockPanel::createDockPanelWidgets(lv_obj_t *panel) {
     lv_obj_set_style_text_font(settingsButtonLabel, &dock_panel_font_20, 0);
 
     wiFiLabel = lv_label_create(panel);
-    lv_obj_set_pos(wiFiLabel, 379, 0);
+    lv_obj_set_pos(wiFiLabel, 387, 0);
     lv_obj_set_align(wiFiLabel, LV_ALIGN_TOP_LEFT);
     lv_obj_set_style_text_font(wiFiLabel, &wifi_symbols_20, 0);
 
     batteryLabel = lv_label_create(panel);
-    lv_obj_align_to(batteryLabel, wiFiLabel, LV_ALIGN_OUT_LEFT_TOP, -30, -1);
+    lv_obj_align_to(batteryLabel, wiFiLabel, LV_ALIGN_OUT_LEFT_TOP, -25, -1);
     lv_obj_set_style_text_font(batteryLabel, &dock_panel_font_20, 0);
 
     chargingLabel = lv_label_create(panel);
-    lv_obj_align_to(chargingLabel, batteryLabel, LV_ALIGN_OUT_LEFT_TOP, 7, 0);
+    lv_obj_align_to(chargingLabel, batteryLabel, LV_ALIGN_OUT_LEFT_TOP, 8, 0);
     lv_obj_set_style_text_font(chargingLabel, &dock_panel_font_20, 0);
     lv_label_set_text(chargingLabel, CHARGE_SYMBOL);
 }
