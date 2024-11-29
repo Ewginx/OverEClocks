@@ -7,10 +7,10 @@
 
 class RGBApp {
   public:
-
     void setup();
     void show();
     void update();
+    void turnOff();
 
     RGBApp(StateApp *stateApp);
     ~RGBApp();

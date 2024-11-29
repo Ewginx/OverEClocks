@@ -133,8 +133,8 @@ give OEClock a static IP in router settings need to install Ahavi on Linux
 //   BAT- ----
 // (R1 + R2) / R2  I am using R1=R2=1M Ohms
 // for battery charge detection R1=1M Ohms and R2=1M Ohms
-#define DIVIDER_RATIO 1.94
-#define BAT_MAX_VOLT 4.02
+#define DIVIDER_RATIO 2.05
+#define BAT_MAX_VOLT 4.2
 #define BAT_MIN_VOLT 2.6
 
 //-----------------------------TEMPERATURE SENSOR SETTINGS-----------------------------

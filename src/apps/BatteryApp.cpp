@@ -31,6 +31,9 @@ void BatteryApp::measureBatteryLevelAndSendMsg() {
         stateApp->batteryState->batteryVoltage = this->calculateBatteryVoltage();
         int batteryLevel =
             this->calculateBatteryPercentage(stateApp->batteryState->batteryVoltage);
+        if (batteryLevel == 0) {
+            lv_msg_send(MSG_ESP_TURN_OFF, NULL);
+        }
         stateApp->batteryState->batteryLevel = batteryLevel;
         lv_msg_send(MSG_SHOW_BATTERY_LVL, static_cast<const void *>(&batteryLevel));
         voltageSamplesCount = 0;

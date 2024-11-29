@@ -26,6 +26,7 @@ class OEClockApp {
     GuiApp *guiApp;
     ServerApp *serverApp;
     WiFiApp *wifiApp;
+    RGBApp *rgbApp;
 
     void setup();
     void loop();
@@ -38,7 +39,6 @@ class OEClockApp {
     BrightnessApp *brightnessApp;
     MicroclimateApp *microclimateApp;
     SoundApp *soundApp;
-    RGBApp *rgbApp;
     ButtonApp *buttonApp;
     BatteryApp *batteryApp;
 

@@ -21,8 +21,7 @@ void RGBApp::begin() {
 
 void RGBApp::setup() {
     this->begin();
-    p_rgbTimer =
-        lv_timer_create(rgb_show_cb_wrapper, stateApp->rgbState->delay, NULL);
+    p_rgbTimer = lv_timer_create(rgb_show_cb_wrapper, stateApp->rgbState->delay, NULL);
     this->toggle();
 }
 
@@ -31,8 +30,7 @@ void RGBApp::toggle() {
         lv_timer_set_period(this->p_rgbTimer, stateApp->rgbState->delay);
         lv_timer_resume(this->p_rgbTimer);
     } else {
-        pixels.clear();
-        pixels.show();
+        this->turnOff();
         lv_timer_pause(this->p_rgbTimer);
     }
 }
@@ -45,6 +43,11 @@ void RGBApp::update() {
     this->updateThreeColorArray();
     this->toggle();
     this->setBrightness();
+}
+
+void RGBApp::turnOff() {
+    pixels.clear();
+    pixels.show();
 }
 
 void RGBApp::calculateBreatheCount() {
@@ -105,8 +108,7 @@ void RGBApp::show() {
 }
 
 bool RGBApp::isDisabledAtNight() {
-    if (stateApp->rgbState->turnOffAtNight &
-        stateApp->timeState->isNight) {
+    if (stateApp->rgbState->turnOffAtNight & stateApp->timeState->isNight) {
         if (!alreadyDisabled) {
             pixels.clear();
             pixels.show();
@@ -159,7 +161,7 @@ void RGBApp::cycleThreeColorsBreatheEffect() {
 
     if (breatheIterator < rgbBreatheCount / 2) {
         pixels.setBrightness(stateApp->rgbState->brightness -
-                                   (breatheIterator * RGB_BREATHE_STEP));
+                             (breatheIterator * RGB_BREATHE_STEP));
         breatheIterator++;
         pixels.show();
         return;
@@ -171,9 +173,8 @@ void RGBApp::cycleThreeColorsBreatheEffect() {
         return;
     }
     if (breatheIterator > rgbBreatheCount / 2) {
-        pixels.setBrightness(
-            stateApp->rgbState->brightness -
-            ((rgbBreatheCount - breatheIterator) * RGB_BREATHE_STEP));
+        pixels.setBrightness(stateApp->rgbState->brightness -
+                             ((rgbBreatheCount - breatheIterator) * RGB_BREATHE_STEP));
         breatheIterator++;
         pixels.show();
         return;

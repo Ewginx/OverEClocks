@@ -10,6 +10,10 @@ extern "C" void setLowCpuFrequency(void *subscriber, lv_msg_t *msg) {
 extern "C" void setHighCpuFrequency(void *subscriber, lv_msg_t *msg) {
     setCpuFrequencyMhz(240);
 }
+extern "C" void turnOffESP(void *subscriber, lv_msg_t *msg) {
+    instance->rgbApp->turnOff();
+    esp_deep_sleep_start();
+}
 
 void serialPrint(const char *buf) { Serial.println(buf); }
 
@@ -42,6 +46,7 @@ OEClockApp::OEClockApp() {
     batteryApp = new BatteryApp(stateApp);
     lv_msg_subscribe(MSG_SET_LOW_CLOCK, setLowCpuFrequency, NULL);
     lv_msg_subscribe(MSG_SET_HIGH_CLOCK, setHighCpuFrequency, NULL);
+    lv_msg_subscribe(MSG_ESP_TURN_OFF, turnOffESP, NULL);
 }
 
 void OEClockApp::setup() {
