@@ -66,7 +66,7 @@ void AnalogClock::setTime(int hour, int minute, int second) {
 }
 
 void AnalogClock::setAnalogClockImages() {
-    lv_img_set_src(this->watchface, "F:/analog_clock/watchface.bin");
+    lv_img_set_src(watchface, "F:/analog_clock/watchface.bin");
     lv_img_set_src(imageArmSecond, "F:/analog_clock/armsecond.png");
     lv_img_set_src(imageArmHour, "F:/analog_clock/armhour.png");
     lv_img_set_src(imageArmMinute, "F:/analog_clock/armminute.png");

@@ -275,22 +275,22 @@ void GuiApp::theme_switch_event_cb(lv_event_t *e) {
 void GuiApp::switch_to_light_theme() {
     this->init_light_theme();
 
-    lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_black(), 0);
+    lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_hex(this->state_app->themeState->lightTextColor), 0);
     lv_obj_set_style_shadow_opa(dock_panel->settingsButton, 0, 0);
     lv_obj_set_style_shadow_opa(alarm_clock->weekdaysButton, 0, 0);
     lv_obj_set_style_shadow_opa(alarm_clock->weekendsButton, 0, 0);
     lv_obj_set_style_shadow_opa(alarm_clock->oneOffButton, 0, 0);
-    lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_black(), 0);
-    lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_black(), 0);
-    lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_black(), 0);
+    lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_hex(this->state_app->themeState->lightTextColor), 0);
+    lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_hex(this->state_app->themeState->lightTextColor), 0);
+    lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_hex(this->state_app->themeState->lightTextColor), 0);
 }
 void GuiApp::switch_to_dark_theme() {
     this->init_dark_theme();
 
-    lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_white(), 0);
-    lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_white(), 0);
-    lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_white(), 0);
-    lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_white(), 0);
+    lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_hex(this->state_app->themeState->darkTextColor), 0);
+    lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_hex(this->state_app->themeState->darkTextColor), 0);
+    lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_hex(this->state_app->themeState->darkTextColor), 0);
+    lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_hex(this->state_app->themeState->darkTextColor), 0);
 }
 void GuiApp::init_light_theme() {
     lv_color_t primary_color =
