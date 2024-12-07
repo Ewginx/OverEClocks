@@ -49,7 +49,7 @@ GuiApp::GuiApp(StateApp *state_app) {
     instance = this;
     this->state_app = state_app;
     this->state_app->themeState->darkThemeEnabled ? this->init_dark_theme()
-                                                     : this->init_light_theme();
+                                                  : this->init_light_theme();
     alarm_clock = new AlarmClock(this->state_app);
     digital_clock = new DigitalClock();
     analog_clock = new AnalogClock();
@@ -112,14 +112,12 @@ void GuiApp::setup_gui() {
     this->switch_theme(this->state_app->themeState->darkThemeEnabled);
     this->alarm_clock->setAlarmClockGui();
     this->settings->setWifiSettings(this->state_app->wifiState->ssid.c_str(),
-                                      this->state_app->wifiState->password.c_str());
-    this->settings->setWeatherSettings(
-        this->state_app->weatherState->city.c_str(),
-        this->state_app->weatherState->language.c_str());
+                                    this->state_app->wifiState->password.c_str());
+    this->settings->setWeatherSettings(this->state_app->weatherState->city.c_str(),
+                                       this->state_app->weatherState->language.c_str());
     this->settings->setBrightnessSliderValue(
         this->state_app->displayState->brightnessLevel);
-    this->settings->setBrightnessCheckbox(
-        this->state_app->displayState->autoBrightness);
+    this->settings->setBrightnessCheckbox(this->state_app->displayState->autoBrightness);
     this->settings->setThemeSwitch(this->state_app->themeState->darkThemeEnabled);
     this->create_gif_img();
 }
@@ -159,48 +157,91 @@ void GuiApp::load_default_screen() {
 
 void GuiApp::swipe_screen_event_cb(lv_event_t *e) {
     lv_obj_t *target = lv_event_get_target(e);
+    lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
     if (target == this->digital_clock->digitalClockScreen) {
-        this->swipe_digital_clock_screen();
+        this->swipe_digital_clock_screen(dir);
     } else if (target == this->weather->weatherScreen) {
-        this->swipe_weather_screen();
+        this->swipe_weather_screen(dir);
     } else if (target == this->analog_clock->analogClockScreen) {
-        this->swipe_analog_clock_screen();
+        this->swipe_analog_clock_screen(dir);
     } else if (target == this->alarm_clock->alarmScreen) {
-        this->swipe_alarm_screen();
+        this->swipe_alarm_screen(dir);
     }
 }
 
-void GuiApp::swipe_digital_clock_screen() {
-    if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT) {
+void GuiApp::swipe_digital_clock_screen(lv_dir_t dir) {
+    switch (dir) {
+    case LV_DIR_LEFT:
         lv_scr_load_anim(this->weather->weatherScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT,
                          SCREEN_CHANGE_ANIM_TIME, 0, false);
-    } else if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT) {
+        break;
+    case LV_DIR_RIGHT:
+        lv_scr_load_anim(this->alarm_clock->alarmScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT,
+                         SCREEN_CHANGE_ANIM_TIME, 0, false);
+        break;
+    case LV_DIR_TOP:
+        lv_scr_load_anim(this->analog_clock->analogClockScreen, LV_SCR_LOAD_ANIM_MOVE_TOP,
+                         SCREEN_CHANGE_ANIM_TIME, 0, false);
+        break;
+    case LV_DIR_BOTTOM:
         lv_scr_load_anim(this->analog_clock->analogClockScreen,
-                         LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+                         LV_SCR_LOAD_ANIM_MOVE_BOTTOM, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        break;
     }
 }
 
-void GuiApp::swipe_analog_clock_screen() {
-    if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT) {
-        lv_scr_load_anim(this->digital_clock->digitalClockScreen,
-                         LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
-    } else if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT) {
+void GuiApp::swipe_analog_clock_screen(lv_dir_t dir) {
+    switch (dir) {
+    case LV_DIR_LEFT:
+        lv_scr_load_anim(this->weather->weatherScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT,
+                         SCREEN_CHANGE_ANIM_TIME, 0, false);
+        break;
+    case LV_DIR_RIGHT:
         lv_scr_load_anim(this->alarm_clock->alarmScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT,
+                         SCREEN_CHANGE_ANIM_TIME, 0, false);
+        break;
+    case LV_DIR_TOP:
+        lv_scr_load_anim(this->digital_clock->digitalClockScreen,
+                         LV_SCR_LOAD_ANIM_MOVE_TOP, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        break;
+    case LV_DIR_BOTTOM:
+        lv_scr_load_anim(this->digital_clock->digitalClockScreen,
+                         LV_SCR_LOAD_ANIM_MOVE_BOTTOM, SCREEN_CHANGE_ANIM_TIME, 0, false);
+        break;
+    }
+}
+void GuiApp::swipe_weather_screen(lv_dir_t dir) {
+    if (dir == LV_DIR_RIGHT) {
+        if (state_app->displayState->mainScreenIsDigital) {
+            lv_scr_load_anim(this->digital_clock->digitalClockScreen,
+                             LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0,
+                             false);
+        } else {
+            lv_scr_load_anim(this->analog_clock->analogClockScreen,
+                             LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0,
+                             false);
+        }
+    } else if (dir == LV_DIR_LEFT) {
+        lv_scr_load_anim(this->alarm_clock->alarmScreen, LV_SCR_LOAD_ANIM_MOVE_LEFT,
                          SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
-void GuiApp::swipe_weather_screen() {
-    if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_RIGHT) {
-        lv_scr_load_anim(this->digital_clock->digitalClockScreen,
-                         LV_SCR_LOAD_ANIM_MOVE_RIGHT, SCREEN_CHANGE_ANIM_TIME, 0, false);
-    }
-}
 
-void GuiApp::swipe_alarm_screen() {
-    if (lv_indev_get_gesture_dir(lv_indev_get_act()) == LV_DIR_LEFT) {
-        lv_scr_load_anim(this->analog_clock->analogClockScreen,
-                         LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0, false);
+void GuiApp::swipe_alarm_screen(lv_dir_t dir) {
+    if (dir == LV_DIR_LEFT) {
+        if (state_app->displayState->mainScreenIsDigital) {
+            lv_scr_load_anim(this->digital_clock->digitalClockScreen,
+                             LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0,
+                             false);
+        } else {
+            lv_scr_load_anim(this->analog_clock->analogClockScreen,
+                             LV_SCR_LOAD_ANIM_MOVE_LEFT, SCREEN_CHANGE_ANIM_TIME, 0,
+                             false);
+        }
         this->alarm_clock->deleteRollerModalPanel();
+    } else if (dir == LV_DIR_RIGHT) {
+        lv_scr_load_anim(this->weather->weatherScreen, LV_SCR_LOAD_ANIM_MOVE_RIGHT,
+                         SCREEN_CHANGE_ANIM_TIME, 0, false);
     }
 }
 
@@ -275,30 +316,44 @@ void GuiApp::theme_switch_event_cb(lv_event_t *e) {
 void GuiApp::switch_to_light_theme() {
     this->init_light_theme();
 
-    lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_hex(this->state_app->themeState->lightTextColor), 0);
+    lv_obj_set_style_text_color(dock_panel->settingsButtonLabel,
+                                lv_color_hex(this->state_app->themeState->lightTextColor),
+                                0);
     lv_obj_set_style_shadow_opa(dock_panel->settingsButton, 0, 0);
     lv_obj_set_style_shadow_opa(alarm_clock->weekdaysButton, 0, 0);
     lv_obj_set_style_shadow_opa(alarm_clock->weekendsButton, 0, 0);
     lv_obj_set_style_shadow_opa(alarm_clock->oneOffButton, 0, 0);
-    lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_hex(this->state_app->themeState->lightTextColor), 0);
-    lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_hex(this->state_app->themeState->lightTextColor), 0);
-    lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_hex(this->state_app->themeState->lightTextColor), 0);
+    lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel,
+                                lv_color_hex(this->state_app->themeState->lightTextColor),
+                                0);
+    lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel,
+                                lv_color_hex(this->state_app->themeState->lightTextColor),
+                                0);
+    lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel,
+                                lv_color_hex(this->state_app->themeState->lightTextColor),
+                                0);
 }
 void GuiApp::switch_to_dark_theme() {
     this->init_dark_theme();
 
-    lv_obj_set_style_text_color(dock_panel->settingsButtonLabel, lv_color_hex(this->state_app->themeState->darkTextColor), 0);
-    lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel, lv_color_hex(this->state_app->themeState->darkTextColor), 0);
-    lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel, lv_color_hex(this->state_app->themeState->darkTextColor), 0);
-    lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel, lv_color_hex(this->state_app->themeState->darkTextColor), 0);
+    lv_obj_set_style_text_color(dock_panel->settingsButtonLabel,
+                                lv_color_hex(this->state_app->themeState->darkTextColor),
+                                0);
+    lv_obj_set_style_text_color(alarm_clock->weekdaysButtonLabel,
+                                lv_color_hex(this->state_app->themeState->darkTextColor),
+                                0);
+    lv_obj_set_style_text_color(alarm_clock->weekendsButtonLabel,
+                                lv_color_hex(this->state_app->themeState->darkTextColor),
+                                0);
+    lv_obj_set_style_text_color(alarm_clock->oneOffButtonLabel,
+                                lv_color_hex(this->state_app->themeState->darkTextColor),
+                                0);
 }
 void GuiApp::init_light_theme() {
     lv_color_t primary_color =
         lv_color_hex(this->state_app->themeState->lightPrimaryColor);
-    lv_color_t second_color =
-        lv_color_hex(this->state_app->themeState->lightSecondColor);
-    lv_color_t color_screen =
-        lv_color_hex(this->state_app->themeState->lightScreenColor);
+    lv_color_t second_color = lv_color_hex(this->state_app->themeState->lightSecondColor);
+    lv_color_t color_screen = lv_color_hex(this->state_app->themeState->lightScreenColor);
     lv_color_t color_card = lv_color_hex(this->state_app->themeState->lightCardColor);
     lv_color_t color_text = lv_color_hex(this->state_app->themeState->lightTextColor);
     lv_color_t color_grey = lv_color_hex(this->state_app->themeState->lightGreyColor);
@@ -311,10 +366,8 @@ void GuiApp::init_light_theme() {
 void GuiApp::init_dark_theme() {
     lv_color_t primary_color =
         lv_color_hex(this->state_app->themeState->darkPrimaryColor);
-    lv_color_t second_color =
-        lv_color_hex(this->state_app->themeState->darkSecondColor);
-    lv_color_t color_screen =
-        lv_color_hex(this->state_app->themeState->darkScreenColor);
+    lv_color_t second_color = lv_color_hex(this->state_app->themeState->darkSecondColor);
+    lv_color_t color_screen = lv_color_hex(this->state_app->themeState->darkScreenColor);
     lv_color_t color_card = lv_color_hex(this->state_app->themeState->darkCardColor);
     lv_color_t color_text = lv_color_hex(this->state_app->themeState->darkTextColor);
     lv_color_t color_grey = lv_color_hex(this->state_app->themeState->darkGreyColor);
