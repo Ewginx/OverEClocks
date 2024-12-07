@@ -9,7 +9,6 @@
 #include "GUI/Weather.h"
 #include "Theme/Theme.h"
 
-
 class GuiApp {
   private:
     lv_timer_t *_screen_timer;
@@ -29,10 +28,10 @@ class GuiApp {
     lv_obj_t *gif_image;
 
     void swipe_screen_event_cb(lv_event_t *e);
-    void swipe_digital_clock_screen();
-    void swipe_analog_clock_screen();
-    void swipe_weather_screen();
-    void swipe_alarm_screen();
+    void swipe_digital_clock_screen(lv_dir_t dir);
+    void swipe_analog_clock_screen(lv_dir_t dir);
+    void swipe_weather_screen(lv_dir_t dir);
+    void swipe_alarm_screen(lv_dir_t dir);
     void switch_theme(bool dark_theme_enabled);
     void screen_load_event_cb(lv_event_t *e);
 
@@ -43,10 +42,9 @@ class GuiApp {
     void theme_switch_event_cb(lv_event_t *e);
     void switch_to_light_theme();
     void switch_to_dark_theme();
-    
+
     void init_light_theme();
     void init_dark_theme();
-
 
     void create_loading_screen();
     void delete_loading_screen();
@@ -56,7 +54,7 @@ class GuiApp {
     void create_gif_img();
     void set_gif_parent();
     void update_gif_img_src();
-    
+
     void update_clock_img_src();
 
     void load_default_screen();
@@ -64,4 +62,3 @@ class GuiApp {
     GuiApp(StateApp *state_app);
     ~GuiApp();
 };
-
