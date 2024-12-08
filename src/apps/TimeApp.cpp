@@ -3,10 +3,12 @@
 
 static TimeApp *instance = NULL;
 
+extern "C" void timeSyncCallbackWrapper(struct timeval *tv) {
+    instance->timeSyncCallback();
+}
 extern "C" void updateTimezoneCallbackWrapper(void *subscriber, lv_msg_t *msg) {
     instance->setTimezone();
 }
-
 extern "C" void updateTimeCallbackWrapper(lv_timer_t *timer) {
     instance->notifyAboutTime();
 }
@@ -32,6 +34,8 @@ TimeApp::TimeApp(DigitalClock *digitalClock, AnalogClock *analogClock,
     this->analogClock = analogClock;
     this->digitalClock = digitalClock;
 
+    sntp_set_time_sync_notification_cb(timeSyncCallbackWrapper);
+
     timeUpdateTimer =
         lv_timer_create(updateTimeCallbackWrapper, TIME_UPDATE_INTERVAL, NULL);
     lv_timer_pause(this->timeUpdateTimer);
@@ -46,8 +50,10 @@ void TimeApp::setupTime() {
     if (this->stateApp->wifiState->wifiIsConnected) {
         configTime(0, 0, "pool.ntp.org");
         this->setTimezone();
-        if (getLocalTime(&timeinfo)) {
+        if (getLocalTime(&timeinfo, 10)) {
             this->stateApp->timeState->timeIsSet = true;
+        } else {
+            Serial.println("Can't obtain initial time");
         }
     }
 }
@@ -58,12 +64,12 @@ void TimeApp::setTimezone() {
 }
 
 void TimeApp::notifyAboutTime() {
-    getLocalTime(&timeinfo);
+    getLocalTime(&timeinfo, 10);
     this->isNight();
     analogClock->setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     digitalClock->setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     digitalClock->setDate(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
-                           timeinfo.tm_wday);
+                          timeinfo.tm_wday);
     this->checkAlarmClocks(timeinfo);
 }
 
@@ -86,6 +92,11 @@ void TimeApp::turnOffAlarm() {
         snoozeAlarmCount[i] = 1;
     }
     this->stopAlarm();
+}
+void TimeApp::timeSyncCallback() {
+    if (!this->stateApp->timeState->timeIsSet) {
+        this->updateTimeTimer();
+    }
 }
 void TimeApp::snoozeAlarm() {
     needToSnoozeAlarm[this->currentAlarm] = true;

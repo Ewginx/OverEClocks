@@ -4,8 +4,10 @@
 #include "GUI/AnalogClock.h"
 #include "GUI/DigitalClock.h"
 #include "StateApp.h"
+#include "esp_sntp.h"
 #include <Arduino.h>
 #include <time.h>
+
 
 class TimeApp {
   public:
@@ -14,6 +16,8 @@ class TimeApp {
     void snoozeAlarm();
     void updateTimeTimer();
     void turnOffAlarm();
+
+    void timeSyncCallback();
 
     TimeApp(DigitalClock *digitalClock, AnalogClock *analogClock, AlarmClock *alarmClock,
             StateApp *stateApp);
