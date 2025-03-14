@@ -64,10 +64,15 @@ void TimeApp::setTimezone() {
 }
 
 void TimeApp::notifyAboutTime() {
-    getLocalTime(&timeinfo, 10);
+    getLocalTime(&timeinfo, 5);
     this->isNight();
     analogClock->setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-    digitalClock->setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+    if (current_hour != timeinfo.tm_hour || current_minute != timeinfo.tm_min) {
+        current_hour = timeinfo.tm_hour;
+        current_minute = timeinfo.tm_min;
+        digitalClock->setTime(timeinfo.tm_hour, timeinfo.tm_min);
+    }
+    digitalClock->setSeconds(timeinfo.tm_sec);
     digitalClock->setDate(timeinfo.tm_mday, timeinfo.tm_mon, timeinfo.tm_year,
                           timeinfo.tm_wday);
     this->checkAlarmClocks(timeinfo);

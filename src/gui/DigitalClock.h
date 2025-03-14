@@ -11,7 +11,8 @@ class DigitalClock {
     lv_obj_t *secondsLabel;
     lv_obj_t *dateLabel;
 
-    void setTime(int hours, int minutes, int seconds);
+    void setTime(int hours, int minutes);
+    void setSeconds(int seconds);
     void setDate(int month_day, int month, int year, int day);
     void setDefaultValues();
 

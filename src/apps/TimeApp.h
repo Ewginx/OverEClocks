@@ -34,6 +34,9 @@ class TimeApp {
     struct tm timeinfo;
 
     const char *ntpServer = "pool.ntp.org";
+    
+    int current_hour = 0;
+    int current_minute = 0;
 
     enum alarmType {
         weekdaysAlarm = 0,

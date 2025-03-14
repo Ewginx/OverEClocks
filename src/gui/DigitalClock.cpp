@@ -38,8 +38,11 @@ void DigitalClock::createDigitalClockWidgets() {
     lv_obj_add_flag(dateLabel, LV_OBJ_FLAG_EVENT_BUBBLE);
 };
 
-void DigitalClock::setTime(int hours, int minutes, int seconds) {
+void DigitalClock::setTime(int hours, int minutes) {
     lv_label_set_text_fmt(this->clockLabel, "%02d:%02d", hours, minutes);
+}
+
+void DigitalClock::setSeconds(int seconds) {
     lv_label_set_text_fmt(this->secondsLabel, "%02d", seconds);
 }
 
